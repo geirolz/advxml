@@ -13,54 +13,54 @@ import scala.xml._
 object Actions extends Actions{
 
   /**
-    *
-    * @param f
-    * @return
-    */
+	*
+	* @param f
+	* @return
+	*/
   def node(f: Node => NodeSeq): Action = nodeSeq(seq => seq.flatMap(f))
 
   /**
-    *
-    * @param f
-    * @return
-    */
+	*
+	* @param f
+	* @return
+	*/
   def nodeSeq(f: NodeSeq => NodeSeq): Action = f
 }
 
 trait Actions {
   /**
-    *
-    * @param ns
-    * @return
-    */
+	*
+	* @param ns
+	* @return
+	*/
   def append(ns: NodeSeq) : Action = Actions.node {
-    case elem: Elem => elem.copy(child = elem.child ++ ns)
-    case g: Group => g.copy(nodes = g.nodes ++ ns)
-    case other => other
+	case elem: Elem => elem.copy(child = elem.child ++ ns)
+	case g: Group => g.copy(nodes = g.nodes ++ ns)
+	case other => other
   }
 
   /**
-    *
-    * @param ns
-    * @return
-    */
+	*
+	* @param ns
+	* @return
+	*/
   def replace(ns: NodeSeq) : Action = Actions.nodeSeq(_ => ns)
 
   /**
-    *
-    * @return
-    */
+	*
+	* @return
+	*/
   def remove: Action = Actions.nodeSeq(_ => Seq.empty)
 
   /**
-    *
-    * @param key
-    * @param value
-    * @return
-    */
+	*
+	* @param key
+	* @param value
+	* @return
+	*/
   def setAttr(key: String, value: String): Action = Actions.node {
-    case elem: Elem =>
-      elem.copy(attributes = new UnprefixedAttribute(key, Text(value), elem.attributes))
-    case other => other
+	case elem: Elem =>
+	  elem.copy(attributes = new UnprefixedAttribute(key, Text(value), elem.attributes))
+	case other => other
   }
 }
