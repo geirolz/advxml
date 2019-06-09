@@ -1,6 +1,6 @@
-package com.dg.advxml.funcs
+package com.dg.advxml.core.funcs
 
-import com.dg.advxml.Zoom
+import com.dg.advxml.core.Zoom
 
 /**
   * advxml

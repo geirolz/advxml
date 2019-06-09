@@ -1,11 +1,14 @@
-package com.dg.advxml.funcs
+package com.dg.advxml.core.funcs
 
-import com.dg.advxml.Predicate
+import com.dg.advxml.core.Predicate
 
 import scala.xml.{Node, NodeSeq}
 
 /**
+  * advxml
+  * Created by geirolad on 09/06/2019.
   *
+  * @author geirolad
   */
 trait Filters {
 

@@ -1,4 +1,4 @@
-package com.dg
+package com.dg.advxml
 
 import scala.xml.NodeSeq
 
@@ -8,7 +8,7 @@ import scala.xml.NodeSeq
   *
   * @author geirolad
   */
-package object advxml {
+package object core {
 
   /**
     *
