@@ -12,12 +12,18 @@ import scala.xml.{Node, NodeSeq}
   */
 trait Filters {
 
+  def text(text: String) : Predicate = {
+    case n: Node => n.text == text
+    case _ => false
+  }
+
   def label(name: String): Predicate = {
     case n: Node => n.label == name
     case _ => false
   }
 
-  def attr(key: String, value: String): Predicate = _ \@ key == value
+  def attr(key: String, value: String): Predicate =
+    _ \@ key == value
 
   def equalsTo(ns: NodeSeq): Predicate = that => (ns, that) match {
     case (e1: Node, e2: Node) => e1 strict_== e2
