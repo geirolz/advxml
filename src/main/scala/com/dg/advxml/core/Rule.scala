@@ -27,6 +27,8 @@ sealed abstract case class Rule(zooms: Seq[Zoom], actions: Seq[Action]) {
   }
 }
 
+object RuleSyntax extends RuleSyntax
+
 private[advxml] trait RuleSyntax{
   def $(z: Zoom*)(actions: Action*): Rule = new Rule(z, actions){}
 }

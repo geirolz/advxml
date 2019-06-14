@@ -63,4 +63,10 @@ trait Actions {
 			elem.copy(attributes = new UnprefixedAttribute(key, Text(value), elem.attributes))
 		case other => other
 	}
+
+	def removeAttr(key: String): Action = Actions.node {
+		case elem: Elem =>
+			elem.copy(attributes = elem.attributes.filter(_.key != key))
+		case other => other
+	}
 }

@@ -13,7 +13,13 @@ object XmlTransformer extends XmlTransformerImplicits{
 
 private [advxml] trait XmlTransformerImplicits{
 
-  implicit class AddAdvXmlTransformation(root: NodeSeq) {
-    def transform(rules: Rule*): NodeSeq = XmlTransformer.transform(rules: _*)(root)
+  implicit class XmlTransformerOps(root: NodeSeq) {
+    def transform(rules: Rule*): NodeSeq =
+      XmlTransformer.transform(rules: _*)(root)
+  }
+
+  implicit class XmlTransformerOps2(root: NodeSeq) {
+    def transform(rules: Action*): NodeSeq =
+      XmlTransformer.transform(RuleSyntax.$()(rules: _*))(root)
   }
 }

@@ -103,9 +103,7 @@ class AdvXmlTest extends FeatureSpec  {
         </OrderLines>
 
 
-      val result = elem.transform(
-        $()(append(<OrderLine PrimeLineNo="1" />))
-      )
+      val result = elem.transform(append(<OrderLine PrimeLineNo="1" />))
 
       assert(result === trim(expected))
     }
@@ -133,47 +131,46 @@ class AdvXmlTest extends FeatureSpec  {
       val expected: Elem = <Order A1="1" A2="2" A3="3" />
 
       val result = elem.transform(
-        $()(
-          setAttr("A1", "1"),
-          setAttr("A2", "2"),
-          setAttr("A3", "3")
-        )
+        setAttr("A1", "1"),
+        setAttr("A2", "2"),
+        setAttr("A3", "3")
       )
 
       assert(result === trim(expected))
     }
 
-    //
-    //    scenario("ReplaceAttribute") {
-    //      val elem: Elem = <Order>
-    //        <OrderLines T1="1">
-    //          <OrderLine PrimeLineNo="1"></OrderLine>
-    //          <OrderLine PrimeLineNo="2"></OrderLine>
-    //          <OrderLine PrimeLineNo="3"></OrderLine>
-    //        </OrderLines>
-    //      </Order>
-    //
-    //      val result = (elem.asRoot \ "OrderLines").modify(
-    //        setAttr("T1", "EDITED")
-    //      )
-    //
-    //      assert(result \ "OrderLines" \@ "T1" == "EDITED")
-    //    }
-    //
-    //    scenario("RemoveAttribute") {
-    //      val elem: Elem = <Order>
-    //        <OrderLines T1="1">
-    //          <OrderLine PrimeLineNo="1"></OrderLine>
-    //          <OrderLine PrimeLineNo="2"></OrderLine>
-    //          <OrderLine PrimeLineNo="3"></OrderLine>
-    //        </OrderLines>
-    //      </Order>
-    //
-    //      val result = (elem.asRoot \ "OrderLines").modify(
-    //        removeAttr("T1")
-    //      )
-    //
-    //      assert(result \ "OrderLines" \@? "T1" isEmpty)
-    //    }
+
+    scenario("ReplaceAttribute") {
+      val elem: Elem = <Order>
+        <OrderLines T1="1">
+          <OrderLine PrimeLineNo="1"></OrderLine>
+          <OrderLine PrimeLineNo="2"></OrderLine>
+          <OrderLine PrimeLineNo="3"></OrderLine>
+        </OrderLines>
+      </Order>
+
+      val result = elem.transform(
+        $(_ \ "OrderLines")(setAttr("T1", "EDITED"))
+      )
+
+      Console.println(result)
+      assert(result \ "OrderLines" \@ "T1" == "EDITED")
+    }
+
+    scenario("RemoveAttribute") {
+      val elem: Elem = <Order>
+        <OrderLines T1="1">
+          <OrderLine PrimeLineNo="1"></OrderLine>
+          <OrderLine PrimeLineNo="2"></OrderLine>
+          <OrderLine PrimeLineNo="3"></OrderLine>
+        </OrderLines>
+      </Order>
+
+      val result = elem.transform(
+        $(_ \ "OrderLines")(removeAttr("T1"))
+      )
+
+      assert(result \ "OrderLines" \@ "T1" == "")
+    }
   }
 }
