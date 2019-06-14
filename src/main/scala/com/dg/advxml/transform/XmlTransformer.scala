@@ -1,6 +1,5 @@
 package com.dg.advxml.transform
 
-import com.dg.advxml.transform.core.Action
 import com.dg.advxml.transform.funcs.{Actions, Filters, Zooms}
 
 import scala.xml.NodeSeq

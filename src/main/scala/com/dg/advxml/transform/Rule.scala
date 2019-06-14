@@ -1,6 +1,5 @@
 package com.dg.advxml.transform
 
-import com.dg.advxml.transform.core.{Action, Zoom}
 import com.dg.advxml.transform.funcs.{Filters, Zooms}
 
 import scala.xml.transform.RewriteRule

@@ -2,6 +2,7 @@ package com.dg.advxml
 
 import org.scalatest.FeatureSpec
 
+import scala.util.Try
 import scala.xml.Elem
 import scala.xml.Utility.trim
 
