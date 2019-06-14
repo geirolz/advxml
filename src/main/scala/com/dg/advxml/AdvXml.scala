@@ -1,13 +1,8 @@
 package com.dg.advxml
 
-import com.dg.advxml.core.funcs.{Actions, Filters, Zooms}
-import com.dg.advxml.core.{RuleSyntax, XmlTransformerImplicits}
+import com.dg.advxml.transform.XmlTransformer
 
 private [advxml] sealed trait AdvXml
-  extends XmlTransformerImplicits
-    with RuleSyntax
-    with Filters
-    with Zooms
-    with Actions
+  extends XmlTransformer
 
 object AdvXml extends AdvXml

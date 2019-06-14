@@ -1,6 +1,6 @@
-package com.dg.advxml.core.funcs
+package com.dg.advxml.transform.funcs
 
-import com.dg.advxml.core.Zoom
+import com.dg.advxml.transform.core.Zoom
 
 import scala.util.Try
 

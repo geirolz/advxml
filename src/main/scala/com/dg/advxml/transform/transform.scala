@@ -3,12 +3,12 @@ package com.dg.advxml
 import scala.xml.NodeSeq
 
 /**
-  * advxml
-  * Created by geirolad on 09/06/2019.
+  * Adxml
+  * Created by geirolad on 14/06/2019.
   *
   * @author geirolad
   */
-package object core {
+package object transform {
 
   /**
     *

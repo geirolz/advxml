@@ -1,6 +1,6 @@
-package com.dg.advxml.core.funcs
+package com.dg.advxml.transform.funcs
 
-import com.dg.advxml.core.Action
+import com.dg.advxml.transform.core.Action
 
 import scala.xml._
 

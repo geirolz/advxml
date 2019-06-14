@@ -1,6 +1,6 @@
-package com.dg.advxml.core.funcs
+package com.dg.advxml.transform.funcs
 
-import com.dg.advxml.core.Predicate
+import com.dg.advxml.transform.Predicate
 
 import scala.xml.{Node, NodeSeq}
 

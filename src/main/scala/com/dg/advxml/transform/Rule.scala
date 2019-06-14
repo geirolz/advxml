@@ -1,6 +1,7 @@
-package com.dg.advxml.core
+package com.dg.advxml.transform
 
-import com.dg.advxml.core.funcs.{Filters, Zooms}
+import com.dg.advxml.transform.core.{Action, Zoom}
+import com.dg.advxml.transform.funcs.{Filters, Zooms}
 
 import scala.xml.transform.RewriteRule
 import scala.xml.{Node, NodeSeq}
@@ -26,8 +27,6 @@ sealed abstract case class Rule(zooms: Seq[Zoom], actions: Seq[Action]) {
     }
   }
 }
-
-object RuleSyntax extends RuleSyntax
 
 private[advxml] trait RuleSyntax{
   def $(z: Zoom*)(actions: Action*): Rule = new Rule(z, actions){}
