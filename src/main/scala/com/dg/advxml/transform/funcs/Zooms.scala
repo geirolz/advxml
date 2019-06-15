@@ -1,19 +1,22 @@
 package com.dg.advxml.transform.funcs
 
-import com.dg.advxml.transform.Zoom
-
 import scala.util.Try
+import scala.xml.NodeSeq
+
+trait XmlZoom extends (NodeSeq => NodeSeq)
+
+object Zooms extends Zooms
 
 /**
   * advxml
   * Created by geirolad on 09/06/2019.
   *
-  * [[Zoom]]s are used to navigate inside a [[scala.xml.NodeSeq]] object.
+  * [[XmlZoom]]s are used to navigate inside a [[scala.xml.NodeSeq]] object.
   *
-  * @note Do not apply transformation inside a [[Zoom]] function.
+  * @note Do not apply transformation inside a [[XmlZoom]] function.
   * @example
   * When a function f must be applied over a specific node inside the xml document
-  * you can use [[Zoom]] in order to zooming/focusing on that node.
+  * you can use [[XmlZoom]] in order to zooming/focusing on that node.
   * {{{
   *   val xml: NodeSeq =
   *   <Root>
@@ -28,17 +31,13 @@ import scala.util.Try
   *   val result: NodeSeq = zoom(xml) //<Child Index='1' />
   * }}}
   * This trait provides all default zooms.
-  * You can define your own zoom extending this [[Zooms]] trait adding your zooms functions(also composing existing [[Zoom]]).
-  * Anyway [[Zoom]] is a type alias, precisely for not limit the usability.[[Zoom]]s are just
-  * functions from domain [[scala.xml.NodeSeq]] to co-domain [[scala.xml.NodeSeq]] so you can create your
-  * own [[Zoom]] where ever you want.
+  * You can define your own zoom extending this [[Zooms]] trait adding your zooms functions(also composing existing [[XmlZoom]]).
+  * Anyway [[XmlZoom]] is a type alias, precisely for not limit the usability.[
   *
   * @since 0.0.1
   * @author geirolad
   */
-trait Zooms {
-
-  lazy val current: Zoom = r => r
+private [advxml] trait Zooms {
 
   /**
     * Select the first child of a [[scala.xml.NodeSeq]] collection
@@ -46,7 +45,7 @@ trait Zooms {
     * @return When applied return the first element of a [[scala.xml.NodeSeq]] if collection
     *         contains at least one element, otherwise return an empty [[scala.xml.NodeSeq]]
     */
-  lazy val firstChild: Zoom = childN(0)
+  lazy val firstChild: XmlZoom = childN(0)
 
   /**
     * Select the last child of a [[scala.xml.NodeSeq]] collection
@@ -54,7 +53,7 @@ trait Zooms {
     * @return When applied return the last element of a [[scala.xml.NodeSeq]] if collection
     *         contains at least one element, otherwise return an empty [[scala.xml.NodeSeq]]
     */
-  lazy val lastChild: Zoom = ns => childN(ns.length - 1)(ns)
+  lazy val lastChild: XmlZoom = ns => childN(ns.length - 1)(ns)
 
   /**
     * Select the child at specified index in [[scala.xml.NodeSeq]] collection
@@ -63,13 +62,8 @@ trait Zooms {
     *         if collection size is equals or minor of specified index,
     *         otherwise return an empty [[scala.xml.NodeSeq]]
     */
-  lazy val childN: Int => Zoom = index => ns => Try(ns(index)).toOption.getOrElse(Seq.empty)
+  lazy val childN: Int => XmlZoom = index => ns => Try(ns(index)).toOption.getOrElse(Seq.empty)
 }
-
-/**
-  * @inheritdoc
-  */
-object Zooms extends Zooms
 
 
 

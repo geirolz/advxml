@@ -2,7 +2,6 @@ package com.dg.advxml
 
 import org.scalatest.FeatureSpec
 
-import scala.util.Try
 import scala.xml.Elem
 import scala.xml.Utility.trim
 
@@ -22,7 +21,7 @@ class AdvXmlTest extends FeatureSpec  {
       </Order>
 
       val expected: Elem = <OrderLine PrimeLineNo="1" />
-      val result = elem \ "OrderLines" \ "OrderLine" filter attr("PrimeLineNo", "1")
+      val result = elem \ "OrderLines" \ "OrderLine" filter attrs("PrimeLineNo" -> "1")
 
       assert(result === trim(expected))
     }
@@ -46,7 +45,11 @@ class AdvXmlTest extends FeatureSpec  {
 
 
       val result = elem.transform(
-        $(_ \ "OrderLines")(append(<OrderLine PrimeLineNo="2" />))
+          $(_ \ "OrderLines")
+          ==> append(<OrderLine PrimeLineNo="2" />)
+          ==> append(<OrderLine PrimeLineNo="2" />)
+          ==> append(<OrderLine PrimeLineNo="2" />)
+          ==> append(<OrderLine PrimeLineNo="2" />)
       )
 
       assert(result === trim(expected))
@@ -66,9 +69,8 @@ class AdvXmlTest extends FeatureSpec  {
       </Order>
 
       val result = elem.transform(
-        $(_ \ "OrderLines" \ "OrderLine" filter attr("PrimeLineNo", "1"))(
-          replace(<OrderLine PrimeLineNo="4" />)
-        )
+        $(_ \ "OrderLines" \ "OrderLine" filter attrs("PrimeLineNo" -> "1"))
+          ==> replace(<OrderLine PrimeLineNo="4" />)
       )
 
       assert(result === trim(expected))
@@ -89,7 +91,7 @@ class AdvXmlTest extends FeatureSpec  {
       </Order>
 
       val result = elem.transform(
-        $(_ \ "OrderLines" \ "OrderLine" filter attr("PrimeLineNo", "1"))(remove)
+        $(_ \ "OrderLines" \ "OrderLine" filter attrs("PrimeLineNo" -> "1")) ==> remove
       )
 
       assert(result === trim(expected))
@@ -117,11 +119,7 @@ class AdvXmlTest extends FeatureSpec  {
       val expected: Elem = <Order><OrderLines A1="1" A2="2" A3="3" /></Order>
 
       val result = elem.transform(
-        $(_ \ "OrderLines")(
-          setAttr("A1", "1"),
-          setAttr("A2", "2"),
-          setAttr("A3", "3")
-        )
+        $(_ \ "OrderLines") ==> setAttrs("A1" -> "1", "A2" -> "2", "A3" -> "3")
       )
 
       assert(result === trim(expected))
@@ -132,9 +130,7 @@ class AdvXmlTest extends FeatureSpec  {
       val expected: Elem = <Order A1="1" A2="2" A3="3" />
 
       val result = elem.transform(
-        setAttr("A1", "1"),
-        setAttr("A2", "2"),
-        setAttr("A3", "3")
+        setAttrs("A1" -> "1", "A2" -> "2", "A3" -> "3")
       )
 
       assert(result === trim(expected))
@@ -151,7 +147,7 @@ class AdvXmlTest extends FeatureSpec  {
       </Order>
 
       val result = elem.transform(
-        $(_ \ "OrderLines")(setAttr("T1", "EDITED"))
+        $(_ \ "OrderLines") ==> setAttrs("T1" -> "EDITED")
       )
 
       Console.println(result)
@@ -168,7 +164,7 @@ class AdvXmlTest extends FeatureSpec  {
       </Order>
 
       val result = elem.transform(
-        $(_ \ "OrderLines")(removeAttr("T1"))
+        $(_ \ "OrderLines") ==> removeAttrs("T1")
       )
 
       assert(result \ "OrderLines" \@ "T1" == "")

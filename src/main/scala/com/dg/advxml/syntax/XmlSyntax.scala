@@ -9,9 +9,22 @@ import scala.xml.NodeSeq
   *
   * @author geirolad
   */
-trait XmlSyntax {
+private [advxml] trait XmlSyntax {
 
   implicit class XmlSyntaxOps(xml: NodeSeq) {
+
+    def \?(name: String) : Option[NodeSeq] = (xml \! name).toOption
+
+    def \!(name: String) : Try[NodeSeq] = {
+      xml \ name match {
+        case value if value.isEmpty => Failure(new RuntimeException(s"Missing node: $name"))
+        case value => Success(value)
+      }
+    }
+
+
+    def \@?(name: String): Option[String] = (xml \@! name).toOption
+
     def \@!(name: String): Try[String] = {
       xml \@ name match {
         case value if value.isEmpty => Failure(new RuntimeException(s"Missing attribute: $name"))
@@ -19,12 +32,6 @@ trait XmlSyntax {
       }
     }
 
-    def \@?(name: String): Option[String] = {
-      xml \@ name match {
-        case value if value.isEmpty => None
-        case value => Some(value)
-      }
-    }
 
     def content: Try[String] = {
       xml.text match {
@@ -34,3 +41,5 @@ trait XmlSyntax {
     }
   }
 }
+
+object XmlSyntax extends XmlSyntax

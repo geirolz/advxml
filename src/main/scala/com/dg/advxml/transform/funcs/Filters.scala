@@ -1,38 +1,53 @@
 package com.dg.advxml.transform.funcs
 
-import com.dg.advxml.transform.Predicate
-
 import scala.xml.{Node, NodeSeq}
 
-/**
-  * advxml
-  * Created by geirolad on 09/06/2019.
-  *
-  * @author geirolad
-  */
-trait Filters {
+trait XmlPredicate extends (NodeSeq => Boolean){
 
-  def text(text: String) : Predicate = {
+  def &&(that: XmlPredicate) : XmlPredicate =
+    xml => this(xml) && that(xml)
+
+  def ||(that: XmlPredicate) : XmlPredicate =
+    xml => this(xml) || that(xml)
+}
+
+object Filters extends Filters
+
+private [advxml] trait Filters {
+
+  import com.dg.advxml.syntax.XmlSyntax._
+
+  val always: XmlPredicate = _ => true
+
+  def text(text: String) : XmlPredicate = {
     case n: Node => n.text == text
     case _ => false
   }
 
-  def label(name: String): Predicate = {
+  def label(name: String): XmlPredicate = {
     case n: Node => n.label == name
     case _ => false
   }
 
-  def attr(key: String, value: String): Predicate =
-    _ \@ key == value
+  def attrs(values: (String, String)*): XmlPredicate = {
 
-  def equalsTo(ns: NodeSeq): Predicate = that => (ns, that) match {
+    def attr(key: String, value: String): XmlPredicate =
+      _ \@ key == value
+
+    values
+      .map(t => attr(t._1, t._2))
+      .foldLeft(always)((acc, v) => acc && v)
+  }
+
+//TODO CHECK THIS PREDICATE
+  def hasImmediateChild(name: String, predicate: XmlPredicate = always) : XmlPredicate =
+    xml => (xml \? name).fold(false)(_.exists(predicate))
+
+  def count(length: Int) : XmlPredicate = _.length == length
+
+  def equalsTo(ns: NodeSeq): XmlPredicate = that => (ns, that) match {
     case (e1: Node, e2: Node) => e1 strict_== e2
     case (ns1: NodeSeq, ns2: NodeSeq) => ns1 strict_== ns2
     case _ => false
   }
 }
-
-/**
-  * @inheritdoc
-  */
-object Filters  extends Filters

@@ -1,72 +1,41 @@
 package com.dg.advxml.transform.funcs
 
-import com.dg.advxml.transform.Action
-
 import scala.xml._
 
-/**
-	* advxml
-	* Created by geirolad on 09/06/2019.
-	*
-	* @author geirolad
-	*/
-object Actions extends Actions{
-
-	/**
-		*
-		* @param f
-		* @return
-		*/
-	def node(f: Node => NodeSeq): Action = nodeSeq(seq => seq.flatMap(f))
-
-	/**
-		*
-		* @param f
-		* @return
-		*/
-	def nodeSeq(f: NodeSeq => NodeSeq): Action = f
+trait XmlAction extends (NodeSeq => NodeSeq){
+	def ++(that: XmlAction) : XmlAction = andThen(that)
+	def andThen(that: NodeSeq => NodeSeq) : XmlAction = xml => that(this(xml))
 }
 
-trait Actions {
-	/**
-		*
-		* @param ns
-		* @return
-		*/
-	def append(ns: NodeSeq) : Action = Actions.node {
+object Actions extends Actions{
+	def node(f: Node => NodeSeq): XmlAction = nodeSeq(seq => seq.flatMap(f))
+	def nodeSeq(f: NodeSeq => NodeSeq): XmlAction = f(_)
+}
+
+private [advxml] trait Actions {
+
+	def append(ns: NodeSeq) : XmlAction = Actions.node {
 		case elem: Elem => elem.copy(child = elem.child ++ ns)
 		case g: Group => g.copy(nodes = g.nodes ++ ns)
 		case other => other
 	}
 
-	/**
-		*
-		* @param ns
-		* @return
-		*/
-	def replace(ns: NodeSeq) : Action = Actions.nodeSeq(_ => ns)
+	def replace(ns: NodeSeq) : XmlAction = Actions.nodeSeq(_ => ns)
 
-	/**
-		*
-		* @return
-		*/
-	def remove: Action = Actions.nodeSeq(_ => Seq.empty)
+	def remove: XmlAction = Actions.nodeSeq(_ => Seq.empty)
 
-	/**
-		*
-		* @param key
-		* @param value
-		* @return
-		*/
-	def setAttr(key: String, value: String): Action = Actions.node {
+
+	def setAttrs(values: (String, String)*): XmlAction = Actions.node {
 		case elem: Elem =>
-			elem.copy(attributes = new UnprefixedAttribute(key, Text(value), elem.attributes))
+			elem.copy(attributes = values.foldLeft(elem.attributes)((metadata, value) =>
+				new UnprefixedAttribute(value._1, Text(value._2), metadata)))
 		case other => other
 	}
 
-	def removeAttr(key: String): Action = Actions.node {
+	def removeAttrs(keys: String*): XmlAction = Actions.node {
 		case elem: Elem =>
-			elem.copy(attributes = elem.attributes.filter(_.key != key))
+			elem.copy(attributes = elem.attributes.filter(attr => keys.contains(attr.key)))
 		case other => other
 	}
 }
+
