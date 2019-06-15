@@ -40,6 +40,8 @@ class AdvXmlTest extends FeatureSpec  {
         <OrderLines>
           <OrderLine PrimeLineNo="1" />
           <OrderLine PrimeLineNo="2" />
+          <OrderLine PrimeLineNo="3" />
+          <OrderLine PrimeLineNo="4" />
         </OrderLines>
       </Order>
 
@@ -47,9 +49,8 @@ class AdvXmlTest extends FeatureSpec  {
       val result = elem.transform(
           $(_ \ "OrderLines")
           ==> append(<OrderLine PrimeLineNo="2" />)
-          ==> append(<OrderLine PrimeLineNo="2" />)
-          ==> append(<OrderLine PrimeLineNo="2" />)
-          ==> append(<OrderLine PrimeLineNo="2" />)
+          ==> append(<OrderLine PrimeLineNo="3" />)
+          ==> append(<OrderLine PrimeLineNo="4" />)
       )
 
       assert(result === trim(expected))

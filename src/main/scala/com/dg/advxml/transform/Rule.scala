@@ -40,9 +40,9 @@ private [advxml] trait RuleSyntax{
 
     override def toRewriteRule: NodeSeq => RewriteRule = root => {
 
-      val zoom = zooms.foldLeft(identity[NodeSeq](_))((zoomAcc, z) => zoomAcc.andThen(z))
+      val zoom = zooms.foldLeft(identity[NodeSeq](_))((acc, z) => acc.andThen(z))
       val target = zoom(root)
-      val action = actions.foldRight(identity[NodeSeq](_))((a1, a2) => a1.andThen(a2))
+      val action = actions.foldLeft(identity[NodeSeq](_))((acc, a) => acc.andThen(a))
       val updated = action(target)
 
       new RewriteRule {

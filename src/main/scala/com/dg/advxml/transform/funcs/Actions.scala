@@ -27,7 +27,7 @@ private [advxml] trait Actions {
 
 	def setAttrs(values: (String, String)*): XmlAction = Actions.node {
 		case elem: Elem =>
-			elem.copy(attributes = values.foldLeft(elem.attributes)((metadata, value) =>
+			elem.copy(attributes = values.foldRight(elem.attributes)((value, metadata) =>
 				new UnprefixedAttribute(value._1, Text(value._2), metadata)))
 		case other => other
 	}
