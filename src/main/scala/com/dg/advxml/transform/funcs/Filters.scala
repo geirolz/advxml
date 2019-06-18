@@ -29,14 +29,14 @@ private [transform] trait Filters {
     case _ => false
   }
 
-  def attrs(values: (String, String)*): XmlPredicate = {
+  def attrs(value: (String, String), values: (String, String)*): XmlPredicate = {
 
     def attr(key: String, value: String): XmlPredicate =
       _ \@ key == value
 
-    values
+    (Seq(value) ++ values)
       .map(t => attr(t._1, t._2))
-      .foldLeft(always)((acc, v) => acc && v)
+      .reduce(_ && _)
   }
 
 //TODO CHECK THIS PREDICATE
