@@ -7,6 +7,12 @@ trait XmlZoom extends (NodeSeq => NodeSeq){
   def \(that: XmlZoom) : XmlZoom = xml => that(this(xml))
 }
 
+private [transform] trait ZoomSyntax{
+  def zoom(f: NodeSeq => NodeSeq): XmlZoom = f(_)
+}
+
+
+
 /**
   * advxml
   * Created by geirolad on 09/06/2019.
@@ -61,10 +67,6 @@ private [transform] trait Zooms {
     *         otherwise return an empty [[scala.xml.NodeSeq]]
     */
   lazy val childN: Int => XmlZoom = index => ns => Try(ns(index)).toOption.getOrElse(Seq.empty)
-}
-
-private [transform] trait ZoomSyntax{
-  def zoom(f: NodeSeq => NodeSeq): XmlZoom = f(_)
 }
 
 object Zooms extends Zooms with ZoomSyntax

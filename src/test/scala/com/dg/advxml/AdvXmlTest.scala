@@ -48,9 +48,9 @@ class AdvXmlTest extends FeatureSpec  {
 
       val result = elem.transform(
           $(_ \ "OrderLines")
-          ==> append(<OrderLine PrimeLineNo="2" />)
-          ==> append(<OrderLine PrimeLineNo="3" />)
-          ==> append(<OrderLine PrimeLineNo="4" />)
+            ==> append(<OrderLine PrimeLineNo="2" />)
+            ==> append(<OrderLine PrimeLineNo="3" />)
+            ==> append(<OrderLine PrimeLineNo="4" />)
       )
 
       assert(result === trim(expected))
