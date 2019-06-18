@@ -24,7 +24,7 @@ trait Rule extends PartialRule{
 
 private [transform] trait RuleSyntax{
 
-  def ==>(action: XmlAction, actions: XmlAction*) : Rule = $(identity(_)) ==> (action, actions:_*)
+  def current(action: XmlAction, actions: XmlAction*) : Rule = $(identity(_)) ==> (action, actions:_*)
   def $(zoom: XmlZoom, zooms: XmlZoom*): PartialRule = PartialRuleImpl(Seq(zoom) ++ zooms)
 
 

@@ -18,7 +18,7 @@ private [advxml] trait XmlTransformer
 
   implicit class XmlTransformerRootOps(root: NodeSeq) {
     def transform(action: XmlAction, actions: XmlAction*): NodeSeq =
-      $this.transform( ==> (action, actions: _*))(root)
+      $this.transform(current(action, actions: _*))(root)
   }
 
   def transform(rule: Rule, rules: Rule*)(root: NodeSeq) : NodeSeq =
