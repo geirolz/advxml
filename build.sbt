@@ -77,12 +77,10 @@ lazy val resolversSettings = Seq(
 )
 
 lazy val libsSettings = Seq(
-  "org.scala-lang.modules" %% "scala-xml" % "1.2.0",
 
   //CATS
   "org.typelevel" %% "cats-core" % "2.0.0-M1",
 
   //TEST
-  "org.scalactic" %% "scalactic" % "3.0.7",
-  "org.scalatest" %% "scalatest" % "3.0.7" % "test"
+  "org.scalatest" %% "scalatest" % "3.0.5" % "test"
 )
