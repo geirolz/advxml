@@ -23,6 +23,16 @@ private [advxml] trait XmlSyntax {
     }
 
 
+    def \\?(name: String) : Option[NodeSeq] = (xml \\! name).toOption
+
+    def \\!(name: String) : Try[NodeSeq] = {
+      xml \\ name match {
+        case value if value.isEmpty => Failure(new RuntimeException(s"Missing nested node: $name"))
+        case value => Success(value)
+      }
+    }
+
+
     def \@?(name: String): Option[String] = (xml \@! name).toOption
 
     def \@!(name: String): Try[String] = {

@@ -12,7 +12,7 @@ object Actions extends Actions{
 	def nodeSeq(f: NodeSeq => NodeSeq): XmlAction = f(_)
 }
 
-private [advxml] trait Actions {
+private [transform] trait Actions {
 
 	def append(ns: NodeSeq) : XmlAction = Actions.node {
 		case elem: Elem => elem.copy(child = elem.child ++ ns)

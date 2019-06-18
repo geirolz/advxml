@@ -37,7 +37,7 @@ object Zooms extends Zooms
   * @since 0.0.1
   * @author geirolad
   */
-private [advxml] trait Zooms {
+private [transform] trait Zooms {
 
   /**
     * Select the first child of a [[scala.xml.NodeSeq]] collection

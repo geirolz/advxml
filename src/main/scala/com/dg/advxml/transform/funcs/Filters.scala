@@ -13,7 +13,7 @@ trait XmlPredicate extends (NodeSeq => Boolean){
 
 object Filters extends Filters
 
-private [advxml] trait Filters {
+private [transform] trait Filters {
 
   import com.dg.advxml.syntax.XmlSyntax._
 
