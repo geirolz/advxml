@@ -1,14 +1,11 @@
-package com.dg.advxml.transform.funcs
+package com.dg.advxml.transform.funcs.impls
+
+
+import com.dg.advxml.transform.funcs.XmlAction
 
 import scala.xml._
 
-trait XmlAction extends (NodeSeq => NodeSeq){
-	def ++(that: XmlAction) : XmlAction = andThen(that)
-	def andThen(that: NodeSeq => NodeSeq) : XmlAction = xml => that(this(xml))
-}
-
-
-private [transform] trait Actions {
+private [funcs] trait Actions {
 
 	def append(ns: NodeSeq) : XmlAction = Actions.node {
 		case elem: Elem => elem.copy(child = elem.child ++ ns)
