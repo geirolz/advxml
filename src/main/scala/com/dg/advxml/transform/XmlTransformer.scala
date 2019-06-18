@@ -12,11 +12,10 @@ private [advxml] trait XmlTransformer
     with Actions{ $this =>
 
   implicit class XmlTransformerOps(root: NodeSeq) {
+
     def transform(rule: Rule, rules: Rule*): NodeSeq =
       $this.transform(rule, rules: _*)(root)
-  }
 
-  implicit class XmlTransformerRootOps(root: NodeSeq) {
     def transform(action: XmlAction, actions: XmlAction*): NodeSeq =
       $this.transform(current(action, actions: _*))(root)
   }
