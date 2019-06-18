@@ -1,4 +1,5 @@
 # advxml
-[![Codefresh build status]( https://g.codefresh.io/api/badges/pipeline/davidgeirola/advxml%2FAdvXmlBuild?key=eyJhbGciOiJIUzI1NiJ9.NWNmY2RmNDY5NzBlYWUzYjk4MGZhMzRj.Pr0LSCfUmKLVik064994rVQJKDG5DLo03JS-UDXDEhQ&type=cf-1)]( https://g.codefresh.io/pipelines/AdvXmlBuild/builds?filter=trigger:build~Build;pipeline:5cfcdf965d354ec59966fee5~AdvXmlBuild)
+[![Build Status](https://travis-ci.org/DavidGeirola/advxml.svg?branch=master)](https://travis-ci.org/DavidGeirola/advxml)
+[![codecov](https://codecov.io/gh/DavidGeirola/advxml/branch/master/graph/badge.svg)](https://codecov.io/gh/DavidGeirola/advxml)
 
 A Scala library to manage xml transformations easly

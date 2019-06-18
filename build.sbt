@@ -12,7 +12,7 @@ lazy val settings = Seq(
   libraryDependencies ++= libsSettings,
   scalacOptions ++= scalacSettings,
   scalacOptions in (Compile, console) --= Seq("-Ywarn-unused:imports", "-Xfatal-warnings"),
-  
+
   addSbtPlugin("com.artima.supersafe" % "sbtplugin" % "1.1.3"),
   addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.5.1"),
   addSbtPlugin("org.lyranthe.sbt" % "partial-unification" % "1.1.2")
@@ -82,5 +82,5 @@ lazy val libsSettings = Seq(
   "org.typelevel" %% "cats-core" % "2.0.0-M1",
 
   //TEST
-  "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+  "org.scalatest" %% "scalatest" % "3.0.7" % Test
 )
