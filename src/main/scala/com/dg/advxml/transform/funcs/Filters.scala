@@ -11,7 +11,6 @@ trait XmlPredicate extends (NodeSeq => Boolean){
     xml => this(xml) || that(xml)
 }
 
-object Filters extends Filters
 
 private [transform] trait Filters {
 
@@ -51,3 +50,5 @@ private [transform] trait Filters {
     case _ => false
   }
 }
+
+object Filters extends Filters

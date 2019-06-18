@@ -3,9 +3,9 @@ package com.dg.advxml.transform.funcs
 import scala.util.Try
 import scala.xml.NodeSeq
 
-trait XmlZoom extends (NodeSeq => NodeSeq)
-
-object Zooms extends Zooms
+trait XmlZoom extends (NodeSeq => NodeSeq){
+  def \(that: XmlZoom) : XmlZoom = xml => that(this(xml))
+}
 
 /**
   * advxml
@@ -62,6 +62,13 @@ private [transform] trait Zooms {
     */
   lazy val childN: Int => XmlZoom = index => ns => Try(ns(index)).toOption.getOrElse(Seq.empty)
 }
+
+private [transform] trait ZoomSyntax{
+  def zoom(f: NodeSeq => NodeSeq): XmlZoom = f(_)
+}
+
+object Zooms extends Zooms with ZoomSyntax
+
 
 
 

@@ -14,8 +14,6 @@ class StressTest extends FeatureSpec  {
 
       val elem = XML.loadFile(getClass.getResource("/transform/stressTest_1mb.xml").getPath)
 
-      val zoomCountry: XmlZoom = _ \ "country"
-
       val zoomByAttrs1: XmlZoom = _ filter attrs(
         "gdp_serv" -> "55.2",
         "government" -> "republic",
@@ -36,7 +34,7 @@ class StressTest extends FeatureSpec  {
       )
 
       val seq = elem.transform(
-        $(zoomCountry, zoomByAttrs1, zoomByAttrs2, filterByChild)
+        $(zoom(_ \ "country") \ zoomByAttrs1 \ zoomByAttrs2 \ filterByChild)
           ==> setAttrs("TEST" -> "1", "TEST2" -> "100")
       )
       Console.println(seq)

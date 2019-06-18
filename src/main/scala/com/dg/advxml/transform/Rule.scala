@@ -13,7 +13,7 @@ import scala.xml.{Node, NodeSeq}
   */
 
 trait PartialRule{
-  val zooms: Seq[XmlZoom]
+  val zoom: XmlZoom
   def ==>(action: XmlAction, actions: XmlAction*): Rule
 }
 
@@ -22,25 +22,22 @@ trait Rule extends PartialRule{
   def toRewriteRule: NodeSeq => RewriteRule
 }
 
-private [transform] trait RuleSyntax{
+private [transform] trait Rules{
 
-  def current(action: XmlAction, actions: XmlAction*) : Rule = $(identity(_)) ==> (action, actions:_*)
-  def $(zoom: XmlZoom, zooms: XmlZoom*): PartialRule = PartialRuleImpl(Seq(zoom) ++ zooms)
+  def rule(zoom: XmlZoom): PartialRule = PartialRuleImpl(zoom)
 
-
-  private case class PartialRuleImpl(zooms: Seq[XmlZoom]) extends PartialRule{
+  private case class PartialRuleImpl(zoom: XmlZoom) extends PartialRule{
     override def ==>(action: XmlAction, actions: XmlAction*): Rule =
-      RuleImpl(zooms, Seq(action) ++ actions)
+      RuleImpl(zoom, Seq(action) ++ actions)
   }
 
-  private case class RuleImpl(zooms: Seq[XmlZoom], actions: Seq[XmlAction]) extends Rule {
+  private case class RuleImpl(zoom: XmlZoom, actions: Seq[XmlAction]) extends Rule {
 
     override def ==>(action: XmlAction, actions: XmlAction*): Rule =
       copy(actions = this.actions ++ Seq(action) ++ actions)
 
     override def toRewriteRule: NodeSeq => RewriteRule = root => {
 
-      val zoom = zooms.foldLeft(identity[NodeSeq](_))((acc, z) => acc.andThen(z))
       val target = zoom(root)
       val action = actions.foldLeft(identity[NodeSeq](_))((acc, a) => acc.andThen(a))
       val updated = action(target)
@@ -51,5 +48,10 @@ private [transform] trait RuleSyntax{
       }
     }
   }
+}
+
+private [transform] trait RuleSyntax { this : Rules =>
+  def current(action: XmlAction, actions: XmlAction*) : Rule = $(identity(_)) ==> (action, actions:_*)
+  def $(zoom: XmlZoom): PartialRule = rule(zoom)
 }
 
