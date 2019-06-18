@@ -31,8 +31,6 @@ object Zooms extends Zooms
   *   val result: NodeSeq = zoom(xml) //<Child Index='1' />
   * }}}
   * This trait provides all default zooms.
-  * You can define your own zoom extending this [[Zooms]] trait adding your zooms functions(also composing existing [[XmlZoom]]).
-  * Anyway [[XmlZoom]] is a type alias, precisely for not limit the usability.[
   *
   * @since 0.0.1
   * @author geirolad
@@ -40,7 +38,7 @@ object Zooms extends Zooms
 private [transform] trait Zooms {
 
   /**
-    * Select the first child of a [[scala.xml.NodeSeq]] collection
+    * Select first child of a [[scala.xml.NodeSeq]] collection
     *
     * @return When applied return the first element of a [[scala.xml.NodeSeq]] if collection
     *         contains at least one element, otherwise return an empty [[scala.xml.NodeSeq]]
@@ -48,7 +46,7 @@ private [transform] trait Zooms {
   lazy val firstChild: XmlZoom = childN(0)
 
   /**
-    * Select the last child of a [[scala.xml.NodeSeq]] collection
+    * Select last child of a [[scala.xml.NodeSeq]] collection
     *
     * @return When applied return the last element of a [[scala.xml.NodeSeq]] if collection
     *         contains at least one element, otherwise return an empty [[scala.xml.NodeSeq]]
