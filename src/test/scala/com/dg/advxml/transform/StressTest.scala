@@ -32,11 +32,13 @@ class StressTest extends FeatureSpec  {
         )
       )
 
-      val seq = elem.transform(
-        $(zoom(_ \ "country") \ zoomByAttrs1 \ zoomByAttrs2 \ filterByChild)
-          ==> setAttrs("TEST" -> "1", "TEST2" -> "100")
-      )
-      Console.println(seq)
+      val z : XmlZoom = zoom(_ \ "country") \ zoomByAttrs1 \ zoomByAttrs2 \ filterByChild
+
+      val result = elem.transform(
+        $(z) ==> setAttrs("TEST" -> "1", "TEST2" -> "100"))
+
+      assert(z(result) \@ "TEST" == "1")
+      assert(z(result) \@ "TEST2" == "100")
     }
   }
 }

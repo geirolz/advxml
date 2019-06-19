@@ -2,6 +2,8 @@ package com.dg.advxml.traverse
 
 import org.scalatest.FeatureSpec
 
+import scala.language.postfixOps
+
 /**
   * Adxml
   * Created by geirolad on 19/06/2019.
@@ -80,7 +82,6 @@ class XmlTraverseSyntaxTest extends FeatureSpec {
     }
   }
 
-
   feature("XmlTraverseSyntaxTest: Read nested Nodes") {
     scenario("Read optional nested nodes") {
       val xml =
@@ -115,6 +116,27 @@ class XmlTraverseSyntaxTest extends FeatureSpec {
 
       assert(cars.isSuccess)
       assert(cars.get.length == 1)
+      assert(works.isFailure)
+    }
+  }
+
+  feature("XmlTraverseSyntaxTest: Read content") {
+    scenario("Read required content") {
+      val noteData = "This is a test"
+      val xml =
+        <Employers>
+          <Employee Name="David">
+            <Note>
+              {noteData}
+            </Note>
+          </Employee>
+        </Employers>
+
+      val note = xml \ "Employee" \ "Note" content
+      val works = xml \ "Employee" \ "Works" content
+
+      assert(note.isSuccess)
+      assert(note.get.trim == noteData)
       assert(works.isFailure)
     }
   }

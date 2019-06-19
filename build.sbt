@@ -8,7 +8,7 @@ lazy val settings = Seq(
   organization := "com.dg",
   scalaVersion := "2.12.8",
   version := "0.0.1",
-  
+  coverageEnabled.in(Test, test) := true,
   libraryDependencies ++= libsSettings,
   scalacOptions ++= scalacSettings,
   scalacOptions in (Compile, console) --= Seq("-Ywarn-unused:imports", "-Xfatal-warnings"),
