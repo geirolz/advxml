@@ -1,8 +1,10 @@
 # Use container-based infrastructure
 sudo: false
+dist: xenial
 
 language: scala
-jdk: oraclejdk10
+jdk:
+  - openjdk10
 scala:
   - 2.12.8
 
@@ -20,7 +22,4 @@ before_cache:
   - find $HOME/.sbt        -name "*.lock"               -print -delete
 
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport coverageAggregate
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - sbt ++$TRAVIS_SCALA_VERSION clean test

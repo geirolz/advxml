@@ -16,15 +16,13 @@ class ActionsTest extends WordSpec {
             <Person Name="David" />
           </Persons>
 
-        val expected =
-          <Persons>
-            <Person Name="David" />
-            <Person Name="Alessandro"/>
-          </Persons>
         val action = append(<Person Name="Alessandro"/>)
-        val result = action(xml \ "Person")
+        val result = action(xml)
 
-        assert(result == expected)
+        Console.println(result)
+        assert((result \ "Person").length == 2)
+        assert(result \ "Person" exists attrs("Name" -> "David"))
+        assert(result \ "Person" exists attrs("Name" -> "Alessandro"))
       }
     }
   }

@@ -1,10 +1,10 @@
-package com.dg.advxml
+package com.dg.advxml.transform
 
 import org.scalatest.FeatureSpec
 
 import scala.xml.Elem
 
-class AdvXmlTest extends FeatureSpec  {
+class XmlTransformerTest extends FeatureSpec  {
 
   import com.dg.advxml.AdvXml._
 
