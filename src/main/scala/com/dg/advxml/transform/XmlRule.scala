@@ -1,7 +1,6 @@
 package com.dg.advxml.transform
 
-import com.dg.advxml.transform.funcs.impls.Filters
-import com.dg.advxml.transform.funcs.{XmlAction, XmlZoom}
+import com.dg.advxml.transform.presets.Filters
 
 import scala.xml.transform.RewriteRule
 import scala.xml.{Node, NodeSeq}
@@ -21,6 +20,23 @@ trait PartialXmlRule{
 trait XmlRule extends PartialXmlRule{
   val action: XmlAction
   def toRewriteRule: NodeSeq => RewriteRule
+}
+
+trait XmlAction extends (NodeSeq => NodeSeq){
+  def andThen(that: NodeSeq => NodeSeq) : XmlAction = xml => that(this(xml))
+}
+
+trait XmlZoom extends (NodeSeq => NodeSeq){
+  def andThen(that: XmlZoom): XmlZoom = xml => that(this(xml))
+}
+
+trait XmlPredicate extends (NodeSeq => Boolean){
+
+  def and(that: XmlPredicate) : XmlPredicate =
+    xml => this(xml) && that(xml)
+
+  def or(that: XmlPredicate) : XmlPredicate =
+    xml => this(xml) || that(xml)
 }
 
 private [transform] object XmlRule{
@@ -48,6 +64,3 @@ private [transform] object XmlRule{
     }
   }
 }
-
-
-

@@ -1,13 +1,11 @@
 package com.dg.advxml.transform
 
-import com.dg.advxml.transform.funcs.{XmlAction, XmlFuncsImpls, XmlFuncsSyntax}
+import com.dg.advxml.transform.presets.{Actions, Filters, Zooms}
 
 import scala.xml.NodeSeq
 import scala.xml.transform.RuleTransformer
 
-private [advxml] trait XmlTransformer
-  extends XmlFuncsImpls
-    with XmlFuncsSyntax { $this =>
+private [advxml] trait XmlTransformer extends XmlTransformerPresets { $this =>
 
   implicit class XmlTransformerOps(root: NodeSeq) {
 
@@ -18,9 +16,20 @@ private [advxml] trait XmlTransformer
       $this.transform(current(action))(root)
   }
 
+
+  def zoom(f: NodeSeq => NodeSeq): XmlZoom = f(_)
+
+  def current(action: XmlAction) : XmlRule =
+    XmlRule(identity(_)) withAction action
+
   def transform(rule: XmlRule, rules: XmlRule*)(root: NodeSeq) : NodeSeq =
     new RuleTransformer((Seq(rule) ++ rules)
       .map(_.toRewriteRule(root)): _*)
       .transform(root)
 }
+
+private [transform] sealed trait XmlTransformerPresets
+  extends Actions
+    with Zooms
+    with Filters
 

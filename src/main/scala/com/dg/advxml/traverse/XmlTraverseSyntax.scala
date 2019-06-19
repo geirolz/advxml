@@ -1,4 +1,4 @@
-package com.dg.advxml.syntax
+package com.dg.advxml.traverse
 
 import scala.util.{Failure, Success, Try}
 import scala.xml.NodeSeq
@@ -9,7 +9,7 @@ import scala.xml.NodeSeq
   *
   * @author geirolad
   */
-private [advxml] trait XmlSyntax {
+private [advxml] trait XmlTraverseSyntax {
 
   implicit class XmlSyntaxOps(xml: NodeSeq) {
 
@@ -52,4 +52,4 @@ private [advxml] trait XmlSyntax {
   }
 }
 
-object XmlSyntax extends XmlSyntax
+object XmlTraverseSyntax extends XmlTraverseSyntax

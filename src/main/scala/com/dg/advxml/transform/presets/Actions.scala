@@ -1,11 +1,11 @@
-package com.dg.advxml.transform.funcs.impls
+package com.dg.advxml.transform.presets
 
 
-import com.dg.advxml.transform.funcs.XmlAction
+import com.dg.advxml.transform.XmlAction
 
 import scala.xml._
 
-private [funcs] trait Actions {
+private [transform] trait Actions {
 
 	def append(ns: NodeSeq) : XmlAction = Actions.node {
 		case elem: Elem => elem.copy(child = elem.child ++ ns)

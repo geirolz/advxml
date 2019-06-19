@@ -1,7 +1,7 @@
-package com.dg.advxml.transform.funcs.impls
+package com.dg.advxml.transform.presets
 
 
-import com.dg.advxml.transform.funcs.XmlZoom
+import com.dg.advxml.transform.XmlZoom
 
 import scala.util.Try
 
@@ -32,7 +32,7 @@ import scala.util.Try
   * @since 0.0.1
   * @author geirolad
   */
-private [funcs] trait Zooms {
+private [transform] trait Zooms {
 
   /**
     * Select first child of a [[scala.xml.NodeSeq]] collection

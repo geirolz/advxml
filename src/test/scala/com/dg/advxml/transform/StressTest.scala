@@ -1,6 +1,5 @@
 package com.dg.advxml.transform
 
-import com.dg.advxml.transform.funcs.XmlZoom
 import org.scalatest.FeatureSpec
 
 import scala.xml.XML

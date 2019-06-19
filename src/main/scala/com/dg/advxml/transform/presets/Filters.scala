@@ -1,13 +1,13 @@
-package com.dg.advxml.transform.funcs.impls
+package com.dg.advxml.transform.presets
 
 
-import com.dg.advxml.transform.funcs.XmlPredicate
+import com.dg.advxml.transform.XmlPredicate
 
 import scala.xml.{Node, NodeSeq}
 
-private [funcs] trait Filters {
+private [transform] trait Filters {
 
-  import com.dg.advxml.syntax.XmlSyntax._
+  import com.dg.advxml.traverse.XmlTraverseSyntax._
 
   val always: XmlPredicate = _ => true
 
@@ -28,7 +28,7 @@ private [funcs] trait Filters {
 
     (Seq(value) ++ values)
       .map(t => attr(t._1, t._2))
-      .reduce(_ && _)
+      .reduce(_ and _)
   }
 
   //TODO CHECK THIS PREDICATE
