@@ -1,8 +1,12 @@
 package com.dg.advxml
 
-import com.dg.advxml.syntax.XmlSyntax
-import com.dg.advxml.transform.XmlTransformer
+import com.dg.advxml.traverse.XmlTraverseSyntax
+import com.dg.advxml.transform.{XmlTransformer, XmlTransformerSyntax}
 
 object AdvXml
   extends XmlTransformer
-    with XmlSyntax
+    with AdvXmlSyntax
+
+private [advxml] sealed trait AdvXmlSyntax
+  extends XmlTransformerSyntax
+  with XmlTraverseSyntax

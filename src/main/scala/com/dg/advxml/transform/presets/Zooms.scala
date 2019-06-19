@@ -1,11 +1,9 @@
-package com.dg.advxml.transform.funcs
+package com.dg.advxml.transform.presets
+
+
+import com.dg.advxml.transform.XmlZoom
 
 import scala.util.Try
-import scala.xml.NodeSeq
-
-trait XmlZoom extends (NodeSeq => NodeSeq)
-
-object Zooms extends Zooms
 
 /**
   * advxml
@@ -31,7 +29,6 @@ object Zooms extends Zooms
   *   val result: NodeSeq = zoom(xml) //<Child Index='1' />
   * }}}
   * This trait provides all default zooms.
-  *
   * @since 0.0.1
   * @author geirolad
   */
@@ -63,5 +60,4 @@ private [transform] trait Zooms {
   lazy val childN: Int => XmlZoom = index => ns => Try(ns(index)).toOption.getOrElse(Seq.empty)
 }
 
-
-
+object Zooms extends Zooms

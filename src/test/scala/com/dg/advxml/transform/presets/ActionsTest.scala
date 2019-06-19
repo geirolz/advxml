@@ -1,4 +1,4 @@
-package com.dg.advxml.transform.funcs
+package com.dg.advxml.transform.presets
 
 import org.scalatest.WordSpec
 
