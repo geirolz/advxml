@@ -12,12 +12,12 @@ import scala.xml.{Node, NodeSeq}
   * @author geirolad
   */
 
-trait PartialXmlRule{
+sealed trait PartialXmlRule{
   val zoom: XmlZoom
   def withAction(action: XmlAction): XmlRule
 }
 
-trait XmlRule extends PartialXmlRule{
+sealed trait XmlRule extends PartialXmlRule{
   val action: XmlAction
   def toRewriteRule: NodeSeq => RewriteRule
 }
