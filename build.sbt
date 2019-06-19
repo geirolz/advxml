@@ -8,12 +8,10 @@ lazy val settings = Seq(
   organization := "com.dg",
   scalaVersion := "2.12.8",
   version := "0.0.1",
-  resolvers ++= resolversSettings,
+  
   libraryDependencies ++= libsSettings,
   scalacOptions ++= scalacSettings,
   scalacOptions in (Compile, console) --= Seq("-Ywarn-unused:imports", "-Xfatal-warnings"),
-
-  addSbtPlugin("com.artima.supersafe" % "sbtplugin" % "1.1.3")
 )
 
 lazy val scalacSettings = Seq(
@@ -63,15 +61,6 @@ lazy val scalacSettings = Seq(
   "-Ywarn-unused:privates",           // Warn if a private member is unused.
   "-Ywarn-value-discard",             // Warn when non-Unit expression results are unused.
   "-Ypartial-unification"
-)
-
-lazy val resolversSettings = Seq(
-  Resolver.sonatypeRepo("public"),
-  Resolver.sonatypeRepo("snapshots"),
-  Resolver.sonatypeRepo("releases"),
-  "Maven repo1" at "http://repo1.maven.org/",
-  "Maven repo2" at "http://mvnrepository.com/artifact",
-  "Artima Maven Repository" at "http://repo.artima.com/releases"
 )
 
 lazy val libsSettings = Seq(

@@ -23,3 +23,6 @@ before_cache:
 
 script:
   - sbt ++$TRAVIS_SCALA_VERSION clean test
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
