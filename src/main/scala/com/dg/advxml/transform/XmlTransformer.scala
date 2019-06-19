@@ -16,9 +16,6 @@ private [advxml] trait XmlTransformer extends XmlTransformerPresets { $this =>
       $this.transform(current(action))(root)
   }
 
-
-  def zoom(f: NodeSeq => NodeSeq): XmlZoom = f(_)
-
   def current(action: XmlAction) : XmlRule =
     XmlRule(identity(_)) withAction action
 

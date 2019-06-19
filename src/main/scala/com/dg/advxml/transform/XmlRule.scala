@@ -16,18 +16,24 @@ sealed trait PartialXmlRule{
   val zoom: XmlZoom
   def withAction(action: XmlAction): XmlRule
 }
-
 sealed trait XmlRule extends PartialXmlRule{
   val action: XmlAction
   def toRewriteRule: NodeSeq => RewriteRule
 }
 
+
 trait XmlAction extends (NodeSeq => NodeSeq){
   def andThen(that: NodeSeq => NodeSeq) : XmlAction = xml => that(this(xml))
+}
+object XmlAction{
+  def apply(f: NodeSeq => NodeSeq): XmlAction = f(_)
 }
 
 trait XmlZoom extends (NodeSeq => NodeSeq){
   def andThen(that: XmlZoom): XmlZoom = xml => that(this(xml))
+}
+object XmlZoom{
+  def apply(f: NodeSeq => NodeSeq): XmlZoom = f(_)
 }
 
 trait XmlPredicate extends (NodeSeq => Boolean){
@@ -38,6 +44,11 @@ trait XmlPredicate extends (NodeSeq => Boolean){
   def or(that: XmlPredicate) : XmlPredicate =
     xml => this(xml) || that(xml)
 }
+object XmlPredicate{
+  def apply(f: NodeSeq => Boolean): XmlPredicate = f(_)
+}
+
+
 
 private [transform] object XmlRule{
 
