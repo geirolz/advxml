@@ -1,9 +1,7 @@
 package com.dg.advxml.transform
 
-import com.dg.advxml.transform.actions.{Filters, XmlModifier, XmlPredicate, XmlZoom}
+import com.dg.advxml.transform.actions.{ComposableXmlModifier, FinalXmlModifier, XmlPredicate, XmlZoom}
 import com.dg.advxml.utils.PredicateUtils
-
-import scala.xml.NodeSeq
 
 /**
   * Adxml
@@ -13,23 +11,27 @@ import scala.xml.NodeSeq
   */
 private [advxml] trait XmlTransformerSyntax
   extends RuleSyntax
-    with ActionsSyntax
+    with ModifiersSyntax
     with ZoomSyntax
     with PredicateSyntax
 
 private [transform] sealed trait RuleSyntax {
 
-  def $(zoom: XmlZoom): PartialXmlRule = XmlRule(zoom)
+  def $(zoom: XmlZoom): PartialXmlRule = PartialXmlRule(zoom)
 
-  implicit class RuleOps[T <: PartialXmlRule](r: T) {
-    def ==>(modifier: XmlModifier): XmlRule = r.withModifier(modifier)
+  implicit class PartialRuleOps(r: PartialXmlRule) {
+    def ==>(modifier: FinalXmlModifier): FinalXmlRule = r.withModifier(modifier)
+  }
+
+  implicit class ModifierCompatibleOps(r: ModifierComposableXmlRule) {
+    def ==>(modifier: ComposableXmlModifier): ComposableXmlRule = r.withModifier(modifier)
   }
 }
 
-private [transform] sealed trait ActionsSyntax {
+private [transform] sealed trait ModifiersSyntax {
 
-  implicit class XmlActionOps(a: XmlModifier) {
-    def ++(that: XmlModifier) : XmlModifier = a.andThen(that)
+  implicit class ComposableXmlModifierOps(a: ComposableXmlModifier) {
+    def ++(that: ComposableXmlModifier) : ComposableXmlModifier = a.andThen(that)
   }
 }
 
