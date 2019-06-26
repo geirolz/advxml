@@ -1,4 +1,4 @@
-package com.dg.advxml.transform.presets
+package com.dg.advxml.transform.actions
 
 import org.scalatest.WordSpec
 
@@ -16,7 +16,7 @@ class ActionsTest extends WordSpec {
             <Person Name="David" />
           </Persons>
 
-        val action = append(<Person Name="Alessandro"/>)
+        val action = Append(<Person Name="Alessandro"/>)
         val result = action(xml)
 
         assert((result \ "Person").length == 2)

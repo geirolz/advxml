@@ -1,5 +1,6 @@
 package com.dg.advxml.transform
 
+import com.dg.advxml.transform.actions.XmlZoom
 import org.scalatest.FeatureSpec
 
 import scala.xml.XML
@@ -35,7 +36,7 @@ class StressTest extends FeatureSpec  {
       val z : XmlZoom = XmlZoom(_ \ "country") \ zoomByAttrs1 \ zoomByAttrs2 \ filterByChild
 
       val result = elem.transform(
-        $(z) ==> setAttrs("TEST" -> "1", "TEST2" -> "100"))
+        $(z) ==> SetAttrs("TEST" -> "1", "TEST2" -> "100"))
 
       assert(z(result) \@ "TEST" == "1")
       assert(z(result) \@ "TEST2" == "100")

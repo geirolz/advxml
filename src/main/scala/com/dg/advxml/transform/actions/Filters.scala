@@ -1,9 +1,20 @@
-package com.dg.advxml.transform.presets
+package com.dg.advxml.transform.actions
 
-
-import com.dg.advxml.transform.XmlPredicate
 
 import scala.xml.{Node, NodeSeq}
+
+trait XmlPredicate extends (NodeSeq => Boolean){
+
+  def and(that: XmlPredicate) : XmlPredicate =
+    xml => this(xml) && that(xml)
+
+  def or(that: XmlPredicate) : XmlPredicate =
+    xml => this(xml) || that(xml)
+}
+
+object XmlPredicate{
+  def apply(f: NodeSeq => Boolean): XmlPredicate = f(_)
+}
 
 private [transform] trait Filters {
 
