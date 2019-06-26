@@ -84,6 +84,19 @@ class XmlTransformerTest extends FeatureSpec  {
         filter attrs("PrimeLineNo" -> "1")).length == 0)
     }
 
+    scenario("RemoveNode root") {
+      val elem: Elem = <Order>
+        <OrderLines>
+          <OrderLine PrimeLineNo="1" />
+          <OrderLine PrimeLineNo="2" />
+        </OrderLines>
+      </Order>
+
+      val result = elem.transform(Remove)
+
+      assert(result.isEmpty)
+    }
+
     scenario("AppendNode to Root"){
       val elem: Elem = <OrderLines />
       val result = elem.transform(
