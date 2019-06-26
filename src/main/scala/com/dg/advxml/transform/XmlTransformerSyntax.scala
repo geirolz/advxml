@@ -1,6 +1,7 @@
 package com.dg.advxml.transform
 
 import com.dg.advxml.transform.actions.{Filters, XmlModifier, XmlPredicate, XmlZoom}
+import com.dg.advxml.utils.PredicateUtils
 
 import scala.xml.NodeSeq
 
@@ -43,7 +44,9 @@ private [transform] sealed trait PredicateSyntax {
 
   implicit class XmlPredicateOps(p: XmlPredicate){
 
-    import actions._
+    def and(that: XmlPredicate): XmlPredicate = PredicateUtils.and(p, that)
+
+    def or(that: XmlPredicate): XmlPredicate = PredicateUtils.or(p, that)
 
     def &&(that: XmlPredicate) : XmlPredicate = p.and(that)
 
