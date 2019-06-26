@@ -19,9 +19,9 @@ class ActionsTest extends WordSpec {
         val action = Append(<Person Name="Alessandro"/>)
         val result = action(xml)
 
-        assert((result \ "Person").length == 2)
-        assert(result \ "Person" exists attrs("Name" -> "David"))
-        assert(result \ "Person" exists attrs("Name" -> "Alessandro"))
+        assert((result.get \ "Person").length == 2)
+        assert(result.get \ "Person" exists attrs("Name" -> "David"))
+        assert(result.get \ "Person" exists attrs("Name" -> "Alessandro"))
       }
     }
   }

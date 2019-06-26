@@ -38,8 +38,9 @@ class StressTest extends FeatureSpec  {
       val result = elem.transform(
         $(z) ==> SetAttrs("TEST" -> "1", "TEST2" -> "100"))
 
-      assert(z(result) \@ "TEST" == "1")
-      assert(z(result) \@ "TEST2" == "100")
+      assert(result.isSuccess)
+      assert(z(result.get) \@ "TEST" == "1")
+      assert(z(result.get) \@ "TEST2" == "100")
     }
   }
 }

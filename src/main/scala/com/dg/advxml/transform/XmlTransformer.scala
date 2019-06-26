@@ -1,7 +1,9 @@
 package com.dg.advxml.transform
 
-import com.dg.advxml.transform.actions.{ComposableXmlModifier, Filters, FinalXmlModifier, Modifiers, XmlModifier, Zooms}
+import cats.Traverse
+import com.dg.advxml.transform.actions._
 
+import scala.util.Try
 import scala.xml.NodeSeq
 import scala.xml.transform.RuleTransformer
 
@@ -9,10 +11,10 @@ private [advxml] trait XmlTransformer extends XmlTransformerActions { $this =>
 
   implicit class XmlTransformerOps(root: NodeSeq) {
 
-    def transform(rule: XmlRule, rules: XmlRule*): NodeSeq =
+    def transform(rule: XmlRule, rules: XmlRule*): Try[NodeSeq] =
       $this.transform(rule, rules: _*)(root)
 
-    def transform(action: XmlModifier): NodeSeq = action match {
+    def transform(action: XmlModifier): Try[NodeSeq] = action match {
       case m: FinalXmlModifier => $this.transform(current(m))(root)
       case m: ComposableXmlModifier => $this.transform(current(m))(root)
     }
@@ -25,10 +27,15 @@ private [advxml] trait XmlTransformer extends XmlTransformerActions { $this =>
     PartialXmlRule(identity) withModifier modifier
 
 
-  def transform(rule: XmlRule, rules: XmlRule*)(root: NodeSeq) : NodeSeq =
-    new RuleTransformer((Seq(rule) ++ rules)
-      .map(_.toRewriteRule(root)): _*)
-      .transform(root)
+  def transform(rule: XmlRule, rules: XmlRule*)(root: NodeSeq) : Try[NodeSeq] = {
+
+    import cats.instances.list._
+    import cats.instances.try_._
+
+    Traverse[List]
+      .sequence((Seq(rule) ++ rules).map(_.toRewriteRule(root)).toList)
+      .map(rules => new RuleTransformer(rules: _*).transform(root))
+  }
 }
 
 private [transform] sealed trait XmlTransformerActions

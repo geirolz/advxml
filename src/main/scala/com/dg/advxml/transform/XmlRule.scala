@@ -2,6 +2,7 @@ package com.dg.advxml.transform
 
 import com.dg.advxml.transform.actions.{ComposableXmlModifier, Filters, FinalXmlModifier, XmlModifier, XmlZoom}
 
+import scala.util.Try
 import scala.xml.transform.RewriteRule
 import scala.xml.{Node, NodeSeq}
 
@@ -21,15 +22,15 @@ sealed trait XmlRule{
   val zoom: XmlZoom
   val modifier: XmlModifier
 
-  final def toRewriteRule: NodeSeq => RewriteRule = root => {
-
+  final def toRewriteRule: NodeSeq => Try[RewriteRule] = root => {
     val target = zoom(root)
-    val updated = modifier(target)
 
-    new RewriteRule {
-      override def transform(ns: Seq[Node]): Seq[Node] =
-        if(ns == root || Filters.equalsTo(target)(ns)) updated else ns
-    }
+    modifier(target).map(updated => {
+      new RewriteRule {
+        override def transform(ns: Seq[Node]): Seq[Node] =
+          if(ns == root || Filters.equalsTo(target)(ns)) updated else ns
+      }
+    })
   }
 }
 
