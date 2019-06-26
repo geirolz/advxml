@@ -28,7 +28,7 @@ private [transform] trait Filters {
 
     (Seq(value) ++ values)
       .map(t => attr(t._1, t._2))
-      .reduce(PredicateUtils.and)
+      .reduce(PredicateUtils.and[NodeSeq])
   }
 
   def hasImmediateChild(name: String, predicate: XmlPredicate = always) : XmlPredicate = xml =>
