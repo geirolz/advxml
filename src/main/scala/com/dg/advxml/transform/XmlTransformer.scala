@@ -1,11 +1,11 @@
 package com.dg.advxml.transform
 
-import com.dg.advxml.transform.presets.{Actions, Filters, Zooms}
+import com.dg.advxml.transform.actions.{Actions, Filters, XmlAction, Zooms}
 
 import scala.xml.NodeSeq
 import scala.xml.transform.RuleTransformer
 
-private [advxml] trait XmlTransformer extends XmlTransformerPresets { $this =>
+private [advxml] trait XmlTransformer extends XmlTransformerActions { $this =>
 
   implicit class XmlTransformerOps(root: NodeSeq) {
 
@@ -25,7 +25,7 @@ private [advxml] trait XmlTransformer extends XmlTransformerPresets { $this =>
       .transform(root)
 }
 
-private [transform] sealed trait XmlTransformerPresets
+private [transform] sealed trait XmlTransformerActions
   extends Actions
     with Zooms
     with Filters

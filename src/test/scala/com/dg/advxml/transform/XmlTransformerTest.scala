@@ -35,9 +35,9 @@ class XmlTransformerTest extends FeatureSpec  {
 
       val result = elem.transform(
           $(_ \ "OrderLines")
-            ==> append(<OrderLine PrimeLineNo="2" />)
-            ==> append(<OrderLine PrimeLineNo="3" />)
-            ==> append(<OrderLine PrimeLineNo="4" />)
+            ==> Append(<OrderLine PrimeLineNo="2" />)
+            ==> Append(<OrderLine PrimeLineNo="3" />)
+            ==> Append(<OrderLine PrimeLineNo="4" />)
       )
 
       assert(result \ "OrderLines" \ "OrderLine"
@@ -59,7 +59,7 @@ class XmlTransformerTest extends FeatureSpec  {
 
       val result = elem.transform(
         $(_ \ "OrderLines" \ "OrderLine" filter attrs("PrimeLineNo" -> "1"))
-          ==> replace(<OrderLine PrimeLineNo="4" />)
+          ==> Replace(<OrderLine PrimeLineNo="4" />)
       )
 
       assert((result \ "OrderLines" \ "OrderLine"
@@ -77,7 +77,7 @@ class XmlTransformerTest extends FeatureSpec  {
       </Order>
 
       val result = elem.transform(
-        $(_ \ "OrderLines" \ "OrderLine" filter attrs("PrimeLineNo" -> "1")) ==> remove
+        $(_ \ "OrderLines" \ "OrderLine" filter attrs("PrimeLineNo" -> "1")) ==> Remove
       )
 
       assert((result \ "OrderLines" \ "OrderLine"
@@ -87,7 +87,7 @@ class XmlTransformerTest extends FeatureSpec  {
     scenario("AppendNode to Root"){
       val elem: Elem = <OrderLines />
       val result = elem.transform(
-        append(<OrderLine PrimeLineNo="1" />)
+        Append(<OrderLine PrimeLineNo="1" />)
       )
 
       assert((result \ "OrderLine").length == 1)
@@ -101,7 +101,7 @@ class XmlTransformerTest extends FeatureSpec  {
       val elem: Elem = <Order><OrderLines /></Order>
 
       val result = elem.transform(
-        $(_ \ "OrderLines") ==> setAttrs("A1" -> "1", "A2" -> "2", "A3" -> "3")
+        $(_ \ "OrderLines") ==> SetAttrs("A1" -> "1", "A2" -> "2", "A3" -> "3")
       )
 
       assert(result \ "OrderLines" \@ "A1" == "1")
@@ -113,7 +113,7 @@ class XmlTransformerTest extends FeatureSpec  {
       val elem: Elem = <Order />
 
       val result = elem.transform(
-        setAttrs("A1" -> "1", "A2" -> "2", "A3" -> "3")
+        SetAttrs("A1" -> "1", "A2" -> "2", "A3" -> "3")
       )
 
       assert(result \@ "A1" == "1")
@@ -132,7 +132,7 @@ class XmlTransformerTest extends FeatureSpec  {
       </Order>
 
       val result = elem.transform(
-        $(_ \ "OrderLines") ==> setAttrs("T1" -> "EDITED")
+        $(_ \ "OrderLines") ==> SetAttrs("T1" -> "EDITED")
       )
 
       assert(result \ "OrderLines" \@ "T1" == "EDITED")
@@ -148,7 +148,7 @@ class XmlTransformerTest extends FeatureSpec  {
       </Order>
 
       val result = elem.transform(
-        $(_ \ "OrderLines") ==> removeAttrs("T1")
+        $(_ \ "OrderLines") ==> RemoveAttrs("T1")
       )
 
       assert(result \ "OrderLines" \@ "T1" == "")

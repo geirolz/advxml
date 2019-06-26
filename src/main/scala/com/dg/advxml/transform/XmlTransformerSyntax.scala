@@ -1,5 +1,7 @@
 package com.dg.advxml.transform
 
+import com.dg.advxml.transform.actions.{XmlAction, XmlPredicate, XmlZoom}
+
 /**
   * Adxml
   * Created by geirolad on 18/06/2019.

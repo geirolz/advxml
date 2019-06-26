@@ -64,7 +64,10 @@ lazy val scalacSettings = Seq(
 )
 
 lazy val libsSettings = Seq(
-  
+
+  //SCALA
+  "org.typelevel" %% "cats-core" % "2.0.0-M1",
+
   //XML
   "org.scala-lang.modules" %% "scala-xml" % "1.2.0",
   
