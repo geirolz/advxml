@@ -41,7 +41,7 @@ sealed trait FinalXmlRule extends XmlRule {
   val modifier: FinalXmlModifier
 }
 
-sealed trait ModifierComposableXmlRule{
+private [transform] sealed trait ModifierComposableXmlRule{
   def withModifier(modifier: ComposableXmlModifier): ComposableXmlRule
 }
 

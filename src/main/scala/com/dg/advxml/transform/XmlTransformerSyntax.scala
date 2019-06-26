@@ -21,9 +21,10 @@ private [transform] sealed trait RuleSyntax {
 
   implicit class PartialRuleOps(r: PartialXmlRule) {
     def ==>(modifier: FinalXmlModifier): FinalXmlRule = r.withModifier(modifier)
+    def ==>(modifier: ComposableXmlModifier): ComposableXmlRule = r.withModifier(modifier)
   }
 
-  implicit class ModifierCompatibleOps(r: ModifierComposableXmlRule) {
+  implicit class ModifierCompatibleOps(r: ComposableXmlRule) {
     def ==>(modifier: ComposableXmlModifier): ComposableXmlRule = r.withModifier(modifier)
   }
 }
