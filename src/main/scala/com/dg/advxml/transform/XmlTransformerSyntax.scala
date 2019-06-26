@@ -1,6 +1,8 @@
 package com.dg.advxml.transform
 
-import com.dg.advxml.transform.actions.{XmlAction, XmlPredicate, XmlZoom}
+import com.dg.advxml.transform.actions.{Filters, XmlModifier, XmlPredicate, XmlZoom}
+
+import scala.xml.NodeSeq
 
 /**
   * Adxml
@@ -19,14 +21,14 @@ private [transform] sealed trait RuleSyntax {
   def $(zoom: XmlZoom): PartialXmlRule = XmlRule(zoom)
 
   implicit class RuleOps[T <: PartialXmlRule](r: T) {
-    def ==>(action: XmlAction): XmlRule = r.withAction(action)
+    def ==>(modifier: XmlModifier): XmlRule = r.withModifier(modifier)
   }
 }
 
 private [transform] sealed trait ActionsSyntax {
 
-  implicit class XmlActionOps(a: XmlAction) {
-    def ++(that: XmlAction) : XmlAction = a.andThen(that)
+  implicit class XmlActionOps(a: XmlModifier) {
+    def ++(that: XmlModifier) : XmlModifier = a.andThen(that)
   }
 }
 
@@ -40,6 +42,8 @@ private [transform] sealed trait ZoomSyntax{
 private [transform] sealed trait PredicateSyntax {
 
   implicit class XmlPredicateOps(p: XmlPredicate){
+
+    import actions._
 
     def &&(that: XmlPredicate) : XmlPredicate = p.and(that)
 
