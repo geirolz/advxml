@@ -2,14 +2,6 @@ package com.dg.advxml.transform.actions
 
 
 import scala.util.Try
-import scala.xml.NodeSeq
-
-trait XmlZoom extends (NodeSeq => NodeSeq){
-  def andThen(that: XmlZoom): XmlZoom = xml => that(this(xml))
-}
-object XmlZoom{
-  def apply(f: NodeSeq => NodeSeq): XmlZoom = f(_)
-}
 
 /**
   * advxml

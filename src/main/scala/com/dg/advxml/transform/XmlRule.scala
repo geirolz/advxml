@@ -1,6 +1,6 @@
 package com.dg.advxml.transform
 
-import com.dg.advxml.transform.actions.{Filters, XmlAction, XmlZoom}
+import com.dg.advxml.transform.actions.{Filters, XmlModifier, XmlZoom}
 
 import scala.xml.transform.RewriteRule
 import scala.xml.{Node, NodeSeq}
@@ -14,10 +14,10 @@ import scala.xml.{Node, NodeSeq}
 
 sealed trait PartialXmlRule{
   val zoom: XmlZoom
-  def withAction(action: XmlAction): XmlRule
+  def withModifier(modifier: XmlModifier): XmlRule
 }
 sealed trait XmlRule extends PartialXmlRule{
-  val action: XmlAction
+  val modifier: XmlModifier
   def toRewriteRule: NodeSeq => RewriteRule
 }
 
@@ -26,18 +26,18 @@ private [transform] object XmlRule{
   def apply(zoom: XmlZoom): PartialXmlRule = PartialXmlRuleImpl(zoom)
 
   private case class PartialXmlRuleImpl(zoom: XmlZoom) extends PartialXmlRule{
-    override def withAction(action: XmlAction): XmlRule = XmlRuleImpl(zoom, action)
+    override def withModifier(modifier: XmlModifier): XmlRule = XmlRuleImpl(zoom, modifier)
   }
 
-  private case class XmlRuleImpl(zoom: XmlZoom, action: XmlAction) extends XmlRule {
+  private case class XmlRuleImpl(zoom: XmlZoom, modifier: XmlModifier) extends XmlRule {
 
-    override def withAction(action: XmlAction): XmlRule =
-      copy(action = this.action.andThen(action))
+    override def withModifier(modifier: XmlModifier): XmlRule =
+      copy(modifier = this.modifier.andThen(modifier))
 
     override def toRewriteRule: NodeSeq => RewriteRule = root => {
 
       val target = zoom(root)
-      val updated = action(target)
+      val updated = modifier(target)
 
       new RewriteRule {
         override def transform(ns: Seq[Node]): Seq[Node] =

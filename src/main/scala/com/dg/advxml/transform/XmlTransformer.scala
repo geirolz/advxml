@@ -1,6 +1,6 @@
 package com.dg.advxml.transform
 
-import com.dg.advxml.transform.actions.{Actions, Filters, XmlAction, Zooms}
+import com.dg.advxml.transform.actions.{Modifiers, Filters, XmlModifier, Zooms}
 
 import scala.xml.NodeSeq
 import scala.xml.transform.RuleTransformer
@@ -12,12 +12,12 @@ private [advxml] trait XmlTransformer extends XmlTransformerActions { $this =>
     def transform(rule: XmlRule, rules: XmlRule*): NodeSeq =
       $this.transform(rule, rules: _*)(root)
 
-    def transform(action: XmlAction): NodeSeq =
+    def transform(action: XmlModifier): NodeSeq =
       $this.transform(current(action))(root)
   }
 
-  def current(action: XmlAction) : XmlRule =
-    XmlRule(identity(_)) withAction action
+  def current(modifier: XmlModifier) : XmlRule =
+    XmlRule(identity) withModifier modifier
 
   def transform(rule: XmlRule, rules: XmlRule*)(root: NodeSeq) : NodeSeq =
     new RuleTransformer((Seq(rule) ++ rules)
@@ -26,7 +26,7 @@ private [advxml] trait XmlTransformer extends XmlTransformerActions { $this =>
 }
 
 private [transform] sealed trait XmlTransformerActions
-  extends Actions
+  extends Modifiers
     with Zooms
     with Filters
 

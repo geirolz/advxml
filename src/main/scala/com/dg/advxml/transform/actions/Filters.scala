@@ -3,19 +3,6 @@ package com.dg.advxml.transform.actions
 
 import scala.xml.{Node, NodeSeq}
 
-trait XmlPredicate extends (NodeSeq => Boolean){
-
-  def and(that: XmlPredicate) : XmlPredicate =
-    xml => this(xml) && that(xml)
-
-  def or(that: XmlPredicate) : XmlPredicate =
-    xml => this(xml) || that(xml)
-}
-
-object XmlPredicate{
-  def apply(f: NodeSeq => Boolean): XmlPredicate = f(_)
-}
-
 private [transform] trait Filters {
 
   import com.dg.advxml.traverse.XmlTraverseSyntax._
@@ -42,9 +29,8 @@ private [transform] trait Filters {
       .reduce(_ and _)
   }
 
-  //TODO CHECK THIS PREDICATE
-  def hasImmediateChild(name: String, predicate: XmlPredicate = always) : XmlPredicate =
-    xml => (xml \? name).fold(false)(_.exists(predicate))
+  def hasImmediateChild(name: String, predicate: XmlPredicate = always) : XmlPredicate = xml =>
+    (xml \? name).fold(false)(_.exists(predicate))
 
   def count(length: Int) : XmlPredicate = _.length == length
 
