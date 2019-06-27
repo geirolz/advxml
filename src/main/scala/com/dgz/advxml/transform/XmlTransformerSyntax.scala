@@ -1,7 +1,7 @@
-package com.dg.advxml.transform
+package com.dgz.advxml.transform
 
-import com.dg.advxml.transform.actions.{ComposableXmlModifier, FinalXmlModifier, XmlPredicate, XmlZoom}
-import com.dg.advxml.utils.PredicateUtils
+import com.dgz.advxml.transform.actions.{ComposableXmlModifier, FinalXmlModifier, XmlPredicate, XmlZoom}
+import com.dgz.advxml.utils.PredicateUtils
 
 /**
   * Adxml

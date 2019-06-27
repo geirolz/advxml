@@ -1,4 +1,4 @@
-package com.dg.advxml.transform
+package com.dgz.advxml.transform
 
 import org.scalatest.FeatureSpec
 
@@ -7,7 +7,7 @@ import scala.xml.Elem
 
 class XmlTransformerTest extends FeatureSpec  {
 
-  import com.dg.advxml.AdvXml._
+  import com.dgz.advxml.AdvXml._
   import cats.instances.try_._
 
   feature("Xml manipulation: Filters") {

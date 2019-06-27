@@ -1,4 +1,4 @@
-package com.dg.advxml.traverse
+package com.dgz.advxml.traverse
 
 import scala.util.{Failure, Success, Try}
 import scala.xml.NodeSeq

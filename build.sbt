@@ -5,7 +5,7 @@ lazy val global = project
 
 lazy val settings = Seq(
   name := "Adxml",
-  organization := "com.dg",
+  organization := "com.dgz",
   scalaVersion := "2.12.8",
   version := "0.0.1",
   coverageEnabled.in(Test, test) := true,

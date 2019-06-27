@@ -1,4 +1,4 @@
-package com.dg.advxml.transform
+package com.dgz.advxml.transform
 
 import cats.MonadError
 

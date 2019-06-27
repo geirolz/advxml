@@ -1,6 +1,6 @@
-package com.dg.advxml.transform
+package com.dgz.advxml.transform
 
-import com.dg.advxml.transform.actions._
+import com.dgz.advxml.transform.actions._
 
 import scala.xml.NodeSeq
 import scala.xml.transform.RuleTransformer
