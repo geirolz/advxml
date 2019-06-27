@@ -1,7 +1,7 @@
-package com.dg.advxml
+package com.dgz.advxml
 
-import com.dg.advxml.transform.{XmlTransformer, XmlTransformerSyntax}
-import com.dg.advxml.traverse.XmlTraverseSyntax
+import com.dgz.advxml.transform.{XmlTransformer, XmlTransformerSyntax}
+import com.dgz.advxml.traverse.XmlTraverseSyntax
 
 object AdvXml
   extends XmlTransformer

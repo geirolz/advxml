@@ -1,13 +1,13 @@
-package com.dg.advxml.transform.actions
+package com.dgz.advxml.transform.actions
 
 
-import com.dg.advxml.utils.PredicateUtils
+import com.dgz.advxml.utils.PredicateUtils
 
 import scala.xml.{Node, NodeSeq}
 
 private [transform] trait Filters {
 
-  import com.dg.advxml.traverse.XmlTraverseSyntax._
+  import com.dgz.advxml.traverse.XmlTraverseSyntax._
 
   lazy val always: XmlPredicate = _ => true
 

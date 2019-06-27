@@ -1,4 +1,4 @@
-package com.dg.advxml.transform.actions
+package com.dgz.advxml.transform.actions
 
 import org.scalatest.WordSpec
 
@@ -7,7 +7,7 @@ import scala.xml.Text
 class ActionsTest extends WordSpec {
 
   import cats.instances.try_._
-  import com.dg.advxml.AdvXml._
+  import com.dgz.advxml.AdvXml._
 
   "Append node action" when {
     "Applied with right data" should {
