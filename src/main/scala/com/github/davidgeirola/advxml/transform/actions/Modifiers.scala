@@ -1,4 +1,4 @@
-package com.dgz.advxml.transform.actions
+package com.github.davidgeirola.advxml.transform.actions
 
 import scala.xml._
 
