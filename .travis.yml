@@ -8,6 +8,22 @@ jdk:
 scala:
   - 2.12.8
 
+stages:
+  - name: test
+  - name: coverage
+  - name: release
+    if: ((branch = master AND type = push) OR (tag IS present)) AND NOT fork
+
+jobs:
+  include:
+    - stage: test
+      env: TEST="compile"
+      script: sbt ++$TRAVIS_SCALA_VERSION clean compile test
+    - stage: coverage
+      env: TEST="coverage"
+      script: sbt ++$TRAVIS_SCALA_VERSION coverage coverageReport
+    - stage: release
+      script: sbt ci-release
 
 # These directories are cached to a cloud storage provider "close" to the infrastructure the builds run on.
 cache:
@@ -26,3 +42,6 @@ script:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+
+before_install:
+  - git fetch --tags
