@@ -1,3 +1,16 @@
+inThisBuild(List(
+  organization := "com.dgz",
+  homepage := Some(url("https://github.com/DavidGeirola/advxml")),
+  licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
+  developers := List(
+    Developer(
+      "DavidGeirola",
+      "David Geirola",
+      "david.geirola@gmail.com",
+      url("https://github.com/DavidGeirola")
+    )
+  )
+))
 
 lazy val global = project
   .in(file("."))
@@ -5,9 +18,7 @@ lazy val global = project
 
 lazy val settings = Seq(
   name := "Adxml",
-  organization := "com.dgz",
   scalaVersion := "2.12.8",
-  version := "0.0.1",
   coverageEnabled.in(Test, test) := true,
   libraryDependencies ++= libsSettings,
   scalacOptions ++= scalacSettings,

@@ -1,6 +1,6 @@
-package com.dgz.advxml.transform
+package com.github.davidgeirola.advxml.transform
 
-import com.dgz.advxml.transform.actions.XmlZoom
+import com.github.davidgeirola.advxml.transform.actions.XmlZoom
 import org.scalatest.FeatureSpec
 
 import scala.util.Try
@@ -8,7 +8,7 @@ import scala.xml.XML
 
 class StressTest extends FeatureSpec  {
 
-  import com.dgz.advxml.AdvXml._
+  import com.github.davidgeirola.advxml.AdvXml._
   import cats.instances.try_._
 
   feature("Xml manipulation stress test") {

@@ -1,4 +1,4 @@
-package com.dgz.advxml.utils
+package com.github.davidgeirola.advxml.utils
 
 import org.scalatest.FunSuite
 

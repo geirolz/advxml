@@ -1,4 +1,4 @@
-package com.dgz.advxml.traverse
+package com.github.davidgeirola.advxml.traverse
 
 import org.scalatest.FeatureSpec
 
