@@ -2,11 +2,13 @@ package com.dg.advxml.transform
 
 import org.scalatest.FeatureSpec
 
+import scala.util.Try
 import scala.xml.Elem
 
 class XmlTransformerTest extends FeatureSpec  {
 
   import com.dg.advxml.AdvXml._
+  import cats.instances.try_._
 
   feature("Xml manipulation: Filters") {
     scenario("Filter By Attribute") {
@@ -57,7 +59,7 @@ class XmlTransformerTest extends FeatureSpec  {
         </OrderLines>
       </Order>
 
-      val result = elem.transform(
+      val result = elem.transform[Try](
         $(_ \ "OrderLines" \ "OrderLine" filter attrs("PrimeLineNo" -> "1"))
           ==> Replace(<OrderLine PrimeLineNo="4" />)
       )
@@ -99,12 +101,12 @@ class XmlTransformerTest extends FeatureSpec  {
 
     scenario("AppendNode to Root"){
       val elem: Elem = <OrderLines />
-      val result = elem.transform(
+      val result = elem.transform[Try](
         Append(<OrderLine PrimeLineNo="1" />)
-      )
+      ).get
 
-      assert((result.get \ "OrderLine").length == 1)
-      assert(result.get \ "OrderLine" \@ "PrimeLineNo" == "1")
+      assert((result \ "OrderLine").length == 1)
+      assert(result \ "OrderLine" \@ "PrimeLineNo" == "1")
     }
   }
 

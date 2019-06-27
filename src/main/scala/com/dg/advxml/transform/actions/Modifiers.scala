@@ -1,73 +1,72 @@
 package com.dg.advxml.transform.actions
 
-import cats.{Applicative, Monad, Traverse}
-
-import scala.util.{Failure, Success, Try}
 import scala.xml._
 
-sealed trait XmlModifier{def apply(ns: NodeSeq): Try[NodeSeq]}
+sealed trait XmlModifier{
+	def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq]
+}
 sealed trait FinalXmlModifier extends XmlModifier
-sealed trait ComposableXmlModifier extends XmlModifier{
-	def andThen(that: ComposableXmlModifier) : ComposableXmlModifier =
-		Modifiers.builders.Composable(xml => this (xml).flatMap(that(_)))
+sealed trait ComposableXmlModifier extends XmlModifier{ $this =>
+
+	def andThen(that: ComposableXmlModifier) : ComposableXmlModifier = new ComposableXmlModifier {
+		import cats.syntax.flatMap._
+		override def apply[F[_] : MonadEx](ns: NodeSeq): F[NodeSeq] = $this(ns).flatMap(that(_))
+	}
 }
 
 
 private [transform] trait Modifiers {
 
 	import builders._
-	import cats.instances.list._
-	import cats.instances.try_._
 
 	//STDs
-	case class Append(ns: NodeSeq) extends AbstractComposableCollapsed(seq => seq.map{
-		case elem: Elem => Success(elem.copy(child = elem.child ++ ns))
-		case g: Group => Success(g.copy(nodes = g.nodes ++ ns))
-		case _ => UnsupportedException()
-	})
+	case class Append(newNs: NodeSeq) extends ComposableXmlModifier{
+		override def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] = collapse[F](ns.map{
+			case e: Elem => F.pure[NodeSeq](e.copy(child = e.child ++ newNs))
+			case g: Group => F.pure[NodeSeq](g.copy(nodes = g.nodes ++ newNs))
+			case o => UnsupportedException[F](this, o)
+		})
+	}
 
-	case class Replace(ns: NodeSeq) extends AbstractComposable(_ => Success(ns))
+	case class Replace(newNs: NodeSeq) extends ComposableXmlModifier{
+		override def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] = F.pure(newNs)
+	}
 
-	case class SetAttrs(values: (String, String)*) extends AbstractComposableCollapsed(seq => seq.map {
-		case elem: Elem =>
-			Success(elem.copy(attributes = values.foldRight(elem.attributes)((value, metadata) =>
-				new UnprefixedAttribute(value._1, Text(value._2), metadata))))
-		case _ => UnsupportedException()
-	})
+	case class SetAttrs(values: (String, String)*) extends ComposableXmlModifier{
+		override def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] = collapse[F](ns.map{
+			case e: Elem =>
+				F.pure[NodeSeq](e.copy(attributes = values.foldRight(e.attributes)((value, metadata) =>
+					new UnprefixedAttribute(value._1, Text(value._2), metadata))))
+			case o => UnsupportedException[F](this, o)
+		})
+	}
 
-	case class RemoveAttrs(keys: String*) extends AbstractComposableCollapsed(seq => seq.map {
-		case elem: Elem =>
-			Success(elem.copy(attributes = elem.attributes.filter(attr => keys.contains(attr.key))))
-		case _ => UnsupportedException()
-	})
+	case class RemoveAttrs(key: String, keys: String*) extends ComposableXmlModifier{
+		override def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] = collapse[F](ns.map{
+			case e: Elem => F.pure[NodeSeq](e.copy(attributes = e.attributes
+				.filter(attr => (Seq(key) ++ keys).contains(attr.key))))
+			case o => UnsupportedException[F](this, o)
+		})
+	}
+
 
 	//FINALS
-	case object Remove extends AbstractFinal(_ => Success(Seq.empty))
+	case object Remove extends FinalXmlModifier{
+		override def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] = F.pure(NodeSeq.Empty)
+	}
 
 
 	private[actions] object builders {
 
-		case class Composable(f: NodeSeq => Try[NodeSeq]) extends AbstractComposable(f)
-
-		case class Final(f: NodeSeq => Try[NodeSeq]) extends AbstractFinal(f)
-
-		private[Modifiers] sealed abstract class AbstractFinal(f: NodeSeq => Try[NodeSeq]) extends FinalXmlModifier {
-			override def apply(ns: NodeSeq): Try[NodeSeq] = f(ns)
-		}
-
-		private[Modifiers] sealed abstract class AbstractComposable(f: NodeSeq => Try[NodeSeq]) extends ComposableXmlModifier {
-			override def apply(ns: NodeSeq): Try[NodeSeq] = f(ns)
-		}
-
-		private[Modifiers] sealed abstract class AbstractComposableCollapsed(f: NodeSeq => Seq[Try[NodeSeq]])
-			extends AbstractComposable(ns => collapse[Try](f(ns)))
-
 		object UnsupportedException{
-			def apply[T](): Failure[T] = Failure(new RuntimeException(""))
+			def apply[F[_]](modifier: XmlModifier, ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
+				F.raiseError[NodeSeq](new RuntimeException(s"Unsupported operation $modifier for type ${ns.getClass.getName}"))
 		}
 
-		def collapse[G[_] : Applicative : Monad](seq: Seq[G[NodeSeq]]) : G[NodeSeq] =
-			Monad[G].map(Traverse[List].sequence(seq.toList))(_.foldLeft(NodeSeq.Empty)(_ ++ _))
+		def collapse[F[_] : MonadEx](seq: Seq[F[NodeSeq]]) : F[NodeSeq] = {
+			import cats.implicits._
+			seq.toList.sequence.map(_.reduce(_ ++ _))
+		}
 	}
 }
 
