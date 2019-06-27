@@ -1,6 +1,5 @@
 package com.dg.advxml.transform
 
-import cats.Traverse
 import com.dg.advxml.transform.actions._
 
 import scala.xml.NodeSeq
@@ -30,8 +29,10 @@ private [advxml] trait XmlTransformer extends XmlTransformerActions { $this =>
 
     import cats.implicits._
 
-    Traverse[List]
-      .sequence((Seq(rule) ++ rules).map(_.toRewriteRule[F](root)).toList)
+    (Seq(rule) ++ rules)
+      .map(_.toRewriteRule[F](root))
+      .toList
+      .sequence
       .map(rules => new RuleTransformer(rules: _*).transform(root))
   }
 }
