@@ -1,6 +1,7 @@
 package com.dg.advxml.transform
 
-import com.dg.advxml.transform.actions.{ComposableXmlModifier, Filters, FinalXmlModifier, Modifiers, XmlModifier, Zooms}
+import cats.Traverse
+import com.dg.advxml.transform.actions._
 
 import scala.xml.NodeSeq
 import scala.xml.transform.RuleTransformer
@@ -9,12 +10,12 @@ private [advxml] trait XmlTransformer extends XmlTransformerActions { $this =>
 
   implicit class XmlTransformerOps(root: NodeSeq) {
 
-    def transform(rule: XmlRule, rules: XmlRule*): NodeSeq =
+    def transform[F[_] : MonadEx](rule: XmlRule, rules: XmlRule*): F[NodeSeq] =
       $this.transform(rule, rules: _*)(root)
 
-    def transform(action: XmlModifier): NodeSeq = action match {
-      case m: FinalXmlModifier => $this.transform(current(m))(root)
+    def transform[F[_] : MonadEx](modifier: XmlModifier): F[NodeSeq] = modifier match {
       case m: ComposableXmlModifier => $this.transform(current(m))(root)
+      case m: FinalXmlModifier => $this.transform(current(m))(root)
     }
   }
 
@@ -25,10 +26,14 @@ private [advxml] trait XmlTransformer extends XmlTransformerActions { $this =>
     PartialXmlRule(identity) withModifier modifier
 
 
-  def transform(rule: XmlRule, rules: XmlRule*)(root: NodeSeq) : NodeSeq =
-    new RuleTransformer((Seq(rule) ++ rules)
-      .map(_.toRewriteRule(root)): _*)
-      .transform(root)
+  def transform[F[_] : MonadEx](rule: XmlRule, rules: XmlRule*)(root: NodeSeq) : F[NodeSeq] = {
+
+    import cats.implicits._
+
+    Traverse[List]
+      .sequence((Seq(rule) ++ rules).map(_.toRewriteRule[F](root)).toList)
+      .map(rules => new RuleTransformer(rules: _*).transform(root))
+  }
 }
 
 private [transform] sealed trait XmlTransformerActions

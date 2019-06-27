@@ -3,11 +3,13 @@ package com.dg.advxml.transform
 import com.dg.advxml.transform.actions.XmlZoom
 import org.scalatest.FeatureSpec
 
+import scala.util.Try
 import scala.xml.XML
 
 class StressTest extends FeatureSpec  {
 
   import com.dg.advxml.AdvXml._
+  import cats.instances.try_._
 
   feature("Xml manipulation stress test") {
     scenario("Large file: 1MB") {
@@ -35,11 +37,12 @@ class StressTest extends FeatureSpec  {
 
       val z : XmlZoom = XmlZoom(_ \ "country") \ zoomByAttrs1 \ zoomByAttrs2 \ filterByChild
 
-      val result = elem.transform(
+      val result = elem.transform[Try](
         $(z) ==> SetAttrs("TEST" -> "1", "TEST2" -> "100"))
 
-      assert(z(result) \@ "TEST" == "1")
-      assert(z(result) \@ "TEST2" == "100")
+      assert(result.isSuccess)
+      assert(z(result.get) \@ "TEST" == "1")
+      assert(z(result.get) \@ "TEST2" == "100")
     }
   }
 }
