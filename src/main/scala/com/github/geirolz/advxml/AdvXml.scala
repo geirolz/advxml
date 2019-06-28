@@ -1,5 +1,6 @@
 package com.github.geirolz.advxml
 
+import com.github.geirolz.advxml.parse.XmlParserSyntax
 import com.github.geirolz.advxml.transform.{XmlTransformer, XmlTransformerSyntax}
 import com.github.geirolz.advxml.traverse.XmlTraverseSyntax
 
@@ -10,3 +11,4 @@ object AdvXml
 private [advxml] sealed trait AdvXmlSyntax
   extends XmlTransformerSyntax
   with XmlTraverseSyntax
+  with XmlParserSyntax

@@ -11,45 +11,23 @@ import scala.xml.NodeSeq
   */
 private [advxml] trait XmlTraverseSyntax {
 
-  implicit class XmlSyntaxOps(xml: NodeSeq) {
+  implicit class XmlTraverseOps(ns: NodeSeq) {
 
-    def \?(name: String) : Option[NodeSeq] = (xml \! name).toOption
+    def \?(name: String) : Option[NodeSeq] = XmlTraverser.immediateChildren(ns, name)
 
-    def \!(name: String) : Try[NodeSeq] = {
-      xml \ name match {
-        case value if value.isEmpty => Failure(new RuntimeException(s"Missing node: $name"))
-        case value => Success(value)
-      }
-    }
+    def \!(name: String) : Try[NodeSeq] = XmlTraverser.mandatoryImmediateChildren(ns, name)
 
 
-    def \\?(name: String) : Option[NodeSeq] = (xml \\! name).toOption
+    def \\?(name: String) : Option[NodeSeq] =  XmlTraverser.children(ns, name)
 
-    def \\!(name: String) : Try[NodeSeq] = {
-      xml \\ name match {
-        case value if value.isEmpty => Failure(new RuntimeException(s"Missing nested node: $name"))
-        case value => Success(value)
-      }
-    }
+    def \\!(name: String) : Try[NodeSeq] = XmlTraverser.mandatoryChildren(ns, name)
 
 
-    def \@?(name: String): Option[String] = (xml \@! name).toOption
+    def \@?(key: String): Option[String] = XmlTraverser.attr(ns, key)
 
-    def \@!(name: String): Try[String] = {
-      xml \@ name match {
-        case value if value.isEmpty => Failure(new RuntimeException(s"Missing attribute: $name"))
-        case value => Success(value)
-      }
-    }
+    def \@!(key: String): Try[String] = XmlTraverser.mandatoryAttr(ns, key)
 
 
-    def content: Try[String] = {
-      xml.text match {
-        case value if value.isEmpty => Failure(new RuntimeException("Missing content"))
-        case value => Success(value)
-      }
-    }
+    def content: Try[String] = XmlTraverser.content(ns)
   }
 }
-
-object XmlTraverseSyntax extends XmlTraverseSyntax

@@ -23,6 +23,8 @@ lazy val settings = Seq(
   libraryDependencies ++= libsSettings,
   scalacOptions ++= scalacSettings,
   scalacOptions in (Compile, console) --= Seq("-Ywarn-unused:imports", "-Xfatal-warnings"),
+
+  addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3")
 )
 
 lazy val scalacSettings = Seq(
