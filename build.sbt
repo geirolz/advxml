@@ -1,13 +1,13 @@
 inThisBuild(List(
-  organization := "com.dgz",
-  homepage := Some(url("https://github.com/DavidGeirola/advxml")),
+  organization := "com.github.geirolz",
+  homepage := Some(url("https://github.com/geirolz/advxml")),
   licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
   developers := List(
     Developer(
       "DavidGeirola",
       "David Geirola",
       "david.geirola@gmail.com",
-      url("https://github.com/DavidGeirola")
+      url("https://github.com/geirolz")
     )
   )
 ))
