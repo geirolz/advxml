@@ -21,10 +21,12 @@ The idea behind this library is offer a fluent syntax to edit and read xml.
  Each example is offered in two version raw and "with sugar", imports are the same.
  
  <i>Actors</i>
- - XmlModifier = Object that represent an XML modification, is a function like `NodeSeq => F[NodeSeq]` 
- - Zoom = Type alias to `NodeSeq => NodeSeq` used to zoom on specific node
- - PartialXmlRule = An incomplete `XmlRule` so it has the `Zoom` instance but no the `XmlModifier`
- - XmlRule = An object that contains `Zoom` instance and `XmlModifier`, this class provides a method to create the 
+ - **XmlModifier** = Object that represent an XML modification, is a function like `NodeSeq => F[NodeSeq]` 
+    - *ComposableXmlModifier* = Modifier that can be combined with other `ComposableXmlModifier`
+    - *FinalXmlModifier* = Modifier that can not be combine with other `XmlModifier`, for example `Remove`
+ - **Zoom** = Type alias to `NodeSeq => NodeSeq` used to zoom on specific node
+ - **PartialXmlRule** = An incomplete `XmlRule` so it has the `Zoom` instance but no the `XmlModifier`
+ - **XmlRule** = An object that contains `Zoom` instance and `XmlModifier`, this class provides a method to create the 
  scala xml `RewriteRule`
  
  <i>Syntax in a nutshell</i>
@@ -33,8 +35,8 @@ The idea behind this library is offer a fluent syntax to edit and read xml.
  
  *Raw Example*
 ```scala
-    import com.dg.advxml.AdvXml._
-    import com.dg.advxml.transform._
+    import com.github.geirolz.advxml.AdvXml._
+    import com.github.geirolz.advxml.transform._
     import scala.xml._
     import scala.util._
     
@@ -61,13 +63,13 @@ The idea behind this library is offer a fluent syntax to edit and read xml.
     val rule: XmlRule = $(_ \ "Person" \ "Cars") ==> Append(<Car Brand="Lamborghini"/>)
 ```
 
-#### Combine modifiers
+#### Multiple modifiers
 If you need apply more that one modification on a selected node you can combine actions calling again `withModifier` method.
 
  *Raw Example*
 ```scala
-    import com.dg.advxml.AdvXml._
-    import com.dg.advxml.transform._
+    import com.github.geirolz.advxml.AdvXml._
+    import com.github.geirolz.advxml.transform._
     import scala.xml._
     import scala.util._
     
@@ -99,14 +101,52 @@ If you need apply more that one modification on a selected node you can combine 
       ==> Append(<Car Brand="Bmw"/>)
 ```
 
-#### Root edits
+#### Combine modifiers
+You can combine multiple modifiers using `andThen` method or with syntax sugar `++`
+
+ *Raw Example*
+```scala
+    import com.github.geirolz.advxml.AdvXml._
+    import com.github.geirolz.advxml.transform._
+    import scala.xml._
+    import scala.util._
+    
+    //import MonadError instance for Try
+    import cats.instances.try_._
+    
+    val doc: Elem = 
+    <Persons>
+      <Person Name="Mimmo">
+        <Cars>
+          <Car Brand="Fiat"/>
+        </Cars>
+      </Person>
+    </Persons>
+    
+    val rules: XmlRule = PartialXmlRule(_ \ "Person" \ "Cars")
+        .withModifier(Append(<Car Brand="Lamborghini"/>)
+          .andThen(Append(<Car Brand="Ferrari"/>)
+          .andThen(Append(<Car Brand="Bmw"/>))))
+        
+    val result: Try[NodeSeq] = doc.transform[Try](rules)  
+```
+ *Example with sugar*
+```scala
+    val rules = $(_ \ "Person" \ "Cars") 
+      ==> Append(<Car Brand="Lamborghini"/>) 
+          ++ Append(<Car Brand="Ferrari"/>) 
+          ++ Append(<Car Brand="Bmw"/>)
+
+```
+
+#### Root transformation
 If you need to edit the document root you can invoke `transform` method passing directly 
 the `XmlModifier` and no the `XmlRule` instance, this means no zooming actions.
 
  *Example*
 ```scala
-    import com.dg.advxml.AdvXml._
-    import com.dg.advxml.transform._
+    import com.github.geirolz.advxml.AdvXml._
+    import com.github.geirolz.advxml.transform._
     import scala.xml._
     import scala.util._
     

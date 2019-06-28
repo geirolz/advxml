@@ -1,6 +1,6 @@
-package com.github.davidgeirola.advxml.transform
+package com.github.geirolz.advxml.transform
 
-import com.github.davidgeirola.advxml.transform.actions._
+import com.github.geirolz.advxml.transform.actions._
 
 import scala.xml.transform.RewriteRule
 import scala.xml.{Node, NodeSeq}

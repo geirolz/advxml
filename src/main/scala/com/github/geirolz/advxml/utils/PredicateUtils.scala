@@ -1,4 +1,4 @@
-package com.github.davidgeirola.advxml.utils
+package com.github.geirolz.advxml.utils
 
 /**
   * Adxml

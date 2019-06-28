@@ -1,4 +1,4 @@
-package com.github.davidgeirola.advxml.transform
+package com.github.geirolz.advxml.transform
 
 import cats.MonadError
 

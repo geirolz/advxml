@@ -1,8 +1,8 @@
-package com.github.davidgeirola.advxml.transform.actions
+package com.github.geirolz.advxml.transform.actions
 
 import org.scalatest.WordSpec
 
-class ZoomsTest extends WordSpec {
+class FiltersTest extends WordSpec {
 
   "" when {
     "" should {
