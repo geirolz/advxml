@@ -7,7 +7,7 @@ import scala.util.Try
   * advxml
   * Created by geirolad on 09/06/2019.
   *
-  * [[XmlZoom]]s are used to navigate inside a [[scala.xml.NodeSeq]] object.
+  * [[XmlZoom]]s are used to navigate inside a `NodeSeq` object.
   *
   * @note Do not apply transformation inside a [[XmlZoom]] function.
   * @example
@@ -33,27 +33,27 @@ import scala.util.Try
 private [transform] trait Zooms {
 
   /**
-    * Select first child of a [[scala.xml.NodeSeq]] collection
+    * Select first child of a `NodeSeq` collection
     *
-    * @return When applied return the first element of a [[scala.xml.NodeSeq]] if collection
-    *         contains at least one element, otherwise return an empty [[scala.xml.NodeSeq]]
+    * @return When applied return the first element of a `NodeSeq` if collection
+    *         contains at least one element, otherwise return an empty `NodeSeq`
     */
   lazy val firstChild: XmlZoom = childN(0)
 
   /**
-    * Select last child of a [[scala.xml.NodeSeq]] collection
+    * Select last child of a `NodeSeq` collection
     *
-    * @return When applied return the last element of a [[scala.xml.NodeSeq]] if collection
-    *         contains at least one element, otherwise return an empty [[scala.xml.NodeSeq]]
+    * @return When applied return the last element of a `NodeSeq` if collection
+    *         contains at least one element, otherwise return an empty `NodeSeq`
     */
   lazy val lastChild: XmlZoom = ns => childN(ns.length - 1)(ns)
 
   /**
-    * Select the child at specified index in [[scala.xml.NodeSeq]] collection
+    * Select the child at specified index in `NodeSeq` collection
     *
-    * @return When applied return the element in specified position in [[scala.xml.NodeSeq]]
+    * @return When applied return the element in specified position in `NodeSeq`
     *         if collection size is equals or minor of specified index,
-    *         otherwise return an empty [[scala.xml.NodeSeq]]
+    *         otherwise return an empty `NodeSeq`
     */
   lazy val childN: Int => XmlZoom = index => ns => Try(ns(index)).toOption.getOrElse(Seq.empty)
 }
