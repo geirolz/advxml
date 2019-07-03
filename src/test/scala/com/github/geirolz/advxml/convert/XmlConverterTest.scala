@@ -9,7 +9,7 @@ import scala.language.postfixOps
 import scala.xml.Elem
 
 /**
-  * Adxml
+  * Advxml
   * Created by geirolad on 28/06/2019.
   *
   * @author geirolad

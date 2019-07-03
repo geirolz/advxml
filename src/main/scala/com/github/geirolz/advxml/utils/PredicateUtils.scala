@@ -1,7 +1,7 @@
 package com.github.geirolz.advxml.utils
 
 /**
-  * Adxml
+  * Advxml
   * Created by geirolad on 26/06/2019.
   *
   * @author geirolad

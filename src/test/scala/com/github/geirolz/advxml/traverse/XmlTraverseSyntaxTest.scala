@@ -5,7 +5,7 @@ import org.scalatest.FeatureSpec
 import scala.language.postfixOps
 
 /**
-  * Adxml
+  * Advxml
   * Created by geirolad on 19/06/2019.
   *
   * @author geirolad

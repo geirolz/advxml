@@ -5,7 +5,7 @@ import com.github.geirolz.advxml.convert.XmlTextSerializer.Serializer
 import scala.xml.Text
 
 /**
-  * Adxml
+  * Advxml
   * Created by geirolad on 03/07/2019.
   *
   * @author geirolad

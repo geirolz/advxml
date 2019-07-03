@@ -17,7 +17,7 @@ lazy val global = project
   .settings(settings)
 
 lazy val settings = Seq(
-  name := "Adxml",
+  name := "Advxml",
   scalaVersion := "2.12.8",
   coverageEnabled.in(Test, test) := true,
   libraryDependencies ++= libsSettings,

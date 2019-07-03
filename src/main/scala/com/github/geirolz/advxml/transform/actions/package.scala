@@ -5,7 +5,7 @@ import cats.MonadError
 import scala.xml.NodeSeq
 
 /**
-  * Adxml
+  * Advxml
   * Created by geirolad on 26/06/2019.
   *
   * @author geirolad
