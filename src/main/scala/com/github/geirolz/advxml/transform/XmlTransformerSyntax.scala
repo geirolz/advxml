@@ -7,7 +7,7 @@ import com.github.geirolz.advxml.utils.PredicateUtils
 import scala.xml.NodeSeq
 
 /**
-  * Adxml
+  * Advxml
   * Created by geirolad on 18/06/2019.
   *
   * @author geirolad

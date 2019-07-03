@@ -3,7 +3,7 @@ package com.github.geirolz.advxml.convert
 import org.scalatest.FunSuite
 
 /**
-  * Adxml
+  * Advxml
   * Created by geirolad on 03/07/2019.
   *
   * @author geirolad

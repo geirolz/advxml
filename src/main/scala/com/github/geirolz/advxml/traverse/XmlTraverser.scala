@@ -4,7 +4,7 @@ import scala.util.{Failure, Success, Try}
 import scala.xml.NodeSeq
 
 /**
-  * Adxml
+  * Advxml
   * Created by geirolad on 28/06/2019.
   *
   * @author geirolad
