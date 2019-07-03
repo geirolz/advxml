@@ -16,6 +16,10 @@ package object actions {
   type XmlPredicate = NodeSeq => Boolean
   type XmlZoom = NodeSeq => NodeSeq
 
+  object XmlPredicate {
+    def apply(f: NodeSeq => Boolean): XmlPredicate = f(_)
+  }
+
   object XmlZoom{
     def apply(f: NodeSeq => NodeSeq): XmlZoom = f(_)
   }
