@@ -5,25 +5,13 @@ import com.github.geirolz.advxml.transform.actions._
 import scala.xml.NodeSeq
 import scala.xml.transform.RuleTransformer
 
-private [advxml] trait XmlTransformer extends XmlTransformerActions { $this =>
-
-  implicit class XmlTransformerOps(root: NodeSeq) {
-
-    def transform[F[_] : MonadEx](rule: XmlRule, rules: XmlRule*): F[NodeSeq] =
-      $this.transform(rule, rules: _*)(root)
-
-    def transform[F[_] : MonadEx](modifier: XmlModifier): F[NodeSeq] = modifier match {
-      case m: ComposableXmlModifier => $this.transform(current(m))(root)
-      case m: FinalXmlModifier => $this.transform(current(m))(root)
-    }
-  }
+object XmlTransformer {
 
   def current(modifier: FinalXmlModifier) : FinalXmlRule =
     PartialXmlRule(identity) withModifier modifier
 
   def current(modifier: ComposableXmlModifier) : ComposableXmlRule =
     PartialXmlRule(identity) withModifier modifier
-
 
   def transform[F[_] : MonadEx](rule: XmlRule, rules: XmlRule*)(root: NodeSeq) : F[NodeSeq] = {
 
@@ -35,10 +23,15 @@ private [advxml] trait XmlTransformer extends XmlTransformerActions { $this =>
       .sequence
       .map(rules => new RuleTransformer(rules: _*).transform(root))
   }
+
+
+  object actions extends XmlTransformerActions
+
+  object ops extends XmlTransformerSyntax
+
 }
 
-private [transform] sealed trait XmlTransformerActions
+private[advxml] trait XmlTransformerActions
   extends Modifiers
     with Zooms
     with Filters
-

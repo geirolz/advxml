@@ -1,6 +1,6 @@
 package com.github.geirolz.advxml.traverse
 
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
 import scala.xml.NodeSeq
 
 /**

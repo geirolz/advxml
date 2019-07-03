@@ -12,7 +12,7 @@ import scala.language.postfixOps
   */
 class XmlTraverseSyntaxTest extends FeatureSpec {
 
-  import XmlTraverseSyntax._
+  import XmlTraverser.ops._
 
   feature("XmlTraverseSyntaxTest: Read Attributes") {
     scenario("Read optional attribute") {
