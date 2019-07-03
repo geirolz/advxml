@@ -1,7 +1,10 @@
 package com.github.geirolz.advxml.transform
 
-import com.github.geirolz.advxml.transform.actions.{ComposableXmlModifier, FinalXmlModifier, XmlPredicate, XmlZoom}
+import com.github.geirolz.advxml.transform.XmlTransformer.current
+import com.github.geirolz.advxml.transform.actions._
 import com.github.geirolz.advxml.utils.PredicateUtils
+
+import scala.xml.NodeSeq
 
 /**
   * Adxml
@@ -13,7 +16,20 @@ private [advxml] trait XmlTransformerSyntax
   extends RuleSyntax
     with ModifiersSyntax
     with ZoomSyntax
-    with PredicateSyntax
+    with PredicateSyntax {
+
+  implicit class XmlTransformerOps(root: NodeSeq) {
+
+    def transform[F[_] : MonadEx](rule: XmlRule, rules: XmlRule*): F[NodeSeq] =
+      XmlTransformer.transform(rule, rules: _*)(root)
+
+    def transform[F[_] : MonadEx](modifier: XmlModifier): F[NodeSeq] = modifier match {
+      case m: ComposableXmlModifier => XmlTransformer.transform(current(m))(root)
+      case m: FinalXmlModifier => XmlTransformer.transform(current(m))(root)
+    }
+  }
+
+}
 
 private [transform] sealed trait RuleSyntax {
 

@@ -55,7 +55,7 @@ object PartialXmlRule{
   def apply(zoom: XmlZoom): PartialXmlRule = PartialXmlRuleImpl(zoom)
 
 
-  private [transform] case class PartialXmlRuleImpl(zoom: XmlZoom) extends PartialXmlRule{
+  private case class PartialXmlRuleImpl(zoom: XmlZoom) extends PartialXmlRule {
     override def withModifier(modifier: ComposableXmlModifier): ComposableXmlRule =
       ComposableXmlRuleImpl(zoom, modifier)
 
@@ -63,11 +63,11 @@ object PartialXmlRule{
       FinalXmlRuleImpl(zoom, modifier)
   }
 
-  private [transform] case class ComposableXmlRuleImpl(zoom: XmlZoom, modifier: ComposableXmlModifier) extends ComposableXmlRule {
+  private case class ComposableXmlRuleImpl(zoom: XmlZoom, modifier: ComposableXmlModifier) extends ComposableXmlRule {
 
     override def withModifier(modifier: ComposableXmlModifier): ComposableXmlRule =
       copy(modifier = this.modifier.andThen(modifier))
   }
 
-  private [transform] case class FinalXmlRuleImpl(zoom: XmlZoom, modifier: FinalXmlModifier) extends FinalXmlRule
+  private case class FinalXmlRuleImpl(zoom: XmlZoom, modifier: FinalXmlModifier) extends FinalXmlRule
 }
