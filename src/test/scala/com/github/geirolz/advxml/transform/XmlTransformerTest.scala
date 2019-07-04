@@ -7,8 +7,9 @@ import scala.xml.Elem
 
 class XmlTransformerTest extends FeatureSpec  {
 
-  import com.github.geirolz.advxml.AdvXml._
   import cats.instances.try_._
+  import com.github.geirolz.advxml.transform.XmlTransformer.actions._
+  import com.github.geirolz.advxml.transform.XmlTransformer.ops._
 
   feature("Xml manipulation: Filters") {
     scenario("Filter By Attribute") {
