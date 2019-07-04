@@ -1,6 +1,7 @@
 package com.github.geirolz.advxml.convert
 
 import cats.Semigroup
+import cats.data.Validated.{Invalid, Valid}
 import cats.data.ValidatedNel
 import cats.syntax.{EitherSyntax, TupleSemigroupalSyntax, ValidatedSyntax}
 import com.github.geirolz.advxml.convert.Validation.ValidationRes
@@ -18,15 +19,15 @@ object Validation {
     t.toEither.toValidatedNel
   }
 
-  def toTry[T](validated: ValidationRes[T])(implicit s: Semigroup[Throwable],
-                                            manifest: reflect.Manifest[T]): Try[T] = {
+  def toTry[T](validated: ValidationRes[T], headerMsg: Class[T] => String = _ => "")
+              (implicit s: Semigroup[Throwable], manifest: reflect.Manifest[T]): Try[T] = {
 
-    validated.fold(errors => {
-      val className = manifest.runtimeClass.getName
-      val errorsStr = errors.reduce
-
-      Failure(new RuntimeException(s"Error validating model[$className] with errors: $errorsStr"))
-    }, Success(_))
+    validated match {
+      case Valid(value) => Success(value)
+      case Invalid(exs) => Failure(
+        new RuntimeException(s"${headerMsg(manifest.runtimeClass)} \n ${exs.reduce}")
+      )
+    }
   }
 
   object ops extends ValidationSyntax
