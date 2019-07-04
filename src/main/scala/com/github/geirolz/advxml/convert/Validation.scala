@@ -1,5 +1,7 @@
 package com.github.geirolz.advxml.convert
 
+import cats.Semigroup
+import cats.data.Validated.{Invalid, Valid}
 import cats.data.ValidatedNel
 import cats.syntax.{EitherSyntax, TupleSemigroupalSyntax, ValidatedSyntax}
 import com.github.geirolz.advxml.convert.Validation.ValidationRes
@@ -11,24 +13,33 @@ object Validation {
 
   type ValidationRes[T] = ValidatedNel[Throwable, T]
 
+
   def fromTry[T](t: Try[T]): ValidationRes[T] = {
     import cats.implicits._
     t.toEither.toValidatedNel
   }
 
-  def toTry[T](validated: ValidationRes[T])(implicit manifest: reflect.Manifest[T]): Try[T] = {
-    validated.fold(errors => {
-      val className = manifest.runtimeClass.getName
-      val errorsStr = errors
-        .toList
-        .map(_.getMessage)
-        .reduce((e1, e2) => e1 + ",\n" + e2)
+  def toTry[T](validated: ValidationRes[T], headerMsg: Class[T] => String = _ => "")
+              (implicit s: Semigroup[Throwable], manifest: reflect.Manifest[T]): Try[T] = {
 
-      Failure(new RuntimeException(s"Error validating model[$className] with errors: $errorsStr"))
-    }, Success(_))
+    validated match {
+      case Valid(value) => Success(value)
+      case Invalid(exs) => Failure(
+        new RuntimeException(s"${headerMsg(manifest.runtimeClass)} \n ${exs.reduce}")
+      )
+    }
   }
 
   object ops extends ValidationSyntax
+
+  object instances extends ValidationInstances
+}
+
+
+private [advxml] trait ValidationInstances {
+
+  implicit val throwableMsgSemigroup : Semigroup[Throwable] = (x: Throwable, y: Throwable) =>
+    new RuntimeException(x.getMessage + ",\n" + y.getMessage)
 
 }
 
@@ -38,7 +49,7 @@ private[advxml] trait ValidationSyntax
     with EitherSyntax {
 
   implicit class ValidationOps[T](validated: ValidationRes[T]) {
-    def toTry(implicit manifest: reflect.Manifest[T]): Try[T] = Validation.toTry(validated)
+    def toTry(implicit s: Semigroup[Throwable], manifest: reflect.Manifest[T]): Try[T] = Validation.toTry(validated)
   }
 
   implicit class TryOps[T](t: Try[T]) {
