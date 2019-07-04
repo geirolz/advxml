@@ -2,6 +2,7 @@ package com.github.geirolz.advxml.convert
 
 import com.github.geirolz.advxml.convert.XmlTextSerializer.Serializer
 
+import scala.math.ScalaNumber
 import scala.xml.Text
 
 /**
@@ -23,7 +24,7 @@ private[advxml] trait XmlTextSerializerSyntax {
 }
 
 private[advxml] trait XmlTextSerializerInstances {
-  implicit val serializable: Serializer[Serializable] = _.toString
+  implicit val scalaNumber: Serializer[ScalaNumber] = _.toString
   implicit val byte: Serializer[Byte] = _.toString
   implicit val short: Serializer[Short] = _.toString
   implicit val char: Serializer[Char] = _.toString
