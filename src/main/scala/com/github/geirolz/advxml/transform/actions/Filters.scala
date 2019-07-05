@@ -7,7 +7,7 @@ import scala.xml.{Node, NodeSeq}
 
 private [transform] trait Filters {
 
-  import com.github.geirolz.advxml.traverse.XmlTraverser.ops._
+  import com.github.geirolz.advxml.implicits.traverser._
 
   lazy val always: XmlPredicate = _ => true
 
@@ -32,7 +32,7 @@ private [transform] trait Filters {
   }
 
   def hasImmediateChild(name: String, predicate: XmlPredicate = always) : XmlPredicate = xml =>
-    (xml \? name).fold(false)(_.exists(predicate))
+    (xml \? name).toOption.flatten.fold(false)(_.exists(predicate))
 
   def count(length: Int) : XmlPredicate = _.length == length
 

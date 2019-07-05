@@ -23,15 +23,9 @@ object XmlTransformer {
       .sequence
       .map(rules => new RuleTransformer(rules: _*).transform(root))
   }
-
-
-  object actions extends XmlTransformerActions
-
-  object ops extends XmlTransformerSyntax
-
 }
 
-private[advxml] trait XmlTransformerActions
+private[advxml] trait XmlTransformerInstances
   extends Modifiers
     with Zooms
     with Filters

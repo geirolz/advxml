@@ -2,7 +2,23 @@
 [![Build Status](https://travis-ci.org/geirolz/advxml.svg?branch=master)](https://travis-ci.org/geirolz/advxml)
 [![codecov](https://codecov.io/gh/geirolz/advxml/branch/master/graph/badge.svg)](https://codecov.io/gh/geirolz/advxml)
 
-A Scala library to edit xml using native scala xml library.
+A Scala library to edit xml using native scala xml library and cats core.
+
+##How to import
+
+Maven
+```
+<dependency>
+    <groupId>com.github.geirolz</groupId>
+    <artifactId>advxml_2.12</artifactId>
+    <version>0.0.3</version>
+</dependency>
+```
+
+Sbt
+```
+libraryDependencies += "com.github.geirolz" %% "advxml" % "0.0.3"
+```
 
 ## Structure
 The idea behind this library is offer a fluent syntax to edit and read xml.
@@ -35,8 +51,8 @@ The idea behind this library is offer a fluent syntax to edit and read xml.
  
  *Raw Example*
 ```scala
-    import com.github.geirolz.advxml.AdvXml._
-    import com.github.geirolz.advxml.transform._
+    import com.github.geirolz.advxml.instances._
+    import com.github.geirolz.advxml.implicits._
     import scala.xml._
     import scala.util._
     
@@ -68,8 +84,8 @@ If you need apply more that one modification on a selected node you can combine 
 
  *Raw Example*
 ```scala
-    import com.github.geirolz.advxml.AdvXml._
-    import com.github.geirolz.advxml.transform._
+    import com.github.geirolz.advxml.instances._
+    import com.github.geirolz.advxml.implicits._
     import scala.xml._
     import scala.util._
     
@@ -106,8 +122,8 @@ You can combine multiple modifiers using `andThen` method or with syntax sugar `
 
  *Raw Example*
 ```scala
-    import com.github.geirolz.advxml.AdvXml._
-    import com.github.geirolz.advxml.transform._
+    import com.github.geirolz.advxml.instances._
+    import com.github.geirolz.advxml.implicits._
     import scala.xml._
     import scala.util._
     
@@ -145,8 +161,8 @@ the `XmlModifier` and no the `XmlRule` instance, this means no zooming actions.
 
  *Example*
 ```scala
-    import com.github.geirolz.advxml.AdvXml._
-    import com.github.geirolz.advxml.transform._
+    import com.github.geirolz.advxml.instances._
+    import com.github.geirolz.advxml.implicits._
     import scala.xml._
     import scala.util._
     

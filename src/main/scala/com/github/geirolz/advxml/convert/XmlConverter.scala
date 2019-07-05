@@ -21,18 +21,15 @@ object XmlConverter {
 
   def asModel[Xml <: NodeSeq, Obj](xml: Xml)(implicit c: XmlToModel[Xml, Obj]): ValidationRes[Obj] = apply(xml)
 
-
-  object ops extends XmlConverterSyntax
-
 }
 
 private[advxml] trait XmlConverterSyntax {
 
-  implicit class XmlParserOps[Xml <: NodeSeq](xml: Xml) {
+  implicit class XmlConverterOps[Xml <: NodeSeq](xml: Xml) {
     def as[Obj](implicit c: XmlToModel[Xml, Obj]): ValidationRes[Obj] = XmlConverter(xml)
   }
 
-  implicit class AnyOps[Obj](model: Obj) {
+  implicit class ConverterAnyOps[Obj](model: Obj) {
     def asXml[Xml <: NodeSeq](implicit c: ModelToXml[Obj, Xml]): ValidationRes[Xml] = XmlConverter(model)
   }
 
