@@ -35,8 +35,8 @@ The idea behind this library is offer a fluent syntax to edit and read xml.
  
  *Raw Example*
 ```scala
-    import com.github.geirolz.advxml.AdvXml._
-    import com.github.geirolz.advxml.transform._
+    import com.github.geirolz.advxml.instances._
+    import com.github.geirolz.advxml.implicits._
     import scala.xml._
     import scala.util._
     
@@ -68,8 +68,8 @@ If you need apply more that one modification on a selected node you can combine 
 
  *Raw Example*
 ```scala
-    import com.github.geirolz.advxml.AdvXml._
-    import com.github.geirolz.advxml.transform._
+    import com.github.geirolz.advxml.instances._
+    import com.github.geirolz.advxml.implicits._
     import scala.xml._
     import scala.util._
     
@@ -106,8 +106,8 @@ You can combine multiple modifiers using `andThen` method or with syntax sugar `
 
  *Raw Example*
 ```scala
-    import com.github.geirolz.advxml.AdvXml._
-    import com.github.geirolz.advxml.transform._
+    import com.github.geirolz.advxml.instances._
+    import com.github.geirolz.advxml.implicits._
     import scala.xml._
     import scala.util._
     
@@ -145,8 +145,8 @@ the `XmlModifier` and no the `XmlRule` instance, this means no zooming actions.
 
  *Example*
 ```scala
-    import com.github.geirolz.advxml.AdvXml._
-    import com.github.geirolz.advxml.transform._
+    import com.github.geirolz.advxml.instances._
+    import com.github.geirolz.advxml.implicits._
     import scala.xml._
     import scala.util._
     
