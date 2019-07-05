@@ -55,5 +55,5 @@ object XmlTraverser {
   }
 
 
-  object ops extends XmlTraverseSyntax
+  object implicits extends XmlTraverseSyntax
 }

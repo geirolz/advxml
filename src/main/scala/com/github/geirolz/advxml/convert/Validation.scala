@@ -32,7 +32,7 @@ object Validation {
     }
   }
 
-  object ops extends ValidationSyntax
+  object implicits extends ValidationSyntax
 
   object instances extends ValidationInstances
 }

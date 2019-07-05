@@ -25,13 +25,13 @@ object XmlTransformer {
   }
 
 
-  object actions extends XmlTransformerActions
+  object instances extends XmlTransformerInstances
 
-  object ops extends XmlTransformerSyntax
+  object implicits extends XmlTransformerSyntax
 
 }
 
-private[advxml] trait XmlTransformerActions
+private[advxml] trait XmlTransformerInstances
   extends Modifiers
     with Zooms
     with Filters

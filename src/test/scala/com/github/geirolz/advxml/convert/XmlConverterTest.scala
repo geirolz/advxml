@@ -15,9 +15,9 @@ import scala.xml.Elem
   */
 class XmlConverterTest extends FunSuite {
 
-  import Validation.ops._
-  import XmlConverter.ops._
-  import XmlTraverser.ops._
+  import Validation.implicits._
+  import XmlConverter.implicits._
+  import XmlTraverser.implicits._
 
   test("Convert simple case class") {
 

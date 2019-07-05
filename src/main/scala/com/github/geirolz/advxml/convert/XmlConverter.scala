@@ -22,7 +22,7 @@ object XmlConverter {
   def asModel[Xml <: NodeSeq, Obj](xml: Xml)(implicit c: XmlToModel[Xml, Obj]): ValidationRes[Obj] = apply(xml)
 
 
-  object ops extends XmlConverterSyntax
+  object implicits extends XmlConverterSyntax
 
 }
 

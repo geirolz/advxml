@@ -10,8 +10,8 @@ import org.scalatest.FunSuite
   */
 class XmlTextSerializerTest extends FunSuite {
 
+  import XmlTextSerializer.implicits._
   import XmlTextSerializer.instances._
-  import XmlTextSerializer.ops._
 
   test("String to Text") {
     val value: Option[String] = Some("TEST")
