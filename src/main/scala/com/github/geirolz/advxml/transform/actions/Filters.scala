@@ -32,7 +32,7 @@ private [transform] trait Filters {
   }
 
   def hasImmediateChild(name: String, predicate: XmlPredicate = always) : XmlPredicate = xml =>
-    (xml \? name).fold(false)(_.exists(predicate))
+    (xml \? name).toOption.flatten.fold(false)(_.exists(predicate))
 
   def count(length: Int) : XmlPredicate = _.length == length
 

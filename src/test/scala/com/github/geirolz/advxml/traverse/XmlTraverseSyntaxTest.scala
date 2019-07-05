@@ -1,5 +1,6 @@
 package com.github.geirolz.advxml.traverse
 
+import com.github.geirolz.advxml.convert.Validation.ValidationRes
 import org.scalatest.FeatureSpec
 
 import scala.language.postfixOps
@@ -13,7 +14,8 @@ import scala.language.postfixOps
 class XmlTraverseSyntaxTest extends FeatureSpec {
 
   import XmlTraverser.ops._
-
+  import com.github.geirolz.advxml.convert.Validation.ops._
+  
   feature("XmlTraverseSyntaxTest: Read Attributes") {
     scenario("Read optional attribute") {
       val xml =
@@ -21,12 +23,12 @@ class XmlTraverseSyntaxTest extends FeatureSpec {
           <Employee Name="David"/>
         </Employers>
 
-      val name = xml \ "Employee" \@? "Name"
+      val name: ValidationRes[Option[String]] = xml \ "Employee" \@? "Name"
       val age = xml \ "Employee" \@? "Age"
 
-      assert(name.isDefined)
-      assert(name.get == "David")
-      assert(age.isEmpty)
+      assert(name.toFlatOption.isDefined)
+      assert(name.toFlatOption.get == "David")
+      assert(age.toFlatOption.isEmpty)
     }
 
     scenario("Read required attribute") {
@@ -38,9 +40,9 @@ class XmlTraverseSyntaxTest extends FeatureSpec {
       val name = xml \ "Employee" \@! "Name"
       val age = xml \ "Employee" \@! "Age"
 
-      assert(name.isSuccess)
-      assert(name.get == "David")
-      assert(age.isFailure)
+      assert(name.isValid)
+      assert(name.toEither.right.get == "David")
+      assert(age.isInvalid)
     }
   }
 
@@ -58,9 +60,9 @@ class XmlTraverseSyntaxTest extends FeatureSpec {
       val cars = xml \ "Employee" \? "Cars"
       val works = xml \ "Employee" \? "Works"
 
-      assert(cars.isDefined)
-      assert(cars.get.length == 1)
-      assert(works.isEmpty)
+      assert(cars.toFlatOption.isDefined)
+      assert(cars.toFlatOption.get.length == 1)
+      assert(works.toFlatOption.isEmpty)
     }
 
     scenario("Read required immediate nodes") {
@@ -76,9 +78,9 @@ class XmlTraverseSyntaxTest extends FeatureSpec {
       val cars = xml \ "Employee" \! "Cars"
       val works = xml \ "Employee" \! "Works"
 
-      assert(cars.isSuccess)
-      assert(cars.get.length == 1)
-      assert(works.isFailure)
+      assert(cars.isValid)
+      assert(cars.toEither.right.get.length == 1)
+      assert(works.isInvalid)
     }
   }
 
@@ -96,9 +98,9 @@ class XmlTraverseSyntaxTest extends FeatureSpec {
       val cars = xml \\? "Cars"
       val works = xml \\? "Works"
 
-      assert(cars.isDefined)
-      assert(cars.get.length == 1)
-      assert(works.isEmpty)
+      assert(cars.toFlatOption.isDefined)
+      assert(cars.toFlatOption.get.length == 1)
+      assert(works.toFlatOption.isEmpty)
     }
 
     scenario("Read required nested nodes") {
@@ -114,9 +116,9 @@ class XmlTraverseSyntaxTest extends FeatureSpec {
       val cars = xml \\! "Cars"
       val works = xml \\! "Works"
 
-      assert(cars.isSuccess)
-      assert(cars.get.length == 1)
-      assert(works.isFailure)
+      assert(cars.isValid)
+      assert(cars.toEither.right.get.length == 1)
+      assert(works.isInvalid)
     }
   }
 
@@ -135,9 +137,9 @@ class XmlTraverseSyntaxTest extends FeatureSpec {
       val note = xml \ "Employee" \ "Note" content
       val works = xml \ "Employee" \ "Works" content
 
-      assert(note.isSuccess)
-      assert(note.get.trim == noteData)
-      assert(works.isFailure)
+      assert(note.isValid)
+      assert(note.toEither.right.get.trim == noteData)
+      assert(works.isInvalid)
     }
   }
 }

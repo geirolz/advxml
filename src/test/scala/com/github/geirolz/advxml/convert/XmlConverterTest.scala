@@ -5,7 +5,6 @@ import com.github.geirolz.advxml.convert.XmlConverter.XmlToModel
 import com.github.geirolz.advxml.traverse.XmlTraverser
 import org.scalatest.FunSuite
 
-import scala.language.postfixOps
 import scala.xml.Elem
 
 /**
@@ -20,15 +19,15 @@ class XmlConverterTest extends FunSuite {
   import XmlConverter.ops._
   import XmlTraverser.ops._
 
-  test("Convert") {
+  test("Convert simple case class") {
 
     case class Person(name: String, surname: String, age: Option[Int])
 
-    implicit val converter: XmlToModel[Elem, Person] = x => (
-      x \@! "Name" toValidatedNel,
-      x \@! "Surname" toValidatedNel,
-      (x \@? "Age").map(_.toInt).validNel[Throwable]
-    ).mapN(Person)
+    implicit val converter: XmlToModel[Elem, Person] = x => {(
+      x \@! "Name",
+      x \@! "Surname",
+      x \@? "Age" mapValue(_.toInt)
+    ).mapN(Person)}
 
     val xml = <Person Name="Matteo" Surname="Bianchi"/>
     val res: ValidationRes[Person] = xml.as[Person]

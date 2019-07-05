@@ -1,6 +1,7 @@
 package com.github.geirolz.advxml.traverse
 
-import scala.util.{Failure, Success, Try}
+import com.github.geirolz.advxml.convert.Validation.ValidationRes
+
 import scala.xml.NodeSeq
 
 /**
@@ -11,42 +12,45 @@ import scala.xml.NodeSeq
   */
 object XmlTraverser {
 
-  def immediateChildren(ns: NodeSeq, name: String) : Option[NodeSeq] =
-    mandatoryImmediateChildren(ns, name).toOption
+  import cats.implicits._
 
-  def mandatoryImmediateChildren(ns: NodeSeq, name: String) : Try[NodeSeq] = {
+  def immediateChildren(ns: NodeSeq, name: String) : ValidationRes[Option[NodeSeq]] =
+    mandatoryImmediateChildren(ns, name).toOption.validNel
+
+  def mandatoryImmediateChildren(ns: NodeSeq, name: String) : ValidationRes[NodeSeq] = {
     ns \ name match {
-      case value if value.isEmpty => Failure(new RuntimeException(s"Missing node: $name"))
-      case value => Success(value)
+      case value if value.isEmpty => new RuntimeException(s"Missing node: $name").invalidNel
+      case value => value.validNel
     }
   }
 
 
-  def children(ns: NodeSeq, name: String) : Option[NodeSeq] =
-    mandatoryChildren(ns, name).toOption
+  def children(ns: NodeSeq, name: String) : ValidationRes[Option[NodeSeq]] =
+    mandatoryChildren(ns, name).toOption.validNel
 
-  def mandatoryChildren(ns: NodeSeq, name: String) : Try[NodeSeq] = {
+  def mandatoryChildren(ns: NodeSeq, name: String) : ValidationRes[NodeSeq] = {
     ns \\ name match {
-      case value if value.isEmpty => Failure(new RuntimeException(s"Missing nested node: $name"))
-      case value => Success(value)
+      case value if value.isEmpty => new RuntimeException(s"Missing nested node: $name").invalidNel
+      case value => value.validNel
     }
   }
 
 
-  def attr(ns: NodeSeq, name: String): Option[String] = mandatoryAttr(ns, name).toOption
+  def attr(ns: NodeSeq, name: String): ValidationRes[Option[String]] =
+    mandatoryAttr(ns, name).toOption.validNel
 
-  def mandatoryAttr(ns: NodeSeq, name: String): Try[String] = {
+  def mandatoryAttr(ns: NodeSeq, name: String): ValidationRes[String] = {
     ns \@ name match {
-      case value if value.isEmpty => Failure(new RuntimeException(s"Missing attribute: $name"))
-      case value => Success(value)
+      case value if value.isEmpty => new RuntimeException(s"Missing attribute: $name").invalidNel
+      case value => value.validNel
     }
   }
 
 
-  def content(ns: NodeSeq): Try[String] = {
+  def content(ns: NodeSeq): ValidationRes[String] = {
     ns.text match {
-      case value if value.isEmpty => Failure(new RuntimeException("Missing content"))
-      case value => Success(value)
+      case value if value.isEmpty => new RuntimeException("Missing content").invalidNel
+      case value => value.validNel
     }
   }
 

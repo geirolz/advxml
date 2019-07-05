@@ -13,19 +13,21 @@ object Validation {
 
   type ValidationRes[T] = ValidatedNel[Throwable, T]
 
-
   def fromTry[T](t: Try[T]): ValidationRes[T] = {
     import cats.implicits._
     t.toEither.toValidatedNel
   }
 
-  def toTry[T](validated: ValidationRes[T], headerMsg: Class[T] => String = _ => "")
+  def toTry[T](validated: ValidationRes[T], headerMsg: Class[_] => String = _ => "")
               (implicit s: Semigroup[Throwable], manifest: reflect.Manifest[T]): Try[T] = {
 
     validated match {
       case Valid(value) => Success(value)
-      case Invalid(exs) => Failure(
-        new RuntimeException(s"${headerMsg(manifest.runtimeClass)} \n ${exs.reduce}")
+      case Invalid(exs) =>
+        val clazz = manifest.runtimeClass
+        val errMsg = exs.reduce
+        Failure(
+        new RuntimeException(s"${headerMsg(clazz)} \n $errMsg")
       )
     }
   }
@@ -48,12 +50,16 @@ private[advxml] trait ValidationSyntax
     with TupleSemigroupalSyntax
     with EitherSyntax {
 
+  implicit class ValidationTryOps[T](t: Try[T]) {
+    def toValidatedNel: ValidationRes[T] = Validation.fromTry(t)
+  }
+
   implicit class ValidationOps[T](validated: ValidationRes[T]) {
     def toTry(implicit s: Semigroup[Throwable], manifest: reflect.Manifest[T]): Try[T] = Validation.toTry(validated)
   }
 
-  implicit class TryOps[T](t: Try[T]) {
-    def toValidatedNel: ValidationRes[T] = Validation.fromTry(t)
+  implicit class ValidationNestedOptionOps[T](t: ValidationRes[Option[T]]) {
+    def toFlatOption: Option[T] = t.toOption.flatten
+    def mapValue[A](f: T => A) : ValidationRes[Option[A]] = t.map(_.map(f))
   }
-
 }
