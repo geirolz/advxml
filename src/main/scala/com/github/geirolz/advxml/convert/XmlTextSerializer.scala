@@ -42,10 +42,6 @@ object XmlTextSerializer {
 
   def asText[T](t: Option[T])(implicit s: Serializer[T]): Option[Text] = t.map(asText(_))
 
-  object implicits extends XmlTextSerializerSyntax
-
-  object instances extends XmlTextSerializerInstances
-
 }
 
 

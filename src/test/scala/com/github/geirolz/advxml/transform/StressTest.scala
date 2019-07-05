@@ -9,8 +9,8 @@ import scala.xml.XML
 class StressTest extends FeatureSpec  {
 
   import cats.instances.try_._
-  import com.github.geirolz.advxml.transform.XmlTransformer.implicits._
-  import com.github.geirolz.advxml.transform.XmlTransformer.instances._
+  import com.github.geirolz.advxml.implicits.transformer._
+  import com.github.geirolz.advxml.instances.transformer._
 
   feature("Xml manipulation stress test") {
     scenario("Large file: 1MB") {

@@ -11,11 +11,11 @@ import scala.language.postfixOps
   *
   * @author geirolad
   */
-class XmlTraverseSyntaxTest extends FeatureSpec {
+class XmlTraverserSyntaxTest extends FeatureSpec {
 
-  import XmlTraverser.implicits._
-  import com.github.geirolz.advxml.convert.Validation.implicits._
-  
+  import com.github.geirolz.advxml.implicits.traverser._
+  import com.github.geirolz.advxml.implicits.validation._
+
   feature("XmlTraverseSyntaxTest: Read Attributes") {
     scenario("Read optional attribute") {
       val xml =

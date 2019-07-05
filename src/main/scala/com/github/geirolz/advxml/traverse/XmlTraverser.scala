@@ -53,7 +53,4 @@ object XmlTraverser {
       case value => value.validNel
     }
   }
-
-
-  object implicits extends XmlTraverseSyntax
 }

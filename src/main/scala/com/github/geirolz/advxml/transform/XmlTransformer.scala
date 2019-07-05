@@ -23,12 +23,6 @@ object XmlTransformer {
       .sequence
       .map(rules => new RuleTransformer(rules: _*).transform(root))
   }
-
-
-  object instances extends XmlTransformerInstances
-
-  object implicits extends XmlTransformerSyntax
-
 }
 
 private[advxml] trait XmlTransformerInstances

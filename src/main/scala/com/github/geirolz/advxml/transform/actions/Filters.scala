@@ -7,7 +7,7 @@ import scala.xml.{Node, NodeSeq}
 
 private [transform] trait Filters {
 
-  import com.github.geirolz.advxml.traverse.XmlTraverser.implicits._
+  import com.github.geirolz.advxml.implicits.traverser._
 
   lazy val always: XmlPredicate = _ => true
 

@@ -21,9 +21,6 @@ object XmlConverter {
 
   def asModel[Xml <: NodeSeq, Obj](xml: Xml)(implicit c: XmlToModel[Xml, Obj]): ValidationRes[Obj] = apply(xml)
 
-
-  object implicits extends XmlConverterSyntax
-
 }
 
 private[advxml] trait XmlConverterSyntax {

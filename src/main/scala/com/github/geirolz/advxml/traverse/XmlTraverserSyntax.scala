@@ -10,7 +10,7 @@ import scala.xml.NodeSeq
   *
   * @author geirolad
   */
-private [advxml] trait XmlTraverseSyntax {
+private [advxml] trait XmlTraverserSyntax {
 
   implicit class XmlTraverseOps(ns: NodeSeq) {
 

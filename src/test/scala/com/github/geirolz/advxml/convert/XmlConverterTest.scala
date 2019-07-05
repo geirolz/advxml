@@ -2,7 +2,6 @@ package com.github.geirolz.advxml.convert
 
 import com.github.geirolz.advxml.convert.Validation.ValidationRes
 import com.github.geirolz.advxml.convert.XmlConverter.XmlToModel
-import com.github.geirolz.advxml.traverse.XmlTraverser
 import org.scalatest.FunSuite
 
 import scala.xml.Elem
@@ -15,9 +14,9 @@ import scala.xml.Elem
   */
 class XmlConverterTest extends FunSuite {
 
-  import Validation.implicits._
-  import XmlConverter.implicits._
-  import XmlTraverser.implicits._
+  import com.github.geirolz.advxml.implicits.converter._
+  import com.github.geirolz.advxml.implicits.traverser._
+  import com.github.geirolz.advxml.implicits.validation._
 
   test("Convert simple case class") {
 

@@ -31,10 +31,6 @@ object Validation {
       )
     }
   }
-
-  object implicits extends ValidationSyntax
-
-  object instances extends ValidationInstances
 }
 
 
