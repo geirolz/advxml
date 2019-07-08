@@ -65,12 +65,7 @@ private[advxml] trait ValidationSyntax {
   }
 
   implicit class ValidatedResOptionOps[T](t: ValidatedRes[Option[T]]) {
-    def toFlatOption: Option[T] = t.toOption.flatten
+    def flattenOption: Option[T] = t.toOption.flatten
     def mapValue[A](f: T => A) : ValidatedRes[Option[A]] = t.map(_.map(f))
   }
-
-
-  def TryToValidatedRes[T](v: Try[T]): ValidatedRes[T] = v.toValidatedNel
-
-  def ValidatedResToTry[T](v: ValidatedRes[T])(implicit s: Semigroup[Throwable]): Try[T] = v.toTry
 }

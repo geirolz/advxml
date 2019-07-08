@@ -1,36 +1,28 @@
 package com.github.geirolz.advxml.convert
 
-import cats.data.Validated
+import com.github.geirolz.advxml.convert.ValidatedConverter.ValidatedConverter
 import com.github.geirolz.advxml.convert.ValidatedRes.ValidatedRes
 import com.github.geirolz.advxml.convert.XmlConverter.{ModelToXml, XmlToModel}
 
 import scala.xml.NodeSeq
 
-object XmlConverter {
-
-  type ValidatedConverter[A, B] = A => ValidatedRes[B]
+object XmlConverter extends ValidatedConverterOps{
   type ModelToXml[A, B <: NodeSeq] = ValidatedConverter[A, B]
   type XmlToModel[A <: NodeSeq, B] = ValidatedConverter[A, B]
 
-  def id[A]: ValidatedConverter[A, A] = Validated.Valid[A]
+  def asXml[Obj : ModelToXml[?, Xml], Xml <: NodeSeq](model: Obj): ValidatedRes[Xml] = XmlConverter(model)
 
-  def apply[A, B](a: A)(implicit convert: ValidatedConverter[A, B]): ValidatedRes[B] = convert(a)
-
-
-  def asXml[Obj, Xml <: NodeSeq](model: Obj)(implicit c: ModelToXml[Obj, Xml]): ValidatedRes[Xml] = apply(model)
-
-  def asModel[Xml <: NodeSeq, Obj](xml: Xml)(implicit c: XmlToModel[Xml, Obj]): ValidatedRes[Obj] = apply(xml)
-
+  def asModel[Xml <: NodeSeq : XmlToModel[?, Obj], Obj](xml: Xml): ValidatedRes[Obj] = XmlConverter(xml)
 }
 
 private[advxml] trait XmlConverterSyntax {
 
   implicit class XmlConverterOps[Xml <: NodeSeq](xml: Xml) {
-    def as[Obj](implicit c: XmlToModel[Xml, Obj]): ValidatedRes[Obj] = XmlConverter(xml)
+    def as[Obj : XmlToModel[Xml, ?]]: ValidatedRes[Obj] = XmlConverter(xml)
   }
 
   implicit class ConverterAnyOps[Obj](model: Obj) {
-    def asXml[Xml <: NodeSeq](implicit c: ModelToXml[Obj, Xml]): ValidatedRes[Xml] = XmlConverter(model)
+    def asXml[Xml <: NodeSeq : ModelToXml[Obj, ?]]: ValidatedRes[Xml] = XmlConverter(model)
   }
 
 }

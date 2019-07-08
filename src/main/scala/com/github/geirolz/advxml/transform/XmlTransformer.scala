@@ -17,7 +17,7 @@ object XmlTransformer {
 
     import cats.implicits._
 
-    (Seq(rule) ++ rules)
+    (rule +: rules)
       .map(_.toRewriteRule[F](root))
       .toList
       .sequence

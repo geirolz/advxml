@@ -4,16 +4,9 @@ import com.github.geirolz.advxml.convert.{ValidationSyntax, XmlConverterSyntax, 
 import com.github.geirolz.advxml.transform.XmlTransformerSyntax
 import com.github.geirolz.advxml.traverse.XmlTraverserSyntax
 
-object implicits
+private [advxml] trait AllSyntax
   extends XmlTransformerSyntax
     with XmlTraverserSyntax
     with XmlConverterSyntax
     with ValidationSyntax
-    with XmlTextSerializerSyntax {
-
-  object transformer extends XmlTransformerSyntax
-  object validation extends ValidationSyntax
-  object textSerializer extends XmlTextSerializerSyntax
-  object converter extends XmlConverterSyntax
-  object traverser extends XmlTraverserSyntax
-}
+    with XmlTextSerializerSyntax

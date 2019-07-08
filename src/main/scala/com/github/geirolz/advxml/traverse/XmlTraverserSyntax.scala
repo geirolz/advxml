@@ -15,27 +15,30 @@ private [advxml] trait XmlTraverserSyntax {
   implicit class XmlTraverseOps(ns: NodeSeq) {
 
     def \?(name: String) : ValidatedRes[Option[NodeSeq]] =
-      XmlTraverser.immediateChildren(ns, name)
+      XmlTraverser.optional.immediateChildren(ns, name)
 
     def \!(name: String) : ValidatedRes[NodeSeq] =
-      XmlTraverser.mandatoryImmediateChildren(ns, name)
+      XmlTraverser.mandatory.immediateChildren(ns, name)
 
 
     def \\?(name: String) : ValidatedRes[Option[NodeSeq]] =
-      XmlTraverser.children(ns, name)
+      XmlTraverser.optional.children(ns, name)
 
     def \\!(name: String) : ValidatedRes[NodeSeq] =
-      XmlTraverser.mandatoryChildren(ns, name)
+      XmlTraverser.mandatory.children(ns, name)
 
 
     def \@?(key: String): ValidatedRes[Option[String]] =
-      XmlTraverser.attr(ns, key)
+      XmlTraverser.optional.attr(ns, key)
 
     def \@!(key: String): ValidatedRes[String] =
-      XmlTraverser.mandatoryAttr(ns, key)
+      XmlTraverser.mandatory.attr(ns, key)
 
 
-    def content: ValidatedRes[String] =
-      XmlTraverser.content(ns)
+    def ? : ValidatedRes[Option[String]] =
+      XmlTraverser.optional.content(ns)
+
+    def ! : ValidatedRes[String] =
+      XmlTraverser.mandatory.content(ns)
   }
 }

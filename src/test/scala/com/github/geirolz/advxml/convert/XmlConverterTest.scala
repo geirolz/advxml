@@ -1,6 +1,6 @@
 package com.github.geirolz.advxml.convert
 
-import com.github.geirolz.advxml.convert.Validation.ValidationRes
+import com.github.geirolz.advxml.convert.ValidatedRes.ValidatedRes
 import com.github.geirolz.advxml.convert.XmlConverter.XmlToModel
 import org.scalatest.FunSuite
 
@@ -14,6 +14,7 @@ import scala.xml.Elem
   */
 class XmlConverterTest extends FunSuite {
 
+  import cats.implicits._
   import com.github.geirolz.advxml.implicits.converter._
   import com.github.geirolz.advxml.implicits.traverser._
   import com.github.geirolz.advxml.implicits.validation._
@@ -29,7 +30,7 @@ class XmlConverterTest extends FunSuite {
     ).mapN(Person)
 
     val xml = <Person Name="Matteo" Surname="Bianchi"/>
-    val res: ValidationRes[Person] = xml.as[Person]
+    val res: ValidatedRes[Person] = xml.as[Person]
 
 
     assert(res.isValid)
