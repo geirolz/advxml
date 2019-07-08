@@ -20,7 +20,6 @@ private[advxml] trait XmlTextSerializerSyntax {
   implicit class AnyValOps[T](t: T) {
     def asText(implicit s: Serializer[T]): Text = XmlTextSerializer.asText(t)
   }
-
 }
 
 private[advxml] trait XmlTextSerializerInstances {
@@ -41,7 +40,6 @@ object XmlTextSerializer {
   def asText[T](t: T)(implicit s: Serializer[T]): Text = Text(s(t))
 
   def asText[T](t: Option[T])(implicit s: Serializer[T]): Option[Text] = t.map(asText(_))
-
 }
 
 
