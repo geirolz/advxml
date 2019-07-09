@@ -22,3 +22,5 @@ out/
 .idea_modules/
 atlassian-ide-plugin.xml
 
+
+private.sbt

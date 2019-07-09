@@ -34,7 +34,7 @@ sealed trait XmlRule{
 
         modifier[F](target).map(updated => {
           new RewriteRule {
-            override def transform(ns: Seq[Node]): Seq[Node] =
+            override def transform(ns: collection.Seq[Node]): collection.Seq[Node] =
               if (ns == root || Filters.equalsTo(target)(ns)) updated else ns
           }
         })
