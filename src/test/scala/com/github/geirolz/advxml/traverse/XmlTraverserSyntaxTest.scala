@@ -41,7 +41,7 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       val age = xml \ "Employee" \@! "Age"
 
       assert(name.isValid)
-      assert(name.toEither.right.get == "David")
+      assert(name.toEither.exists(_ == "David"))
       assert(age.isInvalid)
     }
   }
@@ -79,7 +79,7 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       val works = xml \ "Employee" \! "Works"
 
       assert(cars.isValid)
-      assert(cars.toEither.right.get.length == 1)
+      assert(cars.toEither.exists(_.length == 1))
       assert(works.isInvalid)
     }
   }
@@ -117,7 +117,7 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       val works = xml \\! "Works"
 
       assert(cars.isValid)
-      assert(cars.toEither.right.get.length == 1)
+      assert(cars.toEither.exists(_.length == 1))
       assert(works.isInvalid)
     }
   }
@@ -158,7 +158,7 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       val works = xml \ "Employee" \ "Works" !
 
       assert(note.isValid)
-      assert(note.toEither.right.get.trim == noteData)
+      assert(note.toEither.exists(_.trim == noteData))
       assert(works.isInvalid)
     }
   }

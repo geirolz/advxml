@@ -28,7 +28,7 @@ Maven for 2.13
 
 Sbt
 ```
-libraryDependencies += "com.github.geirolz" %% "advxml" % "0.0.3"
+libraryDependencies += "com.github.geirolz" %% "advxml" % "0.1.0"
 ```
 
 ## Structure
