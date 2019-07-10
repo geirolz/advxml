@@ -1,54 +1,77 @@
 package com.github.geirolz.advxml.utils
 
-import javax.xml.parsers.DocumentBuilder
+import java.io.StringWriter
+
+import com.github.geirolz.advxml.utils.JavaXmlConverters.{JDocument, JNode}
+import javax.xml.parsers.{DocumentBuilder, DocumentBuilderFactory}
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.sax.SAXResult
+import javax.xml.transform.stream.StreamResult
+import javax.xml.transform.{OutputKeys, Transformer, TransformerFactory}
 
 import scala.xml.parsing.NoBindingFactoryAdapter
 import scala.xml.{Elem, Node, Text}
 
-object JavaXmlConverters {
+object JavaXmlConverters
+  extends JavaNodeOps
+    with ScalaNodeOps{
+
+  lazy val documentBuilder: DocumentBuilder = DocumentBuilderFactory
+    .newInstance()
+    .newDocumentBuilder()
 
   type JDocument = org.w3c.dom.Document
   type JNode = org.w3c.dom.Node
   type JElement = org.w3c.dom.Element
+}
 
-  lazy val docBuilder: DocumentBuilder = javax.xml.parsers.DocumentBuilderFactory.newInstance().newDocumentBuilder()
+private [utils] sealed trait JavaNodeOps{
 
-  //JAVA => SCALA
-  implicit class JavaNodeOps(val inner: JNode) extends AnyVal {
-    def asScalaNode: Node = {
-      val source = new DOMSource(inner)
+  implicit class JavaNodeOps(jNode: JNode){
+
+    def asScala: Node = {
+      val source = new DOMSource(jNode)
       val adapter = new NoBindingFactoryAdapter
       val saxResult = new SAXResult(adapter)
-      val transformerFactory = javax.xml.transform.TransformerFactory.newInstance()
-      val transformer = transformerFactory.newTransformer()
+      val transformer = TransformerFactory.newInstance().newTransformer()
       transformer.transform(source, saxResult)
       adapter.rootElem
     }
+
+    def toPrettyString: String = {
+      val transformer = TransformerFactory.newInstance.newTransformer
+      transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes")
+      transformer.setOutputProperty(OutputKeys.METHOD, "xml")
+      transformer.setOutputProperty(OutputKeys.INDENT, "yes")
+      transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8")
+      toPrettyString(transformer)
+    }
+
+    def toPrettyString(transformer: Transformer): String = {
+      val sw = new StringWriter
+      transformer.transform(new DOMSource(jNode), new StreamResult(sw))
+      sw.toString
+    }
   }
 
-  implicit class JavaDocumentOps(val inner: JDocument) extends AnyVal {
-    def asScalaElem: Elem = inner.asScalaNode.asInstanceOf[Elem]
+  implicit class JavaDocumentOps(jDoc: JDocument) extends JavaNodeOps(jDoc){
+    override def asScala: Elem = super.asScala.asInstanceOf[Elem]
   }
+}
 
-  //SCALA => JAVA
-  implicit def nodeExtras(n: Node): NodeExtras = new NodeExtras(n)
+private [utils] sealed trait ScalaNodeOps{
 
-  implicit def elemExtras(e: Elem): ElemExtras = new ElemExtras(e)
+  implicit class ScalaNodeOps(node: Node){
 
-
-  class NodeExtras(n: Node) {
-
-    def toJdkNode(doc: JDocument): JNode =
-      n match {
+    def asJava(doc: JDocument): JNode =
+      node match {
         case Elem(_, label, attributes, _, children@_*) =>
           val r = doc.createElement(label)
           for (a <- attributes) {
             r.setAttribute(a.key, a.value.text)
           }
           for (c <- children) {
-            r.appendChild(c.toJdkNode(doc))
+            r.appendChild(c.asJava(doc))
           }
           r
         case Text(text) => doc.createTextNode(text)
@@ -56,13 +79,11 @@ object JavaXmlConverters {
       }
   }
 
-  class ElemExtras(e: Elem) extends NodeExtras(e) {
-    override def toJdkNode(doc: JDocument): JElement =
-      super.toJdkNode(doc).asInstanceOf[JElement]
+  implicit class ScalaElemOps(elem: Elem){
 
-    def asJavaDocument: JDocument = {
-      val doc = docBuilder.newDocument()
-      doc.appendChild(toJdkNode(doc))
+    def asJava: JDocument = {
+      val doc = JavaXmlConverters.documentBuilder.newDocument()
+      doc.appendChild(elem.asInstanceOf[Node].asJava(doc))
       doc
     }
   }
