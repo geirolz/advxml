@@ -4,14 +4,25 @@
 
 A Scala library to edit xml using native scala xml library and cats core.
 
-##How to import
+## How to import
 
-Maven
+Supported Scala 2.12 and 2.13
+
+Maven for 2.12
 ```
 <dependency>
     <groupId>com.github.geirolz</groupId>
     <artifactId>advxml_2.12</artifactId>
-    <version>0.0.3</version>
+    <version>0.1.0</version>
+</dependency>
+```
+
+Maven for 2.13
+```
+<dependency>
+    <groupId>com.github.geirolz</groupId>
+    <artifactId>advxml_2.12</artifactId>
+    <version>0.1.0</version>
 </dependency>
 ```
 
@@ -51,8 +62,7 @@ The idea behind this library is offer a fluent syntax to edit and read xml.
  
  *Raw Example*
 ```scala
-    import com.github.geirolz.advxml.instances._
-    import com.github.geirolz.advxml.implicits._
+    import com.github.geirolz.advxml.all._
     import scala.xml._
     import scala.util._
     
@@ -84,8 +94,7 @@ If you need apply more that one modification on a selected node you can combine 
 
  *Raw Example*
 ```scala
-    import com.github.geirolz.advxml.instances._
-    import com.github.geirolz.advxml.implicits._
+    import com.github.geirolz.advxml.all._
     import scala.xml._
     import scala.util._
     
@@ -122,8 +131,7 @@ You can combine multiple modifiers using `andThen` method or with syntax sugar `
 
  *Raw Example*
 ```scala
-    import com.github.geirolz.advxml.instances._
-    import com.github.geirolz.advxml.implicits._
+    import com.github.geirolz.advxml.all._
     import scala.xml._
     import scala.util._
     
@@ -161,8 +169,7 @@ the `XmlModifier` and no the `XmlRule` instance, this means no zooming actions.
 
  *Example*
 ```scala
-    import com.github.geirolz.advxml.instances._
-    import com.github.geirolz.advxml.implicits._
+    import com.github.geirolz.advxml.all._
     import scala.xml._
     import scala.util._
     
@@ -172,4 +179,5 @@ the `XmlModifier` and no the `XmlRule` instance, this means no zooming actions.
     val doc: Elem = <Root/>
     val result: Try[NodeSeq] = doc.transform[Try](SetAttrs("Attr1" -> "TEST"))
 ```
+
 
