@@ -14,7 +14,6 @@ import scala.language.postfixOps
 class XmlTraverserSyntaxTest extends FeatureSpec {
 
   import com.github.geirolz.advxml.implicits.traverser._
-  import com.github.geirolz.advxml.implicits.validation._
 
   feature("XmlTraverseSyntaxTest: Read Attributes") {
     scenario("Read optional attribute") {
@@ -26,9 +25,9 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       val name: ValidatedRes[Option[String]] = xml \ "Employee" \@? "Name"
       val age = xml \ "Employee" \@? "Age"
 
-      assert(name.flattenOption.isDefined)
-      assert(name.flattenOption.get == "David")
-      assert(age.flattenOption.isEmpty)
+      assert(name.exists(_.isDefined))
+      assert(name.exists(_.get == "David"))
+      assert(age.exists(_.isEmpty))
     }
 
     scenario("Read required attribute") {
@@ -60,9 +59,9 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       val cars = xml \ "Employee" \? "Cars"
       val works = xml \ "Employee" \? "Works"
 
-      assert(cars.flattenOption.isDefined)
-      assert(cars.flattenOption.get.length == 1)
-      assert(works.flattenOption.isEmpty)
+      assert(cars.exists(_.isDefined))
+      assert(cars.exists(_.get.length == 1))
+      assert(works.exists(_.isEmpty))
     }
 
     scenario("Read required immediate nodes") {
@@ -98,9 +97,9 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       val cars = xml \\? "Cars"
       val works = xml \\? "Works"
 
-      assert(cars.flattenOption.isDefined)
-      assert(cars.flattenOption.get.length == 1)
-      assert(works.flattenOption.isEmpty)
+      assert(cars.exists(_.isDefined))
+      assert(cars.exists(_.get.length == 1))
+      assert(works.exists(_.isEmpty))
     }
 
     scenario("Read required nested nodes") {
@@ -138,9 +137,9 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       val works = xml \ "Employee" \ "Works" ?
 
       assert(note.isValid)
-      assert(note.flattenOption.get.trim == noteData)
+      assert(note.exists(_.get.trim == noteData))
       assert(works.isValid)
-      assert(works.flattenOption.isEmpty)
+      assert(works.exists(_.isEmpty))
     }
 
     scenario("Read required content") {

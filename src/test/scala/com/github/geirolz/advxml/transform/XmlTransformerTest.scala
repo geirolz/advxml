@@ -60,7 +60,7 @@ class XmlTransformerTest extends FeatureSpec  {
         </OrderLines>
       </Order>
 
-      val result = elem.transform[Try](
+      val result = elem.transform(
         $(_ \ "OrderLines" \ "OrderLine" filter attrs("PrimeLineNo" -> "1"))
           ==> Replace(<OrderLine PrimeLineNo="4" />)
       )
