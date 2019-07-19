@@ -25,6 +25,11 @@ lazy val settings = Seq(
   libraryDependencies ++= libsSettings,
   scalacOptions ++= scalacSettings(scalaVersion.value),
   scalacOptions in (Compile, console) --= Seq("-Ywarn-unused:imports", "-Xfatal-warnings"),
+
+  scalafmtConfig := file("scalafmt.conf"),
+  scalafmtOnCompile := true,
+  scalafmtTestOnCompile := true,
+  ignoreErrors in scalafmt := false
 )
 
 def scalacSettings(scalaVersion: String) =
@@ -68,7 +73,7 @@ def scalacSettings(scalaVersion: String) =
     "-Ywarn-unused:locals",             // Warn if a local definition is unused.
     "-Ywarn-unused:params",             // Warn if a value parameter is unused.
     "-Ywarn-unused:patvars",            // Warn if a variable bound in a pattern is unused.
-    "-Ywarn-unused:privates",           // Warn if a private member is unused.
+    "-Ywarn-unused:privates" // Warn if a private member is unused.
   ) ++ {
     CrossVersion.partialVersion(scalaVersion) match {
       case Some((2, 12)) => Seq(
@@ -95,5 +100,7 @@ lazy val libsSettings = Seq(
   "org.scala-lang.modules" %% "scala-xml" % "1.2.0" cross CrossVersion.binary,
 
   //TEST
-  "org.scalatest" %% "scalatest" % "3.0.8" % Test cross CrossVersion.binary
+  "org.scalatest" %% "scalatest" % "3.0.8" % Test cross CrossVersion.binary,
+  "org.scalatest" %% "scalatest" % "3.0.8" % Test cross CrossVersion.binary,
+  "org.scalacheck" %% "scalacheck" % "1.14.0" % Test cross CrossVersion.binary,
 )

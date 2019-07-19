@@ -23,15 +23,15 @@ class XmlConverterTest extends FunSuite {
 
     case class Person(name: String, surname: String, age: Option[Int])
 
-    implicit val converter: XmlToModel[Elem, Person] = x => (
-      x \@! "Name",
-      x \@! "Surname",
-      x \@? "Age" mapValue(_.toInt)
-    ).mapN(Person)
+    implicit val converter: XmlToModel[Elem, Person] = x =>
+      (
+        x \@! "Name",
+        x \@! "Surname",
+        x \@? "Age" mapValue (_.toInt)
+      ).mapN(Person)
 
     val xml = <Person Name="Matteo" Surname="Bianchi"/>
     val res: ValidatedRes[Person] = xml.as[Person]
-
 
     assert(res.isValid)
     assert(res.toOption.get.name == "Matteo")

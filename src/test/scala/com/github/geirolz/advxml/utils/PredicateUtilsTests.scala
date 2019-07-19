@@ -2,9 +2,9 @@ package com.github.geirolz.advxml.utils
 
 import org.scalatest.FunSuite
 
-class PredicateUtilsTests extends FunSuite{
+class PredicateUtilsTests extends FunSuite {
 
-  test("Combine two predicate with in and"){
+  test("Combine two predicate with in and") {
     val p1: String => Boolean = _.contains("A")
     val p2: String => Boolean = _.contains("C")
     val p3 = PredicateUtils.and(p1, p2)
@@ -16,7 +16,7 @@ class PredicateUtilsTests extends FunSuite{
     assert(!p3("GF"))
   }
 
-  test("Combine two predicate with in or"){
+  test("Combine two predicate with in or") {
     val p1: String => Boolean = _.contains("A")
     val p2: String => Boolean = _.contains("C")
     val p3 = PredicateUtils.or(p1, p2)

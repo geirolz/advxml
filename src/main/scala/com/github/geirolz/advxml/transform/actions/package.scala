@@ -20,7 +20,7 @@ package object actions {
     def apply(f: NodeSeq => Boolean): XmlPredicate = f(_)
   }
 
-  object XmlZoom{
+  object XmlZoom {
     def apply(f: NodeSeq => NodeSeq): XmlZoom = f(_)
   }
 }

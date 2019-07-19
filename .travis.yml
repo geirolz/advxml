@@ -17,6 +17,8 @@ stages:
 
 jobs:
   include:
+    - env: TEST="scalafmt"
+      script: ./bin/scalafmt --test
     - stage: test
       env: TEST="compile"
       script: sbt ++$TRAVIS_SCALA_VERSION clean compile test

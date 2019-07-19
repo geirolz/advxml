@@ -6,7 +6,7 @@ import org.scalatest.FeatureSpec
 import scala.util.Try
 import scala.xml.XML
 
-class StressTest extends FeatureSpec  {
+class StressTest extends FeatureSpec {
 
   import cats.instances.try_._
   import com.github.geirolz.advxml.implicits.transformer._
@@ -18,28 +18,27 @@ class StressTest extends FeatureSpec  {
       val elem = XML.loadFile(getClass.getResource("/transform/stressTest_1mb.xml").getPath)
 
       val zoomByAttrs1: XmlZoom = _ filter attrs(
-        "gdp_serv" -> "55.2",
+        "gdp_serv"   -> "55.2",
         "government" -> "republic",
-        "inflation" -> "28.3",
-        "population" -> "10002541")
+        "inflation"  -> "28.3",
+        "population" -> "10002541"
+      )
 
-      val zoomByAttrs2: XmlZoom = _ filter attrs(
-        "capital" -> "f0_1533",
-        "car_code" -> "H")
+      val zoomByAttrs2: XmlZoom = _ filter attrs("capital" -> "f0_1533", "car_code" -> "H")
 
-      val filterByChild: XmlZoom = _ filter hasImmediateChild("province",
+      val filterByChild: XmlZoom = _ filter hasImmediateChild(
+        "province",
         attrs(
           "population" -> "422500",
-          "country" -> "f0_251",
-          "name" -> "Fejer",
-          "capital" -> "f0_3117"
+          "country"    -> "f0_251",
+          "name"       -> "Fejer",
+          "capital"    -> "f0_3117"
         )
       )
 
-      val z : XmlZoom = XmlZoom(_ \ "country") \ zoomByAttrs1 \ zoomByAttrs2 \ filterByChild
+      val z: XmlZoom = XmlZoom(_ \ "country") \ zoomByAttrs1 \ zoomByAttrs2 \ filterByChild
 
-      val result = elem.transform[Try](
-        $(z) ==> SetAttrs("TEST" -> "1", "TEST2" -> "100"))
+      val result = elem.transform[Try]($(z) ==> SetAttrs("TEST" -> "1", "TEST2" -> "100"))
 
       assert(result.isSuccess)
       assert(z(result.get) \@ "TEST" == "1")

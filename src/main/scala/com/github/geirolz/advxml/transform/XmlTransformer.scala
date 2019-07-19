@@ -7,13 +7,13 @@ import scala.xml.transform.RuleTransformer
 
 object XmlTransformer {
 
-  def current(modifier: FinalXmlModifier) : FinalXmlRule =
+  def current(modifier: FinalXmlModifier): FinalXmlRule =
     PartialXmlRule(identity) withModifier modifier
 
-  def current(modifier: ComposableXmlModifier) : ComposableXmlRule =
+  def current(modifier: ComposableXmlModifier): ComposableXmlRule =
     PartialXmlRule(identity) withModifier modifier
 
-  def transform[F[_] : MonadEx](rule: XmlRule, rules: XmlRule*)(root: NodeSeq) : F[NodeSeq] = {
+  def transform[F[_]: MonadEx](rule: XmlRule, rules: XmlRule*)(root: NodeSeq): F[NodeSeq] = {
 
     import cats.implicits._
 
@@ -25,7 +25,4 @@ object XmlTransformer {
   }
 }
 
-private[advxml] trait XmlTransformerInstances
-  extends Modifiers
-    with Zooms
-    with Filters
+private[advxml] trait XmlTransformerInstances extends Modifiers with Zooms with Filters

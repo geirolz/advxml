@@ -12,26 +12,26 @@ import scala.xml.NodeSeq
   *
   * @author geirolad
   */
-private [advxml] trait XmlTransformerSyntax
-  extends RuleSyntax
+private[advxml] trait XmlTransformerSyntax
+    extends RuleSyntax
     with ModifiersSyntax
     with ZoomSyntax
     with PredicateSyntax {
 
   implicit class XmlTransformerOps(root: NodeSeq) {
 
-    def transform[F[_] : MonadEx](rule: XmlRule, rules: XmlRule*): F[NodeSeq] =
+    def transform[F[_]: MonadEx](rule: XmlRule, rules: XmlRule*): F[NodeSeq] =
       XmlTransformer.transform(rule, rules: _*)(root)
 
-    def transform[F[_] : MonadEx](modifier: XmlModifier): F[NodeSeq] = modifier match {
+    def transform[F[_]: MonadEx](modifier: XmlModifier): F[NodeSeq] = modifier match {
       case m: ComposableXmlModifier => XmlTransformer.transform(current(m))(root)
-      case m: FinalXmlModifier => XmlTransformer.transform(current(m))(root)
+      case m: FinalXmlModifier      => XmlTransformer.transform(current(m))(root)
     }
   }
 
 }
 
-private [transform] sealed trait RuleSyntax {
+private[transform] sealed trait RuleSyntax {
 
   def $(zoom: XmlZoom): PartialXmlRule = PartialXmlRule(zoom)
 
@@ -45,30 +45,30 @@ private [transform] sealed trait RuleSyntax {
   }
 }
 
-private [transform] sealed trait ModifiersSyntax {
+private[transform] sealed trait ModifiersSyntax {
 
   implicit class ComposableXmlModifierOps(a: ComposableXmlModifier) {
-    def ++(that: ComposableXmlModifier) : ComposableXmlModifier = a.andThen(that)
+    def ++(that: ComposableXmlModifier): ComposableXmlModifier = a.andThen(that)
   }
 }
 
-private [transform] sealed trait ZoomSyntax{
+private[transform] sealed trait ZoomSyntax {
 
-  implicit class XmlZoomOps(z: XmlZoom){
-    def \(that: XmlZoom) : XmlZoom = z.andThen(that)
+  implicit class XmlZoomOps(z: XmlZoom) {
+    def \(that: XmlZoom): XmlZoom = z.andThen(that)
   }
 }
 
-private [transform] sealed trait PredicateSyntax {
+private[transform] sealed trait PredicateSyntax {
 
-  implicit class XmlPredicateOps(p: XmlPredicate){
+  implicit class XmlPredicateOps(p: XmlPredicate) {
 
     def and(that: XmlPredicate): XmlPredicate = PredicateUtils.and(p, that)
 
     def or(that: XmlPredicate): XmlPredicate = PredicateUtils.or(p, that)
 
-    def &&(that: XmlPredicate) : XmlPredicate = p.and(that)
+    def &&(that: XmlPredicate): XmlPredicate = p.and(that)
 
-    def ||(that: XmlPredicate) : XmlPredicate = p.or(that)
+    def ||(that: XmlPredicate): XmlPredicate = p.or(that)
   }
 }

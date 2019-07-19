@@ -12,9 +12,9 @@ import com.github.geirolz.advxml.traverse.XmlTraverserSyntax
   */
 package object advxml {
 
-  object all  extends AllSyntax with AllInstances
+  object all extends AllSyntax with AllInstances
 
-  object implicits extends AllSyntax{
+  object implicits extends AllSyntax {
     object transformer extends XmlTransformerSyntax
     object validation extends ValidationSyntax
     object textSerializer extends XmlTextSerializerSyntax
@@ -22,7 +22,7 @@ package object advxml {
     object traverser extends XmlTraverserSyntax
   }
 
-  object instances extends AllInstances{
+  object instances extends AllInstances {
     object transformer extends XmlTransformerInstances
     object validation extends ValidationInstances
     object textSerializer extends XmlTextSerializerInstances

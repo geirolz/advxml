@@ -1,6 +1,5 @@
 package com.github.geirolz.advxml.transform.actions
 
-
 import scala.util.Try
 
 /**
@@ -30,7 +29,7 @@ import scala.util.Try
   * @since 0.0.1
   * @author geirolad
   */
-private [transform] trait Zooms {
+private[transform] trait Zooms {
 
   /**
     * Select first child of a `NodeSeq` collection

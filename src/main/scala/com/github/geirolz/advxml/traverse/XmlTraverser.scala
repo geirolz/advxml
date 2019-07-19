@@ -14,43 +14,43 @@ object XmlTraverser {
 
   import cats.implicits._
 
-  object mandatory{
+  object mandatory {
 
-    def immediateChildren(ns: NodeSeq, name: String) : ValidatedRes[NodeSeq] = {
+    def immediateChildren(ns: NodeSeq, name: String): ValidatedRes[NodeSeq] = {
       ns \ name match {
         case value if value.isEmpty => new RuntimeException(s"Missing node: $name").invalidNel
-        case value => value.validNel
+        case value                  => value.validNel
       }
     }
 
-    def children(ns: NodeSeq, name: String) : ValidatedRes[NodeSeq] = {
+    def children(ns: NodeSeq, name: String): ValidatedRes[NodeSeq] = {
       ns \\ name match {
         case value if value.isEmpty => new RuntimeException(s"Missing nested node: $name").invalidNel
-        case value => value.validNel
+        case value                  => value.validNel
       }
     }
 
     def attr(ns: NodeSeq, name: String): ValidatedRes[String] = {
       ns \@ name match {
         case value if value.isEmpty => new RuntimeException(s"Missing attribute: $name").invalidNel
-        case value => value.validNel
+        case value                  => value.validNel
       }
     }
 
     def content(ns: NodeSeq): ValidatedRes[String] = {
       ns.text match {
         case value if value.isEmpty => new RuntimeException("Missing content").invalidNel
-        case value => value.validNel
+        case value                  => value.validNel
       }
     }
   }
 
-  object optional{
+  object optional {
 
-    def immediateChildren(ns: NodeSeq, name: String) : ValidatedRes[Option[NodeSeq]] =
+    def immediateChildren(ns: NodeSeq, name: String): ValidatedRes[Option[NodeSeq]] =
       mandatory.immediateChildren(ns, name).toOption.validNel
 
-    def children(ns: NodeSeq, name: String) : ValidatedRes[Option[NodeSeq]] =
+    def children(ns: NodeSeq, name: String): ValidatedRes[Option[NodeSeq]] =
       mandatory.children(ns, name).toOption.validNel
 
     def attr(ns: NodeSeq, name: String): ValidatedRes[Option[String]] =

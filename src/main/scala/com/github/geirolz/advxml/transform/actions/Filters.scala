@@ -1,24 +1,23 @@
 package com.github.geirolz.advxml.transform.actions
 
-
 import com.github.geirolz.advxml.utils.PredicateUtils
 
 import scala.xml.{Node, NodeSeq}
 
-private [transform] trait Filters {
+private[transform] trait Filters {
 
   import com.github.geirolz.advxml.implicits.traverser._
 
   lazy val always: XmlPredicate = _ => true
 
-  def text(text: String) : XmlPredicate = {
+  def text(text: String): XmlPredicate = {
     case n: Node => n.text == text
-    case _ => false
+    case _       => false
   }
 
   def label(name: String): XmlPredicate = {
     case n: Node => n.label == name
-    case _ => false
+    case _       => false
   }
 
   def attrs(value: (String, String), values: (String, String)*): XmlPredicate = {
@@ -31,16 +30,18 @@ private [transform] trait Filters {
       .reduce(PredicateUtils.and[NodeSeq])
   }
 
-  def hasImmediateChild(name: String, predicate: XmlPredicate = always) : XmlPredicate = xml =>
-    (xml \? name).toOption.flatten.fold(false)(_.exists(predicate))
+  def hasImmediateChild(name: String, predicate: XmlPredicate = always): XmlPredicate =
+    xml => (xml \? name).toOption.flatten.fold(false)(_.exists(predicate))
 
-  def count(length: Int) : XmlPredicate = _.length == length
+  def count(length: Int): XmlPredicate = _.length == length
 
-  def equalsTo(ns: NodeSeq): XmlPredicate = that => (ns, that) match {
-    case (e1: Node, e2: Node) => e1 strict_== e2
-    case (ns1: NodeSeq, ns2: NodeSeq) => ns1 strict_== ns2
-    case _ => false
-  }
+  def equalsTo(ns: NodeSeq): XmlPredicate =
+    that =>
+      (ns, that) match {
+        case (e1: Node, e2: Node)         => e1 strict_== e2
+        case (ns1: NodeSeq, ns2: NodeSeq) => ns1 strict_== ns2
+        case _                            => false
+    }
 }
 
 object Filters extends Filters

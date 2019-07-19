@@ -4,8 +4,8 @@ import com.github.geirolz.advxml.convert.{ValidationSyntax, XmlConverterSyntax, 
 import com.github.geirolz.advxml.transform.XmlTransformerSyntax
 import com.github.geirolz.advxml.traverse.XmlTraverserSyntax
 
-private [advxml] trait AllSyntax
-  extends XmlTransformerSyntax
+private[advxml] trait AllSyntax
+    extends XmlTransformerSyntax
     with XmlTraverserSyntax
     with XmlConverterSyntax
     with ValidationSyntax

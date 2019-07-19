@@ -13,25 +13,25 @@ import scala.xml.{InputSource, Node}
   *
   * @author geirolad
   */
-class JavaXmlConvertersTest extends FunSuite{
+class JavaXmlConvertersTest extends FunSuite {
 
   import JavaXmlConverters._
 
-  test("Convert Java w3c Node to Scala xml Node"){
+  test("Convert Java w3c Node to Scala xml Node") {
     val jDocument: JNode = buildJavaDoc("<Test></Test>")
     val scalaNode = jDocument.asScala
 
     assert(scalaNode == <Test></Test>)
   }
 
-  test("Convert Java w3c document to Scala xml Node"){
+  test("Convert Java w3c document to Scala xml Node") {
     val jDocument: JDocument = buildJavaDoc("<Test></Test>")
     val scalaNode = jDocument.asScala
 
     assert(scalaNode == <Test></Test>)
   }
 
-  test("Convert Scala xml Node to Java w3c Node"){
+  test("Convert Scala xml Node to Java w3c Node") {
     val scalaNode: Node = <Test/>
     val jDoc: JNode = scalaNode.asJava(documentBuilder.newDocument())
     val jDocAsStr = jDoc.toPrettyString
@@ -39,14 +39,13 @@ class JavaXmlConvertersTest extends FunSuite{
     assert(jDocAsStr.trim == "<Test/>")
   }
 
-  test("Convert Scala xml Elem to Java w3c Document"){
+  test("Convert Scala xml Elem to Java w3c Document") {
     val scalaNode = <Test/>
     val jDoc: JDocument = scalaNode.asJava
     val jDocAsStr = jDoc.toPrettyString
 
     assert(jDocAsStr.trim == "<Test/>")
   }
-
 
   lazy val javaDocBuilder: DocumentBuilder = DocumentBuilderFactory
     .newInstance()

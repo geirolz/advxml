@@ -8,7 +8,6 @@ import com.github.geirolz.advxml.exceptions.AggregatedException
 
 import scala.util.{Failure, Success, Try}
 
-
 object ValidatedRes {
 
   type ValidatedRes[T] = ValidatedNel[Throwable, T]
@@ -26,8 +25,7 @@ object ValidatedRes {
   }
 }
 
-
-private [advxml] trait ValidationInstances {
+private[advxml] trait ValidationInstances {
 
   implicit def validatedResMonad: Monad[ValidatedRes] = new Monad[ValidatedRes] {
 
@@ -35,16 +33,17 @@ private [advxml] trait ValidationInstances {
 
     override def flatMap[A, B](fa: ValidatedRes[A])(f: A => ValidatedRes[B]): ValidatedRes[B] =
       fa match {
-        case Valid(a) => f(a)
+        case Valid(a)       => f(a)
         case i @ Invalid(_) => i
       }
 
     override def tailRecM[A, B](a: A)(f: A => ValidatedRes[Either[A, B]]): ValidatedRes[B] =
       f(a) match {
-        case Valid(vValue) => vValue match {
-          case Left(e) => e.asInstanceOf[Throwable].invalidNel
-          case Right(eValue) => eValue.validNel
-        }
+        case Valid(vValue) =>
+          vValue match {
+            case Left(e)       => e.asInstanceOf[Throwable].invalidNel
+            case Right(eValue) => eValue.validNel
+          }
         case Invalid(e) => e.invalid
       }
 
@@ -63,6 +62,6 @@ private[advxml] trait ValidationSyntax {
   }
 
   implicit class ValidatedResOptionOps[T](t: ValidatedRes[Option[T]]) {
-    def mapValue[A](f: T => A) : ValidatedRes[Option[A]] = t.map(_.map(f))
+    def mapValue[A](f: T => A): ValidatedRes[Option[A]] = t.map(_.map(f))
   }
 }

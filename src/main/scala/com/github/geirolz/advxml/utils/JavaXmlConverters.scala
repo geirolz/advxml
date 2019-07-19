@@ -4,17 +4,15 @@ import java.io.StringWriter
 
 import com.github.geirolz.advxml.utils.JavaXmlConverters.{JDocument, JNode}
 import javax.xml.parsers.{DocumentBuilder, DocumentBuilderFactory}
+import javax.xml.transform.{OutputKeys, Transformer, TransformerFactory}
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.sax.SAXResult
 import javax.xml.transform.stream.StreamResult
-import javax.xml.transform.{OutputKeys, Transformer, TransformerFactory}
 
-import scala.xml.parsing.NoBindingFactoryAdapter
 import scala.xml.{Elem, Node, Text}
+import scala.xml.parsing.NoBindingFactoryAdapter
 
-object JavaXmlConverters
-  extends JavaNodeOps
-    with ScalaNodeOps{
+object JavaXmlConverters extends JavaNodeOps with ScalaNodeOps {
 
   lazy val documentBuilder: DocumentBuilder = DocumentBuilderFactory
     .newInstance()
@@ -25,9 +23,9 @@ object JavaXmlConverters
   type JElement = org.w3c.dom.Element
 }
 
-private [utils] sealed trait JavaNodeOps{
+private[utils] sealed trait JavaNodeOps {
 
-  implicit class JavaNodeOps(jNode: JNode){
+  implicit class JavaNodeOps(jNode: JNode) {
 
     def asScala: Node = {
       val source = new DOMSource(jNode)
@@ -54,18 +52,18 @@ private [utils] sealed trait JavaNodeOps{
     }
   }
 
-  implicit class JavaDocumentOps(jDoc: JDocument) extends JavaNodeOps(jDoc){
+  implicit class JavaDocumentOps(jDoc: JDocument) extends JavaNodeOps(jDoc) {
     override def asScala: Elem = super.asScala.asInstanceOf[Elem]
   }
 }
 
-private [utils] sealed trait ScalaNodeOps{
+private[utils] sealed trait ScalaNodeOps {
 
-  implicit class ScalaNodeOps(node: Node){
+  implicit class ScalaNodeOps(node: Node) {
 
     def asJava(doc: JDocument): JNode =
       node match {
-        case Elem(_, label, attributes, _, children@_*) =>
+        case Elem(_, label, attributes, _, children @ _*) =>
           val r = doc.createElement(label)
           for (a <- attributes) {
             r.setAttribute(a.key, a.value.text)
@@ -75,11 +73,11 @@ private [utils] sealed trait ScalaNodeOps{
           }
           r
         case Text(text) => doc.createTextNode(text)
-        case _ => doc
+        case _          => doc
       }
   }
 
-  implicit class ScalaElemOps(elem: Elem){
+  implicit class ScalaElemOps(elem: Elem) {
 
     def asJava: JDocument = {
       val doc = JavaXmlConverters.documentBuilder.newDocument()

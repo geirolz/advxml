@@ -5,7 +5,7 @@ import org.scalatest.FeatureSpec
 import scala.util.Try
 import scala.xml.Elem
 
-class XmlTransformerTest extends FeatureSpec  {
+class XmlTransformerTest extends FeatureSpec {
 
   import cats.instances.try_._
   import com.github.geirolz.advxml.implicits.transformer._
@@ -37,20 +37,28 @@ class XmlTransformerTest extends FeatureSpec  {
       </Order>
 
       val result = elem.transform(
-          $(_ \ "OrderLines")
-            ==> Append(<OrderLine PrimeLineNo="2" />)
-            ==> Append(<OrderLine PrimeLineNo="3" />)
-            ==> Append(<OrderLine PrimeLineNo="4" />)
+        $(_ \ "OrderLines")
+        ==> Append(<OrderLine PrimeLineNo="2"/>)
+        ==> Append(<OrderLine PrimeLineNo="3"/>)
+        ==> Append(<OrderLine PrimeLineNo="4"/>)
       )
 
-      assert(result.get \ "OrderLines" \ "OrderLine"
-        exists attrs("PrimeLineNo" -> "1"))
-      assert(result.get \ "OrderLines" \ "OrderLine"
-        exists attrs("PrimeLineNo" -> "2"))
-      assert(result.get \ "OrderLines" \ "OrderLine"
-        exists attrs("PrimeLineNo" -> "3"))
-      assert(result.get \ "OrderLines" \ "OrderLine"
-        exists attrs("PrimeLineNo" -> "4"))
+      assert(
+        result.get \ "OrderLines" \ "OrderLine"
+        exists attrs("PrimeLineNo" -> "1")
+      )
+      assert(
+        result.get \ "OrderLines" \ "OrderLine"
+        exists attrs("PrimeLineNo" -> "2")
+      )
+      assert(
+        result.get \ "OrderLines" \ "OrderLine"
+        exists attrs("PrimeLineNo" -> "3")
+      )
+      assert(
+        result.get \ "OrderLines" \ "OrderLine"
+        exists attrs("PrimeLineNo" -> "4")
+      )
     }
 
     scenario("ReplaceNode") {
@@ -62,13 +70,17 @@ class XmlTransformerTest extends FeatureSpec  {
 
       val result = elem.transform(
         $(_ \ "OrderLines" \ "OrderLine" filter attrs("PrimeLineNo" -> "1"))
-          ==> Replace(<OrderLine PrimeLineNo="4" />)
+        ==> Replace(<OrderLine PrimeLineNo="4"/>)
       )
 
-      assert((result.get \ "OrderLines" \ "OrderLine"
-        filter attrs("PrimeLineNo" -> "1")).length == 0)
-      assert(result.get \ "OrderLines" \ "OrderLine"
-        exists attrs("PrimeLineNo" -> "4"))
+      assert(
+        (result.get \ "OrderLines" \ "OrderLine"
+        filter attrs("PrimeLineNo" -> "1")).length == 0
+      )
+      assert(
+        result.get \ "OrderLines" \ "OrderLine"
+        exists attrs("PrimeLineNo" -> "4")
+      )
     }
 
     scenario("RemoveNode") {
@@ -83,8 +95,10 @@ class XmlTransformerTest extends FeatureSpec  {
         $(_ \ "OrderLines" \ "OrderLine" filter attrs("PrimeLineNo" -> "1")) ==> Remove
       )
 
-      assert((result.get \ "OrderLines" \ "OrderLine"
-        filter attrs("PrimeLineNo" -> "1")).length == 0)
+      assert(
+        (result.get \ "OrderLines" \ "OrderLine"
+        filter attrs("PrimeLineNo" -> "1")).length == 0
+      )
     }
 
     scenario("RemoveNode root") {
@@ -100,11 +114,13 @@ class XmlTransformerTest extends FeatureSpec  {
       assert(result.get.isEmpty)
     }
 
-    scenario("AppendNode to Root"){
+    scenario("AppendNode to Root") {
       val elem: Elem = <OrderLines />
-      val result = elem.transform[Try](
-        Append(<OrderLine PrimeLineNo="1" />)
-      ).get
+      val result = elem
+        .transform[Try](
+          Append(<OrderLine PrimeLineNo="1"/>)
+        )
+        .get
 
       assert((result \ "OrderLine").length == 1)
       assert(result \ "OrderLine" \@ "PrimeLineNo" == "1")
@@ -136,7 +152,6 @@ class XmlTransformerTest extends FeatureSpec  {
       assert(result.get \@ "A2" == "2")
       assert(result.get \@ "A3" == "3")
     }
-
 
     scenario("ReplaceAttribute") {
       val elem: Elem = <Order>

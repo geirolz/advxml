@@ -1,6 +1,7 @@
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.0")
 addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.2.6")
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.4.1")
+addSbtPlugin("com.lucidchart" % "sbt-scalafmt" % "1.16")
 
 resolvers ++= Seq(
   Resolver.sonatypeRepo("public"),

@@ -1,1318 +1,1389 @@
 <mondial>
-    <continent id="f0_119" name="Europe"> </continent>
-    <continent id="f0_123" name="Asia"> </continent>
-    <continent id="f0_126" name="America"> </continent>
-    <continent id="f0_129" name="Australia/Oceania"> </continent>
-    <continent id="f0_132" name="Africa"> </continent>
-    <country population="3249136" gdp_total="4100" datacode="AL" population_growth="1.34" car_code="AL" indep_date="28 11 1912" name="Albania" infant_mortality="49.2" government="emerging democracy" id="f0_136" inflation="16" gdp_agri="55" total_area="28750" capital="f0_1461">
-        <name> Albania </name>
+    <continent id="f0_119" name="Europe"></continent>
+    <continent id="f0_123" name="Asia"></continent>
+    <continent id="f0_126" name="America"></continent>
+    <continent id="f0_129" name="Australia/Oceania"></continent>
+    <continent id="f0_132" name="Africa"></continent>
+    <country population="3249136" gdp_total="4100" datacode="AL" population_growth="1.34" car_code="AL"
+             indep_date="28 11 1912" name="Albania" infant_mortality="49.2" government="emerging democracy" id="f0_136"
+             inflation="16" gdp_agri="55" total_area="28750" capital="f0_1461">
+        <name>Albania</name>
         <city country="f0_136" latitude="46.2" longitude="10.7" id="f0_1461">
-            <name> Tirane </name>
-            <population year="87"> 192000 </population>
+            <name>Tirane</name>
+            <population year="87">192000</population>
         </city>
         <city country="f0_136" latitude="42.2" longitude="19.2" id="f0_36498">
-            <name> Shkoder </name>
-            <population year="87"> 62000 </population>
-            <located_at water="f0_39058" type="lake"> </located_at>
+            <name>Shkoder</name>
+            <population year="87">62000</population>
+            <located_at water="f0_39058" type="lake"></located_at>
         </city>
         <city country="f0_136" latitude="41.2" longitude="19.3" id="f0_36504">
-            <name> Durres </name>
-            <population year="87"> 60000 </population>
-            <located_at water="f0_38042" type="sea"> </located_at>
+            <name>Durres</name>
+            <population year="87">60000</population>
+            <located_at water="f0_38042" type="sea"></located_at>
         </city>
         <city country="f0_136" latitude="40.3" longitude="19.3" id="f0_36509">
-            <name> Vlore </name>
-            <population year="87"> 56000 </population>
-            <located_at water="f0_38042" type="sea"> </located_at>
+            <name>Vlore</name>
+            <population year="87">56000</population>
+            <located_at water="f0_38042" type="sea"></located_at>
         </city>
         <city country="f0_136" latitude="41.1" longitude="20.1" id="f0_36514">
-            <name> Elbasan </name>
-            <population year="87"> 53000 </population>
+            <name>Elbasan</name>
+            <population year="87">53000</population>
         </city>
         <city country="f0_136" latitude="40.4" longitude="20.5" id="f0_36518">
-            <name> Korce </name>
-            <population year="87"> 52000 </population>
+            <name>Korce</name>
+            <population year="87">52000</population>
         </city>
-        <ethnicgroups percentage="3"> Greeks </ethnicgroups>
-        <ethnicgroups percentage="95"> Albanian </ethnicgroups>
-        <religions percentage="70"> Muslim </religions>
-        <religions percentage="10"> Roman Catholic </religions>
-        <religions percentage="20"> Albanian Orthodox </religions>
-        <encompassed percentage="100" continent="f0_119"> </encompassed>
-        <border country="f0_232" length="282"> </border>
-        <border country="f0_300" length="151"> </border>
-        <border country="f0_370" length="287"> </border>
+        <ethnicgroups percentage="3">Greeks</ethnicgroups>
+        <ethnicgroups percentage="95">Albanian</ethnicgroups>
+        <religions percentage="70">Muslim</religions>
+        <religions percentage="10">Roman Catholic</religions>
+        <religions percentage="20">Albanian Orthodox</religions>
+        <encompassed percentage="100" continent="f0_119"></encompassed>
+        <border country="f0_232" length="282"></border>
+        <border country="f0_300" length="151"></border>
+        <border country="f0_370" length="287"></border>
     </country>
-    <country population="72766" gdp_total="1000" datacode="AN" population_growth="2.96" car_code="AND" name="Andorra" infant_mortality="2.2" government=" parliamentary democracy that retains as its heads of state a coprincipality" id="f0_144" total_area="450" capital="f0_1464">
-        <name> Andorra </name>
+    <country population="72766" gdp_total="1000" datacode="AN" population_growth="2.96" car_code="AND" name="Andorra"
+             infant_mortality="2.2"
+             government=" parliamentary democracy that retains as its heads of state a coprincipality" id="f0_144"
+             total_area="450" capital="f0_1464">
+        <name>Andorra</name>
         <city country="f0_144" latitude="42.3" longitude="1.3" id="f0_1464">
-            <name> Andorra la Vella </name>
-            <population year="87"> 15600 </population>
+            <name>Andorra la Vella</name>
+            <population year="87">15600</population>
         </city>
-        <ethnicgroups percentage="6"> French </ethnicgroups>
-        <ethnicgroups percentage="61"> Spanish </ethnicgroups>
-        <ethnicgroups percentage="30"> Andorran </ethnicgroups>
-        <religions percentage="100"> Roman Catholic </religions>
-        <encompassed percentage="100" continent="f0_119"> </encompassed>
-        <border country="f0_213" length="60"> </border>
-        <border country="f0_385" length="65"> </border>
+        <ethnicgroups percentage="6">French</ethnicgroups>
+        <ethnicgroups percentage="61">Spanish</ethnicgroups>
+        <ethnicgroups percentage="30">Andorran</ethnicgroups>
+        <religions percentage="100">Roman Catholic</religions>
+        <encompassed percentage="100" continent="f0_119"></encompassed>
+        <border country="f0_213" length="60"></border>
+        <border country="f0_385" length="65"></border>
     </country>
-    <country gdp_total="152000" population="8023244" population_growth="0.41" datacode="AU" car_code="A" indep_date="12 11 1918" gdp_ind="34" name="Austria" infant_mortality="6.2" government="federal republic" id="f0_149" inflation="2.3" gdp_serv="64" total_area="83850" gdp_agri="2" capital="f0_1467">
-        <name> Austria </name>
+    <country gdp_total="152000" population="8023244" population_growth="0.41" datacode="AU" car_code="A"
+             indep_date="12 11 1918" gdp_ind="34" name="Austria" infant_mortality="6.2" government="federal republic"
+             id="f0_149" inflation="2.3" gdp_serv="64" total_area="83850" gdp_agri="2" capital="f0_1467">
+        <name>Austria</name>
         <province population="273000" country="f0_149" area="3965" name="Burgenland" id="f0_17440" capital="f0_2291">
             <city country="f0_149" latitude="48" longitude="16" province="f0_17440" id="f0_2291">
-                <name> Eisenstadt </name>
-                <population year="87"> 10102 </population>
+                <name>Eisenstadt</name>
+                <population year="87">10102</population>
             </city>
         </province>
         <province population="559000" country="f0_149" area="9533" name="Carinthia" id="f0_17443" capital="f0_2296">
             <city country="f0_149" latitude="46.38" longitude="14.21" province="f0_17443" id="f0_2296">
-                <name> Klagenfurt </name>
-                <population year="87"> 87321 </population>
+                <name>Klagenfurt</name>
+                <population year="87">87321</population>
             </city>
         </province>
         <province population="341000" country="f0_149" area="2601" name="Vorarlberg" id="f0_17445" capital="f0_2301">
             <city country="f0_149" latitude="47.3" longitude="9.45" province="f0_17445" id="f0_2301">
-                <name> Bregenz </name>
+                <name>Bregenz</name>
             </city>
         </province>
         <province population="1583000" country="f0_149" area="415" name="Vienna" id="f0_17447" capital="f0_1467">
             <city country="f0_149" latitude="48.25" longitude="16.3667" province="f0_17447" id="f0_1467">
-                <name> Vienna </name>
-                <population year="94"> 1583000 </population>
+                <name>Vienna</name>
+                <population year="94">1583000</population>
             </city>
         </province>
-        <province population="1373000" country="f0_149" area="11979" name="Upper Austria" id="f0_17448" capital="f0_2267">
+        <province population="1373000" country="f0_149" area="11979" name="Upper Austria" id="f0_17448"
+                  capital="f0_2267">
             <city country="f0_149" latitude="48.18" longitude="14.18" province="f0_17448" id="f0_2267">
-                <name> Linz </name>
-                <population year="94"> 203000 </population>
+                <name>Linz</name>
+                <population year="94">203000</population>
             </city>
         </province>
         <province population="649000" country="f0_149" area="12647" name="Tyrol" id="f0_17450" capital="f0_2273">
             <city country="f0_149" latitude="47.17" longitude="11.22" province="f0_17450" id="f0_2273">
-                <name> Innsbruck </name>
-                <population year="94"> 118000 </population>
+                <name>Innsbruck</name>
+                <population year="94">118000</population>
             </city>
         </province>
         <province population="1203000" country="f0_149" area="16386" name="Styria" id="f0_17452" capital="f0_2279">
             <city country="f0_149" latitude="47.4" longitude="15.26" province="f0_17452" id="f0_2279">
-                <name> Graz </name>
-                <population year="94"> 238000 </population>
+                <name>Graz</name>
+                <population year="94">238000</population>
             </city>
         </province>
         <province population="501000" country="f0_149" area="7154" name="Salzburg" id="f0_17454" capital="f0_2285">
             <city country="f0_149" latitude="47.49" longitude="13.2" province="f0_17454" id="f0_2285">
-                <name> Salzburg </name>
-                <population year="94"> 144000 </population>
+                <name>Salzburg</name>
+                <population year="94">144000</population>
             </city>
         </province>
-        <province population="1507000" country="f0_149" area="19170" name="Lower Austria" id="f0_17455" capital="f0_2306">
+        <province population="1507000" country="f0_149" area="19170" name="Lower Austria" id="f0_17455"
+                  capital="f0_2306">
             <city country="f0_149" latitude="48.13" longitude="15.38" province="f0_17455" id="f0_2306">
-                <name> St. Polten </name>
-                <population year="87"> 51102 </population>
+                <name>St. Polten</name>
+                <population year="87">51102</population>
             </city>
         </province>
-        <ethnicgroups percentage="99.4"> German </ethnicgroups>
-        <ethnicgroups percentage="0.2"> Slovene </ethnicgroups>
-        <ethnicgroups percentage="0.3"> Croatian </ethnicgroups>
-        <religions percentage="85"> Roman Catholic </religions>
-        <religions percentage="6"> Protestant </religions>
-        <languages percentage="100"> German </languages>
-        <encompassed percentage="100" continent="f0_119"> </encompassed>
-        <border country="f0_184" length="362"> </border>
-        <border country="f0_220" length="784"> </border>
-        <border country="f0_251" length="366"> </border>
-        <border country="f0_268" length="430"> </border>
-        <border country="f0_285" length="37"> </border>
-        <border country="f0_375" length="91"> </border>
-        <border country="f0_380" length="324"> </border>
-        <border country="f0_404" length="164"> </border>
+        <ethnicgroups percentage="99.4">German</ethnicgroups>
+        <ethnicgroups percentage="0.2">Slovene</ethnicgroups>
+        <ethnicgroups percentage="0.3">Croatian</ethnicgroups>
+        <religions percentage="85">Roman Catholic</religions>
+        <religions percentage="6">Protestant</religions>
+        <languages percentage="100">German</languages>
+        <encompassed percentage="100" continent="f0_119"></encompassed>
+        <border country="f0_184" length="362"></border>
+        <border country="f0_220" length="784"></border>
+        <border country="f0_251" length="366"></border>
+        <border country="f0_268" length="430"></border>
+        <border country="f0_285" length="37"></border>
+        <border country="f0_375" length="91"></border>
+        <border country="f0_380" length="324"></border>
+        <border country="f0_404" length="164"></border>
     </country>
-    <country gdp_total="49200" population="10415973" population_growth="0.2" datacode="BO" car_code="BY" indep_date="25 08 1991" gdp_ind="49" name="Belarus" infant_mortality="13.4" government="republic" id="f0_157" inflation="244" gdp_serv="30" total_area="207600" gdp_agri="21" capital="f0_1474">
-        <name> Belarus </name>
+    <country gdp_total="49200" population="10415973" population_growth="0.2" datacode="BO" car_code="BY"
+             indep_date="25 08 1991" gdp_ind="49" name="Belarus" infant_mortality="13.4" government="republic"
+             id="f0_157" inflation="244" gdp_serv="30" total_area="207600" gdp_agri="21" capital="f0_1474">
+        <name>Belarus</name>
         <city country="f0_157" latitude="53.9" longitude="27.55" id="f0_1474">
-            <name> Minsk </name>
-            <population year="87"> 1540000 </population>
+            <name>Minsk</name>
+            <population year="87">1540000</population>
         </city>
-        <ethnicgroups percentage="4.1"> Polish </ethnicgroups>
-        <ethnicgroups percentage="2.9"> Ukrainian </ethnicgroups>
-        <ethnicgroups percentage="13.2"> Russian </ethnicgroups>
-        <ethnicgroups percentage="77.9"> Byelorussian </ethnicgroups>
-        <religions percentage="60"> Eastern Orthodox </religions>
-        <encompassed percentage="100" continent="f0_119"> </encompassed>
-        <border country="f0_280" length="141"> </border>
-        <border country="f0_290" length="502"> </border>
-        <border country="f0_337" length="605"> </border>
-        <border country="f0_411" length="891"> </border>
-        <border country="f0_358" length="959"> </border>
+        <ethnicgroups percentage="4.1">Polish</ethnicgroups>
+        <ethnicgroups percentage="2.9">Ukrainian</ethnicgroups>
+        <ethnicgroups percentage="13.2">Russian</ethnicgroups>
+        <ethnicgroups percentage="77.9">Byelorussian</ethnicgroups>
+        <religions percentage="60">Eastern Orthodox</religions>
+        <encompassed percentage="100" continent="f0_119"></encompassed>
+        <border country="f0_280" length="141"></border>
+        <border country="f0_290" length="502"></border>
+        <border country="f0_337" length="605"></border>
+        <border country="f0_411" length="891"></border>
+        <border country="f0_358" length="959"></border>
     </country>
-    <country gdp_total="197000" population="10170241" population_growth="0.33" datacode="BE" car_code="B" indep_date="04 10 1830" gdp_ind="28" name="Belgium" infant_mortality="6.4" government="constitutional monarchy" id="f0_162" inflation="1.6" gdp_serv="70" total_area="30510" gdp_agri="2" capital="f0_1477">
-        <name> Belgium </name>
+    <country gdp_total="197000" population="10170241" population_growth="0.33" datacode="BE" car_code="B"
+             indep_date="04 10 1830" gdp_ind="28" name="Belgium" infant_mortality="6.4"
+             government="constitutional monarchy" id="f0_162" inflation="1.6" gdp_serv="70" total_area="30510"
+             gdp_agri="2" capital="f0_1477">
+        <name>Belgium</name>
         <province population="1610695" country="f0_162" area="2867" name="Antwerp" id="f0_17457" capital="f0_2311">
             <city country="f0_162" latitude="51.1" longitude="4.23" province="f0_17457" id="f0_2311">
-                <name> Antwerp </name>
-                <population year="95"> 459072 </population>
+                <name>Antwerp</name>
+                <population year="95">459072</population>
             </city>
         </province>
         <province population="2253794" country="f0_162" area="3358" name="Brabant" id="f0_17458" capital="f0_1477">
             <city country="f0_162" latitude="50.8" longitude="4.35" province="f0_17458" id="f0_1477">
-                <name> Brussels </name>
-                <name> Agglomeration </name>
-                <population year="95"> 951580 </population>
+                <name>Brussels</name>
+                <name>Agglomeration</name>
+                <population year="95">951580</population>
             </city>
         </province>
-        <province population="1340056" country="f0_162" area="2982" name="East Flanders" id="f0_17460" capital="f0_2317">
+        <province population="1340056" country="f0_162" area="2982" name="East Flanders" id="f0_17460"
+                  capital="f0_2317">
             <city country="f0_162" latitude="51.4" longitude="3.5" province="f0_17460" id="f0_2317">
-                <name> Ghent </name>
-                <population year="95"> 227483 </population>
+                <name>Ghent</name>
+                <population year="95">227483</population>
             </city>
         </province>
         <province population="1283252" country="f0_162" area="3787" name="Hainaut" id="f0_17462" capital="f0_2345">
             <city country="f0_162" province="f0_17462" id="f0_2335">
-                <name> Charleroi </name>
-                <population year="95"> 206491 </population>
+                <name>Charleroi</name>
+                <population year="95">206491</population>
             </city>
             <city country="f0_162" latitude="50.3" longitude="3.6" province="f0_17462" id="f0_2345">
-                <name> Mons </name>
-                <population year="87"> 90720 </population>
+                <name>Mons</name>
+                <population year="87">90720</population>
             </city>
         </province>
         <province population="1006081" country="f0_162" area="3862" name="Liege" id="f0_17464" capital="f0_2323">
             <city country="f0_162" latitude="50.5" longitude="5.5" province="f0_17464" id="f0_2323">
-                <name> Liege </name>
-                <population year="95"> 192393 </population>
+                <name>Liege</name>
+                <population year="95">192393</population>
             </city>
         </province>
         <province population="755593" country="f0_162" area="2422" name="Limburg" id="f0_17465" capital="f0_2350">
             <city country="f0_162" latitude="50.7" longitude="5.2" province="f0_17465" id="f0_2350">
-                <name> Hasselt </name>
-                <population year="87"> 65348 </population>
+                <name>Hasselt</name>
+                <population year="87">65348</population>
             </city>
         </province>
         <province population="234664" country="f0_162" area="4441" name="Luxembourg" id="f0_17467" capital="f0_2355">
             <city country="f0_162" latitude="49.4" longitude="5.5" province="f0_17467" id="f0_2355">
-                <name> Arlon </name>
-                <population year="87"> 23150 </population>
+                <name>Arlon</name>
+                <population year="87">23150</population>
             </city>
         </province>
         <province population="426305" country="f0_162" area="3665" name="Namur" id="f0_17468" capital="f0_2329">
             <city country="f0_162" latitude="50.3" longitude="4.5" province="f0_17468" id="f0_2329">
-                <name> Namur </name>
-                <population year="95"> 105014 </population>
+                <name>Namur</name>
+                <population year="95">105014</population>
             </city>
         </province>
-        <province population="1111557" country="f0_162" area="3134" name="West Flanders" id="f0_17469" capital="f0_2360">
+        <province population="1111557" country="f0_162" area="3134" name="West Flanders" id="f0_17469"
+                  capital="f0_2360">
             <city country="f0_162" province="f0_17469" id="f0_2340">
-                <name> Bruges </name>
-                <population year="95"> 116273 </population>
+                <name>Bruges</name>
+                <population year="95">116273</population>
             </city>
             <city country="f0_162" province="f0_17469" id="f0_2360">
-                <name> Brugge </name>
+                <name>Brugge</name>
             </city>
             <city country="f0_162" latitude="51.1" longitude="2.08" province="f0_17469" id="f0_36771">
-                <name> Bruegge </name>
-                <population year="87"> 117799 </population>
+                <name>Bruegge</name>
+                <population year="87">117799</population>
             </city>
         </province>
-        <ethnicgroups percentage="55"> Fleming </ethnicgroups>
-        <ethnicgroups percentage="33"> Walloon </ethnicgroups>
-        <religions percentage="75"> Roman Catholic </religions>
-        <religions percentage="25"> Protestant </religions>
-        <languages percentage="32"> French </languages>
-        <languages percentage="1"> German </languages>
-        <languages percentage="56"> Dutch </languages>
-        <encompassed percentage="100" continent="f0_119"> </encompassed>
-        <border country="f0_213" length="620"> </border>
-        <border country="f0_220" length="167"> </border>
-        <border country="f0_295" length="148"> </border>
-        <border country="f0_325" length="450"> </border>
+        <ethnicgroups percentage="55">Fleming</ethnicgroups>
+        <ethnicgroups percentage="33">Walloon</ethnicgroups>
+        <religions percentage="75">Roman Catholic</religions>
+        <religions percentage="25">Protestant</religions>
+        <languages percentage="32">French</languages>
+        <languages percentage="1">German</languages>
+        <languages percentage="56">Dutch</languages>
+        <encompassed percentage="100" continent="f0_119"></encompassed>
+        <border country="f0_213" length="620"></border>
+        <border country="f0_220" length="167"></border>
+        <border country="f0_295" length="148"></border>
+        <border country="f0_325" length="450"></border>
     </country>
-    <country population="2656240" gdp_total="1000" datacode="BK" population_growth="-2.84" car_code="BIH" indep_date="01 04 1992" name="Bosnia and Herzegovina" infant_mortality="43.2" government="emerging democracy" id="f0_169" total_area="51233" capital="f0_1484">
-        <name> Bosnia and Herzegovina </name>
+    <country population="2656240" gdp_total="1000" datacode="BK" population_growth="-2.84" car_code="BIH"
+             indep_date="01 04 1992" name="Bosnia and Herzegovina" infant_mortality="43.2"
+             government="emerging democracy" id="f0_169" total_area="51233" capital="f0_1484">
+        <name>Bosnia and Herzegovina</name>
         <city country="f0_169" id="f0_1484">
-            <name> Sarajevo </name>
+            <name>Sarajevo</name>
         </city>
-        <ethnicgroups percentage="38"> Muslim </ethnicgroups>
-        <ethnicgroups percentage="40"> Serb </ethnicgroups>
-        <ethnicgroups percentage="22"> Croat </ethnicgroups>
-        <religions percentage="40"> Muslim </religions>
-        <religions percentage="4"> Protestant </religions>
-        <religions percentage="31"> Orthodox </religions>
-        <religions percentage="15"> Catholic </religions>
-        <languages percentage="99"> Serbo-Croatian </languages>
-        <encompassed percentage="100" continent="f0_119"> </encompassed>
-        <border country="f0_179" length="932"> </border>
-        <border country="f0_370" length="527"> </border>
+        <ethnicgroups percentage="38">Muslim</ethnicgroups>
+        <ethnicgroups percentage="40">Serb</ethnicgroups>
+        <ethnicgroups percentage="22">Croat</ethnicgroups>
+        <religions percentage="40">Muslim</religions>
+        <religions percentage="4">Protestant</religions>
+        <religions percentage="31">Orthodox</religions>
+        <religions percentage="15">Catholic</religions>
+        <languages percentage="99">Serbo-Croatian</languages>
+        <encompassed percentage="100" continent="f0_119"></encompassed>
+        <border country="f0_179" length="932"></border>
+        <border country="f0_370" length="527"></border>
     </country>
-    <country gdp_total="43200" population="8612757" population_growth="0.46" datacode="BU" car_code="BG" indep_date="22 09 1908" gdp_ind="36" name="Bulgaria" infant_mortality="15.7" government="emerging democracy" id="f0_174" inflation="35" gdp_serv="52" total_area="110910" gdp_agri="12" capital="f0_1487">
-        <name> Bulgaria </name>
+    <country gdp_total="43200" population="8612757" population_growth="0.46" datacode="BU" car_code="BG"
+             indep_date="22 09 1908" gdp_ind="36" name="Bulgaria" infant_mortality="15.7"
+             government="emerging democracy" id="f0_174" inflation="35" gdp_serv="52" total_area="110910" gdp_agri="12"
+             capital="f0_1487">
+        <name>Bulgaria</name>
         <city country="f0_174" latitude="42.7" longitude="23.3333" id="f0_1487">
-            <name> Sofia </name>
-            <population year="87"> 1300000 </population>
+            <name>Sofia</name>
+            <population year="87">1300000</population>
         </city>
-        <ethnicgroups percentage="0.2"> Russian </ethnicgroups>
-        <ethnicgroups percentage="2.6"> Gypsy </ethnicgroups>
-        <ethnicgroups percentage="8.5"> Turk </ethnicgroups>
-        <ethnicgroups percentage="85.3"> Bulgarian </ethnicgroups>
-        <ethnicgroups percentage="0.3"> Armenian </ethnicgroups>
-        <ethnicgroups percentage="2.5"> Macedonian </ethnicgroups>
-        <religions percentage="13"> Muslim </religions>
-        <religions percentage="0.8"> Jewish </religions>
-        <religions percentage="0.5"> Roman Catholic </religions>
-        <religions percentage="85"> Bulgarian Orthodox </religions>
-        <religions percentage="0.2"> Uniate Catholic </religions>
-        <languages percentage="100"> Bulgarian </languages>
-        <encompassed percentage="100" continent="f0_119"> </encompassed>
-        <border country="f0_232" length="494"> </border>
-        <border country="f0_300" length="148"> </border>
-        <border country="f0_351" length="608"> </border>
-        <border country="f0_370" length="318"> </border>
-        <border country="f0_670" length="240"> </border>
+        <ethnicgroups percentage="0.2">Russian</ethnicgroups>
+        <ethnicgroups percentage="2.6">Gypsy</ethnicgroups>
+        <ethnicgroups percentage="8.5">Turk</ethnicgroups>
+        <ethnicgroups percentage="85.3">Bulgarian</ethnicgroups>
+        <ethnicgroups percentage="0.3">Armenian</ethnicgroups>
+        <ethnicgroups percentage="2.5">Macedonian</ethnicgroups>
+        <religions percentage="13">Muslim</religions>
+        <religions percentage="0.8">Jewish</religions>
+        <religions percentage="0.5">Roman Catholic</religions>
+        <religions percentage="85">Bulgarian Orthodox</religions>
+        <religions percentage="0.2">Uniate Catholic</religions>
+        <languages percentage="100">Bulgarian</languages>
+        <encompassed percentage="100" continent="f0_119"></encompassed>
+        <border country="f0_232" length="494"></border>
+        <border country="f0_300" length="148"></border>
+        <border country="f0_351" length="608"></border>
+        <border country="f0_370" length="318"></border>
+        <border country="f0_670" length="240"></border>
     </country>
-    <country gdp_total="20100" population="5004112" population_growth="0.58" datacode="HR" car_code="HR" indep_date="25 06 1991" gdp_ind="30.6" name="Croatia" infant_mortality="10.2" government="parliamentary democracy" id="f0_179" inflation="3.7" gdp_serv="56.7" total_area="56538" gdp_agri="12.7" capital="f0_1490">
-        <name> Croatia </name>
+    <country gdp_total="20100" population="5004112" population_growth="0.58" datacode="HR" car_code="HR"
+             indep_date="25 06 1991" gdp_ind="30.6" name="Croatia" infant_mortality="10.2"
+             government="parliamentary democracy" id="f0_179" inflation="3.7" gdp_serv="56.7" total_area="56538"
+             gdp_agri="12.7" capital="f0_1490">
+        <name>Croatia</name>
         <city country="f0_179" id="f0_1490">
-            <name> Zagreb </name>
+            <name>Zagreb</name>
         </city>
-        <ethnicgroups percentage="0.9"> Muslim </ethnicgroups>
-        <ethnicgroups percentage="12"> Serb </ethnicgroups>
-        <ethnicgroups percentage="78"> Croat </ethnicgroups>
-        <ethnicgroups percentage="0.5"> Hungarian </ethnicgroups>
-        <ethnicgroups percentage="0.5"> Slovenian </ethnicgroups>
-        <religions percentage="0.4"> Protestant </religions>
-        <religions percentage="11.1"> Orthodox </religions>
-        <religions percentage="76.5"> Catholic </religions>
-        <religions percentage="1.2"> Slavic Muslim </religions>
-        <languages percentage="96"> Serbo-Croatian </languages>
-        <encompassed percentage="100" continent="f0_119"> </encompassed>
-        <border country="f0_169" length="932"> </border>
-        <border country="f0_251" length="329"> </border>
-        <border country="f0_370" length="266"> </border>
-        <border country="f0_380" length="546"> </border>
+        <ethnicgroups percentage="0.9">Muslim</ethnicgroups>
+        <ethnicgroups percentage="12">Serb</ethnicgroups>
+        <ethnicgroups percentage="78">Croat</ethnicgroups>
+        <ethnicgroups percentage="0.5">Hungarian</ethnicgroups>
+        <ethnicgroups percentage="0.5">Slovenian</ethnicgroups>
+        <religions percentage="0.4">Protestant</religions>
+        <religions percentage="11.1">Orthodox</religions>
+        <religions percentage="76.5">Catholic</religions>
+        <religions percentage="1.2">Slavic Muslim</religions>
+        <languages percentage="96">Serbo-Croatian</languages>
+        <encompassed percentage="100" continent="f0_119"></encompassed>
+        <border country="f0_169" length="932"></border>
+        <border country="f0_251" length="329"></border>
+        <border country="f0_370" length="266"></border>
+        <border country="f0_380" length="546"></border>
     </country>
-    <country gdp_total="106200" population="10321120" population_growth="-0.03" datacode="EZ" car_code="CZ" indep_date="01 01 1993" gdp_ind="40.7" name="Czech Republic" infant_mortality="8.4" government="parliamentary democracy" id="f0_184" inflation="9.1" gdp_serv="53.5" total_area="78703" gdp_agri="5.8" capital="f0_1493">
-        <name> Czech Rep. </name>
-        <name> Czech Republic </name>
+    <country gdp_total="106200" population="10321120" population_growth="-0.03" datacode="EZ" car_code="CZ"
+             indep_date="01 01 1993" gdp_ind="40.7" name="Czech Republic" infant_mortality="8.4"
+             government="parliamentary democracy" id="f0_184" inflation="9.1" gdp_serv="53.5" total_area="78703"
+             gdp_agri="5.8" capital="f0_1493">
+        <name>Czech Rep.</name>
+        <name>Czech Republic</name>
         <province population="702000" country="f0_184" area="11345" name="Jihocesky" id="f0_17471" capital="f0_2365">
             <city country="f0_184" province="f0_17471" id="f0_2365">
-                <name> Ceske Budejovice </name>
-                <population year="90"> 174000 </population>
+                <name>Ceske Budejovice</name>
+                <population year="90">174000</population>
             </city>
         </province>
-        <province population="2059000" country="f0_184" area="15028" name="Jihomoravsky" id="f0_17473" capital="f0_2371">
+        <province population="2059000" country="f0_184" area="15028" name="Jihomoravsky" id="f0_17473"
+                  capital="f0_2371">
             <city country="f0_184" province="f0_17473" id="f0_2371">
-                <name> Brno </name>
-                <population year="90"> 393000 </population>
+                <name>Brno</name>
+                <population year="90">393000</population>
             </city>
             <city country="f0_184" province="f0_17473" id="f0_2394">
-                <name> Zlin </name>
-                <population year="90"> 198000 </population>
+                <name>Zlin</name>
+                <population year="90">198000</population>
             </city>
         </province>
         <province population="1190000" country="f0_184" area="7819" name="Severocesky" id="f0_17475" capital="f0_2415">
             <city country="f0_184" province="f0_17475" id="f0_2410">
-                <name> Liberec </name>
-                <population year="90"> 160000 </population>
+                <name>Liberec</name>
+                <population year="90">160000</population>
             </city>
             <city country="f0_184" province="f0_17475" id="f0_2415">
-                <name> Usti nad Labem </name>
+                <name>Usti nad Labem</name>
             </city>
         </province>
-        <province population="1976000" country="f0_184" area="11067" name="Severomoravsky" id="f0_17477" capital="f0_2377">
+        <province population="1976000" country="f0_184" area="11067" name="Severomoravsky" id="f0_17477"
+                  capital="f0_2377">
             <city country="f0_184" province="f0_17477" id="f0_2377">
-                <name> Ostrava </name>
-                <population year="90"> 332000 </population>
+                <name>Ostrava</name>
+                <population year="90">332000</population>
             </city>
             <city country="f0_184" province="f0_17477" id="f0_2389">
-                <name> Olomouc </name>
-                <population year="90"> 225000 </population>
+                <name>Olomouc</name>
+                <population year="90">225000</population>
             </city>
         </province>
         <province population="2329000" country="f0_184" area="11490" name="Praha" id="f0_17479" capital="f0_1493">
             <city country="f0_184" latitude="50.0833" longitude="14.4167" province="f0_17479" id="f0_1493">
-                <name> Prague </name>
-                <population year="90"> 1215000 </population>
+                <name>Prague</name>
+                <population year="90">1215000</population>
             </city>
         </province>
-        <province population="1240000" country="f0_184" area="11240" name="Vychodocesky" id="f0_17481" capital="f0_2399">
+        <province population="1240000" country="f0_184" area="11240" name="Vychodocesky" id="f0_17481"
+                  capital="f0_2399">
             <city country="f0_184" province="f0_17481" id="f0_2399">
-                <name> Hradec Kralove </name>
-                <population year="90"> 164000 </population>
+                <name>Hradec Kralove</name>
+                <population year="90">164000</population>
             </city>
             <city country="f0_184" province="f0_17481" id="f0_2405">
-                <name> Pardubice </name>
-                <population year="90"> 163000 </population>
+                <name>Pardubice</name>
+                <population year="90">163000</population>
             </city>
         </province>
         <province population="869000" country="f0_184" area="10875" name="Zapadocesky" id="f0_17483" capital="f0_2383">
             <city country="f0_184" province="f0_17483" id="f0_2383">
-                <name> Plzen </name>
-                <population year="90"> 175000 </population>
+                <name>Plzen</name>
+                <population year="90">175000</population>
             </city>
         </province>
-        <ethnicgroups percentage="0.5"> German </ethnicgroups>
-        <ethnicgroups percentage="0.6"> Polish </ethnicgroups>
-        <ethnicgroups percentage="0.3"> Gypsy </ethnicgroups>
-        <ethnicgroups percentage="0.2"> Hungarian </ethnicgroups>
-        <ethnicgroups percentage="94.4"> Czech </ethnicgroups>
-        <ethnicgroups percentage="3"> Slovak </ethnicgroups>
-        <religions percentage="39.2"> Roman Catholic </religions>
-        <religions percentage="4.6"> Protestant </religions>
-        <religions percentage="3"> Orthodox </religions>
-        <encompassed percentage="100" continent="f0_119"> </encompassed>
-        <border country="f0_149" length="362"> </border>
-        <border country="f0_220" length="646"> </border>
-        <border country="f0_337" length="658"> </border>
-        <border country="f0_375" length="214"> </border>
+        <ethnicgroups percentage="0.5">German</ethnicgroups>
+        <ethnicgroups percentage="0.6">Polish</ethnicgroups>
+        <ethnicgroups percentage="0.3">Gypsy</ethnicgroups>
+        <ethnicgroups percentage="0.2">Hungarian</ethnicgroups>
+        <ethnicgroups percentage="94.4">Czech</ethnicgroups>
+        <ethnicgroups percentage="3">Slovak</ethnicgroups>
+        <religions percentage="39.2">Roman Catholic</religions>
+        <religions percentage="4.6">Protestant</religions>
+        <religions percentage="3">Orthodox</religions>
+        <encompassed percentage="100" continent="f0_119"></encompassed>
+        <border country="f0_149" length="362"></border>
+        <border country="f0_220" length="646"></border>
+        <border country="f0_337" length="658"></border>
+        <border country="f0_375" length="214"></border>
     </country>
-    <country population="5249632" gdp_total="112800" datacode="DA" population_growth="0.38" car_code="DK" gdp_ind="23.5" name="Denmark" infant_mortality="4.8" government="constitutional monarchy" id="f0_193" inflation="2.4" gdp_agri="3" total_area="43070" gdp_serv="73.5" capital="f0_1498">
-        <name> Denmark </name>
+    <country population="5249632" gdp_total="112800" datacode="DA" population_growth="0.38" car_code="DK" gdp_ind="23.5"
+             name="Denmark" infant_mortality="4.8" government="constitutional monarchy" id="f0_193" inflation="2.4"
+             gdp_agri="3" total_area="43070" gdp_serv="73.5" capital="f0_1498">
+        <name>Denmark</name>
         <city country="f0_193" latitude="55.6833" longitude="12.55" id="f0_1498">
-            <name> Copenhagen </name>
-            <population year="87"> 1358540 </population>
-            <located_at water="f0_38203" type="sea"> </located_at>
+            <name>Copenhagen</name>
+            <population year="87">1358540</population>
+            <located_at water="f0_38203" type="sea"></located_at>
         </city>
         <city country="f0_193" latitude="56.1" longitude="10.1" id="f0_36445">
-            <name> Aarhus </name>
-            <population year="87"> 194345 </population>
-            <located_at water="f0_38203" type="sea"> </located_at>
+            <name>Aarhus</name>
+            <population year="87">194345</population>
+            <located_at water="f0_38203" type="sea"></located_at>
         </city>
         <city country="f0_193" latitude="55.3" longitude="10.2" id="f0_36450">
-            <name> Odense </name>
-            <population year="87"> 136803 </population>
+            <name>Odense</name>
+            <population year="87">136803</population>
         </city>
         <city country="f0_193" latitude="57" longitude="10" id="f0_36454">
-            <name> Aalborg </name>
-            <population year="87"> 113865 </population>
+            <name>Aalborg</name>
+            <population year="87">113865</population>
         </city>
         <city country="f0_193" latitude="55.3" longitude="8.3" id="f0_36458">
-            <name> Esbjerg </name>
-            <population year="87"> 70975 </population>
-            <located_at water="f0_38020" type="sea"> </located_at>
+            <name>Esbjerg</name>
+            <population year="87">70975</population>
+            <located_at water="f0_38020" type="sea"></located_at>
         </city>
         <city country="f0_193" latitude="56.3" longitude="10" id="f0_36463">
-            <name> Randers </name>
-            <population year="87"> 55780 </population>
+            <name>Randers</name>
+            <population year="87">55780</population>
         </city>
-        <religions percentage="91"> Evangelical Lutheran </religions>
-        <religions percentage="2"> Protestant Roman Catholic </religions>
-        <encompassed percentage="100" continent="f0_119"> </encompassed>
-        <border country="f0_220" length="68"> </border>
+        <religions percentage="91">Evangelical Lutheran</religions>
+        <religions percentage="2">Protestant Roman Catholic</religions>
+        <encompassed percentage="100" continent="f0_119"></encompassed>
+        <border country="f0_220" length="68"></border>
     </country>
-    <country gdp_total="12300" population="1459428" population_growth="-1.13" datacode="EN" car_code="EW" indep_date="06 09 1991" gdp_ind="37" name="Estonia" infant_mortality="17.4" government="republic" id="f0_198" inflation="29" gdp_serv="53" total_area="45100" gdp_agri="10" capital="f0_1501">
-        <name> Estonia </name>
+    <country gdp_total="12300" population="1459428" population_growth="-1.13" datacode="EN" car_code="EW"
+             indep_date="06 09 1991" gdp_ind="37" name="Estonia" infant_mortality="17.4" government="republic"
+             id="f0_198" inflation="29" gdp_serv="53" total_area="45100" gdp_agri="10" capital="f0_1501">
+        <name>Estonia</name>
         <city country="f0_198" latitude="59.3" longitude="25" id="f0_1501">
-            <name> Tallinn </name>
-            <population year="87"> 478000 </population>
-            <located_at water="f0_38203" type="sea"> </located_at>
+            <name>Tallinn</name>
+            <population year="87">478000</population>
+            <located_at water="f0_38203" type="sea"></located_at>
         </city>
-        <ethnicgroups percentage="3.2"> Ukrainian </ethnicgroups>
-        <ethnicgroups percentage="30.3"> Russian </ethnicgroups>
-        <ethnicgroups percentage="1.8"> Byelorussian </ethnicgroups>
-        <ethnicgroups percentage="1.1"> Finn </ethnicgroups>
-        <ethnicgroups percentage="61.5"> Estonian </ethnicgroups>
-        <encompassed percentage="100" continent="f0_119"> </encompassed>
-        <border country="f0_280" length="267"> </border>
-        <border country="f0_358" length="290"> </border>
+        <ethnicgroups percentage="3.2">Ukrainian</ethnicgroups>
+        <ethnicgroups percentage="30.3">Russian</ethnicgroups>
+        <ethnicgroups percentage="1.8">Byelorussian</ethnicgroups>
+        <ethnicgroups percentage="1.1">Finn</ethnicgroups>
+        <ethnicgroups percentage="61.5">Estonian</ethnicgroups>
+        <encompassed percentage="100" continent="f0_119"></encompassed>
+        <border country="f0_280" length="267"></border>
+        <border country="f0_358" length="290"></border>
     </country>
-    <country population="43857" gdp_total="733" datacode="FO" population_growth="-1.8" name="Faroe Islands" infant_mortality="7.2" government="part of the Danish realm" id="f0_203" inflation="6.8" total_area="1400" capital="f0_1504">
-        <name> Faroe Islands </name>
+    <country population="43857" gdp_total="733" datacode="FO" population_growth="-1.8" name="Faroe Islands"
+             infant_mortality="7.2" government="part of the Danish realm" id="f0_203" inflation="6.8" total_area="1400"
+             capital="f0_1504">
+        <name>Faroe Islands</name>
         <city country="f0_203" id="f0_1504">
-            <name> Torshavn </name>
+            <name>Torshavn</name>
         </city>
-        <ethnicgroups percentage="100"> Scandinavian </ethnicgroups>
-        <religions percentage="100"> Evangelical Lutheran </religions>
-        <encompassed percentage="100" continent="f0_119"> </encompassed>
+        <ethnicgroups percentage="100">Scandinavian</ethnicgroups>
+        <religions percentage="100">Evangelical Lutheran</religions>
+        <encompassed percentage="100" continent="f0_119"></encompassed>
     </country>
-    <country gdp_total="92400" population="5105230" population_growth="0.1" datacode="FI" car_code="SF" indep_date="06 12 1917" gdp_ind="28" name="Finland" infant_mortality="4.9" government="republic" id="f0_208" inflation="2" gdp_serv="67.4" total_area="337030" gdp_agri="4.6" capital="f0_1507">
-        <name> Finland </name>
+    <country gdp_total="92400" population="5105230" population_growth="0.1" datacode="FI" car_code="SF"
+             indep_date="06 12 1917" gdp_ind="28" name="Finland" infant_mortality="4.9" government="republic"
+             id="f0_208" inflation="2" gdp_serv="67.4" total_area="337030" gdp_agri="4.6" capital="f0_1507">
+        <name>Finland</name>
         <province population="23000" country="f0_208" name="Aland" id="f0_33615" capital="f0_35399">
             <city country="f0_208" latitude="60.1" longitude="19.5" province="f0_33615" id="f0_35399">
-                <name> Mariehamn </name>
-                <population year="87"> 9500 </population>
+                <name>Mariehamn</name>
+                <population year="87">9500</population>
             </city>
         </province>
         <province population="662000" country="f0_208" name="Haeme" id="f0_33620" capital="f0_35402">
             <city country="f0_208" latitude="61" longitude="24.3" province="f0_33620" id="f0_35402">
-                <name> Haemeenlinna </name>
-                <population year="87"> 42000 </population>
+                <name>Haemeenlinna</name>
+                <population year="87">42000</population>
             </city>
             <city country="f0_208" latitude="61.3" longitude="23.5" province="f0_33620" id="f0_36467">
-                <name> Tampere </name>
-                <population year="87"> 170097 </population>
-                <located_at water="f0_39123" type="lake"> </located_at>
+                <name>Tampere</name>
+                <population year="87">170097</population>
+                <located_at water="f0_39123" type="lake"></located_at>
             </city>
             <city country="f0_208" latitude="60.5" longitude="25.2" province="f0_33620" id="f0_36478">
-                <name> Lahti </name>
-                <population year="87"> 94234 </population>
-                <located_at water="f0_39278" type="lake"> </located_at>
+                <name>Lahti</name>
+                <population year="87">94234</population>
+                <located_at water="f0_39278" type="lake"></located_at>
             </city>
         </province>
         <province population="252000" country="f0_208" name="Kuopio" id="f0_33625" capital="f0_35405">
             <city country="f0_208" latitude="62.5" longitude="27.4" province="f0_33625" id="f0_35405">
-                <name> Kuopio </name>
-                <population year="87"> 78571 </population>
-                <located_at water="f0_39112" type="lake"> </located_at>
+                <name>Kuopio</name>
+                <population year="87">78571</population>
+                <located_at water="f0_39112" type="lake"></located_at>
             </city>
         </province>
         <province population="345000" country="f0_208" name="Kymi" id="f0_33629" capital="f0_35410">
             <city country="f0_208" latitude="60.3" longitude="26.5" province="f0_33629" id="f0_35410">
-                <name> Kotka </name>
-                <population year="87"> 58345 </population>
-                <located_at water="f0_38203" type="sea"> </located_at>
+                <name>Kotka</name>
+                <population year="87">58345</population>
+                <located_at water="f0_38203" type="sea"></located_at>
             </city>
             <city country="f0_208" latitude="60.5" longitude="26.5" province="f0_33629" id="f0_36489">
-                <name> Lappeenrenta </name>
-                <population year="87"> 53922 </population>
-                <located_at water="f0_39119" type="lake"> </located_at>
+                <name>Lappeenrenta</name>
+                <population year="87">53922</population>
+                <located_at water="f0_39119" type="lake"></located_at>
             </city>
         </province>
         <province population="195000" country="f0_208" name="Lappia" id="f0_33634" capital="f0_35414">
             <city country="f0_208" latitude="66.3" longitude="24.4" province="f0_33634" id="f0_35414">
-                <name> Rovaniemi </name>
-                <population year="87"> 31000 </population>
-                <located_at water="f0_38322 f0_38328" type="river"> </located_at>
+                <name>Rovaniemi</name>
+                <population year="87">31000</population>
+                <located_at water="f0_38322 f0_38328" type="river"></located_at>
             </city>
         </province>
         <province population="209000" country="f0_208" name="Mikkeli" id="f0_33639" capital="f0_35419">
             <city country="f0_208" latitude="61.4" longitude="27.2" province="f0_33639" id="f0_35419">
-                <name> Mikkeli </name>
-                <population year="87"> 28000 </population>
-                <located_at water="f0_39119" type="lake"> </located_at>
+                <name>Mikkeli</name>
+                <population year="87">28000</population>
+                <located_at water="f0_39119" type="lake"></located_at>
             </city>
         </province>
         <province population="242000" country="f0_208" name="Suomi" id="f0_33643" capital="f0_35424">
             <city country="f0_208" latitude="62.1" longitude="25.2" province="f0_33643" id="f0_35424">
-                <name> Jyvaeskylae </name>
-                <population year="87"> 65511 </population>
-                <located_at water="f0_39278" type="lake"> </located_at>
+                <name>Jyvaeskylae</name>
+                <population year="87">65511</population>
+                <located_at water="f0_39278" type="lake"></located_at>
             </city>
         </province>
         <province population="177000" country="f0_208" name="Pohjols-Karjala" id="f0_33648" capital="f0_35429">
             <city country="f0_208" latitude="62.4" longitude="29.5" province="f0_33648" id="f0_35429">
-                <name> Joensuu </name>
-                <population year="87"> 44000 </population>
-                <located_at water="f0_39126" type="lake"> </located_at>
+                <name>Joensuu</name>
+                <population year="87">44000</population>
+                <located_at water="f0_39126" type="lake"></located_at>
             </city>
         </province>
         <province population="415000" country="f0_208" name="Oulu" id="f0_33653" capital="f0_35434">
             <city country="f0_208" latitude="65.3" longitude="25.2" province="f0_33653" id="f0_35434">
-                <name> Oulu </name>
-                <population year="87"> 97898 </population>
-                <located_at water="f0_38314" type="river"> </located_at>
-                <located_at water="f0_38203" type="sea"> </located_at>
+                <name>Oulu</name>
+                <population year="87">97898</population>
+                <located_at water="f0_38314" type="river"></located_at>
+                <located_at water="f0_38203" type="sea"></located_at>
             </city>
         </province>
         <province population="702000" country="f0_208" name="Turku-Pori" id="f0_33657" capital="f0_35440">
             <city country="f0_208" latitude="60.3" longitude="22.1" province="f0_33657" id="f0_35440">
-                <name> Turku </name>
-                <population year="87"> 161292 </population>
-                <located_at water="f0_38203" type="sea"> </located_at>
+                <name>Turku</name>
+                <population year="87">161292</population>
+                <located_at water="f0_38203" type="sea"></located_at>
             </city>
             <city country="f0_208" latitude="61.3" longitude="21.2" province="f0_33657" id="f0_36483">
-                <name> Pori </name>
-                <population year="87"> 77763 </population>
-                <located_at water="f0_38318" type="river"> </located_at>
+                <name>Pori</name>
+                <population year="87">77763</population>
+                <located_at water="f0_38318" type="river"></located_at>
             </city>
         </province>
         <province population="1119000" country="f0_208" name="Uusimaa" id="f0_33662" capital="f0_1507">
             <city country="f0_208" latitude="60.1667" longitude="24.95" province="f0_33662" id="f0_1507">
-                <name> Helsinki </name>
-                <population year="87"> 487428 </population>
-                <located_at water="f0_38203" type="sea"> </located_at>
+                <name>Helsinki</name>
+                <population year="87">487428</population>
+                <located_at water="f0_38203" type="sea"></located_at>
             </city>
             <city country="f0_208" latitude="60.2" longitude="24.3" province="f0_33662" id="f0_36473">
-                <name> Espoo </name>
-                <population year="87"> 160480 </population>
-                <located_at water="f0_38203" type="sea"> </located_at>
+                <name>Espoo</name>
+                <population year="87">160480</population>
+                <located_at water="f0_38203" type="sea"></located_at>
             </city>
         </province>
         <province population="430000" country="f0_208" name="Vaasa" id="f0_33666" capital="f0_35444">
             <city country="f0_208" latitude="63" longitude="21.3" province="f0_33666" id="f0_35444">
-                <name> Vaasa </name>
-                <population year="87"> 54275 </population>
-                <located_at water="f0_38203" type="sea"> </located_at>
+                <name>Vaasa</name>
+                <population year="87">54275</population>
+                <located_at water="f0_38203" type="sea"></located_at>
             </city>
         </province>
-        <religions percentage="89"> Evangelical Lutheran </religions>
-        <religions percentage="1"> Greek Orthodox </religions>
-        <languages percentage="6.3"> Swedish </languages>
-        <languages percentage="93.5"> Finnish </languages>
-        <encompassed percentage="100" continent="f0_119"> </encompassed>
-        <border country="f0_332" length="729"> </border>
-        <border country="f0_397" length="586"> </border>
-        <border country="f0_358" length="1313"> </border>
+        <religions percentage="89">Evangelical Lutheran</religions>
+        <religions percentage="1">Greek Orthodox</religions>
+        <languages percentage="6.3">Swedish</languages>
+        <languages percentage="93.5">Finnish</languages>
+        <encompassed percentage="100" continent="f0_119"></encompassed>
+        <border country="f0_332" length="729"></border>
+        <border country="f0_397" length="586"></border>
+        <border country="f0_358" length="1313"></border>
     </country>
-    <country population="58317448" gdp_total="1173000" datacode="FR" population_growth="0.34" car_code="F" gdp_ind="26.5" name="France" infant_mortality="5.3" government="republic" id="f0_213" inflation="1.7" gdp_agri="2.4" total_area="547030" gdp_serv="71.1" capital="f0_1510">
-        <name> France </name>
+    <country population="58317448" gdp_total="1173000" datacode="FR" population_growth="0.34" car_code="F"
+             gdp_ind="26.5" name="France" infant_mortality="5.3" government="republic" id="f0_213" inflation="1.7"
+             gdp_agri="2.4" total_area="547030" gdp_serv="71.1" capital="f0_1510">
+        <name>France</name>
         <province population="1624000" country="f0_213" area="8280" name="Alsace" id="f0_17485" capital="f0_2420">
             <city country="f0_213" latitude="48.5833" longitude="7.76667" province="f0_17485" id="f0_2420">
-                <name> Strasbourg </name>
-                <population year="90"> 252338 </population>
+                <name>Strasbourg</name>
+                <population year="90">252338</population>
             </city>
             <city country="f0_213" province="f0_17485" id="f0_2603">
-                <name> Mulhouse </name>
-                <population year="90"> 108357 </population>
+                <name>Mulhouse</name>
+                <population year="90">108357</population>
             </city>
         </province>
         <province population="2796000" country="f0_213" area="41309" name="Aquitaine" id="f0_17487" capital="f0_2426">
             <city country="f0_213" latitude="44.51" longitude="-0.4" province="f0_17487" id="f0_2426">
-                <name> Bordeaux </name>
-                <population year="90"> 210336 </population>
+                <name>Bordeaux</name>
+                <population year="90">210336</population>
             </city>
         </province>
         <province population="1321000" country="f0_213" area="26013" name="Auvergne" id="f0_17489" capital="f0_2581">
             <city country="f0_213" latitude="45.5" longitude="3.4" province="f0_17489" id="f0_2581">
-                <name> Clermont Ferrand </name>
-                <population year="90"> 136181 </population>
+                <name>Clermont Ferrand</name>
+                <population year="90">136181</population>
             </city>
         </province>
-        <province population="1391000" country="f0_213" area="17589" name="Basse Normandie" id="f0_17491" capital="f0_2432">
+        <province population="1391000" country="f0_213" area="17589" name="Basse Normandie" id="f0_17491"
+                  capital="f0_2432">
             <city country="f0_213" latitude="49.3" longitude="-0.2" province="f0_17491" id="f0_2432">
-                <name> Caen </name>
-                <population year="90"> 112846 </population>
+                <name>Caen</name>
+                <population year="90">112846</population>
             </city>
         </province>
         <province population="2796000" country="f0_213" area="27209" name="Bretagne" id="f0_17493" capital="f0_2438">
             <city country="f0_213" latitude="48.1" longitude="-1.4" province="f0_17493" id="f0_2438">
-                <name> Rennes </name>
-                <population year="90"> 197536 </population>
+                <name>Rennes</name>
+                <population year="90">197536</population>
             </city>
             <city country="f0_213" province="f0_17493" id="f0_2576">
-                <name> Brest </name>
-                <population year="90"> 147956 </population>
+                <name>Brest</name>
+                <population year="90">147956</population>
             </city>
         </province>
         <province population="1609000" country="f0_213" area="31582" name="Bourgogne" id="f0_17495" capital="f0_2444">
             <city country="f0_213" latitude="47.2" longitude="5.2" province="f0_17495" id="f0_2444">
-                <name> Dijon </name>
-                <population year="90"> 146703 </population>
+                <name>Dijon</name>
+                <population year="90">146703</population>
             </city>
         </province>
         <province population="2371000" country="f0_213" area="39151" name="Centre" id="f0_17497" capital="f0_2450">
             <city country="f0_213" latitude="47.5" longitude="1.5" province="f0_17497" id="f0_2450">
-                <name> Orleans </name>
-                <population year="90"> 105111 </population>
-                <located_at water="f0_38719" type="river"> </located_at>
+                <name>Orleans</name>
+                <population year="90">105111</population>
+                <located_at water="f0_38719" type="river"></located_at>
             </city>
             <city country="f0_213" province="f0_17497" id="f0_2456">
-                <name> Tours </name>
-                <population year="90"> 129509 </population>
+                <name>Tours</name>
+                <population year="90">129509</population>
             </city>
         </province>
-        <province population="1348000" country="f0_213" area="25606" name="Champagne Ardenne" id="f0_17499" capital="f0_2613">
+        <province population="1348000" country="f0_213" area="25606" name="Champagne Ardenne" id="f0_17499"
+                  capital="f0_2613">
             <city country="f0_213" latitude="49.1" longitude="4.5" province="f0_17499" id="f0_2571">
-                <name> Reims </name>
-                <population year="90"> 180620 </population>
+                <name>Reims</name>
+                <population year="90">180620</population>
             </city>
             <city country="f0_213" province="f0_17499" id="f0_2613">
-                <name> Chalons sur Marne </name>
+                <name>Chalons sur Marne</name>
             </city>
         </province>
         <province population="250000" country="f0_213" area="8680" name="Corse" id="f0_17501" capital="f0_2618">
             <city country="f0_213" latitude="41.4" longitude="8.4" province="f0_17501" id="f0_2618">
-                <name> Ajaccio </name>
-                <population year="87"> 53500 </population>
-                <located_at water="f0_38042" type="sea"> </located_at>
+                <name>Ajaccio</name>
+                <population year="87">53500</population>
+                <located_at water="f0_38042" type="sea"></located_at>
             </city>
         </province>
-        <province population="1097000" country="f0_213" area="16202" name="Franche Comte" id="f0_17503" capital="f0_2597">
+        <province population="1097000" country="f0_213" area="16202" name="Franche Comte" id="f0_17503"
+                  capital="f0_2597">
             <city country="f0_213" latitude="47.1" longitude="6.2" province="f0_17503" id="f0_2597">
-                <name> Besancon </name>
-                <population year="90"> 113828 </population>
+                <name>Besancon</name>
+                <population year="90">113828</population>
             </city>
         </province>
-        <province population="1737000" country="f0_213" area="12318" name="Haute Normandie" id="f0_17505" capital="f0_2461">
+        <province population="1737000" country="f0_213" area="12318" name="Haute Normandie" id="f0_17505"
+                  capital="f0_2461">
             <city country="f0_213" latitude="49.3" longitude="1.5" province="f0_17505" id="f0_2461">
-                <name> Rouen </name>
-                <population year="90"> 102723 </population>
-                <located_at water="f0_38724" type="river"> </located_at>
+                <name>Rouen</name>
+                <population year="90">102723</population>
+                <located_at water="f0_38724" type="river"></located_at>
             </city>
             <city country="f0_213" province="f0_17505" id="f0_2566">
-                <name> Le Havre </name>
-                <population year="90"> 195854 </population>
+                <name>Le Havre</name>
+                <population year="90">195854</population>
             </city>
         </province>
-        <province population="10660000" country="f0_213" area="12011" name="Ile de France" id="f0_17507" capital="f0_1510">
+        <province population="10660000" country="f0_213" area="12011" name="Ile de France" id="f0_17507"
+                  capital="f0_1510">
             <city country="f0_213" latitude="48.8167" longitude="2.48333" province="f0_17507" id="f0_1510">
-                <name> Paris </name>
-                <population year="90"> 2152423 </population>
-                <located_at water="f0_38724" type="river"> </located_at>
+                <name>Paris</name>
+                <population year="90">2152423</population>
+                <located_at water="f0_38724" type="river"></located_at>
             </city>
             <city country="f0_213" province="f0_17507" id="f0_2608">
-                <name> Boulogne Billancourt </name>
-                <population year="90"> 101743 </population>
+                <name>Boulogne Billancourt</name>
+                <population year="90">101743</population>
             </city>
         </province>
-        <province population="2115000" country="f0_213" area="27376" name="Languedoc Rousillon" id="f0_17509" capital="f0_2467">
+        <province population="2115000" country="f0_213" area="27376" name="Languedoc Rousillon" id="f0_17509"
+                  capital="f0_2467">
             <city country="f0_213" latitude="43.3" longitude="3.5" province="f0_17509" id="f0_2467">
-                <name> Montpellier </name>
-                <population year="90"> 207996 </population>
+                <name>Montpellier</name>
+                <population year="90">207996</population>
             </city>
             <city country="f0_213" province="f0_17509" id="f0_2473">
-                <name> Nimes </name>
-                <population year="90"> 128471 </population>
+                <name>Nimes</name>
+                <population year="90">128471</population>
             </city>
             <city country="f0_213" province="f0_17509" id="f0_2478">
-                <name> Perpignan </name>
-                <population year="90"> 105983 </population>
+                <name>Perpignan</name>
+                <population year="90">105983</population>
             </city>
         </province>
         <province population="723000" country="f0_213" area="16942" name="Limousin" id="f0_17511" capital="f0_2483">
             <city country="f0_213" latitude="45.5" longitude="1.2" province="f0_17511" id="f0_2483">
-                <name> Limoges </name>
-                <population year="90"> 133464 </population>
+                <name>Limoges</name>
+                <population year="90">133464</population>
             </city>
         </province>
         <province population="2306000" country="f0_213" area="23547" name="Lorraine" id="f0_17513" capital="f0_2489">
             <city country="f0_213" province="f0_17513" id="f0_2489">
-                <name> Metz </name>
-                <population year="90"> 119594 </population>
+                <name>Metz</name>
+                <population year="90">119594</population>
             </city>
             <city country="f0_213" latitude="48.4" longitude="6.1" province="f0_17513" id="f0_2495">
-                <name> Nancy </name>
-                <population year="90"> 99351 </population>
+                <name>Nancy</name>
+                <population year="90">99351</population>
             </city>
         </province>
-        <province population="2431000" country="f0_213" area="45349" name="Midi Pyrenees" id="f0_17515" capital="f0_2500">
+        <province population="2431000" country="f0_213" area="45349" name="Midi Pyrenees" id="f0_17515"
+                  capital="f0_2500">
             <city country="f0_213" latitude="43.4" longitude="1.2" province="f0_17515" id="f0_2500">
-                <name> Toulouse </name>
-                <population year="90"> 358688 </population>
-                <located_at water="f0_38729" type="river"> </located_at>
+                <name>Toulouse</name>
+                <population year="90">358688</population>
+                <located_at water="f0_38729" type="river"></located_at>
             </city>
         </province>
-        <province population="3965000" country="f0_213" area="12413" name="Nord Pas de Calais" id="f0_17517" capital="f0_2506">
+        <province population="3965000" country="f0_213" area="12413" name="Nord Pas de Calais" id="f0_17517"
+                  capital="f0_2506">
             <city country="f0_213" latitude="50.37" longitude="3.3" province="f0_17517" id="f0_2506">
-                <name> Lille </name>
-                <population year="90"> 172142 </population>
+                <name>Lille</name>
+                <population year="90">172142</population>
             </city>
         </province>
-        <province population="3059000" country="f0_213" area="32082" name="Pays de la Loire" id="f0_17519" capital="f0_2512">
+        <province population="3059000" country="f0_213" area="32082" name="Pays de la Loire" id="f0_17519"
+                  capital="f0_2512">
             <city country="f0_213" latitude="47.25" longitude="-1.56667" province="f0_17519" id="f0_2512">
-                <name> Nantes </name>
-                <population year="90"> 244995 </population>
-                <located_at water="f0_38719" type="river"> </located_at>
+                <name>Nantes</name>
+                <population year="90">244995</population>
+                <located_at water="f0_38719" type="river"></located_at>
             </city>
             <city country="f0_213" province="f0_17519" id="f0_2518">
-                <name> Angers </name>
-                <population year="90"> 141404 </population>
+                <name>Angers</name>
+                <population year="90">141404</population>
             </city>
             <city country="f0_213" province="f0_17519" id="f0_2523">
-                <name> Le Mans </name>
-                <population year="90"> 145502 </population>
+                <name>Le Mans</name>
+                <population year="90">145502</population>
             </city>
         </province>
         <province population="1811000" country="f0_213" area="19399" name="Picardie" id="f0_17521" capital="f0_2528">
             <city country="f0_213" latitude="49.55" longitude="2.19" province="f0_17521" id="f0_2528">
-                <name> Amiens </name>
-                <population year="90"> 131872 </population>
+                <name>Amiens</name>
+                <population year="90">131872</population>
             </city>
         </province>
-        <province population="1595000" country="f0_213" area="25809" name="Poitou Charentes" id="f0_17523" capital="f0_2623">
+        <province population="1595000" country="f0_213" area="25809" name="Poitou Charentes" id="f0_17523"
+                  capital="f0_2623">
             <city country="f0_213" latitude="46.4" longitude="0.2" province="f0_17523" id="f0_2623">
-                <name> Poitiers </name>
-                <population year="87"> 79300 </population>
+                <name>Poitiers</name>
+                <population year="87">79300</population>
             </city>
         </province>
-        <province population="4258000" country="f0_213" area="31400" name="Provence Cote dAzur" id="f0_17525" capital="f0_2534">
+        <province population="4258000" country="f0_213" area="31400" name="Provence Cote dAzur" id="f0_17525"
+                  capital="f0_2534">
             <city country="f0_213" latitude="43.2" longitude="5.2" province="f0_17525" id="f0_2534">
-                <name> Marseille </name>
-                <population year="90"> 800550 </population>
-                <located_at water="f0_38042" type="sea"> </located_at>
+                <name>Marseille</name>
+                <population year="90">800550</population>
+                <located_at water="f0_38042" type="sea"></located_at>
             </city>
             <city country="f0_213" latitude="43.7" longitude="7.26667" province="f0_17525" id="f0_2540">
-                <name> Nice </name>
-                <population year="90"> 342439 </population>
+                <name>Nice</name>
+                <population year="90">342439</population>
             </city>
             <city country="f0_213" province="f0_17525" id="f0_2545">
-                <name> Toulon </name>
-                <population year="90"> 167619 </population>
+                <name>Toulon</name>
+                <population year="90">167619</population>
             </city>
             <city country="f0_213" province="f0_17525" id="f0_2587">
-                <name> Aix en Provence </name>
-                <population year="90"> 123842 </population>
+                <name>Aix en Provence</name>
+                <population year="90">123842</population>
             </city>
         </province>
         <province population="5351000" country="f0_213" area="43698" name="Rhone Alpes" id="f0_17527" capital="f0_2550">
             <city country="f0_213" latitude="45.7" longitude="4.78333" province="f0_17527" id="f0_2550">
-                <name> Lyon </name>
-                <population year="90"> 415487 </population>
-                <located_at water="f0_38734" type="river"> </located_at>
+                <name>Lyon</name>
+                <population year="90">415487</population>
+                <located_at water="f0_38734" type="river"></located_at>
             </city>
             <city country="f0_213" province="f0_17527" id="f0_2556">
-                <name> Grenoble </name>
-                <population year="90"> 150758 </population>
+                <name>Grenoble</name>
+                <population year="90">150758</population>
             </city>
             <city country="f0_213" province="f0_17527" id="f0_2561">
-                <name> Saint Etienne </name>
-                <population year="90"> 199396 </population>
+                <name>Saint Etienne</name>
+                <population year="90">199396</population>
             </city>
             <city country="f0_213" province="f0_17527" id="f0_2592">
-                <name> Villeurbanne </name>
-                <population year="90"> 116872 </population>
+                <name>Villeurbanne</name>
+                <population year="90">116872</population>
             </city>
         </province>
-        <religions percentage="1"> Muslim </religions>
-        <religions percentage="1"> Jewish </religions>
-        <religions percentage="90"> Roman Catholic </religions>
-        <religions percentage="2"> Protestant </religions>
-        <languages percentage="100"> French </languages>
-        <encompassed percentage="100" continent="f0_119"> </encompassed>
-        <border country="f0_144" length="60"> </border>
-        <border country="f0_162" length="620"> </border>
-        <border country="f0_220" length="451"> </border>
-        <border country="f0_268" length="488"> </border>
-        <border country="f0_295" length="73"> </border>
-        <border country="f0_320" length="4.4"> </border>
-        <border country="f0_385" length="623"> </border>
-        <border country="f0_404" length="573"> </border>
+        <religions percentage="1">Muslim</religions>
+        <religions percentage="1">Jewish</religions>
+        <religions percentage="90">Roman Catholic</religions>
+        <religions percentage="2">Protestant</religions>
+        <languages percentage="100">French</languages>
+        <encompassed percentage="100" continent="f0_119"></encompassed>
+        <border country="f0_144" length="60"></border>
+        <border country="f0_162" length="620"></border>
+        <border country="f0_220" length="451"></border>
+        <border country="f0_268" length="488"></border>
+        <border country="f0_295" length="73"></border>
+        <border country="f0_320" length="4.4"></border>
+        <border country="f0_385" length="623"></border>
+        <border country="f0_404" length="573"></border>
     </country>
-    <country population="83536112" gdp_total="1452200" datacode="GM" population_growth="0.67" car_code="D" indep_date="18 01 1871" gdp_ind="34.2" name="Germany" infant_mortality="6" government="federal republic" id="f0_220" gdp_serv="64.8" gdp_agri="1" total_area="356910" capital="f0_1515">
-        <name> Germany </name>
-        <province population="10272069" country="f0_220" area="35742" name="Baden Wurttemberg" id="f0_17529" capital="f0_2628">
+    <country population="83536112" gdp_total="1452200" datacode="GM" population_growth="0.67" car_code="D"
+             indep_date="18 01 1871" gdp_ind="34.2" name="Germany" infant_mortality="6" government="federal republic"
+             id="f0_220" gdp_serv="64.8" gdp_agri="1" total_area="356910" capital="f0_1515">
+        <name>Germany</name>
+        <province population="10272069" country="f0_220" area="35742" name="Baden Wurttemberg" id="f0_17529"
+                  capital="f0_2628">
             <city country="f0_220" latitude="48.7" longitude="9.1" province="f0_17529" id="f0_2628">
-                <name> Stuttgart </name>
-                <population year="95"> 588482 </population>
+                <name>Stuttgart</name>
+                <population year="95">588482</population>
             </city>
             <city country="f0_220" latitude="49.5667" longitude="8.46667" province="f0_17529" id="f0_2772">
-                <name> Mannheim </name>
-                <population year="95"> 316223 </population>
+                <name>Mannheim</name>
+                <population year="95">316223</population>
             </city>
             <city country="f0_220" province="f0_17529" id="f0_2792">
-                <name> Karlsruhe </name>
-                <population year="95"> 277011 </population>
+                <name>Karlsruhe</name>
+                <population year="95">277011</population>
             </city>
             <city country="f0_220" province="f0_17529" id="f0_2857">
-                <name> Freiburg im Breisgau </name>
-                <population year="95"> 198496 </population>
+                <name>Freiburg im Breisgau</name>
+                <population year="95">198496</population>
             </city>
             <city country="f0_220" province="f0_17529" id="f0_2912">
-                <name> Heidelberg </name>
-                <population year="95"> 138964 </population>
+                <name>Heidelberg</name>
+                <population year="95">138964</population>
             </city>
             <city country="f0_220" province="f0_17529" id="f0_2967">
-                <name> Heilbronn </name>
-                <population year="95"> 122253 </population>
+                <name>Heilbronn</name>
+                <population year="95">122253</population>
             </city>
             <city country="f0_220" province="f0_17529" id="f0_2977">
-                <name> Pforzheim </name>
-                <population year="95"> 117960 </population>
+                <name>Pforzheim</name>
+                <population year="95">117960</population>
             </city>
             <city country="f0_220" province="f0_17529" id="f0_2992">
-                <name> Ulm </name>
-                <population year="95"> 115123 </population>
+                <name>Ulm</name>
+                <population year="95">115123</population>
             </city>
             <city country="f0_220" province="f0_17529" id="f0_3017">
-                <name> Reutlingen </name>
-                <population year="95"> 107782 </population>
+                <name>Reutlingen</name>
+                <population year="95">107782</population>
             </city>
         </province>
         <province population="11921944" country="f0_220" area="70546" name="Bayern" id="f0_17531" capital="f0_2712">
             <city country="f0_220" latitude="48.15" longitude="11.5667" province="f0_17531" id="f0_2712">
-                <name> Munchen </name>
-                <name> Munich </name>
-                <population year="95"> 1244676 </population>
+                <name>Munchen</name>
+                <name>Munich</name>
+                <population year="95">1244676</population>
             </city>
             <city country="f0_220" province="f0_17531" id="f0_2747">
-                <name> Nurnberg </name>
-                <population year="95"> 495845 </population>
+                <name>Nurnberg</name>
+                <population year="95">495845</population>
             </city>
             <city country="f0_220" province="f0_17531" id="f0_2812">
-                <name> Augsburg </name>
-                <population year="95"> 262110 </population>
+                <name>Augsburg</name>
+                <population year="95">262110</population>
             </city>
             <city country="f0_220" province="f0_17531" id="f0_2927">
-                <name> Wurzburg </name>
-                <population year="95"> 127946 </population>
+                <name>Wurzburg</name>
+                <population year="95">127946</population>
             </city>
             <city country="f0_220" province="f0_17531" id="f0_2957">
-                <name> Regensburg </name>
-                <population year="95"> 125608 </population>
+                <name>Regensburg</name>
+                <population year="95">125608</population>
             </city>
             <city country="f0_220" province="f0_17531" id="f0_3002">
-                <name> Ingolstadt </name>
-                <population year="95"> 110910 </population>
+                <name>Ingolstadt</name>
+                <population year="95">110910</population>
             </city>
             <city country="f0_220" province="f0_17531" id="f0_3012">
-                <name> Furth </name>
-                <population year="95"> 107799 </population>
+                <name>Furth</name>
+                <population year="95">107799</population>
             </city>
             <city country="f0_220" province="f0_17531" id="f0_3057">
-                <name> Erlangen </name>
-                <population year="95"> 101450 </population>
+                <name>Erlangen</name>
+                <population year="95">101450</population>
             </city>
             <city country="f0_220" latitude="48.1" longitude="11.3" province="f0_17531" id="f0_36767">
-                <name> Muenchen </name>
-                <population year="87"> 1290079 </population>
+                <name>Muenchen</name>
+                <population year="87">1290079</population>
             </city>
         </province>
         <province population="3472009" country="f0_220" area="889" name="Berlin" id="f0_17533" capital="f0_1515">
             <city country="f0_220" latitude="52.45" longitude="13.3" province="f0_17533" id="f0_1515">
-                <name> Berlin </name>
-                <population year="95"> 3472009 </population>
+                <name>Berlin</name>
+                <population year="95">3472009</population>
             </city>
         </province>
         <province population="2536747" country="f0_220" area="29480" name="Brandenburg" id="f0_17534" capital="f0_2634">
             <city country="f0_220" province="f0_17534" id="f0_2634">
-                <name> Potsdam </name>
-                <population year="95"> 138268 </population>
+                <name>Potsdam</name>
+                <population year="95">138268</population>
             </city>
             <city country="f0_220" province="f0_17534" id="f0_2952">
-                <name> Cottbus </name>
-                <population year="95"> 125643 </population>
+                <name>Cottbus</name>
+                <population year="95">125643</population>
             </city>
         </province>
         <province population="680000" country="f0_220" area="404" name="Bremen" id="f0_17536" capital="f0_2640">
             <city country="f0_220" latitude="53.7" longitude="8.5" province="f0_17536" id="f0_2640">
-                <name> Bremen </name>
-                <population year="95"> 549182 </population>
-                <located_at water="f0_38703" type="river"> </located_at>
+                <name>Bremen</name>
+                <population year="95">549182</population>
+                <located_at water="f0_38703" type="river"></located_at>
             </city>
             <city country="f0_220" province="f0_17536" id="f0_2922">
-                <name> Bremerhaven </name>
-                <population year="95"> 130847 </population>
+                <name>Bremerhaven</name>
+                <population year="95">130847</population>
             </city>
         </province>
         <province population="1705872" country="f0_220" area="755" name="Hamburg" id="f0_17537" capital="f0_2646">
             <city country="f0_220" latitude="53.55" longitude="9.96667" province="f0_17537" id="f0_2646">
-                <name> Hamburg </name>
-                <population year="95"> 1705872 </population>
-                <located_at water="f0_38506" type="river"> </located_at>
+                <name>Hamburg</name>
+                <population year="95">1705872</population>
+                <located_at water="f0_38506" type="river"></located_at>
             </city>
         </province>
         <province population="5980693" country="f0_220" area="21115" name="Hessen" id="f0_17538" capital="f0_2652">
             <city country="f0_220" latitude="50.07" longitude="8.17" province="f0_17538" id="f0_2652">
-                <name> Wiesbaden </name>
-                <population year="95"> 266081 </population>
+                <name>Wiesbaden</name>
+                <population year="95">266081</population>
             </city>
             <city country="f0_220" province="f0_17538" id="f0_2727">
-                <name> Frankfurt am Main </name>
-                <population year="95"> 652412 </population>
+                <name>Frankfurt am Main</name>
+                <population year="95">652412</population>
             </city>
             <city country="f0_220" province="f0_17538" id="f0_2852">
-                <name> Kassel </name>
-                <population year="95"> 201789 </population>
+                <name>Kassel</name>
+                <population year="95">201789</population>
             </city>
             <city country="f0_220" province="f0_17538" id="f0_2907">
-                <name> Darmstadt </name>
-                <population year="95"> 139063 </population>
+                <name>Darmstadt</name>
+                <population year="95">139063</population>
             </city>
             <city country="f0_220" province="f0_17538" id="f0_2987">
-                <name> Offenbach am Main </name>
-                <population year="95"> 116482 </population>
+                <name>Offenbach am Main</name>
+                <population year="95">116482</population>
             </city>
         </province>
-        <province population="1832298" country="f0_220" area="23170" name="Mecklenburg Vorpommern" id="f0_17540" capital="f0_2658">
+        <province population="1832298" country="f0_220" area="23170" name="Mecklenburg Vorpommern" id="f0_17540"
+                  capital="f0_2658">
             <city country="f0_220" province="f0_17540" id="f0_2658">
-                <name> Schwerin </name>
-                <population year="95"> 118291 </population>
+                <name>Schwerin</name>
+                <population year="95">118291</population>
             </city>
             <city country="f0_220" province="f0_17540" id="f0_2832">
-                <name> Rostock </name>
-                <population year="95"> 232634 </population>
+                <name>Rostock</name>
+                <population year="95">232634</population>
             </city>
         </province>
-        <province population="7715363" country="f0_220" area="47609" name="Niedersachsen" id="f0_17542" capital="f0_2664">
+        <province population="7715363" country="f0_220" area="47609" name="Niedersachsen" id="f0_17542"
+                  capital="f0_2664">
             <city country="f0_220" latitude="52.4" longitude="9.66667" province="f0_17542" id="f0_2664">
-                <name> Hannover </name>
-                <population year="95"> 525763 </population>
+                <name>Hannover</name>
+                <population year="95">525763</population>
             </city>
             <city country="f0_220" province="f0_17542" id="f0_2817">
-                <name> Braunschweig </name>
-                <population year="95"> 254130 </population>
+                <name>Braunschweig</name>
+                <population year="95">254130</population>
             </city>
             <city country="f0_220" province="f0_17542" id="f0_2877">
-                <name> Osnabruck </name>
-                <population year="95"> 168050 </population>
+                <name>Osnabruck</name>
+                <population year="95">168050</population>
             </city>
             <city country="f0_220" province="f0_17542" id="f0_2897">
-                <name> Oldenburg </name>
-                <population year="95"> 149691 </population>
+                <name>Oldenburg</name>
+                <population year="95">149691</population>
             </city>
             <city country="f0_220" province="f0_17542" id="f0_2932">
-                <name> Gottingen </name>
-                <population year="95"> 127519 </population>
+                <name>Gottingen</name>
+                <population year="95">127519</population>
             </city>
             <city country="f0_220" province="f0_17542" id="f0_2942">
-                <name> Wolfsburg </name>
-                <population year="95"> 126965 </population>
+                <name>Wolfsburg</name>
+                <population year="95">126965</population>
             </city>
             <city country="f0_220" province="f0_17542" id="f0_2982">
-                <name> Salzgitter </name>
-                <population year="95"> 117842 </population>
+                <name>Salzgitter</name>
+                <population year="95">117842</population>
             </city>
             <city country="f0_220" province="f0_17542" id="f0_3027">
-                <name> Hildesheim </name>
-                <population year="95"> 106095 </population>
+                <name>Hildesheim</name>
+                <population year="95">106095</population>
             </city>
         </province>
-        <province population="17816080" country="f0_220" area="34077" name="Nordrhein Westfalen" id="f0_17544" capital="f0_2670">
+        <province population="17816080" country="f0_220" area="34077" name="Nordrhein Westfalen" id="f0_17544"
+                  capital="f0_2670">
             <city country="f0_220" province="f0_17544" id="f0_2670">
-                <name> Dusseldorf </name>
-                <population year="95"> 572638 </population>
+                <name>Dusseldorf</name>
+                <population year="95">572638</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2720">
-                <name> Koln </name>
-                <name> Cologne </name>
-                <population year="95"> 963817 </population>
+                <name>Koln</name>
+                <name>Cologne</name>
+                <population year="95">963817</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2732">
-                <name> Essen </name>
-                <population year="95"> 617955 </population>
+                <name>Essen</name>
+                <population year="95">617955</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2737">
-                <name> Dortmund </name>
-                <population year="95"> 600918 </population>
+                <name>Dortmund</name>
+                <population year="95">600918</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2742">
-                <name> Duisburg </name>
-                <population year="95"> 536106 </population>
+                <name>Duisburg</name>
+                <population year="95">536106</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2757">
-                <name> Bochum </name>
-                <population year="95"> 401129 </population>
+                <name>Bochum</name>
+                <population year="95">401129</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2762">
-                <name> Wuppertal </name>
-                <population year="95"> 383776 </population>
+                <name>Wuppertal</name>
+                <population year="95">383776</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2767">
-                <name> Bielefeld </name>
-                <population year="95"> 324067 </population>
+                <name>Bielefeld</name>
+                <population year="95">324067</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2777">
-                <name> Gelsenkirchen </name>
-                <population year="95"> 293542 </population>
+                <name>Gelsenkirchen</name>
+                <population year="95">293542</population>
             </city>
             <city country="f0_220" latitude="50.4" longitude="7.5" province="f0_17544" id="f0_2782">
-                <name> Bonn </name>
-                <population year="95"> 293072 </population>
-                <located_at water="f0_38689" type="river"> </located_at>
+                <name>Bonn</name>
+                <population year="95">293072</population>
+                <located_at water="f0_38689" type="river"></located_at>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2802">
-                <name> Monchengladbach </name>
-                <population year="95"> 266073 </population>
+                <name>Monchengladbach</name>
+                <population year="95">266073</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2807">
-                <name> Munster </name>
-                <population year="95"> 264887 </population>
+                <name>Munster</name>
+                <population year="95">264887</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2822">
-                <name> Krefeld </name>
-                <population year="95"> 249662 </population>
+                <name>Krefeld</name>
+                <population year="95">249662</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2827">
-                <name> Aachen </name>
-                <population year="95"> 247113 </population>
+                <name>Aachen</name>
+                <population year="95">247113</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2837">
-                <name> Oberhausen </name>
-                <population year="95"> 225443 </population>
+                <name>Oberhausen</name>
+                <population year="95">225443</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2847">
-                <name> Hagen </name>
-                <population year="95"> 213747 </population>
+                <name>Hagen</name>
+                <population year="95">213747</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2862">
-                <name> Hamm </name>
-                <population year="95"> 184020 </population>
+                <name>Hamm</name>
+                <population year="95">184020</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2867">
-                <name> Herne </name>
-                <population year="95"> 180029 </population>
+                <name>Herne</name>
+                <population year="95">180029</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2872">
-                <name> Mulheim an der Ruhr </name>
-                <population year="95"> 176513 </population>
+                <name>Mulheim an der Ruhr</name>
+                <population year="95">176513</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2887">
-                <name> Solingen </name>
-                <population year="95"> 165973 </population>
+                <name>Solingen</name>
+                <population year="95">165973</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2892">
-                <name> Leverkusen </name>
-                <population year="95"> 161832 </population>
+                <name>Leverkusen</name>
+                <population year="95">161832</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2902">
-                <name> Neuss </name>
-                <population year="95"> 148870 </population>
+                <name>Neuss</name>
+                <population year="95">148870</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2917">
-                <name> Paderborn </name>
-                <population year="95"> 131513 </population>
+                <name>Paderborn</name>
+                <population year="95">131513</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2937">
-                <name> Recklinghausen </name>
-                <population year="95"> 127139 </population>
+                <name>Recklinghausen</name>
+                <population year="95">127139</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2962">
-                <name> Remscheid </name>
-                <population year="95"> 123069 </population>
+                <name>Remscheid</name>
+                <population year="95">123069</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2972">
-                <name> Bottrop </name>
-                <population year="95"> 119669 </population>
+                <name>Bottrop</name>
+                <population year="95">119669</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_2997">
-                <name> Siegen </name>
-                <population year="95"> 111541 </population>
+                <name>Siegen</name>
+                <population year="95">111541</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_3022">
-                <name> Moers </name>
-                <population year="95"> 107011 </population>
+                <name>Moers</name>
+                <population year="95">107011</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_3032">
-                <name> Witten </name>
-                <population year="95"> 105423 </population>
+                <name>Witten</name>
+                <population year="95">105423</population>
             </city>
             <city country="f0_220" province="f0_17544" id="f0_3037">
-                <name> Bergisch Gladbach </name>
-                <population year="95"> 105122 </population>
+                <name>Bergisch Gladbach</name>
+                <population year="95">105122</population>
             </city>
             <city country="f0_220" latitude="51.1" longitude="6.5" province="f0_17544" id="f0_36759">
-                <name> Duesseldorf </name>
-                <population year="87"> 567210 </population>
+                <name>Duesseldorf</name>
+                <population year="87">567210</population>
             </city>
         </province>
-        <province population="3951573" country="f0_220" area="19851" name="Rheinland Pfalz" id="f0_17546" capital="f0_2676">
+        <province population="3951573" country="f0_220" area="19851" name="Rheinland Pfalz" id="f0_17546"
+                  capital="f0_2676">
             <city country="f0_220" latitude="50" longitude="8.1" province="f0_17546" id="f0_2676">
-                <name> Mainz </name>
-                <population year="95"> 184627 </population>
-                <located_at water="f0_38689" type="river"> </located_at>
+                <name>Mainz</name>
+                <population year="95">184627</population>
+                <located_at water="f0_38689" type="river"></located_at>
             </city>
             <city country="f0_220" province="f0_17546" id="f0_2882">
-                <name> Ludwigshafen </name>
-                <population year="95"> 167883 </population>
+                <name>Ludwigshafen</name>
+                <population year="95">167883</population>
             </city>
             <city country="f0_220" province="f0_17546" id="f0_3007">
-                <name> Koblenz </name>
-                <population year="95"> 109550 </population>
+                <name>Koblenz</name>
+                <population year="95">109550</population>
             </city>
             <city country="f0_220" province="f0_17546" id="f0_3052">
-                <name> Kaiserslautern </name>
-                <population year="95"> 101910 </population>
+                <name>Kaiserslautern</name>
+                <population year="95">101910</population>
             </city>
         </province>
         <province population="1084201" country="f0_220" area="2570" name="Saarland" id="f0_17548" capital="f0_2682">
             <city country="f0_220" province="f0_17548" id="f0_2682">
-                <name> Saarbrucken </name>
-                <population year="95"> 189012 </population>
+                <name>Saarbrucken</name>
+                <population year="95">189012</population>
             </city>
             <city country="f0_220" latitude="49.1" longitude="6.6" province="f0_17548" id="f0_36763">
-                <name> Saarbruecken </name>
-                <population year="87"> 183945 </population>
+                <name>Saarbruecken</name>
+                <population year="87">183945</population>
             </city>
         </province>
         <province population="4584345" country="f0_220" area="18412" name="Sachsen" id="f0_17550" capital="f0_2688">
             <city country="f0_220" province="f0_17550" id="f0_2688">
-                <name> Dresden </name>
-                <population year="95"> 474443 </population>
+                <name>Dresden</name>
+                <population year="95">474443</population>
             </city>
             <city country="f0_220" province="f0_17550" id="f0_2752">
-                <name> Leipzig </name>
-                <population year="95"> 481121 </population>
+                <name>Leipzig</name>
+                <population year="95">481121</population>
             </city>
             <city country="f0_220" province="f0_17550" id="f0_2797">
-                <name> Chemnitz </name>
-                <population year="95"> 274162 </population>
+                <name>Chemnitz</name>
+                <population year="95">274162</population>
             </city>
             <city country="f0_220" province="f0_17550" id="f0_3042">
-                <name> Zwickau </name>
-                <population year="95"> 104921 </population>
+                <name>Zwickau</name>
+                <population year="95">104921</population>
             </city>
         </province>
-        <province population="2759213" country="f0_220" area="20446" name="Sachsen Anhalt" id="f0_17552" capital="f0_2694">
+        <province population="2759213" country="f0_220" area="20446" name="Sachsen Anhalt" id="f0_17552"
+                  capital="f0_2694">
             <city country="f0_220" province="f0_17552" id="f0_2694">
-                <name> Magdeburg </name>
-                <population year="95"> 265379 </population>
+                <name>Magdeburg</name>
+                <population year="95">265379</population>
             </city>
             <city country="f0_220" province="f0_17552" id="f0_2787">
-                <name> Halle </name>
-                <population year="95"> 290051 </population>
+                <name>Halle</name>
+                <population year="95">290051</population>
             </city>
         </province>
-        <province population="2708392" country="f0_220" area="15738" name="Schleswig Holstein" id="f0_17554" capital="f0_2700">
+        <province population="2708392" country="f0_220" area="15738" name="Schleswig Holstein" id="f0_17554"
+                  capital="f0_2700">
             <city country="f0_220" latitude="54.2" longitude="10.7" province="f0_17554" id="f0_2700">
-                <name> Kiel </name>
-                <population year="95"> 246586 </population>
-                <located_at water="f0_38203" type="sea"> </located_at>
+                <name>Kiel</name>
+                <population year="95">246586</population>
+                <located_at water="f0_38203" type="sea"></located_at>
             </city>
             <city country="f0_220" province="f0_17554" id="f0_2842">
-                <name> Lubeck </name>
-                <population year="95"> 216854 </population>
+                <name>Lubeck</name>
+                <population year="95">216854</population>
             </city>
         </province>
         <province population="2517776" country="f0_220" area="16171" name="Thuringen" id="f0_17556" capital="f0_2706">
             <city country="f0_220" province="f0_17556" id="f0_2706">
-                <name> Erfurt </name>
-                <population year="95"> 213472 </population>
+                <name>Erfurt</name>
+                <population year="95">213472</population>
             </city>
             <city country="f0_220" province="f0_17556" id="f0_2947">
-                <name> Gera </name>
-                <population year="95"> 126035 </population>
+                <name>Gera</name>
+                <population year="95">126035</population>
             </city>
             <city country="f0_220" province="f0_17556" id="f0_3047">
-                <name> Jena </name>
-                <population year="95"> 102204 </population>
+                <name>Jena</name>
+                <population year="95">102204</population>
             </city>
         </province>
-        <ethnicgroups percentage="0.4"> Greeks </ethnicgroups>
-        <ethnicgroups percentage="95.1"> German </ethnicgroups>
-        <ethnicgroups percentage="0.7"> Italians </ethnicgroups>
-        <ethnicgroups percentage="2.3"> Turkish </ethnicgroups>
-        <ethnicgroups percentage="0.4"> Poles </ethnicgroups>
-        <religions percentage="37"> Roman Catholic </religions>
-        <religions percentage="45"> Protestant </religions>
-        <languages percentage="100"> German </languages>
-        <encompassed percentage="100" continent="f0_119"> </encompassed>
-        <border country="f0_149" length="784"> </border>
-        <border country="f0_162" length="167"> </border>
-        <border country="f0_184" length="646"> </border>
-        <border country="f0_193" length="68"> </border>
-        <border country="f0_213" length="451"> </border>
-        <border country="f0_295" length="138"> </border>
-        <border country="f0_325" length="577"> </border>
-        <border country="f0_337" length="456"> </border>
-        <border country="f0_404" length="334"> </border>
+        <ethnicgroups percentage="0.4">Greeks</ethnicgroups>
+        <ethnicgroups percentage="95.1">German</ethnicgroups>
+        <ethnicgroups percentage="0.7">Italians</ethnicgroups>
+        <ethnicgroups percentage="2.3">Turkish</ethnicgroups>
+        <ethnicgroups percentage="0.4">Poles</ethnicgroups>
+        <religions percentage="37">Roman Catholic</religions>
+        <religions percentage="45">Protestant</religions>
+        <languages percentage="100">German</languages>
+        <encompassed percentage="100" continent="f0_119"></encompassed>
+        <border country="f0_149" length="784"></border>
+        <border country="f0_162" length="167"></border>
+        <border country="f0_184" length="646"></border>
+        <border country="f0_193" length="68"></border>
+        <border country="f0_213" length="451"></border>
+        <border country="f0_295" length="138"></border>
+        <border country="f0_325" length="577"></border>
+        <border country="f0_337" length="456"></border>
+        <border country="f0_404" length="334"></border>
     </country>
-    <country population="28765" gdp_total="205" datacode="GI" population_growth="0.54" name="Gibraltar" infant_mortality="6.9" government="dependent territory of the UK" id="f0_227" total_area="6.5" capital="f0_1520">
-        <name> Gibraltar </name>
+    <country population="28765" gdp_total="205" datacode="GI" population_growth="0.54" name="Gibraltar"
+             infant_mortality="6.9" government="dependent territory of the UK" id="f0_227" total_area="6.5"
+             capital="f0_1520">
+        <name>Gibraltar</name>
         <city country="f0_227" latitude="36.15" longitude="-5.36667" id="f0_1520">
-            <name> Gibraltar </name>
+            <name>Gibraltar</name>
         </city>
-        <religions percentage="8"> Muslim </religions>
-        <religions percentage="2"> Jewish </religions>
-        <religions percentage="74"> Roman Catholic </religions>
-        <religions percentage="11"> Protestant </religions>
-        <encompassed percentage="100" continent="f0_119"> </encompassed>
-        <border country="f0_385" length="1.2"> </border>
+        <religions percentage="8">Muslim</religions>
+        <religions percentage="2">Jewish</religions>
+        <religions percentage="74">Roman Catholic</religions>
+        <religions percentage="11">Protestant</religions>
+        <encompassed percentage="100" continent="f0_119"></encompassed>
+        <border country="f0_385" length="1.2"></border>
     </country>
-    <country gdp_total="101700" population="10538594" population_growth="0.42" datacode="GR" car_code="GR" indep_date="01 01 1829" gdp_ind="22.2" name="Greece" infant_mortality="7.4" government="parliamentary republic" id="f0_232" inflation="8.1" gdp_serv="66" total_area="131940" gdp_agri="11.8" capital="f0_1522">
-        <name> Greece </name>
+    <country gdp_total="101700" population="10538594" population_growth="0.42" datacode="GR" car_code="GR"
+             indep_date="01 01 1829" gdp_ind="22.2" name="Greece" infant_mortality="7.4"
+             government="parliamentary republic" id="f0_232" inflation="8.1" gdp_serv="66" total_area="131940"
+             gdp_agri="11.8" capital="f0_1522">
+        <name>Greece</name>
         <city country="f0_232" latitude="40.6167" longitude="22.95" id="f0_3062">
-            <name> Thessaloniki </name>
-            <name> Salonika </name>
-            <population year="81"> 406413 </population>
+            <name>Thessaloniki</name>
+            <name>Salonika</name>
+            <population year="81">406413</population>
         </city>
         <city country="f0_232" id="f0_3069">
-            <name> Piraeus </name>
-            <population year="81"> 196389 </population>
+            <name>Piraeus</name>
+            <population year="81">196389</population>
         </city>
         <city country="f0_232" id="f0_3074">
-            <name> Patrai </name>
-            <population year="81"> 142163 </population>
+            <name>Patrai</name>
+            <population year="81">142163</population>
         </city>
         <city country="f0_232" id="f0_3079">
-            <name> Larisa </name>
-            <population year="81"> 102426 </population>
+            <name>Larisa</name>
+            <population year="81">102426</population>
         </city>
         <city country="f0_232" id="f0_3084">
-            <name> Iraklion </name>
-            <population year="81"> 102398 </population>
+            <name>Iraklion</name>
+            <population year="81">102398</population>
         </city>
         <city country="f0_232" id="f0_3089">
-            <name> Volos </name>
-            <population year="81"> 71378 </population>
+            <name>Volos</name>
+            <population year="81">71378</population>
         </city>
         <city country="f0_232" id="f0_3094">
-            <name> Kavalla </name>
-            <population year="81"> 56705 </population>
+            <name>Kavalla</name>
+            <population year="81">56705</population>
         </city>
-        <province population="574308" country="f0_232" area="14157" name="Anatoliki Makedhonia kai Thraki" id="f0_17558"> </province>
+        <province population="574308" country="f0_232" area="14157" name="Anatoliki Makedhonia kai Thraki"
+                  id="f0_17558"></province>
         <province population="3522769" country="f0_232" area="3808" name="Attiki" id="f0_17561">
             <city country="f0_232" latitude="37.9667" longitude="23.7167" province="f0_17561" id="f0_1522">
-                <name> Athens </name>
-                <name> Athinai </name>
-                <population year="81"> 885737 </population>
-                <located_at water="f0_38042" type="sea"> </located_at>
+                <name>Athens</name>
+                <name>Athinai</name>
+                <population year="81">885737</population>
+                <located_at water="f0_38042" type="sea"></located_at>
             </city>
         </province>
-        <province population="702027" country="f0_232" area="11350" name="Dhytiki Ellas" id="f0_17564"> </province>
-        <province population="292751" country="f0_232" area="9451" name="Dhytiki Makedhonia" id="f0_17567"> </province>
-        <province population="191003" country="f0_232" area="2307" name="Ionioi Nisoi" id="f0_17570"> </province>
-        <province population="339210" country="f0_232" area="9203" name="Ipiros" id="f0_17573"> </province>
-        <province population="1729581" country="f0_232" area="19147" name="Kedriki Makedhonia" id="f0_17576"> </province>
-        <province population="537183" country="f0_232" area="8336" name="Kriti" id="f0_17579"> </province>
-        <province population="262522" country="f0_232" area="5286" name="Notion Aiyaion" id="f0_17582"> </province>
-        <province population="605663" country="f0_232" area="15490" name="Peloponnisos" id="f0_17585"> </province>
-        <province population="578876" country="f0_232" area="15549" name="Sterea Ellas" id="f0_17588"> </province>
-        <province population="731030" country="f0_232" area="14037" name="Thessalia" id="f0_17591"> </province>
-        <province population="189541" country="f0_232" area="3836" name="Voreion Aiyaion" id="f0_17594"> </province>
-        <ethnicgroups percentage="98"> Greek </ethnicgroups>
-        <religions percentage="1.3"> Muslim </religions>
-        <religions percentage="98"> Greek Orthodox </religions>
-        <encompassed percentage="100" continent="f0_119"> </encompassed>
-        <border country="f0_136" length="282"> </border>
-        <border country="f0_174" length="494"> </border>
-        <border country="f0_300" length="228"> </border>
-        <border country="f0_670" length="206"> </border>
+        <province population="702027" country="f0_232" area="11350" name="Dhytiki Ellas" id="f0_17564"></province>
+        <province population="292751" country="f0_232" area="9451" name="Dhytiki Makedhonia" id="f0_17567"></province>
+        <province population="191003" country="f0_232" area="2307" name="Ionioi Nisoi" id="f0_17570"></province>
+        <province population="339210" country="f0_232" area="9203" name="Ipiros" id="f0_17573"></province>
+        <province population="1729581" country="f0_232" area="19147" name="Kedriki Makedhonia" id="f0_17576"></province>
+        <province population="537183" country="f0_232" area="8336" name="Kriti" id="f0_17579"></province>
+        <province population="262522" country="f0_232" area="5286" name="Notion Aiyaion" id="f0_17582"></province>
+        <province population="605663" country="f0_232" area="15490" name="Peloponnisos" id="f0_17585"></province>
+        <province population="578876" country="f0_232" area="15549" name="Sterea Ellas" id="f0_17588"></province>
+        <province population="731030" country="f0_232" area="14037" name="Thessalia" id="f0_17591"></province>
+        <province population="189541" country="f0_232" area="3836" name="Voreion Aiyaion" id="f0_17594"></province>
+        <ethnicgroups percentage="98">Greek</ethnicgroups>
+        <religions percentage="1.3">Muslim</religions>
+        <religions percentage="98">Greek Orthodox</religions>
+        <encompassed percentage="100" continent="f0_119"></encompassed>
+        <border country="f0_136" length="282"></border>
+        <border country="f0_174" length="494"></border>
+        <border country="f0_300" length="228"></border>
+        <border country="f0_670" length="206"></border>
     </country>
-    <country population="62920" datacode="GK" population_growth="1.28" name="Guernsey" infant_mortality="9.2" government="British crown dependency" id="f0_239" inflation="7" total_area="194" capital="f0_1528">
-        <name> Guernsey </name>
+    <country population="62920" datacode="GK" population_growth="1.28" name="Guernsey" infant_mortality="9.2"
+             government="British crown dependency" id="f0_239" inflation="7" total_area="194" capital="f0_1528">
+        <name>Guernsey</name>
         <city country="f0_239" id="f0_1528">
-            <name> Saint Peter Port </name>
+            <name>Saint Peter Port</name>
         </city>
-        <ethnicgroups percentage="100"> UK Norman-French </ethnicgroups>
-        <encompassed percentage="100" continent="f0_119"> </encompassed>
+        <ethnicgroups percentage="100">UK Norman-French</ethnicgroups>
+        <encompassed percentage="100" continent="f0_119"></encompassed>
     </country>
-    <country population="840" datacode="VT" population_growth="1.15" car_code="V" indep_date="11 02 1929" name="Holy See" government="monarchical sacerdotal state" id="f0_244" total_area="0.44" capital="f0_1531">
-        <name> Vatican City </name>
-        <name> Holy See </name>
+    <country population="840" datacode="VT" population_growth="1.15" car_code="V" indep_date="11 02 1929"
+             name="Holy See" government="monarchical sacerdotal state" id="f0_244" total_area="0.44" capital="f0_1531">
+        <name>Vatican City</name>
+        <name>Holy See</name>
         <city country="f0_244" latitude="41.5" longitude="12.3" id="f0_1531">
-            <name> Vatican City </name>
-            <population year="87"> 392 </population>
+            <name>Vatican City</name>
+            <population year="87">392</population>
         </city>
-        <religions percentage="100"> Roman Catholic </religions>
-        <encompassed percentage="100" continent="f0_119"> </encompassed>
-        <border country="f0_268" length="3.2"> </border>
+        <religions percentage="100">Roman Catholic</religions>
+        <encompassed percentage="100" continent="f0_119"></encompassed>
+        <border country="f0_268" length="3.2"></border>
     </country>
-    <country gdp_total="72500" population="10002541" population_growth="-0.68" datacode="HU" car_code="H" indep_date="01 01 1001" gdp_ind="37.5" name="Hungary" infant_mortality="12.3" government="republic" id="f0_251" inflation="28.3" gdp_serv="55.2" total_area="93030" gdp_agri="7.3" capital="f0_1533">
-        <name> Hungary </name>
+    <country gdp_total="72500" population="10002541" population_growth="-0.68" datacode="HU" car_code="H"
+             indep_date="01 01 1001" gdp_ind="37.5" name="Hungary" infant_mortality="12.3" government="republic"
+             id="f0_251" inflation="28.3" gdp_serv="55.2" total_area="93030" gdp_agri="7.3" capital="f0_1533">
+        <name>Hungary</name>
         <province population="417100" country="f0_251" area="4487" name="Baranya" id="f0_17597" capital="f0_3099">
             <city country="f0_251" province="f0_17597 f0_17650" id="f0_3099">
-                <name> Pecs </name>
-                <population year="92"> 171000 </population>
+                <name>Pecs</name>
+                <population year="92">171000</population>
             </city>
         </province>
         <province population="540800" country="f0_251" area="8363" name="Bacs Kiskun" id="f0_17600" capital="f0_3105">
             <city country="f0_251" province="f0_17600" id="f0_3105">
-                <name> Kecskemet </name>
-                <population year="92"> 105000 </population>
+                <name>Kecskemet</name>
+                <population year="92">105000</population>
             </city>
         </province>
         <province population="404000" country="f0_251" area="5632" name="Bekes" id="f0_17602" capital="f0_3147">
             <city country="f0_251" province="f0_17602" id="f0_3147">
-                <name> Bekescaba </name>
+                <name>Bekescaba</name>
             </city>
         </province>
-        <province population="749100" country="f0_251" area="7248" name="Borsod Abauj Zemplen" id="f0_17604" capital="f0_3111">
+        <province population="749100" country="f0_251" area="7248" name="Borsod Abauj Zemplen" id="f0_17604"
+                  capital="f0_3111">
             <city country="f0_251" province="f0_17604 f0_17647" id="f0_3111">
-                <name> Miskolc </name>
-                <population year="92"> 192000 </population>
+                <name>Miskolc</name>
+                <population year="92">192000</population>
             </city>
         </province>
         <province population="437600" country="f0_251" area="4263" name="Csongrad" id="f0_17607" capital="f0_3152">
             <city country="f0_251" province="f0_17607" id="f0_3152">
-                <name> Hodmezovasarhely </name>
+                <name>Hodmezovasarhely</name>
             </city>
         </province>
         <province population="422500" country="f0_251" area="4374" name="Fejer" id="f0_17609" capital="f0_3117">
             <city country="f0_251" province="f0_17609" id="f0_3117">
-                <name> Szekesfehervar </name>
-                <population year="92"> 109000 </population>
+                <name>Szekesfehervar</name>
+                <population year="92">109000</population>
             </city>
         </province>
         <province population="426800" country="f0_251" area="4012" name="Gyor Sopron" id="f0_17611" capital="f0_3123">
             <city country="f0_251" province="f0_17611 f0_17644" id="f0_3123">
-                <name> Gyor </name>
-                <population year="92"> 130000 </population>
+                <name>Gyor</name>
+                <population year="92">130000</population>
             </city>
         </province>
         <province population="549700" country="f0_251" area="6212" name="Hajdu Bihar" id="f0_17614" capital="f0_3129">
             <city country="f0_251" province="f0_17614 f0_17641" id="f0_3129">
-                <name> Debrecen </name>
-                <population year="92"> 216000 </population>
-                <xml_repository> ALERT: data truncated here for web previewing. </xml_repository>
+                <name>Debrecen</name>
+                <population year="92">216000</population>
+                <xml_repository>ALERT: data truncated here for web previewing.</xml_repository>
             </city>
         </province>
     </country>
