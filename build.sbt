@@ -2,15 +2,17 @@ inThisBuild(
   List(
     organization := "com.github.geirolz",
     homepage := Some(url("https://github.com/geirolz/advxml")),
-    licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
+    licenses := List(
+        "Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")
+      ),
     developers := List(
-      Developer(
-        "DavidGeirola",
-        "David Geirola",
-        "david.geirola@gmail.com",
-        url("https://github.com/geirolz")
+        Developer(
+          "DavidGeirola",
+          "David Geirola",
+          "david.geirola@gmail.com",
+          url("https://github.com/geirolz")
+        )
       )
-    )
   )
 )
 
@@ -24,11 +26,23 @@ lazy val settings = Seq(
   coverageEnabled.in(Test, test) := true,
   libraryDependencies ++= libsSettings,
   scalacOptions ++= scalacSettings(scalaVersion.value),
-  scalacOptions in (Compile, console) --= Seq("-Ywarn-unused:imports", "-Xfatal-warnings"),
-  scalafmtConfig := file("scalafmt.conf"),
-  scalafmtOnCompile := true,
-  scalafmtTestOnCompile := true,
-  ignoreErrors in scalafmt := false
+  scalacOptions in (Compile, console) --= Seq(
+      "-Ywarn-unused:imports",
+      "-Xfatal-warnings"
+    )
+)
+lazy val compilePlugins = Seq(
+  addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3")
+)
+lazy val libsSettings = Seq(
+  //SCALA
+  "org.typelevel" %% "cats-core" % "2.0.0-M4" cross CrossVersion.binary,
+  //XML
+  "org.scala-lang.modules" %% "scala-xml" % "1.2.0" cross CrossVersion.binary,
+  //TEST
+  "org.scalatest" %% "scalatest" % "3.0.8" % Test cross CrossVersion.binary,
+  "org.scalatest" %% "scalatest" % "3.0.8" % Test cross CrossVersion.binary,
+  "org.scalacheck" %% "scalacheck" % "1.14.0" % Test cross CrossVersion.binary
 )
 
 def scalacSettings(scalaVersion: String) =
@@ -86,18 +100,3 @@ def scalacSettings(scalaVersion: String) =
       case _ => Nil
     }
   }
-
-lazy val compilePlugins = Seq(
-  addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3")
-)
-
-lazy val libsSettings = Seq(
-  //SCALA
-  "org.typelevel" %% "cats-core" % "2.0.0-M4" cross CrossVersion.binary,
-  //XML
-  "org.scala-lang.modules" %% "scala-xml" % "1.2.0" cross CrossVersion.binary,
-  //TEST
-  "org.scalatest" %% "scalatest" % "3.0.8" % Test cross CrossVersion.binary,
-  "org.scalatest" %% "scalatest" % "3.0.8" % Test cross CrossVersion.binary,
-  "org.scalacheck" %% "scalacheck" % "1.14.0" % Test cross CrossVersion.binary
-)

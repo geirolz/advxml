@@ -10,6 +10,7 @@ scala:
   - 2.13.0
 
 stages:
+  - name: format
   - name: test
   - name: coverage
   - name: release
@@ -17,14 +18,18 @@ stages:
 
 jobs:
   include:
-    - env: TEST="scalafmt"
-      script: ./bin/scalafmt --test
+    - stage: format
+      env: TEST="format"
+      script: sbt ++$TRAVIS_SCALA_VERSION scalafmtCheck
+
     - stage: test
       env: TEST="compile"
       script: sbt ++$TRAVIS_SCALA_VERSION clean compile test
+
     - stage: coverage
       env: TEST="coverage"
       script: sbt ++$TRAVIS_SCALA_VERSION coverage coverageReport
+
     - stage: release
       script: sbt ci-release
 

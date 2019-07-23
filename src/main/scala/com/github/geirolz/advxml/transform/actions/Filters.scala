@@ -41,7 +41,7 @@ private[transform] trait Filters {
         case (e1: Node, e2: Node)         => e1 strict_== e2
         case (ns1: NodeSeq, ns2: NodeSeq) => ns1 strict_== ns2
         case _                            => false
-    }
+      }
 }
 
 object Filters extends Filters

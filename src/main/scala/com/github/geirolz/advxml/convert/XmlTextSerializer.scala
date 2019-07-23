@@ -37,7 +37,7 @@ object XmlTextSerializer {
 
   type Serializer[T] = T => String
 
-  def asText[T](t: T)(implicit s: Serializer[T]): Text = Text(s(t))
-
   def asText[T](t: Option[T])(implicit s: Serializer[T]): Option[Text] = t.map(asText(_))
+
+  def asText[T](t: T)(implicit s: Serializer[T]): Text = Text(s(t))
 }

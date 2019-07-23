@@ -71,15 +71,15 @@ private[transform] trait Modifiers {
 
   private[actions] object builders {
 
+    def collapse[F[_]: MonadEx](seq: Seq[F[NodeSeq]]): F[NodeSeq] = {
+      import cats.implicits._
+      seq.toList.sequence.map(_.reduce(_ ++ _))
+    }
+
     object UnsupportedException {
 
       def apply[F[_]](modifier: XmlModifier, ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
         F.raiseError[NodeSeq](new RuntimeException(s"Unsupported operation $modifier for type ${ns.getClass.getName}"))
-    }
-
-    def collapse[F[_]: MonadEx](seq: Seq[F[NodeSeq]]): F[NodeSeq] = {
-      import cats.implicits._
-      seq.toList.sequence.map(_.reduce(_ ++ _))
     }
   }
 }

@@ -14,13 +14,12 @@ import scala.xml.parsing.NoBindingFactoryAdapter
 
 object JavaXmlConverters extends JavaNodeOps with ScalaNodeOps {
 
-  lazy val documentBuilder: DocumentBuilder = DocumentBuilderFactory
-    .newInstance()
-    .newDocumentBuilder()
-
   type JDocument = org.w3c.dom.Document
   type JNode = org.w3c.dom.Node
   type JElement = org.w3c.dom.Element
+  lazy val documentBuilder: DocumentBuilder = DocumentBuilderFactory
+    .newInstance()
+    .newDocumentBuilder()
 }
 
 private[utils] sealed trait JavaNodeOps {
