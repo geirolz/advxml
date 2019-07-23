@@ -1,11 +1,8 @@
 package com.github.geirolz.advxml.transform
 
 import com.github.geirolz.advxml.generators.XmlGenerator
-import com.github.geirolz.advxml.generators.XmlGenerator.BasicXmlNode
-import com.github.geirolz.advxml.transform.actions.XmlZoom
-import org.scalacheck.{Arbitrary, Gen, Properties}
+import org.scalacheck.{Arbitrary, Properties}
 import org.scalacheck.Prop.forAll
-import org.scalatest.FunSuiteLike
 
 import scala.xml.{Elem, Node, NodeSeq}
 
@@ -15,21 +12,39 @@ import scala.xml.{Elem, Node, NodeSeq}
   *
   * @author geirolad
   */
-object XmlTransformationSpec extends Properties("List") with FunSuiteLike {
+object XmlTransformationSpec extends Properties("List") {
 
-  implicit val elemGenerator: Arbitrary[XmlGenerator.BasicXmlNode] = Arbitrary(XmlGenerator.xmlNodeGenerator)
+  implicit val elemGenerator: Arbitrary[NodeSeq] = Arbitrary(
+    XmlGenerator.xmlNodeGenerator.filter(_.children.nonEmpty).map(_.toNode)
+  )
 
   import cats.instances.try_._
   import com.github.geirolz.advxml.all._
 
-  property("") = forAll { (root: BasicXmlNode, newNode: BasicXmlNode) =>
-    val zoomGen: Gen[XmlZoom] = XmlGenerator.xmlZoomGenerator(root.toNode.asInstanceOf[Elem])
-    val zoom = zoomGen.sample.get
-    val rootNode = zoom(root.toNode)
-    val newScalaNode: Node = newNode.toNode
-    val result: NodeSeq = rootNode.transform(Append(newScalaNode)).get
+  property("Append") = forAll { (base: NodeSeq, newNode: NodeSeq) =>
+    val selector = XmlGenerator.xmlNodeSelectorGenerator(base.asInstanceOf[Elem])
+    val rule = $(Function.const(selector.sample.get)) ==> Append(newNode)
+    val result: Node = base.transform(rule).get.head
 
-    //TODO Improve this assert
-    zoom(result).size == newScalaNode.size
+    result.asInstanceOf[Node].descendant.contains(newNode)
+  }
+
+  property("Replace") = forAll { (base: NodeSeq, newNode: NodeSeq) =>
+    val selector = XmlGenerator.xmlNodeSelectorGenerator(base.asInstanceOf[Elem])
+    val selectedNode = selector.sample.get
+    val rule = $(Function.const(selectedNode)) ==> Replace(newNode)
+    val result: Node = base.transform(rule).get.head
+
+    result.asInstanceOf[Node].descendant.contains(newNode)
+    !result.asInstanceOf[Node].descendant.contains(selectedNode)
+  }
+
+  property("Remove") = forAll { base: NodeSeq =>
+    val selector = XmlGenerator.xmlNodeSelectorGenerator(base.asInstanceOf[Elem])
+    val selectedNode = selector.sample.get
+    val rule = $(Function.const(selectedNode)) ==> Remove
+    val result = base.transform(rule).get.headOption
+
+    result.forall(r => !r.descendant.contains(selectedNode))
   }
 }

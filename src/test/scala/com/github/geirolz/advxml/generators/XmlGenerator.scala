@@ -1,6 +1,5 @@
 package com.github.geirolz.advxml.generators
 
-import com.github.geirolz.advxml.transform.actions.XmlZoom
 import org.scalacheck.Gen
 
 import scala.xml._
@@ -68,17 +67,5 @@ object XmlGenerator {
     } yield children
   } yield BasicXmlNode(nodeName, attrs, children)
 
-  lazy val xmlZoomGenerator: Elem => Gen[XmlZoom] = elem =>
-    for {
-      index <- Gen.choose(0, elem.size - 1)
-      e     <- Gen.const(elem.toIndexedSeq(index))
-      zoom <- e match {
-        case v if v.child.isEmpty => Gen.const(XmlZoom(Function.const(e)))
-        case v if v.child.nonEmpty =>
-          Gen.frequency(
-            60 -> xmlZoomGenerator(e.asInstanceOf[Elem]),
-            40 -> Gen.const(XmlZoom(Function.const(e)))
-          )
-      }
-    } yield zoom
+  lazy val xmlNodeSelectorGenerator: Node => Gen[NodeSeq] = elem => Gen.oneOf(elem.descendant).filter(_ != elem)
 }
