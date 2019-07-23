@@ -63,12 +63,12 @@ private[transform] sealed trait PredicateSyntax {
 
   implicit class XmlPredicateOps(p: XmlPredicate) {
 
-    def and(that: XmlPredicate): XmlPredicate = PredicateUtils.and(p, that)
-
-    def or(that: XmlPredicate): XmlPredicate = PredicateUtils.or(p, that)
-
     def &&(that: XmlPredicate): XmlPredicate = p.and(that)
 
+    def and(that: XmlPredicate): XmlPredicate = PredicateUtils.and(p, that)
+
     def ||(that: XmlPredicate): XmlPredicate = p.or(that)
+
+    def or(that: XmlPredicate): XmlPredicate = PredicateUtils.or(p, that)
   }
 }
