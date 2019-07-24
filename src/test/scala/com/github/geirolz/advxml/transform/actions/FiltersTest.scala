@@ -32,7 +32,7 @@ class FiltersTest extends FunSuite {
         <Person3>Simone</Person3>
       </Persons>
 
-    val result: NodeSeq = data filter label("Person3")
+    val result: NodeSeq = data.child filter label("Person3")
 
     assert(result === <Person3>Simone</Person3>)
   }
@@ -62,7 +62,7 @@ class FiltersTest extends FunSuite {
 
     val result: NodeSeq = data \ "Person" filter strictEqualsTo(<Person A="3"></Person>)
 
-    assert(result === <Person A="3" B="C">Simone</Person>)
+    assert(result === <Person A="3"></Person>)
   }
 
   test("Filter by strict equality - minimized empty") {
