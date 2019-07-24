@@ -13,6 +13,11 @@ object XmlTransformer {
   def current(modifier: ComposableXmlModifier): ComposableXmlRule =
     PartialXmlRule(identity) withModifier modifier
 
+  def transform[F[_]: MonadEx](root: NodeSeq, modifier: XmlModifier): F[NodeSeq] = modifier match {
+    case m: ComposableXmlModifier => XmlTransformer.transform(current(m))(root)
+    case m: FinalXmlModifier      => XmlTransformer.transform(current(m))(root)
+  }
+
   def transform[F[_]: MonadEx](rule: XmlRule, rules: XmlRule*)(root: NodeSeq): F[NodeSeq] = {
 
     import cats.implicits._

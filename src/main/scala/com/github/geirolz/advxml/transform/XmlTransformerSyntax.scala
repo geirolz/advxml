@@ -1,6 +1,5 @@
 package com.github.geirolz.advxml.transform
 
-import com.github.geirolz.advxml.transform.XmlTransformer.current
 import com.github.geirolz.advxml.transform.actions._
 import com.github.geirolz.advxml.utils.PredicateUtils
 
@@ -23,10 +22,8 @@ private[advxml] trait XmlTransformerSyntax
     def transform[F[_]: MonadEx](rule: XmlRule, rules: XmlRule*): F[NodeSeq] =
       XmlTransformer.transform(rule, rules: _*)(root)
 
-    def transform[F[_]: MonadEx](modifier: XmlModifier): F[NodeSeq] = modifier match {
-      case m: ComposableXmlModifier => XmlTransformer.transform(current(m))(root)
-      case m: FinalXmlModifier      => XmlTransformer.transform(current(m))(root)
-    }
+    def transform[F[_]: MonadEx](modifier: XmlModifier): F[NodeSeq] =
+      XmlTransformer.transform(root, modifier)
   }
 
 }
