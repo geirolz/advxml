@@ -2,9 +2,7 @@ inThisBuild(
   List(
     organization := "com.github.geirolz",
     homepage := Some(url("https://github.com/geirolz/advxml")),
-    licenses := List(
-        "Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")
-      ),
+    licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
     developers := List(
         Developer(
           "DavidGeirola",
