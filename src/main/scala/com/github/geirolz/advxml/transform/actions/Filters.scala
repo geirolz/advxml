@@ -33,9 +33,7 @@ private[transform] trait Filters {
   def hasImmediateChild(name: String, predicate: XmlPredicate = always): XmlPredicate =
     xml => (xml \? name).toOption.flatten.fold(false)(_.exists(predicate))
 
-  def count(length: Int): XmlPredicate = _.length == length
-
-  def equalsTo(ns: NodeSeq): XmlPredicate =
+  def strictEqualsTo(ns: NodeSeq): XmlPredicate =
     that =>
       (ns, that) match {
         case (e1: Node, e2: Node)         => e1 strict_== e2
