@@ -12,9 +12,34 @@ import scala.xml._
   */
 object XmlGenerator {
 
-  case class BasicXmlNode(name: String, attrs: Map[String, String], children: Seq[BasicXmlNode]) {
-    def toNode: Node = XmlGenerator.toNode(this)
+  lazy val genStr: Int => Gen[String] = (n: Int) => Gen.listOfN(n, Gen.alphaChar).map(_.mkString)
+  lazy val attrsGenerator: Gen[Map[String, String]] = {
+    for {
+      n <- Gen.choose(1, 2)
+      kvGen = for {
+        key   <- genStr(5)
+        value <- genStr(5)
+      } yield (key, value)
+      map <- Gen.mapOfN(n, kvGen)
+    } yield map
   }
+  lazy val xmlNodeGenerator: Gen[BasicXmlNode] = for {
+    nodeName <- genStr(5)
+
+    attrs <- for {
+      hasAttrs <- Gen.frequency((80, true), (20, false))
+      attrs    <- if (hasAttrs) attrsGenerator else Gen.const(Map.empty[String, String])
+    } yield attrs
+
+    children <- for {
+      hasChildren <- Gen.frequency((80, true), (20, false))
+      children <- if (hasChildren)
+        Gen.resize(1, Gen.nonEmptyListOf(xmlNodeGenerator))
+      else
+        Gen.const(List.empty)
+    } yield children
+  } yield BasicXmlNode(nodeName, attrs, children)
+  lazy val xmlNodeSelectorGenerator: Node => Gen[NodeSeq] = elem => Gen.oneOf(elem.descendant).filter(_ != elem)
 
   def toNode(node: BasicXmlNode): Node = {
     val seed: MetaData = Null
@@ -37,35 +62,7 @@ object XmlGenerator {
     )
   }
 
-  lazy val genStr: Int => Gen[String] = (n: Int) => Gen.listOfN(n, Gen.alphaChar).map(_.mkString)
-
-  lazy val attrsGenerator: Gen[Map[String, String]] = {
-    for {
-      n <- Gen.choose(1, 2)
-      kvGen = for {
-        key   <- genStr(5)
-        value <- genStr(5)
-      } yield (key, value)
-      map <- Gen.mapOfN(n, kvGen)
-    } yield map
+  case class BasicXmlNode(name: String, attrs: Map[String, String], children: Seq[BasicXmlNode]) {
+    def toNode: Node = XmlGenerator.toNode(this)
   }
-
-  lazy val xmlNodeGenerator: Gen[BasicXmlNode] = for {
-    nodeName <- genStr(5)
-
-    attrs <- for {
-      hasAttrs <- Gen.frequency((80, true), (20, false))
-      attrs    <- if (hasAttrs) attrsGenerator else Gen.const(Map.empty[String, String])
-    } yield attrs
-
-    children <- for {
-      hasChildren <- Gen.frequency((80, true), (20, false))
-      children <- if (hasChildren)
-        Gen.resize(1, Gen.nonEmptyListOf(xmlNodeGenerator))
-      else
-        Gen.const(List.empty)
-    } yield children
-  } yield BasicXmlNode(nodeName, attrs, children)
-
-  lazy val xmlNodeSelectorGenerator: Node => Gen[NodeSeq] = elem => Gen.oneOf(elem.descendant).filter(_ != elem)
 }

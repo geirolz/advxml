@@ -56,14 +56,14 @@ class XmlTextSerializerTest extends FunSuite {
   }
 
   test("Float to Text") {
-    val value: Option[Float] = Some(100.55373F)
+    val value: Option[Float] = Some(100.55373f)
     val res = <Test Value={value.asText}/>
 
     assert(res \@ "Value" == value.get.toString)
   }
 
   test("Double to Text") {
-    val value: Option[Double] = Some(100.55275373D)
+    val value: Option[Double] = Some(100.55275373d)
     val res = <Test Value={value.asText}/>
 
     assert(res \@ "Value" == value.get.toString)
