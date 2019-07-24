@@ -13,7 +13,7 @@ Maven for 2.12
 <dependency>
     <groupId>com.github.geirolz</groupId>
     <artifactId>advxml_2.12</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
 </dependency>
 ```
 
@@ -22,13 +22,13 @@ Maven for 2.13
 <dependency>
     <groupId>com.github.geirolz</groupId>
     <artifactId>advxml_2.12</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
 </dependency>
 ```
 
 Sbt
 ```
-libraryDependencies += "com.github.geirolz" %% "advxml" % "0.1.0"
+libraryDependencies += "com.github.geirolz" %% "advxml" % "0.1.1"
 ```
 
 ## Structure
