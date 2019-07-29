@@ -20,7 +20,7 @@ object ValidatedRes {
   def toTry[T](validated: ValidatedRes[T]): Try[T] = {
     validated match {
       case Valid(value) => Success(value)
-      case Invalid(exs) => Failure(new AggregatedException("Multiple exceptions:\n", exs.toList))
+      case Invalid(exs) => Failure(new AggregatedException(exs.toList))
     }
   }
 }
