@@ -4,6 +4,7 @@ import com.github.geirolz.advxml.transform.actions._
 import com.github.geirolz.advxml.utils.PredicateUtils
 
 import scala.xml.NodeSeq
+import scala.xml.transform.{BasicTransformer, RewriteRule}
 
 /**
   * Advxml
@@ -20,10 +21,13 @@ private[advxml] trait XmlTransformerSyntax
   implicit class XmlTransformerOps(root: NodeSeq) {
 
     def transform[F[_]: MonadEx](rule: XmlRule, rules: XmlRule*): F[NodeSeq] =
-      XmlTransformer.transform(rule, rules: _*)(root)
+      XmlTransformer.transform(root, rule +: rules)
 
     def transform[F[_]: MonadEx](modifier: XmlModifier): F[NodeSeq] =
       XmlTransformer.transform(root, modifier)
+
+    def transform[F[_]: MonadEx](f: Seq[RewriteRule] => BasicTransformer)(rules: XmlRule*): F[NodeSeq] =
+      XmlTransformer.transform(f)(root, rules)
   }
 
 }
