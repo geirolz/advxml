@@ -21,7 +21,7 @@ Maven for 2.13
 ```
 <dependency>
     <groupId>com.github.geirolz</groupId>
-    <artifactId>advxml_2.12</artifactId>
+    <artifactId>advxml_2.13</artifactId>
     <version>0.1.2</version>
 </dependency>
 ```

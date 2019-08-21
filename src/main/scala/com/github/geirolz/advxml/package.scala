@@ -21,7 +21,6 @@ package object advxml {
     object textSerializer extends XmlTextSerializerSyntax
     object converter extends XmlConverterSyntax
     object traverser extends XmlTraverserSyntax
-
     object normalizer extends XmlNormalizerSyntax
   }
 
@@ -29,8 +28,6 @@ package object advxml {
     object transformer extends XmlTransformerInstances
     object validation extends ValidationInstances
     object textSerializer extends XmlTextSerializerInstances
-
     object normalizer extends XmlNormalizerInstances
-
   }
 }
