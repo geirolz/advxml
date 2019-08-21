@@ -64,6 +64,26 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       assert(works.exists(_.isEmpty))
     }
 
+    scenario("Read optional immediate nodes waterfall") {
+      val xml =
+        <Employers>
+          <Employee Name="David">
+            <Cars>
+              <Car Model="Fiat"/>
+            </Cars>
+          </Employee>
+        </Employers>
+
+      val cars = xml \? "Employee" \? "Cars"
+      val works = xml \? "Employee" \? "Works"
+      val data = xml \? "Other" \? "Data"
+
+      assert(cars.exists(_.isDefined))
+      assert(cars.exists(_.get.length == 1))
+      assert(works.exists(_.isEmpty))
+      assert(data.exists(_.isEmpty))
+    }
+
     scenario("Read required immediate nodes") {
       val xml =
         <Employers>
@@ -80,6 +100,29 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       assert(cars.isValid)
       assert(cars.toEither.exists(_.length == 1))
       assert(works.isInvalid)
+    }
+
+    scenario("Read required immediate nodes waterfall") {
+      val xml =
+        <Employers>
+          <Employee Name="David">
+            <Cars>
+              <Car Model="Fiat"/>
+            </Cars>
+          </Employee>
+        </Employers>
+
+      val cars = xml \! "Employee" \! "Cars"
+      val works = xml \! "Employee" \! "Works"
+      val data = xml \! "Other" \! "Data"
+
+      assert(cars.isValid)
+      assert(cars.toEither.exists(_.length == 1))
+
+      //missing Nodes
+      assert(works.isInvalid)
+      assert(data.isInvalid)
+      assert(data.toEither.swap.getOrElse(null).size == 1)
     }
   }
 
@@ -142,6 +185,26 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       assert(works.exists(_.isEmpty))
     }
 
+    scenario("Read optional content waterfall") {
+      val noteData = "This is a test"
+      val xml =
+        <Employers>
+          <Employee Name="David">
+            <Note>
+              {noteData}
+            </Note>
+          </Employee>
+        </Employers>
+
+      val note = xml \? "Employee" \? "Note" ?
+      val works = xml \? "Employee" \? "Works" ?
+
+      assert(note.isValid)
+      assert(note.exists(_.get.trim == noteData))
+      assert(works.isValid)
+      assert(works.exists(_.isEmpty))
+    }
+
     scenario("Read required content") {
       val noteData = "This is a test"
       val xml =
@@ -155,6 +218,25 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
 
       val note: ValidatedRes[String] = xml \ "Employee" \ "Note" !
       val works = xml \ "Employee" \ "Works" !
+
+      assert(note.isValid)
+      assert(note.toEither.exists(_.trim == noteData))
+      assert(works.isInvalid)
+    }
+
+    scenario("Read required content waterfall") {
+      val noteData = "This is a test"
+      val xml =
+        <Employers>
+          <Employee Name="David">
+            <Note>
+              {noteData}
+            </Note>
+          </Employee>
+        </Employers>
+
+      val note: ValidatedRes[String] = xml \ "Employee" \ "Note" !
+      val works = xml \! "Employee" \! "Works" !
 
       assert(note.isValid)
       assert(note.toEither.exists(_.trim == noteData))
