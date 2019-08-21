@@ -1,5 +1,6 @@
 package com.github.geirolz.advxml.traverse
 
+import cats.data.Validated.Valid
 import com.github.geirolz.advxml.convert.ValidatedRes.ValidatedRes
 
 import scala.xml.NodeSeq
@@ -12,7 +13,7 @@ import scala.xml.NodeSeq
   */
 private[advxml] trait XmlTraverserSyntax {
 
-  implicit class XmlTraverseOps(ns: NodeSeq) {
+  implicit class XmlTraverseNodeSeqOps(ns: NodeSeq) {
 
     def \?(name: String): ValidatedRes[Option[NodeSeq]] =
       XmlTraverser.optional.immediateChildren(ns, name)
@@ -37,5 +38,52 @@ private[advxml] trait XmlTraverserSyntax {
 
     def ! : ValidatedRes[String] =
       XmlTraverser.mandatory.content(ns)
+  }
+
+  implicit class XmlTraverseMandatoryOps(v: ValidatedRes[NodeSeq]) {
+
+    def \?(name: String): ValidatedRes[Option[NodeSeq]] =
+      v.andThen(_ \? name)
+
+    def \!(name: String): ValidatedRes[NodeSeq] =
+      v.andThen(_ \! name)
+
+    def \\?(name: String): ValidatedRes[Option[NodeSeq]] =
+      v.andThen(_ \\? name)
+
+    def \\!(name: String): ValidatedRes[NodeSeq] =
+      v.andThen(_ \\! name)
+
+    def \@?(key: String): ValidatedRes[Option[String]] =
+      v.andThen(_ \@? key)
+
+    def \@!(key: String): ValidatedRes[String] =
+      v.andThen(_ \@! key)
+
+    def ? : ValidatedRes[Option[String]] =
+      v.andThen(_.?)
+
+    def ! : ValidatedRes[String] =
+      v.andThen(_.!)
+  }
+
+  implicit class XmlTraverseOptionOps(v: ValidatedRes[Option[NodeSeq]]) {
+
+    def \?(name: String): ValidatedRes[Option[NodeSeq]] =
+      v.andThen(ifSome(_ \? name))
+
+    def \\?(name: String): ValidatedRes[Option[NodeSeq]] =
+      v.andThen(ifSome(_ \\? name))
+
+    def \@?(key: String): ValidatedRes[Option[String]] =
+      v.andThen(ifSome(_ \@? key))
+
+    def ? : ValidatedRes[Option[String]] =
+      v.andThen(ifSome(_.?))
+
+    private def ifSome[A, B](f: A => ValidatedRes[Option[B]]): Option[A] => ValidatedRes[Option[B]] = {
+      case Some(ns) => f(ns)
+      case None     => Valid(None)
+    }
   }
 }

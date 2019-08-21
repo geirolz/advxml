@@ -16,13 +16,14 @@ inThisBuild(
 
 lazy val global = project
   .in(file("."))
-  .settings(settings ++ compilePlugins)
+  .settings(settings ++ compilePlugins ++ aliases)
 
 lazy val settings = Seq(
   name := "Advxml",
   crossScalaVersions := List("2.12.8", "2.13.0"),
   coverageEnabled.in(Test, test) := true,
-  libraryDependencies ++= libsSettings,
+  resolvers ++= Resolvers.all,
+  libraryDependencies ++= Dependencies.all,
   scalacOptions ++= scalacSettings(scalaVersion.value),
   scalacOptions in (Compile, console) --= Seq(
       "-Ywarn-unused:imports",
@@ -31,17 +32,6 @@ lazy val settings = Seq(
 )
 lazy val compilePlugins = Seq(
   addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3")
-)
-lazy val libsSettings = Seq(
-  //SCALA
-  "org.typelevel" %% "cats-core" % "2.0.0-M4" cross CrossVersion.binary,
-  "org.scalactic" %% "scalactic" % "3.0.8" cross CrossVersion.binary,
-  //XML
-  "org.scala-lang.modules" %% "scala-xml" % "1.2.0" cross CrossVersion.binary,
-  //TEST
-  "org.scalatest" %% "scalatest" % "3.0.8" % Test cross CrossVersion.binary,
-  "org.scalatest" %% "scalatest" % "3.0.8" % Test cross CrossVersion.binary,
-  "org.scalacheck" %% "scalacheck" % "1.14.0" % Test cross CrossVersion.binary
 )
 
 def scalacSettings(scalaVersion: String) =
@@ -99,3 +89,10 @@ def scalacSettings(scalaVersion: String) =
       case _ => Nil
     }
   }
+
+lazy val aliases = Seq(
+  addCommandAlias("all", ";clean;compile;test;scalafmtSbt;scalafmtCheck;dependencyUpdates"),
+  addCommandAlias("cct", ";clean;compile;test"),
+  addCommandAlias("du", "dependencyUpdates"),
+  addCommandAlias("fmt", "scalafmtSbt;scalafmtCheck")
+).flatten
