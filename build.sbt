@@ -91,8 +91,7 @@ def scalacSettings(scalaVersion: String) =
   }
 
 lazy val aliases = Seq(
-  addCommandAlias("all", ";clean;compile;test;scalafmtSbt;scalafmtCheck;dependencyUpdates"),
+  addCommandAlias("all", ";clean;compile;test;scalafmtSbt;scalafmtCheck"),
   addCommandAlias("cct", ";clean;compile;test"),
-  addCommandAlias("du", "dependencyUpdates"),
   addCommandAlias("fmt", "scalafmtSbt;scalafmtCheck")
 ).flatten
