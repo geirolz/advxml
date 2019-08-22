@@ -16,7 +16,7 @@ inThisBuild(
 
 lazy val global = project
   .in(file("."))
-  .settings(settings ++ compilePlugins ++ aliases)
+  .settings(settings ++ compilePlugins)
 
 lazy val settings = Seq(
   name := "Advxml",
@@ -89,9 +89,3 @@ def scalacSettings(scalaVersion: String) =
       case _ => Nil
     }
   }
-
-lazy val aliases = Seq(
-  addCommandAlias("all", ";clean;compile;test;scalafmtSbt;scalafmtCheck"),
-  addCommandAlias("cct", ";clean;compile;test"),
-  addCommandAlias("fmt", "scalafmtSbt;scalafmtCheck")
-).flatten
