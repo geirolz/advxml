@@ -37,9 +37,9 @@ object XmlTraverser {
       }
     }
 
-    def content(ns: NodeSeq): ValidatedRes[String] = {
+    def text(ns: NodeSeq): ValidatedRes[String] = {
       ns.text match {
-        case value if value.isEmpty => new RuntimeException("Missing content").invalidNel
+        case value if value.isEmpty => new RuntimeException("Missing text").invalidNel
         case value                  => value.validNel
       }
     }
@@ -56,7 +56,7 @@ object XmlTraverser {
     def attr(ns: NodeSeq, name: String): ValidatedRes[Option[String]] =
       mandatory.attr(ns, name).toOption.validNel
 
-    def content(ns: NodeSeq): ValidatedRes[Option[String]] =
-      mandatory.content(ns).toOption.validNel
+    def text(ns: NodeSeq): ValidatedRes[Option[String]] =
+      mandatory.text(ns).toOption.validNel
   }
 }

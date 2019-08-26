@@ -34,10 +34,10 @@ private[advxml] trait XmlTraverserSyntax {
       XmlTraverser.mandatory.attr(ns, key)
 
     def ? : ValidatedRes[Option[String]] =
-      XmlTraverser.optional.content(ns)
+      XmlTraverser.optional.text(ns)
 
     def ! : ValidatedRes[String] =
-      XmlTraverser.mandatory.content(ns)
+      XmlTraverser.mandatory.text(ns)
   }
 
   implicit class XmlTraverseMandatoryOps(v: ValidatedRes[NodeSeq]) {
