@@ -21,13 +21,13 @@ private[advxml] trait XmlTransformerSyntax
   implicit class XmlTransformerOps(root: NodeSeq) {
 
     def transform[F[_]: MonadEx](rule: XmlRule, rules: XmlRule*): F[NodeSeq] =
-      XmlTransformer.transform(root, rule +: rules)
+      XmlTransformer.transform(root, (rule +: rules).toSeq)
 
     def transform[F[_]: MonadEx](modifier: XmlModifier): F[NodeSeq] =
       XmlTransformer.transform(root, modifier)
 
     def transform[F[_]: MonadEx](f: Seq[RewriteRule] => BasicTransformer)(rules: XmlRule*): F[NodeSeq] =
-      XmlTransformer.transform(f)(root, rules)
+      XmlTransformer.transform(f)(root, rules.toSeq)
   }
 
 }
