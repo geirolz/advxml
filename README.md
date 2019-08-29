@@ -212,9 +212,9 @@ handle the presence of what you are looking for.
 - _\\\?_ optional nested node
 - _\\\!_ mandatory nested node
 
- *Content*
-- _?_ optional content
-- _!_ mandatory content
+ *Text*
+- _?_ optional text
+- _!_ mandatory text
 
 
  *Example*
@@ -246,9 +246,9 @@ handle the presence of what you are looking for.
     val mandatoryAttr: ValidatedRes[String] = doc \ "Person" \ "Cars" \ "Car" \@! "Brand"
     val optionalAttr: ValidatedRes[Option[String]] = doc \ "Person" \ "Cars" \ "Car" \@? "Brand"
 
-    //Content
-    val mandatoryContent: ValidatedRes[String] = doc \ "Person" \ "Cars" \ "Car" \ "Price" !
-    val optionalContent: ValidatedRes[Option[String]] = doc \ "Person" \ "Cars" \ "Car" \ "Price" ?
+    //Text
+    val mandatoryText: ValidatedRes[String] = doc \ "Person" \ "Cars" \ "Car" \ "Price" !
+    val optionalText: ValidatedRes[Option[String]] = doc \ "Person" \ "Cars" \ "Car" \ "Price" ?
 ```
   
 ### Convert <a name="Convert"></a>

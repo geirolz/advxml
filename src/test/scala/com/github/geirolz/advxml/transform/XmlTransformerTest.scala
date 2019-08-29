@@ -21,7 +21,7 @@ class XmlTransformerTest extends FeatureSpec {
         </OrderLines>
       </Order>
 
-      val result = elem \ "OrderLines" \ "OrderLine" filter attrs("PrimeLineNo" -> "1")
+      val result = elem \ "OrderLines" \ "OrderLine" filter attrs("PrimeLineNo" -> (_ == "1"))
 
       assert(result \@ "PrimeLineNo" == "1")
     }
@@ -45,19 +45,19 @@ class XmlTransformerTest extends FeatureSpec {
 
       assert(
         result.get \ "OrderLines" \ "OrderLine"
-        exists attrs("PrimeLineNo" -> "1")
+        exists attrs("PrimeLineNo" -> (_ == "1"))
       )
       assert(
         result.get \ "OrderLines" \ "OrderLine"
-        exists attrs("PrimeLineNo" -> "2")
+        exists attrs("PrimeLineNo" -> (_ == "2"))
       )
       assert(
         result.get \ "OrderLines" \ "OrderLine"
-        exists attrs("PrimeLineNo" -> "3")
+        exists attrs("PrimeLineNo" -> (_ == "3"))
       )
       assert(
         result.get \ "OrderLines" \ "OrderLine"
-        exists attrs("PrimeLineNo" -> "4")
+        exists attrs("PrimeLineNo" -> (_ == "4"))
       )
     }
 
@@ -69,17 +69,17 @@ class XmlTransformerTest extends FeatureSpec {
       </Order>
 
       val result = elem.transform(
-        $(_ \ "OrderLines" \ "OrderLine" filter attrs("PrimeLineNo" -> "1"))
+        $(_ \ "OrderLines" \ "OrderLine" filter attrs("PrimeLineNo" -> (_ == "1")))
         ==> Replace(<OrderLine PrimeLineNo="4"/>)
       )
 
       assert(
         (result.get \ "OrderLines" \ "OrderLine"
-        filter attrs("PrimeLineNo" -> "1")).length == 0
+        filter attrs("PrimeLineNo" -> (_ == "1"))).length == 0
       )
       assert(
         result.get \ "OrderLines" \ "OrderLine"
-        exists attrs("PrimeLineNo" -> "4")
+        exists attrs("PrimeLineNo" -> (_ == "4"))
       )
     }
 
@@ -92,12 +92,15 @@ class XmlTransformerTest extends FeatureSpec {
       </Order>
 
       val result = elem.transform(
-        $(_ \ "OrderLines" \ "OrderLine" filter attrs("PrimeLineNo" -> "1")) ==> Remove
+        $(
+          _ \ "OrderLines" \ "OrderLine" filter
+          attrs("PrimeLineNo" -> (_ == "1"))
+        ) ==> Remove
       )
 
       assert(
         (result.get \ "OrderLines" \ "OrderLine"
-        filter attrs("PrimeLineNo" -> "1")).length == 0
+        filter attrs("PrimeLineNo" -> (_ == "1"))).length == 0
       )
     }
 

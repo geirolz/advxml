@@ -165,7 +165,7 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
   }
 
   feature("XmlTraverseSyntaxTest: Read content") {
-    scenario("Read optional content") {
+    scenario("Read optional text") {
       val noteData = "This is a test"
       val xml =
         <Employers>
@@ -185,7 +185,7 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       assert(works.exists(_.isEmpty))
     }
 
-    scenario("Read optional content waterfall") {
+    scenario("Read optional text waterfall") {
       val noteData = "This is a test"
       val xml =
         <Employers>
@@ -205,7 +205,7 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       assert(works.exists(_.isEmpty))
     }
 
-    scenario("Read required content") {
+    scenario("Read required text") {
       val noteData = "This is a test"
       val xml =
         <Employers>
@@ -224,7 +224,7 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       assert(works.isInvalid)
     }
 
-    scenario("Read required content waterfall") {
+    scenario("Read required text waterfall") {
       val noteData = "This is a test"
       val xml =
         <Employers>

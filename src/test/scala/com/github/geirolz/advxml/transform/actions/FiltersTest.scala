@@ -18,7 +18,7 @@ class FiltersTest extends FunSuite {
         <Person>Simone</Person>
       </Persons>
 
-    val result: NodeSeq = data \ "Person" filter text("Simone")
+    val result: NodeSeq = data \ "Person" filter text(_ == "Simone")
 
     assert(result === <Person>Simone</Person>)
   }
@@ -32,7 +32,7 @@ class FiltersTest extends FunSuite {
         <Person3>Simone</Person3>
       </Persons>
 
-    val result: NodeSeq = data.child filter label("Person3")
+    val result: NodeSeq = data.child filter label(_ == "Person3")
 
     assert(result === <Person3>Simone</Person3>)
   }
@@ -46,7 +46,10 @@ class FiltersTest extends FunSuite {
         <Person A="3" B="C">Simone</Person>
       </Persons>
 
-    val result: NodeSeq = data \ "Person" filter attrs("A" -> "3", "B" -> "C")
+    val result: NodeSeq = data \ "Person" filter attrs(
+        "A" -> (_ == "3"),
+        "B" -> (_ == "C")
+      )
 
     assert(result === <Person A="3" B="C">Simone</Person>)
   }
