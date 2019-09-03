@@ -41,7 +41,11 @@ private[advxml] trait ValidationInstances {
       f(a) match {
         case Valid(vValue) =>
           vValue match {
-            case Left(e)       => e.asInstanceOf[Throwable].invalidNel
+            case Left(e) =>
+              e match {
+                case e: Throwable => e.invalidNel
+                case _            => new RuntimeException("Invalid error type.").invalidNel
+              }
             case Right(eValue) => eValue.validNel
           }
         case Invalid(e) => e.invalid
