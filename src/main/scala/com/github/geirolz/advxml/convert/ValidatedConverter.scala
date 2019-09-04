@@ -5,7 +5,7 @@ import com.github.geirolz.advxml.convert.ValidatedConverter.ValidatedConverter
 import com.github.geirolz.advxml.convert.ValidatedRes.ValidatedRes
 
 object ValidatedConverter extends ValidatedConverterOps {
-  type ValidatedConverter[A, B] = A => ValidatedRes[B]
+  type ValidatedConverter[-A, +B] = A => ValidatedRes[B]
 }
 
 private[convert] trait ValidatedConverterOps {

@@ -35,7 +35,7 @@ private[advxml] trait XmlTextSerializerInstances {
 
 object XmlTextSerializer {
 
-  type Serializer[T] = T => String
+  type Serializer[-T] = T => String
 
   def asText[T](t: Option[T])(implicit s: Serializer[T]): Option[Text] = t.map(asText(_))
 

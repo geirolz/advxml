@@ -10,7 +10,7 @@ import scala.util.{Failure, Success, Try}
 
 object ValidatedRes {
 
-  type ValidatedRes[T] = ValidatedNel[Throwable, T]
+  type ValidatedRes[+T] = ValidatedNel[Throwable, T]
 
   def fromTry[T](t: Try[T]): ValidatedRes[T] = {
     import cats.implicits._

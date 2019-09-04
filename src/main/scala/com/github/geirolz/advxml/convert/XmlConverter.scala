@@ -7,8 +7,8 @@ import com.github.geirolz.advxml.convert.XmlConverter.{ModelToXml, XmlToModel}
 import scala.xml.NodeSeq
 
 object XmlConverter extends ValidatedConverterOps {
-  type ModelToXml[A, B <: NodeSeq] = ValidatedConverter[A, B]
-  type XmlToModel[A <: NodeSeq, B] = ValidatedConverter[A, B]
+  type ModelToXml[-A, +B <: NodeSeq] = ValidatedConverter[A, B]
+  type XmlToModel[-A <: NodeSeq, +B] = ValidatedConverter[A, B]
 
   def asXml[Obj: ModelToXml[?, Xml], Xml <: NodeSeq](model: Obj): ValidatedRes[Xml] = XmlConverter(model)
 

@@ -7,7 +7,6 @@ import scala.xml.NodeSeq
 /**
   * Advxml
   * Created by geirolad on 28/06/2019.
-  *
   * @author geirolad
   */
 object XmlTraverser {
