@@ -21,6 +21,7 @@ lazy val global = project
 lazy val settings = Seq(
   name := "Advxml",
   crossScalaVersions := List("2.12.8", "2.12.9", "2.13.0"),
+  scalaVersion := crossScalaVersions.value.head,
   coverageEnabled.in(Test, test) := true,
   resolvers ++= Resolvers.all,
   libraryDependencies ++= Dependencies.all,
