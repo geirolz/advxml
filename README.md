@@ -13,7 +13,7 @@ Maven for 2.12
 <dependency>
     <groupId>com.github.geirolz</groupId>
     <artifactId>advxml_2.12</artifactId>
-    <version>0.1.3</version>
+    <version>0.1.4</version>
 </dependency>
 ```
 
@@ -22,13 +22,13 @@ Maven for 2.13
 <dependency>
     <groupId>com.github.geirolz</groupId>
     <artifactId>advxml_2.13</artifactId>
-    <version>0.1.3</version>
+    <version>0.1.4</version>
 </dependency>
 ```
 
 Sbt
 ```
-libraryDependencies += "com.github.geirolz" %% "advxml" % "0.1.3"
+libraryDependencies += "com.github.geirolz" %% "advxml" % "0.1.4"
 ```
 
 ## Structure
@@ -212,9 +212,9 @@ handle the presence of what you are looking for.
 - _\\\?_ optional nested node
 - _\\\!_ mandatory nested node
 
- *Content*
-- _?_ optional content
-- _!_ mandatory content
+ *Text*
+- _?_ optional text
+- _!_ mandatory text
 
 
  *Example*
@@ -246,9 +246,9 @@ handle the presence of what you are looking for.
     val mandatoryAttr: ValidatedRes[String] = doc \ "Person" \ "Cars" \ "Car" \@! "Brand"
     val optionalAttr: ValidatedRes[Option[String]] = doc \ "Person" \ "Cars" \ "Car" \@? "Brand"
 
-    //Content
-    val mandatoryContent: ValidatedRes[String] = doc \ "Person" \ "Cars" \ "Car" \ "Price" !
-    val optionalContent: ValidatedRes[Option[String]] = doc \ "Person" \ "Cars" \ "Car" \ "Price" ?
+    //Text
+    val mandatoryText: ValidatedRes[String] = doc \ "Person" \ "Cars" \ "Car" \ "Price" !
+    val optionalText: ValidatedRes[Option[String]] = doc \ "Person" \ "Cars" \ "Car" \ "Price" ?
 ```
   
 ### Convert <a name="Convert"></a>

@@ -18,21 +18,24 @@ class StressTest extends FeatureSpec {
       val elem = XML.loadFile(getClass.getResource("/transform/stressTest_1mb.xml").getPath)
 
       val zoomByAttrs1: XmlZoom = _ filter attrs(
-          "gdp_serv"   -> "55.2",
-          "government" -> "republic",
-          "inflation"  -> "28.3",
-          "population" -> "10002541"
+          "gdp_serv"   -> (_ == "55.2"),
+          "government" -> (_ == "republic"),
+          "inflation"  -> (_ == "28.3"),
+          "population" -> (_ == "10002541")
         )
 
-      val zoomByAttrs2: XmlZoom = _ filter attrs("capital" -> "f0_1533", "car_code" -> "H")
+      val zoomByAttrs2: XmlZoom = _ filter attrs(
+          "capital"  -> (_ == "f0_1533"),
+          "car_code" -> (_ == "H")
+        )
 
       val filterByChild: XmlZoom = _ filter hasImmediateChild(
           "province",
           attrs(
-            "population" -> "422500",
-            "country"    -> "f0_251",
-            "name"       -> "Fejer",
-            "capital"    -> "f0_3117"
+            "population" -> (_ == "422500"),
+            "country"    -> (_ == "f0_251"),
+            "name"       -> (_ == "Fejer"),
+            "capital"    -> (_ == "f0_3117")
           )
         )
 

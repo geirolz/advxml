@@ -10,20 +10,19 @@ private[transform] trait Filters {
 
   lazy val always: XmlPredicate = _ => true
 
-  def text(text: String): XmlPredicate = {
-    case n: Node => n.text == text
+  def text(p: String => Boolean): XmlPredicate = {
+    case n: Node => p(n.text)
     case _       => false
   }
 
-  def label(name: String): XmlPredicate = {
-    case n: Node => n.label == name
+  def label(p: String => Boolean): XmlPredicate = {
+    case n: Node => p(n.label)
     case _       => false
   }
 
-  def attrs(value: (String, String), values: (String, String)*): XmlPredicate = {
+  def attrs(value: (String, String => Boolean), values: (String, String => Boolean)*): XmlPredicate = {
 
-    def attr(key: String, value: String): XmlPredicate =
-      _ \@ key == value
+    def attr(key: String, p: String => Boolean): XmlPredicate = ns => p(ns \@ key)
 
     (Seq(value) ++ values)
       .map(t => attr(t._1, t._2))
