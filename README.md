@@ -1,6 +1,8 @@
 # Advxml
 [![Build Status](https://travis-ci.org/geirolz/advxml.svg?branch=master)](https://travis-ci.org/geirolz/advxml)
 [![codecov](https://codecov.io/gh/geirolz/advxml/branch/master/graph/badge.svg)](https://codecov.io/gh/geirolz/advxml)
+![Sonatype Nexus (Releases)](https://img.shields.io/nexus/r/com.github.geirolz/advxml_2.13?server=https%3A%2F%2Foss.sonatype.org)
+[![GitHub license](https://img.shields.io/github/license/geirolz/advxml)](https://github.com/geirolz/advxml/blob/master/LICENSE)
 
 A Scala library to edit xml using native scala xml library and cats core.
 
