@@ -10,8 +10,7 @@ import org.scalatest.FunSuite
   */
 class XmlNormalizerTest extends FunSuite {
 
-  import com.github.geirolz.advxml.implicits.normalizer._
-  import com.github.geirolz.advxml.instances.normalizer._
+  import com.github.geirolz.advxml.implicits.normalize._
 
   test("Xml Normalizer") {
 

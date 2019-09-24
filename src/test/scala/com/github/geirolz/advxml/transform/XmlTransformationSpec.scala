@@ -4,6 +4,7 @@ import com.github.geirolz.advxml.generators.XmlGenerator
 import org.scalacheck.{Arbitrary, Properties}
 import org.scalacheck.Prop.forAll
 
+import scala.util.Try
 import scala.xml.{Elem, Node, NodeSeq}
 
 /**
@@ -24,7 +25,7 @@ object XmlTransformationSpec extends Properties("List") {
   property("Append") = forAll { (base: NodeSeq, newNode: NodeSeq) =>
     val selector = XmlGenerator.xmlNodeSelectorGenerator(base.asInstanceOf[Elem])
     val rule = $(Function.const(selector.sample.get)) ==> Append(newNode)
-    val result: Node = base.transform(rule).get.head
+    val result: Node = base.transform[Try](rule).get.head
 
     result.asInstanceOf[Node].descendant.contains(newNode)
   }
@@ -33,7 +34,7 @@ object XmlTransformationSpec extends Properties("List") {
     val selector = XmlGenerator.xmlNodeSelectorGenerator(base.asInstanceOf[Elem])
     val selectedNode = selector.sample.get
     val rule = $(Function.const(selectedNode)) ==> Replace(newNode)
-    val result: Node = base.transform(rule).get.head
+    val result: Node = base.transform[Try](rule).get.head
 
     result.asInstanceOf[Node].descendant.contains(newNode)
     !result.asInstanceOf[Node].descendant.contains(selectedNode)
@@ -43,7 +44,7 @@ object XmlTransformationSpec extends Properties("List") {
     val selector = XmlGenerator.xmlNodeSelectorGenerator(base.asInstanceOf[Elem])
     val selectedNode = selector.sample.get
     val rule = $(Function.const(selectedNode)) ==> Remove
-    val result = base.transform(rule).get.headOption
+    val result = base.transform[Try](rule).get.headOption
 
     result.forall(r => !r.descendant.contains(selectedNode))
   }
