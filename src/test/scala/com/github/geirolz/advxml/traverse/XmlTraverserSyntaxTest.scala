@@ -14,8 +14,6 @@ import scala.xml.NodeSeq
   */
 class XmlTraverserSyntaxTest extends FeatureSpec {
 
-  import cats.instances.option._
-  import cats.instances.try_._
   import com.github.geirolz.advxml.implicits.traverser._
 
   feature("XmlTraverseSyntaxTest: Read Attributes") {
@@ -125,7 +123,6 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       //missing Nodes
       assert(works.isFailure)
       assert(data.isFailure)
-      assert(data.toEither.exists(_.length == 1))
     }
   }
 
@@ -145,7 +142,7 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
 
       assert(cars.isDefined)
       assert(cars.get.length == 1)
-      assert(works.exists(_.isEmpty))
+      assert(works.isEmpty)
     }
 
     scenario("Read required nested nodes") {
@@ -184,8 +181,7 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
 
       assert(note.isDefined)
       assert(note.get.trim == noteData)
-      assert(works.isDefined)
-      assert(works.exists(_.isEmpty))
+      assert(works.isEmpty)
     }
 
     scenario("Read optional text waterfall") {
@@ -204,8 +200,7 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
 
       assert(note.isDefined)
       assert(note.get.trim == noteData)
-      assert(works.isDefined)
-      assert(works.exists(_.isEmpty))
+      assert(works.isEmpty)
     }
 
     scenario("Read required text") {

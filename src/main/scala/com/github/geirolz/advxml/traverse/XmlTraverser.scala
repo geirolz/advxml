@@ -2,6 +2,11 @@ package com.github.geirolz.advxml.traverse
 
 import cats.Alternative
 import com.github.geirolz.advxml.transform.actions.MonadEx
+import com.github.geirolz.advxml.traverse.XmlTraverser.exceptions.{
+  XmlMissingAttributeException,
+  XmlMissingNodeException,
+  XmlMissingTextException
+}
 
 import scala.util.{Failure, Success, Try}
 import scala.xml.NodeSeq
@@ -12,42 +17,42 @@ import scala.xml.NodeSeq
   * @author geirolad
   */
 sealed trait XmlTraverser[F[_]] {
-  def immediateChildren(ns: NodeSeq, name: String): F[NodeSeq]
+  def immediateChildren(target: NodeSeq, q: String): F[NodeSeq]
 
-  def children(ns: NodeSeq, name: String): F[NodeSeq]
+  def children(target: NodeSeq, q: String): F[NodeSeq]
 
-  def attr(ns: NodeSeq, name: String): F[String]
+  def attr(target: NodeSeq, q: String): F[String]
 
-  def text(ns: NodeSeq): F[String]
+  def text(target: NodeSeq): F[String]
 }
 object XmlTraverser {
 
   def mandatory[F[_]](implicit F: MonadEx[F]): XmlTraverser[F] = new XmlTraverser[F] {
 
-    def immediateChildren(ns: NodeSeq, name: String): F[NodeSeq] = {
-      ns \ name match {
-        case value if value.isEmpty => F.raiseError(new RuntimeException(s"Missing node: $name"))
+    def immediateChildren(target: NodeSeq, q: String): F[NodeSeq] = {
+      target \ q match {
+        case value if value.isEmpty => F.raiseError(XmlMissingNodeException(q, target))
         case value                  => F.pure(value)
       }
     }
 
-    def children(ns: NodeSeq, name: String): F[NodeSeq] = {
-      ns \\ name match {
-        case value if value.isEmpty => F.raiseError(new RuntimeException(s"Missing nested node: $name"))
+    def children(target: NodeSeq, q: String): F[NodeSeq] = {
+      target \\ q match {
+        case value if value.isEmpty => F.raiseError(XmlMissingNodeException(q, target))
         case value                  => F.pure(value)
       }
     }
 
-    def attr(ns: NodeSeq, name: String): F[String] = {
-      ns \@ name match {
-        case value if value.isEmpty => F.raiseError(new RuntimeException(s"Missing attribute: $name"))
+    def attr(target: NodeSeq, q: String): F[String] = {
+      target \@ q match {
+        case value if value.isEmpty => F.raiseError(XmlMissingAttributeException(q, target))
         case value                  => F.pure(value)
       }
     }
 
-    def text(ns: NodeSeq): F[String] = {
-      ns.text match {
-        case value if value.isEmpty => F.raiseError(new RuntimeException("Missing text"))
+    def text(target: NodeSeq): F[String] = {
+      target.text match {
+        case value if value.isEmpty => F.raiseError(XmlMissingTextException(target))
         case value                  => F.pure(value)
       }
     }
@@ -57,14 +62,14 @@ object XmlTraverser {
 
     import cats.instances.try_._
 
-    def immediateChildren(ns: NodeSeq, name: String): F[NodeSeq] =
-      toAlternative(mandatory.immediateChildren(ns, name))
+    def immediateChildren(ns: NodeSeq, q: String): F[NodeSeq] =
+      toAlternative(mandatory.immediateChildren(ns, q))
 
-    def children(ns: NodeSeq, name: String): F[NodeSeq] =
-      toAlternative(mandatory.children(ns, name))
+    def children(ns: NodeSeq, q: String): F[NodeSeq] =
+      toAlternative(mandatory.children(ns, q))
 
-    def attr(ns: NodeSeq, name: String): F[String] =
-      toAlternative(mandatory.attr(ns, name))
+    def attr(ns: NodeSeq, q: String): F[String] =
+      toAlternative(mandatory.attr(ns, q))
 
     def text(ns: NodeSeq): F[String] =
       toAlternative(mandatory.text(ns))
@@ -73,5 +78,21 @@ object XmlTraverser {
       case Success(value) => F.pure(value)
       case Failure(_)     => F.empty
     }
+  }
+
+  object exceptions {
+
+    abstract class XmlMissingException(val message: String) extends RuntimeException(message) {
+      val target: NodeSeq
+    }
+
+    case class XmlMissingNodeException(q: String, target: NodeSeq)
+        extends XmlMissingException(s"Missing match for node: $q.")
+
+    case class XmlMissingAttributeException(q: String, target: NodeSeq)
+        extends XmlMissingException(s"Missing match for attribute: $q.")
+
+    case class XmlMissingTextException(target: NodeSeq) extends XmlMissingException(s"Missing text, content is empty.")
+
   }
 }

@@ -1,6 +1,5 @@
 package com.github.geirolz.advxml.convert
 
-import cats.Monad
 import cats.data.Validated.{Invalid, Valid}
 import cats.data.ValidatedNel
 import com.github.geirolz.advxml.convert.ValidatedRes.ValidatedRes
@@ -25,36 +24,6 @@ object ValidatedRes {
   }
 }
 
-private[advxml] trait ValidationInstances {
-
-  implicit def validatedResMonad: Monad[ValidatedRes] = new Monad[ValidatedRes] {
-
-    import cats.syntax.validated._
-
-    override def flatMap[A, B](fa: ValidatedRes[A])(f: A => ValidatedRes[B]): ValidatedRes[B] =
-      fa match {
-        case Valid(a)       => f(a)
-        case i @ Invalid(_) => i
-      }
-
-    override def tailRecM[A, B](a: A)(f: A => ValidatedRes[Either[A, B]]): ValidatedRes[B] =
-      f(a) match {
-        case Valid(vValue) =>
-          vValue match {
-            case Left(e) =>
-              e match {
-                case e: Throwable => e.invalidNel
-                case _            => new RuntimeException("Invalid error type.").invalidNel
-              }
-            case Right(eValue) => eValue.validNel
-          }
-        case Invalid(e) => e.invalid
-      }
-
-    override def pure[A](x: A): ValidatedRes[A] = x.validNel
-  }
-}
-
 private[advxml] trait ValidationSyntax {
 
   implicit class ValidatedResTryOps[T](t: Try[T]) {
@@ -63,9 +32,5 @@ private[advxml] trait ValidationSyntax {
 
   implicit class ValidatedResOps[T](validated: ValidatedRes[T]) {
     def toTry: Try[T] = ValidatedRes.toTry(validated)
-  }
-
-  implicit class ValidatedResOptionOps[T](t: ValidatedRes[Option[T]]) {
-    def mapValue[A](f: T => A): ValidatedRes[Option[A]] = t.map(_.map(f))
   }
 }

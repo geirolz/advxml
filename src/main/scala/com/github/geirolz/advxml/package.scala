@@ -26,7 +26,6 @@ package object advxml {
 
   object instances extends AllInstances {
     object transformer extends XmlTransformerInstances
-    object validation extends ValidationInstances
     object textSerializer extends XmlTextSerializerInstances
     object normalizer extends XmlNormalizerInstances
   }
