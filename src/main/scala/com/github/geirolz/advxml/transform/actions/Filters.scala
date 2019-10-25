@@ -29,8 +29,10 @@ private[transform] trait Filters {
       .reduce(PredicateUtils.and[NodeSeq])
   }
 
-  def hasImmediateChild(name: String, predicate: XmlPredicate = always): XmlPredicate =
-    xml => (xml \? name).toOption.flatten.fold(false)(_.exists(predicate))
+  def hasImmediateChild(name: String, predicate: XmlPredicate = always): XmlPredicate = {
+    import cats.instances.option._
+    xml => (xml \? name).fold(false)(_.exists(predicate))
+  }
 
   def strictEqualsTo(ns: NodeSeq): XmlPredicate =
     that =>

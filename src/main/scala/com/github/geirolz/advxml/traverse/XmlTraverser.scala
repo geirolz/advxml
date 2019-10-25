@@ -1,7 +1,9 @@
 package com.github.geirolz.advxml.traverse
 
-import com.github.geirolz.advxml.convert.ValidatedRes.ValidatedRes
+import cats.Alternative
+import com.github.geirolz.advxml.transform.actions.MonadEx
 
+import scala.util.{Failure, Success, Try}
 import scala.xml.NodeSeq
 
 /**
@@ -9,53 +11,67 @@ import scala.xml.NodeSeq
   * Created by geirolad on 28/06/2019.
   * @author geirolad
   */
+sealed trait XmlTraverser[F[_]] {
+  def immediateChildren(ns: NodeSeq, name: String): F[NodeSeq]
+
+  def children(ns: NodeSeq, name: String): F[NodeSeq]
+
+  def attr(ns: NodeSeq, name: String): F[String]
+
+  def text(ns: NodeSeq): F[String]
+}
 object XmlTraverser {
 
-  import cats.implicits._
+  def mandatory[F[_]](implicit F: MonadEx[F]): XmlTraverser[F] = new XmlTraverser[F] {
 
-  object mandatory {
-
-    def immediateChildren(ns: NodeSeq, name: String): ValidatedRes[NodeSeq] = {
+    def immediateChildren(ns: NodeSeq, name: String): F[NodeSeq] = {
       ns \ name match {
-        case value if value.isEmpty => new RuntimeException(s"Missing node: $name").invalidNel
-        case value                  => value.validNel
+        case value if value.isEmpty => F.raiseError(new RuntimeException(s"Missing node: $name"))
+        case value                  => F.pure(value)
       }
     }
 
-    def children(ns: NodeSeq, name: String): ValidatedRes[NodeSeq] = {
+    def children(ns: NodeSeq, name: String): F[NodeSeq] = {
       ns \\ name match {
-        case value if value.isEmpty => new RuntimeException(s"Missing nested node: $name").invalidNel
-        case value                  => value.validNel
+        case value if value.isEmpty => F.raiseError(new RuntimeException(s"Missing nested node: $name"))
+        case value                  => F.pure(value)
       }
     }
 
-    def attr(ns: NodeSeq, name: String): ValidatedRes[String] = {
+    def attr(ns: NodeSeq, name: String): F[String] = {
       ns \@ name match {
-        case value if value.isEmpty => new RuntimeException(s"Missing attribute: $name").invalidNel
-        case value                  => value.validNel
+        case value if value.isEmpty => F.raiseError(new RuntimeException(s"Missing attribute: $name"))
+        case value                  => F.pure(value)
       }
     }
 
-    def text(ns: NodeSeq): ValidatedRes[String] = {
+    def text(ns: NodeSeq): F[String] = {
       ns.text match {
-        case value if value.isEmpty => new RuntimeException("Missing text").invalidNel
-        case value                  => value.validNel
+        case value if value.isEmpty => F.raiseError(new RuntimeException("Missing text"))
+        case value                  => F.pure(value)
       }
     }
   }
 
-  object optional {
+  def optional[F[_]](implicit F: Alternative[F]): XmlTraverser[F] = new XmlTraverser[F] {
 
-    def immediateChildren(ns: NodeSeq, name: String): ValidatedRes[Option[NodeSeq]] =
-      mandatory.immediateChildren(ns, name).toOption.validNel
+    import cats.instances.try_._
 
-    def children(ns: NodeSeq, name: String): ValidatedRes[Option[NodeSeq]] =
-      mandatory.children(ns, name).toOption.validNel
+    def immediateChildren(ns: NodeSeq, name: String): F[NodeSeq] =
+      toAlternative(mandatory.immediateChildren(ns, name))
 
-    def attr(ns: NodeSeq, name: String): ValidatedRes[Option[String]] =
-      mandatory.attr(ns, name).toOption.validNel
+    def children(ns: NodeSeq, name: String): F[NodeSeq] =
+      toAlternative(mandatory.children(ns, name))
 
-    def text(ns: NodeSeq): ValidatedRes[Option[String]] =
-      mandatory.text(ns).toOption.validNel
+    def attr(ns: NodeSeq, name: String): F[String] =
+      toAlternative(mandatory.attr(ns, name))
+
+    def text(ns: NodeSeq): F[String] =
+      toAlternative(mandatory.text(ns))
+
+    private def toAlternative[T](v: Try[T]): F[T] = v match {
+      case Success(value) => F.pure(value)
+      case Failure(_)     => F.empty
+    }
   }
 }
