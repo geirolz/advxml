@@ -71,7 +71,7 @@ The idea behind this library is offer a fluent syntax to edit and read xml.
  
  *Example*
 ```scala
-    import com.github.geirolz.advxml.all._
+    import com.github.geirolz.advxml._
     import com.github.geirolz.advxml.transform._
     import scala.xml._
     import scala.util._
@@ -103,7 +103,7 @@ If you need apply more that one modification on a selected node you can combine 
 
  *Example*
 ```scala
-    import com.github.geirolz.advxml.all._
+    import com.github.geirolz.advxml._
     import com.github.geirolz.advxml.transform._
     import scala.xml._
     import scala.util._
@@ -140,7 +140,7 @@ You can combine multiple modifiers using `andThen` method or with syntax sugar `
 
  *Example*
 ```scala
-    import com.github.geirolz.advxml.all._
+    import com.github.geirolz.advxml._
     import com.github.geirolz.advxml.transform._
     import scala.xml._
     import scala.util._
@@ -176,7 +176,7 @@ the `XmlModifier` and no the `XmlRule` instance, this means no zooming actions.
 
  *Example*
 ```scala
-    import com.github.geirolz.advxml.all._
+    import com.github.geirolz.advxml._
     import scala.xml._
     import scala.util._
     
@@ -221,8 +221,8 @@ handle the presence of what you are looking for.
 
  *Example*
 ```scala
-    import com.github.geirolz.advxml.all._
-    import com.github.geirolz.advxml.convert.ValidatedRes.ValidatedRes
+    import com.github.geirolz.advxml._
+    import com.github.geirolz.advxml.error.ValidatedEx.ValidatedEx
     import scala.xml._
 
     val doc: Elem = 
@@ -237,20 +237,20 @@ handle the presence of what you are looking for.
     </Persons>
 
     //Nodes
-    val mandatoryNode: ValidatedRes[NodeSeq] = doc \ "Person" \! "Cars"
-    val optionalNode: ValidatedRes[Option[NodeSeq]] = doc \ "Person" \? "Cars"
+    val mandatoryNode: ValidatedEx[NodeSeq] = doc \ "Person" \! "Cars"
+    val optionalNode: ValidatedEx[Option[NodeSeq]] = doc \ "Person" \? "Cars"
     
     //Nested nodes
-    val mandatoryNestedNode: ValidatedRes[NodeSeq] = doc \ "Person" \\! "Cars"
-    val optionalNestedNode: ValidatedRes[Option[NodeSeq]] = doc \ "Person" \\? "Cars"
+    val mandatoryNestedNode: ValidatedEx[NodeSeq] = doc \ "Person" \\! "Cars"
+    val optionalNestedNode: ValidatedEx[Option[NodeSeq]] = doc \ "Person" \\? "Cars"
 
     //Attributes
-    val mandatoryAttr: ValidatedRes[String] = doc \ "Person" \ "Cars" \ "Car" \@! "Brand"
-    val optionalAttr: ValidatedRes[Option[String]] = doc \ "Person" \ "Cars" \ "Car" \@? "Brand"
+    val mandatoryAttr: ValidatedEx[String] = doc \ "Person" \ "Cars" \ "Car" \@! "Brand"
+    val optionalAttr: ValidatedEx[Option[String]] = doc \ "Person" \ "Cars" \ "Car" \@? "Brand"
 
     //Text
-    val mandatoryText: ValidatedRes[String] = doc \ "Person" \ "Cars" \ "Car" \ "Price" !
-    val optionalText: ValidatedRes[Option[String]] = doc \ "Person" \ "Cars" \ "Car" \ "Price" ?
+    val mandatoryText: ValidatedEx[String] = doc \ "Person" \ "Cars" \ "Car" \ "Price" !
+    val optionalText: ValidatedEx[Option[String]] = doc \ "Person" \ "Cars" \ "Car" \ "Price" ?
 ```
   
 ### Convert <a name="Convert"></a>
@@ -261,9 +261,9 @@ errors.
     
  *Example XML to Model*
 ```scala
-    import com.github.geirolz.advxml.all._
+    import com.github.geirolz.advxml._
     import com.github.geirolz.advxml.convert.XmlConverter.XmlToModel
-    import com.github.geirolz.advxml.convert.ValidatedRes.ValidatedRes
+    import com.github.geirolz.advxml.error.ValidatedEx.ValidatedEx
     import scala.xml._
     import cats.implicits._
 
@@ -277,14 +277,14 @@ errors.
       ).mapN(Person)
 
     val xml = <Person Name="Matteo" Surname="Bianchi"/>
-    val res: ValidatedRes[Person] = xml.as[Person]
+    val res: ValidatedEx[Person] = xml.as[Person]
 ```
 
  *Example Model to XML*
 ```scala
-    import com.github.geirolz.advxml.all._
+    import com.github.geirolz.advxml._
     import com.github.geirolz.advxml.convert.XmlConverter.ModelToXml
-    import com.github.geirolz.advxml.convert.ValidatedRes.ValidatedRes
+    import com.github.geirolz.advxml.error.ValidatedEx.ValidatedEx
     import scala.xml._
     import cats.implicits._
     import cats.data.Validated.Valid
@@ -297,7 +297,7 @@ errors.
       }
     
     val p = Person("Matteo", "Bianchi", Some(23))
-    val res: ValidatedRes[Elem] = p.asXml
+    val res: ValidatedEx[Elem] = p.asXml
 ```
 
 ### Normalize <a name="Normalize"></a>

@@ -1,7 +1,7 @@
 package com.github.geirolz.advxml.traverse
 
 import cats.{Alternative, Monad}
-import com.github.geirolz.advxml.transform.actions.MonadEx
+import com.github.geirolz.advxml.error.MonadEx
 
 import scala.util.Try
 import scala.xml.NodeSeq

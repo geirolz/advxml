@@ -1,61 +1,49 @@
 package com.github.geirolz.advxml.convert
 
-import com.github.geirolz.advxml.convert.ValidatedConverter.ValidatedConverter
-import com.github.geirolz.advxml.convert.ValidatedRes.ValidatedRes
 import com.github.geirolz.advxml.convert.XmlConverter.{ModelToXml, XmlToModel}
+import com.github.geirolz.advxml.utils.Converter
+import com.github.geirolz.advxml.utils.Converter.Converter
 
 import scala.xml.NodeSeq
 
-object XmlConverter extends ValidatedConverterOps {
+object XmlConverter {
+
+  type ModelToXml[F[_], -O, X <: NodeSeq] = Converter[F, O, X]
+  type XmlToModel[F[_], -X <: NodeSeq, O] = Converter[F, X, O]
 
   /**
-    *
-    * @tparam A
-    * @tparam B
-    */
-  type ModelToXml[-A, +B <: NodeSeq] = ValidatedConverter[A, B]
-
-  /**
-    *
-    * @tparam A
-    * @tparam B
-    */
-  type XmlToModel[-A <: NodeSeq, +B] = ValidatedConverter[A, B]
-
-  /**
-    * Syntactic sugar to convert a [[Xml]] instance into [[Obj]] using an implicit [[XmlToModel]] instance.
+    * Syntactic sugar to convert a [[X]] instance into [[O]] using an implicit [[XmlToModel]] instance.
     * See [[XmlToModel]] for further information.
     *
-    * @tparam Obj Output model type
-    * @return [[ValidatedRes]] instance that, if on success case contains [[Obj]] instance.
+    * @tparam O Output model type
+    * @return [[com.github.geirolz.advxml.error.ValidatedEx]] instance that, if on success case contains [[O]] instance.
     */
-  def asXml[Obj: ModelToXml[?, Xml], Xml <: NodeSeq](model: Obj): ValidatedRes[Xml] = XmlConverter(model)
+  def asXml[F[_], O: ModelToXml[F, ?, X], X <: NodeSeq](model: O): F[X] = Converter(model)
 
   /**
-    * Syntactic sugar to convert a [[Obj]] instance into [[Xml]] using an implicit [[ModelToXml]] instance.
+    * Syntactic sugar to convert a [[O]] instance into [[X]] using an implicit [[ModelToXml]] instance.
     *
-    * @tparam Xml Output model type
-    * @return [[ValidatedRes]] instance that, if on success case contains [[Xml]] instance.
+    * @tparam X Output model type
+    * @return [[com.github.geirolz.advxml.error.ValidatedEx]] instance that, if on success case contains [[X]] instance.
     */
-  def asModel[Xml <: NodeSeq: XmlToModel[?, Obj], Obj](xml: Xml): ValidatedRes[Obj] = XmlConverter(xml)
+  def asModel[F[_], X <: NodeSeq: XmlToModel[F, ?, O], O](xml: X): F[O] = Converter(xml)
 }
 
 private[advxml] trait XmlConverterSyntax {
 
-  implicit class XmlConverterOps[Xml <: NodeSeq](xml: Xml) {
+  implicit class XmlConverterOps[F[_], X <: NodeSeq](xml: X) {
 
     /**
       * @see [[XmlConverter.asModel()]]
       */
-    def as[Obj: XmlToModel[Xml, ?]]: ValidatedRes[Obj] = XmlConverter(xml)
+    def as[B](implicit F: XmlToModel[F, X, B]): F[B] = XmlConverter.asModel(xml)
   }
 
-  implicit class ConverterAnyOps[Obj](model: Obj) {
+  implicit class ConverterAnyOps[F[_], O](model: O) {
 
     /**
       * @see [[XmlConverter.asXml()]]
       */
-    def asXml[Xml <: NodeSeq: ModelToXml[Obj, ?]]: ValidatedRes[Xml] = XmlConverter(model)
+    def asXml[X <: NodeSeq](implicit F: ModelToXml[F, O, X]): F[X] = XmlConverter.asXml(model)
   }
-
 }

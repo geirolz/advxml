@@ -1,4 +1,4 @@
-package com.github.geirolz.advxml.exceptions
+package com.github.geirolz.advxml.error.exceptions
 
 import java.io.{OutputStreamWriter, PrintStream, PrintWriter}
 

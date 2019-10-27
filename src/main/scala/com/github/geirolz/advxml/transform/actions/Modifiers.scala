@@ -2,6 +2,7 @@ package com.github.geirolz.advxml.transform.actions
 
 import com.github.geirolz.advxml.convert.XmlTextSerializer
 import com.github.geirolz.advxml.convert.XmlTextSerializer.Serializer
+import com.github.geirolz.advxml.error.MonadEx
 
 import scala.xml._
 

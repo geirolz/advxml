@@ -1,5 +1,6 @@
 package com.github.geirolz.advxml.transform
 
+import com.github.geirolz.advxml.error.MonadEx
 import com.github.geirolz.advxml.transform.actions._
 
 import scala.xml.NodeSeq
@@ -29,4 +30,4 @@ object XmlTransformer {
   }
 }
 
-private[advxml] trait XmlTransformerInstances extends Modifiers with Zooms with Filters
+private[advxml] trait XmlTransformerInstances extends Modifiers with Filters
