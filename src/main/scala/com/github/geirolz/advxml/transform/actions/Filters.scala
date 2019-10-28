@@ -1,7 +1,6 @@
 package com.github.geirolz.advxml.transform.actions
 
 import com.github.geirolz.advxml.utils.PredicateUtils
-
 import scala.xml.{Node, NodeSeq}
 
 private[transform] trait Filters {

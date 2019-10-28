@@ -1,10 +1,10 @@
 package com.github.geirolz.advxml.convert
 
+import cats.data.Validated.Valid
 import com.github.geirolz.advxml.convert.XmlConverter.{ModelToXml, XmlToModel}
 import com.github.geirolz.advxml.error.ValidatedEx
 import org.scalatest.FunSuite
 
-import scala.util.{Success, Try}
 import scala.xml.Elem
 
 /**
@@ -25,7 +25,7 @@ class XmlConverterTest extends FunSuite {
 
     case class Person(name: String, surname: String, age: Option[Int])
 
-    implicit val converter: XmlToModel[ValidatedEx, Elem, Person] = x => {
+    implicit val converter: XmlToModel[Elem, Person] = x => {
       (
         (x \@! "Name").toValidatedNel,
         (x \@! "Surname").toValidatedNel,
@@ -45,15 +45,15 @@ class XmlConverterTest extends FunSuite {
 
     case class Person(name: String, surname: String, age: Option[Int])
 
-    implicit val converter: ModelToXml[Try, Person, Elem] = x =>
-      Success(
+    implicit val converter: ModelToXml[Person, Elem] = x =>
+      Valid(
         <Person Name={x.name} Surname={x.surname} Age={x.age.map(_.toString).getOrElse("")}/>
       )
 
     val p = Person("Matteo", "Bianchi", Some(23))
-    val res: Try[Elem] = p.asXml
+    val res: ValidatedEx[Elem] = p.asXml[Elem]
 
-    assert(res.isSuccess)
-    assert(res.get == <Person Name="Matteo" Surname="Bianchi" Age="23"/>)
+    assert(res.isValid)
+    assert(res.toOption.get == <Person Name="Matteo" Surname="Bianchi" Age="23"/>)
   }
 }

@@ -23,6 +23,7 @@ lazy val settings = Seq(
   crossScalaVersions := List("2.12.8", "2.12.9", "2.13.0", "2.13.1"),
   scalaVersion := crossScalaVersions.value.head,
   coverageEnabled.in(Test, test) := true,
+  publishArtifact in (Compile, packageDoc) := false,
   resolvers ++= Resolvers.all,
   libraryDependencies ++= Dependencies.all,
   scalacOptions ++= scalacSettings(scalaVersion.value),
