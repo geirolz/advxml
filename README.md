@@ -1,7 +1,8 @@
 # Advxml
 [![Build Status](https://travis-ci.org/geirolz/advxml.svg?branch=master)](https://travis-ci.org/geirolz/advxml)
 [![codecov](https://codecov.io/gh/geirolz/advxml/branch/master/graph/badge.svg)](https://codecov.io/gh/geirolz/advxml)
-![Sonatype Nexus (Releases)](https://img.shields.io/nexus/r/com.github.geirolz/advxml_2.13?server=https%3A%2F%2Foss.sonatype.org)
+[![Sonatype Nexus (Releases)](https://img.shields.io/nexus/r/com.github.geirolz/advxml_2.13?server=https%3A%2F%2Foss.sonatype.org)](https://mvnrepository.com/artifact/com.github.geirolz/advxml)
+[![Scala Steward badge](https://img.shields.io/badge/Scala_Steward-helping-blue.svg?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAMAAAARSr4IAAAAVFBMVEUAAACHjojlOy5NWlrKzcYRKjGFjIbp293YycuLa3pYY2LSqql4f3pCUFTgSjNodYRmcXUsPD/NTTbjRS+2jomhgnzNc223cGvZS0HaSD0XLjbaSjElhIr+AAAAAXRSTlMAQObYZgAAAHlJREFUCNdNyosOwyAIhWHAQS1Vt7a77/3fcxxdmv0xwmckutAR1nkm4ggbyEcg/wWmlGLDAA3oL50xi6fk5ffZ3E2E3QfZDCcCN2YtbEWZt+Drc6u6rlqv7Uk0LdKqqr5rk2UCRXOk0vmQKGfc94nOJyQjouF9H/wCc9gECEYfONoAAAAASUVORK5CYII=)](https://scala-steward.org)
 [![GitHub license](https://img.shields.io/github/license/geirolz/advxml)](https://github.com/geirolz/advxml/blob/master/LICENSE)
 
 A Scala library to edit xml using native scala xml library and cats core.
@@ -15,7 +16,7 @@ Maven for 2.12
 <dependency>
     <groupId>com.github.geirolz</groupId>
     <artifactId>advxml_2.12</artifactId>
-    <version>0.1.4</version>
+    <version>0.1.5</version>
 </dependency>
 ```
 
@@ -24,13 +25,13 @@ Maven for 2.13
 <dependency>
     <groupId>com.github.geirolz</groupId>
     <artifactId>advxml_2.13</artifactId>
-    <version>0.1.4</version>
+    <version>0.1.5</version>
 </dependency>
 ```
 
 Sbt
 ```
-libraryDependencies += "com.github.geirolz" %% "advxml" % "0.1.4"
+libraryDependencies += "com.github.geirolz" %% "advxml" % "0.1.5"
 ```
 
 ## Structure
@@ -221,10 +222,10 @@ handle the presence of what you are looking for.
 
  *Example*
 ```scala
+    import com.github.geirolz.advxml.error.ValidatedEx
     import com.github.geirolz.advxml._
-    import com.github.geirolz.advxml.error.ValidatedEx.ValidatedEx
     import scala.xml._
-
+    
     val doc: Elem = 
     <Persons>
       <Person Name="Mimmo">
@@ -262,18 +263,18 @@ errors.
  *Example XML to Model*
 ```scala
     import com.github.geirolz.advxml._
+    import com.github.geirolz.advxml.error.ValidatedEx
     import com.github.geirolz.advxml.convert.XmlConverter.XmlToModel
-    import com.github.geirolz.advxml.error.ValidatedEx.ValidatedEx
     import scala.xml._
     import cats.implicits._
 
     case class Person(name: String, surname: String, age: Option[Int])
 
-    implicit val converter: XmlToModel[Elem, Person] = x =>
+    implicit val converter: XmlToModel[ValidatedEx, Elem, Person] = x =>
       (
         x \@! "Name",
         x \@! "Surname",
-        x \@? "Age" mapValue (_.toInt)
+        (x \@? "Age").map(_.toInt).validNel
       ).mapN(Person)
 
     val xml = <Person Name="Matteo" Surname="Bianchi"/>
@@ -284,14 +285,14 @@ errors.
 ```scala
     import com.github.geirolz.advxml._
     import com.github.geirolz.advxml.convert.XmlConverter.ModelToXml
-    import com.github.geirolz.advxml.error.ValidatedEx.ValidatedEx
+    import com.github.geirolz.advxml.error.ValidatedEx
     import scala.xml._
     import cats.implicits._
     import cats.data.Validated.Valid
 
     case class Person(name: String, surname: String, age: Option[Int])
     
-    implicit val converter: ModelToXml[Person, Elem] = x =>
+    implicit val converter: ModelToXml[ValidatedEx, Person, Elem] = x =>
       Valid {
         <Person Name={x.name} Surname={x.surname} Age={x.age.map(_.toString).getOrElse("")}/>
       }
