@@ -1,11 +1,10 @@
 package com.github.geirolz.advxml.transform.actions
 
 import com.github.geirolz.advxml.utils.PredicateUtils
+
 import scala.xml.{Node, NodeSeq}
 
 private[transform] trait Filters {
-
-  import com.github.geirolz.advxml.implicits.traverser._
 
   lazy val always: XmlPredicate = _ => true
 
@@ -29,7 +28,8 @@ private[transform] trait Filters {
   }
 
   def hasImmediateChild(name: String, predicate: XmlPredicate = always): XmlPredicate = { xml =>
-    (xml \? name).fold(false)(_.exists(predicate))
+    import com.github.geirolz.advxml.implicits.traverser.try_._
+    (xml \? name).toOption.flatten.fold(false)(_.exists(predicate))
   }
 
   def strictEqualsTo(ns: NodeSeq): XmlPredicate =

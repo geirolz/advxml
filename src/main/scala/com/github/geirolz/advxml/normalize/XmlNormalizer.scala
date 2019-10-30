@@ -52,9 +52,6 @@ object XmlNormalizer {
       case x          => List(x)
     }
   }
-
-  object implicits extends XmlNormalizerSyntax
-  object instances extends XmlNormalizerInstances
 }
 
 private[advxml] trait XmlNormalizerInstances {

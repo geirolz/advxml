@@ -17,9 +17,7 @@ class XmlConverterTest extends FunSuite {
 
   import cats.implicits._
   import com.github.geirolz.advxml.implicits.converter._
-  import com.github.geirolz.advxml.implicits.traverser._
-  import com.github.geirolz.advxml.implicits.validation._
-  import com.github.geirolz.advxml.instances.monadErrors._
+  import com.github.geirolz.advxml.implicits.traverser.validated._
 
   test("XML to Model - Convert simple case class") {
 
@@ -27,9 +25,9 @@ class XmlConverterTest extends FunSuite {
 
     implicit val converter: XmlToModel[Elem, Person] = x => {
       (
-        (x \@! "Name").toValidatedNel,
-        (x \@! "Surname").toValidatedNel,
-        (x \@? "Age").map(_.toInt).validNel
+        (x \@! "Name"),
+        (x \@! "Surname"),
+        (x \@? "Age").map(_.map(_.toInt))
       ).mapN(Person)
     }
 

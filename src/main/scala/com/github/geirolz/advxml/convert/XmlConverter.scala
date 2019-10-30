@@ -1,5 +1,6 @@
 package com.github.geirolz.advxml.convert
 
+import cats.data.Validated.Valid
 import com.github.geirolz.advxml.convert.XmlConverter.{ModelToXml, XmlToModel}
 import com.github.geirolz.advxml.error.ValidatedEx
 import com.github.geirolz.advxml.utils.Converter
@@ -9,8 +10,24 @@ import scala.xml.NodeSeq
 
 object XmlConverter {
 
-  type ModelToXml[-O, X <: NodeSeq] = Converter[ValidatedEx, O, X]
-  type XmlToModel[-X <: NodeSeq, O] = Converter[ValidatedEx, X, O]
+  type XmlConverter[-A, B] = Converter[ValidatedEx, A, B]
+  type ModelToXml[-O, X <: NodeSeq] = XmlConverter[O, X]
+  type XmlToModel[-X <: NodeSeq, O] = XmlConverter[X, O]
+
+  /**
+    * Create an always valid converter that return the input instance.
+    * @tparam A Endo converter input and output type
+    * @return Identity converter instance
+    */
+  def id[A]: XmlConverter[A, A] = Valid(_)
+
+  /**
+    *  Create an always valid converter that return the passed value ignoring the converter input.
+    * @param v Value returned when the [[XmlConverter]] is invoked, the converter input is ignored.
+    * @tparam B Convert output type
+    * @return Constant converter instance
+    */
+  def const[A, B](v: B): XmlConverter[A, B] = _ => Valid(v)
 
   /**
     * Syntactic sugar to convert a [[X]] instance into [[O]] using an implicit [[XmlToModel]] instance.

@@ -1,7 +1,7 @@
 package com.github.geirolz
 
 import com.github.geirolz.advxml.convert._
-import com.github.geirolz.advxml.error.{MonadErrorInstances, ValidationSyntax}
+import com.github.geirolz.advxml.error.{ValidationInstance, ValidationSyntax}
 import com.github.geirolz.advxml.normalize.{XmlNormalizerInstances, XmlNormalizerSyntax}
 import com.github.geirolz.advxml.transform.{XmlTransformerInstances, XmlTransformerSyntax}
 import com.github.geirolz.advxml.traverse.XmlTraverserSyntax
@@ -27,6 +27,6 @@ package object advxml extends AllSyntax with AllInstances {
     object transformer extends XmlTransformerInstances
     object textSerializer extends XmlTextSerializerInstances
     object normalizer extends XmlNormalizerInstances
-    object monadErrors extends MonadErrorInstances
+    object validation extends ValidationInstance
   }
 }
