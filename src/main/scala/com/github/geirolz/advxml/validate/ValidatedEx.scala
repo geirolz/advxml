@@ -1,9 +1,9 @@
-package com.github.geirolz.advxml.error
+package com.github.geirolz.advxml.validate
 
 import cats.data.Validated.{Invalid, Valid}
 import cats.MonadError
 import cats.data.{NonEmptyList, Validated}
-import com.github.geirolz.advxml.error.exceptions.AggregatedException
+import com.github.geirolz.advxml.validate.exceptions.AggregatedException
 
 import scala.util.Try
 

@@ -9,7 +9,7 @@ import cats.data.ValidatedNel
   *
   * @author geirolad
   */
-package object error {
+package object validate {
   type MonadEx[F[_]] = MonadError[F, Throwable]
   type ValidatedEx[+T] = ValidatedNel[Throwable, T]
 }

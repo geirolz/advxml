@@ -1,8 +1,8 @@
 package com.github.geirolz.advxml.transform.actions
 
-import com.github.geirolz.advxml.convert.XmlTextSerializer
-import com.github.geirolz.advxml.convert.XmlTextSerializer.Serializer
-import com.github.geirolz.advxml.error.MonadEx
+import com.github.geirolz.advxml.convert.impls.TextConverter
+import com.github.geirolz.advxml.convert.impls.TextConverter.TextConverter
+import com.github.geirolz.advxml.validate.MonadEx
 
 import scala.xml._
 
@@ -40,14 +40,14 @@ private[transform] trait Modifiers {
     override private[transform] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] = F.pure(newNs)
   }
 
-  case class SetAttrs[T: Serializer](values: (String, T)*) extends ComposableXmlModifier {
+  case class SetAttrs[T: TextConverter](values: (String, T)*) extends ComposableXmlModifier {
     override private[transform] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
       collapse[F](ns.map {
         case e: Elem =>
           F.pure[NodeSeq](
             e.copy(
               attributes = values.foldRight(e.attributes)(
-                (value, metadata) => new UnprefixedAttribute(value._1, XmlTextSerializer.asText(value._2), metadata)
+                (value, metadata) => new UnprefixedAttribute(value._1, TextConverter.asText(value._2), metadata)
               )
             )
           )

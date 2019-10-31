@@ -1,6 +1,6 @@
 package com.github.geirolz.advxml.transform
 
-import com.github.geirolz.advxml.error.MonadEx
+import com.github.geirolz.advxml.validate.MonadEx
 import com.github.geirolz.advxml.transform.actions._
 import com.github.geirolz.advxml.utils.PredicateUtils
 

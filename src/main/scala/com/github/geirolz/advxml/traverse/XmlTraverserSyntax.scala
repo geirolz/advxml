@@ -3,7 +3,7 @@ package com.github.geirolz.advxml.traverse
 import cats.{~>, Id, Monad}
 import cats.data.NonEmptyList
 import cats.data.Validated.{Invalid, Valid}
-import com.github.geirolz.advxml.error.{MonadEx, ValidatedEx}
+import com.github.geirolz.advxml.validate.{MonadEx, ValidatedEx}
 
 import scala.util.{Failure, Success, Try}
 import scala.xml.NodeSeq

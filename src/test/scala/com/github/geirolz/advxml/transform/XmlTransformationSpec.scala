@@ -20,7 +20,7 @@ object XmlTransformationSpec extends Properties("List") {
   )
 
   import cats.instances.try_._
-  import com.github.geirolz.advxml._
+  import com.github.geirolz.advxml.all._
 
   property("Append") = forAll { (base: NodeSeq, newNode: NodeSeq) =>
     val selector = XmlGenerator.xmlNodeSelectorGenerator(base.asInstanceOf[Elem])

@@ -8,6 +8,7 @@ class ModifiersTest extends WordSpec {
 
   import Modifiers._
   import cats.instances.try_._
+  import com.github.geirolz.advxml.instances.converter._
 
   "Append node modifier" when {
     "Applied with right data" should {
@@ -104,7 +105,7 @@ class ModifiersTest extends WordSpec {
           "T1" -> 1,
           "T2" -> 2,
           "T3" -> 3
-        )(_.toString)
+        )(v => Text(v.toString))
 
         val result = modifier(xml)
 

@@ -1,6 +1,6 @@
-package com.github.geirolz.advxml.error
+package com.github.geirolz.advxml.validate
 
-import com.github.geirolz.advxml.error.exceptions.AggregatedException
+import com.github.geirolz.advxml.validate.exceptions.AggregatedException
 import org.scalatest.FunSuite
 
 /**

@@ -1,7 +1,7 @@
 package com.github.geirolz.advxml.traverse
 
 import cats.Id
-import com.github.geirolz.advxml.error.MonadEx
+import com.github.geirolz.advxml.validate.MonadEx
 import com.github.geirolz.advxml.traverse.XmlTraverser.exceptions.{
   XmlMissingAttributeException,
   XmlMissingNodeException,

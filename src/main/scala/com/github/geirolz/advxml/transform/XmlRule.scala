@@ -1,7 +1,7 @@
 package com.github.geirolz.advxml.transform
 
 import cats.Monad
-import com.github.geirolz.advxml.error.MonadEx
+import com.github.geirolz.advxml.validate.MonadEx
 import com.github.geirolz.advxml.transform.actions.{ComposableXmlModifier, XmlModifier, XmlZoom, _}
 
 import scala.xml.{Node, NodeSeq}

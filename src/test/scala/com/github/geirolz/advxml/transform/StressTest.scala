@@ -9,6 +9,7 @@ import scala.xml.XML
 class StressTest extends FeatureSpec {
 
   import cats.instances.try_._
+  import com.github.geirolz.advxml.instances.converter._
   import com.github.geirolz.advxml.implicits.transformer._
   import com.github.geirolz.advxml.instances.transformer._
 

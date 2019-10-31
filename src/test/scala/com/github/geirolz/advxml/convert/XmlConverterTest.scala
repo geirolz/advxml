@@ -1,8 +1,8 @@
 package com.github.geirolz.advxml.convert
 
 import cats.data.Validated.Valid
-import com.github.geirolz.advxml.convert.XmlConverter.{ModelToXml, XmlToModel}
-import com.github.geirolz.advxml.error.ValidatedEx
+import com.github.geirolz.advxml.convert.impls.XmlConverter.{ModelToXml, XmlToModel}
+import com.github.geirolz.advxml.validate.ValidatedEx
 import org.scalatest.FunSuite
 
 import scala.xml.Elem
@@ -16,8 +16,8 @@ import scala.xml.Elem
 class XmlConverterTest extends FunSuite {
 
   import cats.implicits._
-  import com.github.geirolz.advxml.implicits.converter._
   import com.github.geirolz.advxml.implicits.traverser.validated._
+  import com.github.geirolz.advxml.implicits.converter._
 
   test("XML to Model - Convert simple case class") {
 

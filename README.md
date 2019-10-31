@@ -72,7 +72,7 @@ The idea behind this library is offer a fluent syntax to edit and read xml.
  
  *Example*
 ```scala
-    import com.github.geirolz.advxml._
+    import com.github.geirolz.advxml.all._
     import com.github.geirolz.advxml.transform._
     import scala.xml._
     import scala.util._
@@ -104,7 +104,7 @@ If you need apply more that one modification on a selected node you can combine 
 
  *Example*
 ```scala
-    import com.github.geirolz.advxml._
+    import com.github.geirolz.advxml.all._
     import com.github.geirolz.advxml.transform._
     import scala.xml._
     import scala.util._
@@ -141,7 +141,7 @@ You can combine multiple modifiers using `andThen` method or with syntax sugar `
 
  *Example*
 ```scala
-    import com.github.geirolz.advxml._
+    import com.github.geirolz.advxml.all._
     import com.github.geirolz.advxml.transform._
     import scala.xml._
     import scala.util._
@@ -177,7 +177,7 @@ the `XmlModifier` and no the `XmlRule` instance, this means no zooming actions.
 
  *Example*
 ```scala
-    import com.github.geirolz.advxml._
+    import com.github.geirolz.advxml.all._
     import scala.xml._
     import scala.util._
     
@@ -222,8 +222,8 @@ handle the presence of what you are looking for.
 
  *Example*
 ```scala
-    import com.github.geirolz.advxml.error.ValidatedEx
-    import com.github.geirolz.advxml._
+    import com.github.geirolz.advxml.validate.ValidatedEx
+    import com.github.geirolz.advxml.all._
     import scala.xml._
     
     val doc: Elem = 
@@ -262,9 +262,9 @@ errors.
     
  *Example XML to Model*
 ```scala
-    import com.github.geirolz.advxml._
-    import com.github.geirolz.advxml.error.ValidatedEx
-    import com.github.geirolz.advxml.convert.XmlConverter.XmlToModel
+    import com.github.geirolz.advxml.all._
+    import com.github.geirolz.advxml.validate.ValidatedEx
+    import com.github.geirolz.advxml.convert.impls.XmlConverter.XmlToModel
     import scala.xml._
     import cats.implicits._
 
@@ -283,9 +283,9 @@ errors.
 
  *Example Model to XML*
 ```scala
-    import com.github.geirolz.advxml._
-    import com.github.geirolz.advxml.convert.XmlConverter.ModelToXml
-    import com.github.geirolz.advxml.error.ValidatedEx
+    import com.github.geirolz.advxml.all._
+    import com.github.geirolz.advxml.convert.impls.XmlConverter.ModelToXml
+    import com.github.geirolz.advxml.validate.ValidatedEx
     import scala.xml._
     import cats.implicits._
     import cats.data.Validated.Valid

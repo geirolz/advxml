@@ -10,6 +10,7 @@ class XmlTransformerTest extends FeatureSpec {
   import cats.instances.try_._
   import com.github.geirolz.advxml.implicits.transformer._
   import com.github.geirolz.advxml.instances.transformer._
+  import com.github.geirolz.advxml.instances.converter._
 
   feature("Xml manipulation: Filters") {
     scenario("Filter By Attribute") {
