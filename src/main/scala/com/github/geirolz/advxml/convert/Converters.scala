@@ -32,7 +32,7 @@ private[advxml] trait ConvertersSyntax {
       *
       * @see [[Converter]] for further information.
       */
-    @implicitNotFound("Missing Converter object into ${F} of ${B}.")
+    @implicitNotFound("Missing Converter to transform object into ${F} of ${B}.")
     def as[F[_], B](implicit F: Converter[F, A, B]): F[B] = Converter.apply(a)
 
     /**
@@ -41,7 +41,7 @@ private[advxml] trait ConvertersSyntax {
       *
       * @see [[Converter]] for further information.
       */
-    @implicitNotFound("Missing Converter object into ValidatedConverter[${B}].")
+    @implicitNotFound("Missing ValidatedConverter to transform object into ValidatedConverter[${B}].")
     def as[B](implicit F: ValidatedConverter[A, B]): ValidatedEx[B] = Converter.apply(a)
 
     /**
@@ -51,7 +51,7 @@ private[advxml] trait ConvertersSyntax {
       * @see [[XmlConverter.asXml()]] for further information.
       * @see [[ValidatedConverter]] for further information.
       */
-    @implicitNotFound("Missing ModelToXml to convert object into ValidatedEx[${X}].")
+    @implicitNotFound("Missing ModelToXml to transform object into ValidatedEx[${X}].")
     def asXml[X <: NodeSeq](implicit F: ModelToXml[A, X]): ValidatedEx[X] = XmlConverter.asXml(a)
 
     /**
@@ -60,7 +60,7 @@ private[advxml] trait ConvertersSyntax {
       *
       * @return [[Text]] representation of [[A]]
       */
-    @implicitNotFound("Missing StringConverter to convert object into Text.")
+    @implicitNotFound("Missing TextConverter to transform object into Text.")
     def asText(implicit s: TextConverter[A]): Text = TextConverter.asText(a)
   }
 }

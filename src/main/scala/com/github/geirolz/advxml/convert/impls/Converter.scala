@@ -69,6 +69,8 @@ object Converter {
 
   /**
     * Apply conversion using implicit [[Converter]] instance.
+    * This method catch a [[Converter]] instance in the scope that conforms with types [[F]], [[A]] and [[B]] and then invoke
+    * in it the method `apply` passing `a`.
     *
     * @param a Input instance
     * @param F implicit [[Converter]] instance

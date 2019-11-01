@@ -52,6 +52,6 @@ object ValidatedConverter {
     * @tparam B Output object type
     * @return Safe conversion of [[A]] into [[B]], express as `ValidatedEx[B]`
     */
-  @implicitNotFound("Missing Converter to transform ${A} into ValidatedEx[${B}]")
+  @implicitNotFound("Missing ValidatedConverter to transform ${A} into ValidatedEx[${B}]")
   def apply[A, B](a: A)(implicit F: ValidatedConverter[A, B]): ValidatedEx[B] = F.apply(a)
 }
