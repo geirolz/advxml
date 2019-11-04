@@ -14,7 +14,7 @@ import scala.xml.NodeSeq
   */
 class XmlTraverserSyntaxTest extends FeatureSpec {
 
-  import com.github.geirolz.advxml.implicits.traverser.try_._
+  import com.github.geirolz.advxml.implicits.traverse.try_._
 
   feature("XmlTraverseSyntaxTest: Read Attributes") {
     scenario("Read optional attribute") {

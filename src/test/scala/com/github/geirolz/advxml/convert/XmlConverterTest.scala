@@ -16,8 +16,8 @@ import scala.xml.Elem
 class XmlConverterTest extends FunSuite {
 
   import cats.implicits._
-  import com.github.geirolz.advxml.implicits.traverser.validated._
-  import com.github.geirolz.advxml.implicits.converter._
+  import com.github.geirolz.advxml.implicits.traverse.validated._
+  import com.github.geirolz.advxml.implicits.convert._
 
   test("XML to Model - Convert simple case class") {
 

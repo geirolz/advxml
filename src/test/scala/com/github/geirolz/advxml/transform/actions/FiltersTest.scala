@@ -7,7 +7,7 @@ import scala.xml.{Elem, NodeSeq}
 class FiltersTest extends FunSuite {
 
   import Filters._
-  import com.github.geirolz.advxml.instances.normalizer._
+  import com.github.geirolz.advxml.instances.normalize._
 
   test("Filter by text") {
 

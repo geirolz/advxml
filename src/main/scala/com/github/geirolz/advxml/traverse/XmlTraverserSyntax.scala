@@ -3,7 +3,7 @@ package com.github.geirolz.advxml.traverse
 import cats.{~>, Id, Monad}
 import cats.data.NonEmptyList
 import cats.data.Validated.{Invalid, Valid}
-import com.github.geirolz.advxml.validate.{MonadEx, ValidatedEx}
+import com.github.geirolz.advxml.validate.{EitherEx, MonadEx, ValidatedEx}
 
 import scala.util.{Failure, Success, Try}
 import scala.xml.NodeSeq
@@ -41,28 +41,28 @@ private[advxml] trait XmlTraverserSyntax extends XmlTraverserAbstractSyntax {
     import cats.instances.either._
     import cats.instances.option._
 
-    implicit private[traverse] val optionToEitherConverter: Option ~> Either[Throwable, *] =
-      λ[Option ~> Either[Throwable, *]] {
+    implicit private[traverse] val optionToEitherConverter: Option ~> EitherEx =
+      λ[Option ~> EitherEx] {
         case Some(value) => Right(value)
         case None        => Left(new RuntimeException("Missing XML element."))
       }
 
-    implicit private[traverse] val idToEitherConverter: Id ~> Either[Throwable, *] =
-      λ[Id ~> Either[Throwable, *]](Right(_))
+    implicit private[traverse] val idToEitherConverter: Id ~> EitherEx =
+      λ[Id ~> EitherEx](Right(_))
 
     implicit class XmlTraverseEitherOps(target: NodeSeq) extends XmlTraverseEitherIdOps(Right(target))
 
-    implicit class XmlTraverseEitherIdOps(target: Either[Throwable, Id[NodeSeq]])
-        extends XmlTraverseMonadExOps[Either[Throwable, *], Id](target)
+    implicit class XmlTraverseEitherIdOps(target: EitherEx[Id[NodeSeq]])
+        extends XmlTraverseMonadExOps[EitherEx, Id](target)
 
-    implicit class XmlTraverseEitherOptionOps(target: Either[Throwable, Option[NodeSeq]])
-        extends XmlTraverseMonadExOps[Either[Throwable, *], Option](target)
+    implicit class XmlTraverseEitherOptionOps(target: EitherEx[Option[NodeSeq]])
+        extends XmlTraverseMonadExOps[EitherEx, Option](target)
   }
 
   object validated {
 
     import cats.instances.option._
-    import com.github.geirolz.advxml.instances.validation._
+    import com.github.geirolz.advxml.instances.validate._
 
     implicit private[traverse] val idToValidatedExConverter: Id ~> ValidatedEx =
       λ[Id ~> ValidatedEx](Valid(_))

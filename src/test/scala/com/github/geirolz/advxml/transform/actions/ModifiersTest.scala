@@ -8,7 +8,7 @@ class ModifiersTest extends WordSpec {
 
   import Modifiers._
   import cats.instances.try_._
-  import com.github.geirolz.advxml.instances.converter._
+  import com.github.geirolz.advxml.instances.convert._
 
   "Append node modifier" when {
     "Applied with right data" should {

@@ -11,8 +11,8 @@ import org.scalatest.FunSuite
 class TextConverterTest extends FunSuite {
 
   import cats.instances.option._
-  import com.github.geirolz.advxml.implicits.converter._
-  import com.github.geirolz.advxml.instances.converter._
+  import com.github.geirolz.advxml.implicits.convert._
+  import com.github.geirolz.advxml.instances.convert._
 
   test("String to Text") {
 
