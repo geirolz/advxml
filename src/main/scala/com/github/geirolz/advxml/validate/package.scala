@@ -11,6 +11,7 @@ import cats.data.{NonEmptyList, ValidatedNel}
   */
 package object validate {
   // format: off
+  type \/[+A, +B]           = Either[A, B]
   type MonadEx[F[_]]        = MonadError[F, Throwable]
   type MonadNelEx[F[_]]     = MonadError[F, ThrowableNel]
   type EitherEx[+T]         = Either[Throwable, T]

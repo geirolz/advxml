@@ -18,17 +18,18 @@ object ValidatedEx {
   def fromOption[A](o: Option[A], ifNone: => ThrowableNel): ValidatedEx[A] =
     Validated.fromOption(o, ifNone)
 
-  def transformNel[F[_], A](validated: ValidatedEx[A])(implicit F: MonadNelEx[F]): F[A] = {
-    validated match {
-      case Valid(value) => F.pure(value)
-      case Invalid(exs) => F.raiseError(exs)
-    }
-  }
-
-  def transform[F[_], A](validated: ValidatedEx[A])(implicit F: MonadEx[F]): F[A] = {
-    validated match {
-      case Valid(value) => F.pure(value)
-      case Invalid(exs) => F.raiseError(new AggregatedException(exs.toList))
+  def transform[F[_], A](validated: ValidatedEx[A])(implicit F: MonadEx[F] \/ MonadNelEx[F]): F[A] = {
+    F match {
+      case Left(m) =>
+        validated match {
+          case Valid(value) => m.pure(value)
+          case Invalid(exs) => m.raiseError(new AggregatedException(exs.toList))
+        }
+      case Right(m) =>
+        validated match {
+          case Valid(value) => m.pure(value)
+          case Invalid(exs) => m.raiseError(exs)
+        }
     }
   }
 }
@@ -84,6 +85,12 @@ private[advxml] trait ValidationInstance {
 
 private[advxml] trait ValidationSyntax {
 
+  implicit def monadExLeftDsj[F[_]](implicit F: MonadEx[F]): MonadEx[F] \/ MonadNelEx[F] = Left(F)
+  implicit def monadNelExRightDsj[F[_]](implicit F: MonadNelEx[F]): MonadEx[F] \/ MonadNelEx[F] = Right(F)
+
+  implicit def monadNelExLeftDsj[F[_]: MonadNelEx]: MonadNelEx[F] \/ MonadEx[F] = monadNelExRightDsj[F].swap
+  implicit def monadExRightDsj[F[_]: MonadEx]: MonadNelEx[F] \/ MonadEx[F] = monadExLeftDsj[F].swap
+
   implicit class ValidatedExTryOps[A](t: Try[A]) {
     def toValidatedNel: ValidatedEx[A] = ValidatedEx.fromTry(t)
   }
@@ -103,10 +110,7 @@ private[advxml] trait ValidationSyntax {
 
   implicit class ValidatedResOps[A](validated: ValidatedEx[A]) {
 
-    def transformNel[F[_]](implicit F: MonadNelEx[F]): F[A] =
-      ValidatedEx.transformNel[F, A](validated)
-
-    def transform[F[_]](implicit F: MonadEx[F]): F[A] =
-      ValidatedEx.transform[F, A](validated)
+    def transform[F[_]](implicit F: MonadEx[F] \/ MonadNelEx[F]): F[A] =
+      ValidatedEx.transform[F, A](validated)(F)
   }
 }
