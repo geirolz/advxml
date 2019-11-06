@@ -14,75 +14,6 @@ import scala.xml.NodeSeq
   *
   * @author geirolad
   */
-private[advxml] trait XmlTraverserSyntax extends XmlTraverserAbstractSyntax {
-
-  object try_ {
-
-    import cats.instances.option._
-    import cats.instances.try_._
-
-    implicit private[traverse] val optionToTryConverter: Option ~> Try = λ[Option ~> Try] {
-      case Some(value) => Success(value)
-      case None        => Failure(new RuntimeException("Missing XML element."))
-    }
-
-    implicit private[traverse] val idToTryConverter: Id ~> Try = λ[Id ~> Try](Success(_))
-
-    implicit class XmlTraverseTryOps(target: NodeSeq) extends XmlTraverseTryIdOps(Success(target))
-
-    implicit class XmlTraverseTryIdOps(target: Try[Id[NodeSeq]]) extends XmlTraverseMonadExOps[Try, Id](target)
-
-    implicit class XmlTraverseTryOptionOps(target: Try[Option[NodeSeq]])
-        extends XmlTraverseMonadExOps[Try, Option](target)
-  }
-
-  object either {
-
-    import cats.instances.either._
-    import cats.instances.option._
-
-    implicit private[traverse] val optionToEitherConverter: Option ~> EitherEx =
-      λ[Option ~> EitherEx] {
-        case Some(value) => Right(value)
-        case None        => Left(new RuntimeException("Missing XML element."))
-      }
-
-    implicit private[traverse] val idToEitherConverter: Id ~> EitherEx =
-      λ[Id ~> EitherEx](Right(_))
-
-    implicit class XmlTraverseEitherOps(target: NodeSeq) extends XmlTraverseEitherIdOps(Right(target))
-
-    implicit class XmlTraverseEitherIdOps(target: EitherEx[Id[NodeSeq]])
-        extends XmlTraverseMonadExOps[EitherEx, Id](target)
-
-    implicit class XmlTraverseEitherOptionOps(target: EitherEx[Option[NodeSeq]])
-        extends XmlTraverseMonadExOps[EitherEx, Option](target)
-  }
-
-  object validated {
-
-    import cats.instances.option._
-    import com.github.geirolz.advxml.instances.validate._
-
-    implicit private[traverse] val idToValidatedExConverter: Id ~> ValidatedEx =
-      λ[Id ~> ValidatedEx](Valid(_))
-
-    implicit private[traverse] val optionToValidatedExConverter: Option ~> ValidatedEx =
-      λ[Option ~> ValidatedEx] {
-        case Some(value) => Valid(value)
-        case None        => Invalid(NonEmptyList.of(new RuntimeException("Missing XML element.")))
-      }
-
-    implicit class XmlTraverseValidatedExOps(target: NodeSeq) extends XmlTraverseValidatedExIdOps(Valid(target))
-
-    implicit class XmlTraverseValidatedExIdOps(target: ValidatedEx[Id[NodeSeq]])
-        extends XmlTraverseMonadExOps[ValidatedEx, Id](target)
-
-    implicit class XmlTraverseValidatedExOptionOps(target: ValidatedEx[Option[NodeSeq]])
-        extends XmlTraverseMonadExOps[ValidatedEx, Option](target)
-  }
-}
-
 private[advxml] trait XmlTraverserAbstractSyntax {
 
   implicit def idConverter[A[_]]: A ~> A = λ[A ~> A](a => a)
@@ -148,4 +79,69 @@ private[advxml] trait XmlTraverserAbstractSyntax {
         case Success(value) => value
       })
   }
+}
+
+private[advxml] trait XmlTraverserTrySyntax extends XmlTraverserAbstractSyntax {
+
+  import cats.instances.option._
+  import cats.instances.try_._
+
+  implicit private[traverse] val optionToTryConverter: Option ~> Try = λ[Option ~> Try] {
+    case Some(value) => Success(value)
+    case None        => Failure(new RuntimeException("Missing XML element."))
+  }
+
+  implicit private[traverse] val idToTryConverter: Id ~> Try = λ[Id ~> Try](Success(_))
+
+  implicit class XmlTraverseTryOps(target: NodeSeq) extends XmlTraverseTryIdOps(Success(target))
+
+  implicit class XmlTraverseTryIdOps(target: Try[Id[NodeSeq]]) extends XmlTraverseMonadExOps[Try, Id](target)
+
+  implicit class XmlTraverseTryOptionOps(target: Try[Option[NodeSeq]])
+      extends XmlTraverseMonadExOps[Try, Option](target)
+}
+
+private[advxml] trait XmlTraverserEitherSyntax extends XmlTraverserAbstractSyntax {
+  import cats.instances.either._
+  import cats.instances.option._
+
+  implicit private[traverse] val optionToEitherConverter: Option ~> EitherEx =
+    λ[Option ~> EitherEx] {
+      case Some(value) => Right(value)
+      case None        => Left(new RuntimeException("Missing XML element."))
+    }
+
+  implicit private[traverse] val idToEitherConverter: Id ~> EitherEx =
+    λ[Id ~> EitherEx](Right(_))
+
+  implicit class XmlTraverseEitherOps(target: NodeSeq) extends XmlTraverseEitherIdOps(Right(target))
+
+  implicit class XmlTraverseEitherIdOps(target: EitherEx[Id[NodeSeq]])
+      extends XmlTraverseMonadExOps[EitherEx, Id](target)
+
+  implicit class XmlTraverseEitherOptionOps(target: EitherEx[Option[NodeSeq]])
+      extends XmlTraverseMonadExOps[EitherEx, Option](target)
+}
+
+private[advxml] trait XmlTraverserValidatedSyntax extends XmlTraverserAbstractSyntax {
+
+  import cats.instances.option._
+  import com.github.geirolz.advxml.instances.validate._
+
+  implicit private[traverse] val idToValidatedExConverter: Id ~> ValidatedEx =
+    λ[Id ~> ValidatedEx](Valid(_))
+
+  implicit private[traverse] val optionToValidatedExConverter: Option ~> ValidatedEx =
+    λ[Option ~> ValidatedEx] {
+      case Some(value) => Valid(value)
+      case None        => Invalid(NonEmptyList.of(new RuntimeException("Missing XML element.")))
+    }
+
+  implicit class XmlTraverseValidatedExOps(target: NodeSeq) extends XmlTraverseValidatedExIdOps(Valid(target))
+
+  implicit class XmlTraverseValidatedExIdOps(target: ValidatedEx[Id[NodeSeq]])
+      extends XmlTraverseMonadExOps[ValidatedEx, Id](target)
+
+  implicit class XmlTraverseValidatedExOptionOps(target: ValidatedEx[Option[NodeSeq]])
+      extends XmlTraverseMonadExOps[ValidatedEx, Option](target)
 }

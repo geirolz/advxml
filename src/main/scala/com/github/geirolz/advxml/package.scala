@@ -1,10 +1,15 @@
 package com.github.geirolz
 
 import com.github.geirolz.advxml.convert._
-import com.github.geirolz.advxml.validate.{ValidationInstance, ValidationSyntax}
 import com.github.geirolz.advxml.normalize.{XmlNormalizerInstances, XmlNormalizerSyntax}
 import com.github.geirolz.advxml.transform.{XmlTransformerInstances, XmlTransformerSyntax}
-import com.github.geirolz.advxml.traverse.XmlTraverserSyntax
+import com.github.geirolz.advxml.traverse.{
+  XmlTraverserAbstractSyntax,
+  XmlTraverserEitherSyntax,
+  XmlTraverserTrySyntax,
+  XmlTraverserValidatedSyntax
+}
+import com.github.geirolz.advxml.validate.{ValidationInstance, ValidationSyntax}
 
 /**
   * Advxml
@@ -18,6 +23,7 @@ package object advxml {
 
   /*
    * In order to keep project clean keep in mind the following rules:
+   * - Each feature can provide a trait that contains ONLY the syntax, NO public object or explicit public class.
    * - Each object represent a feature
    * - Each feature must provide a trait containing all syntax implicits named `[feature_name]Syntax`
    * - For each object must be exist a package with the same name under `com.github.geirolz.advxml`
@@ -43,7 +49,11 @@ package object advxml {
     object convert    extends ConvertersSyntax
     object normalize  extends XmlNormalizerSyntax
     object validate   extends ValidationSyntax
-    object traverse   extends XmlTraverserSyntax
+    object traverse   extends XmlTraverserAbstractSyntax{
+      object try_       extends XmlTraverserTrySyntax
+      object either     extends XmlTraverserEitherSyntax
+      object validated  extends XmlTraverserValidatedSyntax
+    }
     // format: on
   }
 

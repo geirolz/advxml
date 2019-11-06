@@ -88,8 +88,8 @@ private[advxml] trait ValidationSyntax {
   implicit def monadExLeftDsj[F[_]](implicit F: MonadEx[F]): MonadEx[F] \/ MonadNelEx[F] = Left(F)
   implicit def monadNelExRightDsj[F[_]](implicit F: MonadNelEx[F]): MonadEx[F] \/ MonadNelEx[F] = Right(F)
 
-  implicit def monadNelExLeftDsj[F[_]: MonadNelEx]: MonadNelEx[F] \/ MonadEx[F] = monadNelExRightDsj[F].swap
-  implicit def monadExRightDsj[F[_]: MonadEx]: MonadNelEx[F] \/ MonadEx[F] = monadExLeftDsj[F].swap
+  implicit def monadNelExLeftDsj[F[_]](implicit F: MonadNelEx[F]): MonadNelEx[F] \/ MonadEx[F] = Left(F)
+  implicit def monadExRightDsj[F[_]](implicit F: MonadEx[F]): MonadNelEx[F] \/ MonadEx[F] = Right(F)
 
   implicit class ValidatedExTryOps[A](t: Try[A]) {
     def toValidatedNel: ValidatedEx[A] = ValidatedEx.fromTry(t)
@@ -108,7 +108,7 @@ private[advxml] trait ValidationSyntax {
     def toValidatedNel(ifNone: => ThrowableNel): ValidatedEx[A] = ValidatedEx.fromOption(e, ifNone)
   }
 
-  implicit class ValidatedResOps[A](validated: ValidatedEx[A]) {
+  implicit class ValidatedExOps[A](validated: ValidatedEx[A]) {
 
     def transform[F[_]](implicit F: MonadEx[F] \/ MonadNelEx[F]): F[A] =
       ValidatedEx.transform[F, A](validated)(F)

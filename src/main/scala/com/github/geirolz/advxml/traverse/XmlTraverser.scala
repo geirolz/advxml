@@ -24,6 +24,7 @@ sealed trait XmlTraverser[F[_], G[_]] {
 
   def text(target: NodeSeq): F[G[String]]
 }
+
 object XmlTraverser {
 
   def mandatory[F[_]](implicit F: MonadEx[F]): XmlTraverser[F, Id] = new XmlTraverser[F, Id] {
