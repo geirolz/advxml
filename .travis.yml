@@ -30,7 +30,7 @@ jobs:
 
     - stage: coverage
       env: TEST="coverage"
-      script: sbt ++$TRAVIS_SCALA_VERSION coverage coverageReport
+      script: sbt ++$TRAVIS_SCALA_VERSION clean coverage coverageReport
 
     - stage: release
       script: sbt ci-release
