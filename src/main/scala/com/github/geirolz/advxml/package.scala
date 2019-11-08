@@ -45,11 +45,11 @@ package object advxml {
     */
   object implicits extends AllSyntax {
     // format: off
-    object transform  extends XmlTransformerSyntax
-    object convert    extends ConvertersSyntax
-    object normalize  extends XmlNormalizerSyntax
-    object validate   extends ValidationSyntax
-    object traverse   extends XmlTraverserAbstractSyntax{
+    object transform    extends XmlTransformerSyntax
+    object convert      extends ConvertersSyntax
+    object normalize    extends XmlNormalizerSyntax
+    object validate     extends ValidationSyntax
+    object traverse     extends XmlTraverserAbstractSyntax{
       object try_       extends XmlTraverserTrySyntax
       object either     extends XmlTraverserEitherSyntax
       object validated  extends XmlTraverserValidatedSyntax

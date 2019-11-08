@@ -2,17 +2,18 @@
 [![Build Status](https://travis-ci.org/geirolz/advxml.svg?branch=master)](https://travis-ci.org/geirolz/advxml)
 [![codecov](https://codecov.io/gh/geirolz/advxml/branch/master/graph/badge.svg)](https://codecov.io/gh/geirolz/advxml)
 [![Sonatype Nexus (Releases)](https://img.shields.io/nexus/r/com.github.geirolz/advxml_2.13?server=https%3A%2F%2Foss.sonatype.org)](https://mvnrepository.com/artifact/com.github.geirolz/advxml)
+[![javadoc.io](https://javadoc.io/badge2/com.github.geirolz/advxml_2.13/javadoc.io.svg)](https://javadoc.io/doc/com.github.geirolz/advxml_2.13)
 [![Scala Steward badge](https://img.shields.io/badge/Scala_Steward-helping-blue.svg?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAMAAAARSr4IAAAAVFBMVEUAAACHjojlOy5NWlrKzcYRKjGFjIbp293YycuLa3pYY2LSqql4f3pCUFTgSjNodYRmcXUsPD/NTTbjRS+2jomhgnzNc223cGvZS0HaSD0XLjbaSjElhIr+AAAAAXRSTlMAQObYZgAAAHlJREFUCNdNyosOwyAIhWHAQS1Vt7a77/3fcxxdmv0xwmckutAR1nkm4ggbyEcg/wWmlGLDAA3oL50xi6fk5ffZ3E2E3QfZDCcCN2YtbEWZt+Drc6u6rlqv7Uk0LdKqqr5rk2UCRXOk0vmQKGfc94nOJyQjouF9H/wCc9gECEYfONoAAAAASUVORK5CYII=)](https://scala-steward.org)
 [![GitHub license](https://img.shields.io/github/license/geirolz/advxml)](https://github.com/geirolz/advxml/blob/master/LICENSE)
 
-A Scala library to edit xml using native scala xml library and cats core.
-
+A lightweight, simple and functional library to work with XML is Scala using native scala xml library and cats core.
+ 
 ## How to import
 
 Supported Scala 2.12 and 2.13
 
 Maven for 2.12
-```
+```xml
 <dependency>
     <groupId>com.github.geirolz</groupId>
     <artifactId>advxml_2.12</artifactId>
@@ -21,7 +22,7 @@ Maven for 2.12
 ```
 
 Maven for 2.13
-```
+```xml
 <dependency>
     <groupId>com.github.geirolz</groupId>
     <artifactId>advxml_2.13</artifactId>
@@ -30,7 +31,7 @@ Maven for 2.13
 ```
 
 Sbt
-```
+```sbt
 libraryDependencies += "com.github.geirolz" %% "advxml" % "0.1.5"
 ```
 
@@ -40,7 +41,7 @@ The idea behind this library is offer a fluent syntax to edit and read xml.
 *Features:*
 - [Transformation](#Transformation)(Append, Remove, Replace, SetAttrs, RemoveAttrs)
 - [Traverse](#Traverse)(read node/attributes mandatory or optional, based on Cats [ValidatedNel](https://typelevel.org/cats/datatypes/validated.html))
-- [Convert](#Convert) to Model and vice versa(Based on Cats [ValidatedNel](https://typelevel.org/cats/datatypes/validated.html))
+- [Convert](#Convert) to Model and vice versa
 - [Normalize](#Normalize)(remove white spaces and collapse empty nodes)
 
 
@@ -192,10 +193,16 @@ the `XmlModifier` and no the `XmlRule` instance, this means no zooming actions.
 This feature allow users read/obtain node(s) 
 or attributes that are, for domain, marked as _Mandatory_ or _Optional_.
 
-In order to integrate this feature with Parsing feature the results of Traverse operations
-returns a _ValidatedNel_ object(from cats), this permits a safer parsing with better error messages in case of parsing error.<br>
-_Read more about [ValidatedNel](https://typelevel.org/cats/datatypes/validated.html)._
+This feature core is written with tagless final and all methods returns an output value wrapped in `F[_]`.
 
+You can import specific syntax using *traverse* object provided by *instances* object, 
+inside it you can find multiple objects containing all implicits for the required syntax.
+
+At the moment are available support for:
+- try
+- either
+- validatedEx// = cats ValidatedNel[Throwble]
+     
 In a nutshell:
 - _?_ means optional things
 - _!_ means mandatory things
@@ -223,7 +230,7 @@ handle the presence of what you are looking for.
  *Example*
 ```scala
     import com.github.geirolz.advxml.validate.ValidatedEx
-    import com.github.geirolz.advxml.all._
+    import com.github.geirolz.advxml.implicits.traverse.validated._
     import scala.xml._
     
     val doc: Elem = 
@@ -255,7 +262,14 @@ handle the presence of what you are looking for.
 ```
   
 ### Convert <a name="Convert"></a>
-Conversion is not automatic and you need to manual map XML and Model.
+This feature provides several conversion utility.
+The main utility are:
+- ValidatedConverter //convert A to ValidatedEx[B]  
+- TextConverter //convert object to xml text
+- XmlConverter //convert object to xml and viceversa
+   
+*XmlConverter*   
+Conversion are not automatic and you need to manual map XML and Model.
 
 In the following example if some attribute or node is missing whole conversion will fail reporting ALL
 errors.
@@ -264,17 +278,18 @@ errors.
 ```scala
     import com.github.geirolz.advxml.all._
     import com.github.geirolz.advxml.validate.ValidatedEx
+    import com.github.geirolz.advxml.implicits.traverse.validated._
     import com.github.geirolz.advxml.convert.impls.XmlConverter.XmlToModel
     import scala.xml._
     import cats.implicits._
 
     case class Person(name: String, surname: String, age: Option[Int])
 
-    implicit val converter: XmlToModel[ValidatedEx, Elem, Person] = x =>
+    implicit val converter: XmlToModel[Elem, Person] = x =>
       (
         x \@! "Name",
         x \@! "Surname",
-        (x \@? "Age").map(_.toInt).validNel
+        (x \@? "Age").map(_.map(_.toInt)) //ValidatedEx[Option[String]] => //ValidatedEx[Option[Int]] 
       ).mapN(Person)
 
     val xml = <Person Name="Matteo" Surname="Bianchi"/>
@@ -292,7 +307,7 @@ errors.
 
     case class Person(name: String, surname: String, age: Option[Int])
     
-    implicit val converter: ModelToXml[ValidatedEx, Person, Elem] = x =>
+    implicit val converter: ModelToXml[Person, Elem] = x =>
       Valid {
         <Person Name={x.name} Surname={x.surname} Age={x.age.map(_.toString).getOrElse("")}/>
       }

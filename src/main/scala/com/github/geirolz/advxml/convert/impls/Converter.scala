@@ -14,8 +14,8 @@ object Converter {
 
   /**
     * Represents a function `A => F[B]` to simplify method and class signatures.
-    * This alias represent an error-handled converter to transform [[A]] into [[B]] safely.
-    * Because the conversion can fail the output is wrapped into [[F]] in order to handle the errors.
+    * This alias represent an error-handled converter to transform `A` into `B` safely.
+    * Because the conversion can fail the output is wrapped into `F` in order to handle the errors.
     *
     * @tparam F Output context
     * @tparam A Contravariant input object type
@@ -25,7 +25,7 @@ object Converter {
 
   /**
     * Represents a function `A => B` to simplify method and class signatures.
-    * This alias represent an unsafe converter to transform [[A]] into [[B]].
+    * This alias represent an unsafe converter to transform `A` into `B`.
     *
     * The invocation of this function can fail and/or throw an runtime exception.
     *
@@ -35,7 +35,7 @@ object Converter {
   type UnsafeConverter[-A, B] = Converter[Id, A, B]
 
   /**
-    * Create an always pure converter that return the input instance wrapped in [[F]].
+    * Create an always pure converter that return the input instance wrapped in `F`.
     * @tparam A input and output type
     * @return Identity [[Converter]] instance
     */
@@ -46,7 +46,7 @@ object Converter {
     * Create an always safe converter that return the input instance.
     *
     * @tparam A input and output type
-    * @return Identity [[UnsafeConverter]] instance
+    * @return Identity [[com.github.geirolz.advxml.convert.impls.Converter.UnsafeConverter]] instance
     */
   def unsafeId[A]: UnsafeConverter[A, A] = identity[A]
 
@@ -69,7 +69,7 @@ object Converter {
 
   /**
     * Apply conversion using implicit [[Converter]] instance.
-    * This method catch a [[Converter]] instance in the scope that conforms with types [[F]], [[A]] and [[B]] and then invoke
+    * This method catch a [[Converter]] instance in the scope that conforms with types `F`, `A` and `B` and then invoke
     * in it the method `apply` passing `a`.
     *
     * @param a Input instance
@@ -77,7 +77,7 @@ object Converter {
     * @tparam F Output context
     * @tparam A Contravariant input type
     * @tparam B Output object type
-    * @return Safe conversion of [[A]] into [[B]], express as `F[B]`
+    * @return Safe conversion of `A` into `B`, express as `F[B]`
     */
   @implicitNotFound("Missing Converter to transform ${A} into ${F} of ${B}")
   def apply[F[_], A, B](a: A)(implicit F: Converter[F, A, B]): F[B] = F.apply(a)

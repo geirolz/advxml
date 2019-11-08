@@ -18,11 +18,11 @@ object TextConverter {
 
   /**
     * Represents a function `A => Text` to simplify method and class signatures.
-    * This alias represent an unsafe converter to transform [[A]] into [[Text]].
+    * This alias represent an unsafe converter to transform `A` into `Text`.
     *
     * The invocation of this function can fail and/or throw an runtime exception.
     *
-    * @see [[UnsafeConverter]] for further information.
+    * @see [[com.github.geirolz.advxml.convert.impls.Converter.UnsafeConverter]] for further information.
     * @tparam A Contravariant input object type
     */
   type TextConverter[-A] = UnsafeConverter[A, Text]
@@ -31,8 +31,8 @@ object TextConverter {
     Applicative[F].map(fa)(asText(_))
 
   /**
-    * Syntactic sugar to convert a [[A]] instance into [[Text]] using an implicit [[TextConverter]] instance.
-    * This method catch a [[TextConverter]] instance in the scope that conforms with type [[A]] and then invoke
+    * Syntactic sugar to convert a `A` instance into `Text` using an implicit [[TextConverter]] instance.
+    * This method catch a [[TextConverter]] instance in the scope that conforms with type `A` and then invoke
     * in it the method `apply` passing `a`.
     *
     * See [[TextConverter]] for further information.
@@ -40,7 +40,7 @@ object TextConverter {
     * @param a Converter input
     * @param f Implicit instance of [[TextConverter]]
     * @tparam A Input type
-    * @return [[A]] converted into [[Text]]
+    * @return `A` converted into `Text`
     */
   def asText[A](a: A)(implicit f: TextConverter[A]): Text = f(a)
 
@@ -51,9 +51,9 @@ object TextConverter {
     * @param a Input instance
     * @param F implicit [[TextConverter]] instance
     * @tparam A Contravariant input type
-    * @return Unsafe conversion of [[A]] into [[Text]]
+    * @return Unsafe conversion of `A` into `Text`
     */
-  @implicitNotFound("Missing TextConverter to transform ${A} into Text")
+  @implicitNotFound("Missing TextConverter to transform ${A} into `Text`")
   def apply[A](a: A)(implicit F: TextConverter[A]): Text = F.apply(a)
 }
 
