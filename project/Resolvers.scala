@@ -13,7 +13,7 @@ object Resolvers {
     Resolver.sonatypeRepo("public"),
     Resolver.sonatypeRepo("snapshots"),
     Resolver.sonatypeRepo("releases"),
-    "Maven repo1" at "http://repo1.maven.org/",
-    "Maven repo2" at "http://mvnrepository.com/artifact"
+    "Maven repo1" at "https://repo1.maven.org/",
+    "Maven repo2" at "https://mvnrepository.com/artifact"
   )
 }

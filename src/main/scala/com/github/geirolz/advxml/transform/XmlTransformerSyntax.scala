@@ -1,5 +1,6 @@
 package com.github.geirolz.advxml.transform
 
+import com.github.geirolz.advxml.validate.MonadEx
 import com.github.geirolz.advxml.transform.actions._
 import com.github.geirolz.advxml.utils.PredicateUtils
 
@@ -21,7 +22,7 @@ private[advxml] trait XmlTransformerSyntax
   implicit class XmlTransformerOps(root: NodeSeq) {
 
     def transform[F[_]: MonadEx](rule: XmlRule, rules: XmlRule*): F[NodeSeq] =
-      XmlTransformer.transform(root, (rule +: rules).toSeq)
+      XmlTransformer.transform(root, rule +: rules)
 
     def transform[F[_]: MonadEx](modifier: XmlModifier): F[NodeSeq] =
       XmlTransformer.transform(root, modifier)

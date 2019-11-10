@@ -52,18 +52,12 @@ object XmlNormalizer {
       case x          => List(x)
     }
   }
-
-  object implicits extends XmlNormalizerSyntax
-  object instances extends XmlNormalizerInstances
-}
-
-private[advxml] trait XmlNormalizerInstances {
-  implicit def streamlinedXmlNormalizedEquality[T <: NodeSeq]: Equality[T] = (a: T, b: Any) => {
-    Try(normalizedEquals(a, b.asInstanceOf[NodeSeq])).getOrElse(false)
-  }
 }
 
 private[advxml] trait XmlNormalizerSyntax {
+
+  implicit def streamlinedXmlNormalizedEquality[T <: NodeSeq]: Equality[T] =
+    (a: T, b: Any) => Try(normalizedEquals(a, b.asInstanceOf[NodeSeq])).getOrElse(false)
 
   implicit class NodeSeqNormalizationAndEqualityOps(ns: NodeSeq) {
 

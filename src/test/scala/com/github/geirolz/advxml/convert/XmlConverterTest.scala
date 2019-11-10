@@ -1,8 +1,8 @@
 package com.github.geirolz.advxml.convert
 
 import cats.data.Validated.Valid
-import com.github.geirolz.advxml.convert.ValidatedRes.ValidatedRes
-import com.github.geirolz.advxml.convert.XmlConverter.{ModelToXml, XmlToModel}
+import com.github.geirolz.advxml.convert.impls.XmlConverter.{ModelToXml, XmlToModel}
+import com.github.geirolz.advxml.validate.ValidatedEx
 import org.scalatest.FunSuite
 
 import scala.xml.Elem
@@ -16,23 +16,23 @@ import scala.xml.Elem
 class XmlConverterTest extends FunSuite {
 
   import cats.implicits._
-  import com.github.geirolz.advxml.implicits.converter._
-  import com.github.geirolz.advxml.implicits.traverser._
-  import com.github.geirolz.advxml.implicits.validation._
+  import com.github.geirolz.advxml.implicits.traverse.validated._
+  import com.github.geirolz.advxml.implicits.convert._
 
   test("XML to Model - Convert simple case class") {
 
     case class Person(name: String, surname: String, age: Option[Int])
 
-    implicit val converter: XmlToModel[Elem, Person] = x =>
+    implicit val converter: XmlToModel[Elem, Person] = x => {
       (
-        x \@! "Name",
-        x \@! "Surname",
-        x \@? "Age" mapValue (_.toInt)
+        (x \@! "Name"),
+        (x \@! "Surname"),
+        (x \@? "Age").map(_.map(_.toInt))
       ).mapN(Person)
+    }
 
     val xml = <Person Name="Matteo" Surname="Bianchi"/>
-    val res: ValidatedRes[Person] = xml.as[Person]
+    val res: ValidatedEx[Person] = xml.as[Person]
 
     assert(res.isValid)
     assert(res.toOption.get.name == "Matteo")
@@ -44,12 +44,12 @@ class XmlConverterTest extends FunSuite {
     case class Person(name: String, surname: String, age: Option[Int])
 
     implicit val converter: ModelToXml[Person, Elem] = x =>
-      Valid {
+      Valid(
         <Person Name={x.name} Surname={x.surname} Age={x.age.map(_.toString).getOrElse("")}/>
-      }
+      )
 
     val p = Person("Matteo", "Bianchi", Some(23))
-    val res: ValidatedRes[Elem] = p.asXml
+    val res: ValidatedEx[Elem] = p.asXml[Elem]
 
     assert(res.isValid)
     assert(res.toOption.get == <Person Name="Matteo" Surname="Bianchi" Age="23"/>)
