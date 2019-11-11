@@ -31,7 +31,7 @@ jobs:
       script: sbt ++$TRAVIS_SCALA_VERSION clean coverage test coverageReport
 
     - stage: release
-      script: sbt doc ci-release
+      script: sbt ci-release
 
 # These directories are cached to a cloud storage provider "close" to the infrastructure the builds run on.
 cache:

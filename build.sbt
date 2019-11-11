@@ -24,7 +24,6 @@ lazy val settings = Seq(
   scalaVersion := crossScalaVersions.value.head,
   coverageEnabled := true,
   ThisBuild / useCoursier := false, //TODO: Temporary due a cache bug.
-  publishArtifact in (Compile, packageDoc) := false,
   resolvers ++= Resolvers.all,
   libraryDependencies ++= Dependencies.all,
   scalacOptions ++= scalacSettings(scalaVersion.value),
