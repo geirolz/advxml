@@ -20,16 +20,20 @@ lazy val global = project
 
 lazy val settings = Seq(
   name := "Advxml",
-  crossScalaVersions := List("2.12.8", "2.12.9", "2.13.0", "2.13.1"),
+  //scala options
+  crossScalaVersions := List("2.12.8", "2.13.0"),
   scalaVersion := crossScalaVersions.value.head,
-  coverageEnabled.in(Test, test) := true,
-  resolvers ++= Resolvers.all,
-  libraryDependencies ++= Dependencies.all,
   scalacOptions ++= scalacSettings(scalaVersion.value),
   scalacOptions in (Compile, console) --= Seq(
       "-Ywarn-unused:imports",
       "-Xfatal-warnings"
-    )
+    ),
+  //coverage
+  coverageEnabled in (Test, compile) := true,
+  coverageEnabled in (Compile, compile) := false,
+  //dependencies
+  resolvers ++= Resolvers.all,
+  libraryDependencies ++= Dependencies.all
 )
 lazy val compilePlugins = Seq(
   addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3")

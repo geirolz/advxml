@@ -1,36 +1,38 @@
 # Advxml
-[![Build Status](https://travis-ci.org/geirolz/advxml.svg?branch=master)](https://travis-ci.org/geirolz/advxml)
-[![codecov](https://codecov.io/gh/geirolz/advxml/branch/master/graph/badge.svg)](https://codecov.io/gh/geirolz/advxml)
-![Sonatype Nexus (Releases)](https://img.shields.io/nexus/r/com.github.geirolz/advxml_2.13?server=https%3A%2F%2Foss.sonatype.org)
+[![Build Status](https://img.shields.io/travis/geirolz/advxml)](https://travis-ci.org/geirolz/advxml)
+[![codecov](https://img.shields.io/codecov/c/github/geirolz/advxml)](https://codecov.io/gh/geirolz/advxml)
+[![Sonatype Nexus (Releases)](https://img.shields.io/nexus/r/com.github.geirolz/advxml_2.13?server=https%3A%2F%2Foss.sonatype.org)](https://mvnrepository.com/artifact/com.github.geirolz/advxml)
+[![javadoc.io](https://javadoc.io/badge2/com.github.geirolz/advxml_2.13/javadoc.io.svg)](https://javadoc.io/doc/com.github.geirolz/advxml_2.13)
+[![Scala Steward badge](https://img.shields.io/badge/Scala_Steward-helping-blue.svg?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAMAAAARSr4IAAAAVFBMVEUAAACHjojlOy5NWlrKzcYRKjGFjIbp293YycuLa3pYY2LSqql4f3pCUFTgSjNodYRmcXUsPD/NTTbjRS+2jomhgnzNc223cGvZS0HaSD0XLjbaSjElhIr+AAAAAXRSTlMAQObYZgAAAHlJREFUCNdNyosOwyAIhWHAQS1Vt7a77/3fcxxdmv0xwmckutAR1nkm4ggbyEcg/wWmlGLDAA3oL50xi6fk5ffZ3E2E3QfZDCcCN2YtbEWZt+Drc6u6rlqv7Uk0LdKqqr5rk2UCRXOk0vmQKGfc94nOJyQjouF9H/wCc9gECEYfONoAAAAASUVORK5CYII=)](https://scala-steward.org)
 [![GitHub license](https://img.shields.io/github/license/geirolz/advxml)](https://github.com/geirolz/advxml/blob/master/LICENSE)
 
-A Scala library to edit xml using native scala xml library and cats core.
-
+A lightweight, simple and functional library to work with XML in Scala using native scala xml library and cats core.
+ 
 ## How to import
 
 Supported Scala 2.12 and 2.13
 
 Maven for 2.12
-```
+```xml
 <dependency>
     <groupId>com.github.geirolz</groupId>
     <artifactId>advxml_2.12</artifactId>
-    <version>0.1.4</version>
+    <version>0.1.5</version>
 </dependency>
 ```
 
 Maven for 2.13
-```
+```xml
 <dependency>
     <groupId>com.github.geirolz</groupId>
     <artifactId>advxml_2.13</artifactId>
-    <version>0.1.4</version>
+    <version>0.1.5</version>
 </dependency>
 ```
 
 Sbt
-```
-libraryDependencies += "com.github.geirolz" %% "advxml" % "0.1.4"
+```sbt
+libraryDependencies += "com.github.geirolz" %% "advxml" % "0.1.5"
 ```
 
 ## Structure
@@ -39,7 +41,7 @@ The idea behind this library is offer a fluent syntax to edit and read xml.
 *Features:*
 - [Transformation](#Transformation)(Append, Remove, Replace, SetAttrs, RemoveAttrs)
 - [Traverse](#Traverse)(read node/attributes mandatory or optional, based on Cats [ValidatedNel](https://typelevel.org/cats/datatypes/validated.html))
-- [Convert](#Convert) to Model and vice versa(Based on Cats [ValidatedNel](https://typelevel.org/cats/datatypes/validated.html))
+- [Convert](#Convert) to Model and vice versa
 - [Normalize](#Normalize)(remove white spaces and collapse empty nodes)
 
 
@@ -191,10 +193,16 @@ the `XmlModifier` and no the `XmlRule` instance, this means no zooming actions.
 This feature allow users read/obtain node(s) 
 or attributes that are, for domain, marked as _Mandatory_ or _Optional_.
 
-In order to integrate this feature with Parsing feature the results of Traverse operations
-returns a _ValidatedNel_ object(from cats), this permits a safer parsing with better error messages in case of parsing error.<br>
-_Read more about [ValidatedNel](https://typelevel.org/cats/datatypes/validated.html)._
+This feature core is written with tagless final and all methods returns an output value wrapped in `F[_]`.
 
+You can import specific syntax using *traverse* object provided by *instances* object, 
+inside it you can find multiple objects containing all implicits for the required syntax.
+
+At the moment are available support for:
+- try
+- either
+- validatedEx// = cats ValidatedNel[Throwble]
+     
 In a nutshell:
 - _?_ means optional things
 - _!_ means mandatory things
@@ -221,10 +229,10 @@ handle the presence of what you are looking for.
 
  *Example*
 ```scala
-    import com.github.geirolz.advxml.all._
-    import com.github.geirolz.advxml.convert.ValidatedRes.ValidatedRes
+    import com.github.geirolz.advxml.validate.ValidatedEx
+    import com.github.geirolz.advxml.implicits.traverse.validated._
     import scala.xml._
-
+    
     val doc: Elem = 
     <Persons>
       <Person Name="Mimmo">
@@ -237,24 +245,31 @@ handle the presence of what you are looking for.
     </Persons>
 
     //Nodes
-    val mandatoryNode: ValidatedRes[NodeSeq] = doc \ "Person" \! "Cars"
-    val optionalNode: ValidatedRes[Option[NodeSeq]] = doc \ "Person" \? "Cars"
+    val mandatoryNode: ValidatedEx[NodeSeq] = doc \ "Person" \! "Cars"
+    val optionalNode: ValidatedEx[Option[NodeSeq]] = doc \ "Person" \? "Cars"
     
     //Nested nodes
-    val mandatoryNestedNode: ValidatedRes[NodeSeq] = doc \ "Person" \\! "Cars"
-    val optionalNestedNode: ValidatedRes[Option[NodeSeq]] = doc \ "Person" \\? "Cars"
+    val mandatoryNestedNode: ValidatedEx[NodeSeq] = doc \ "Person" \\! "Cars"
+    val optionalNestedNode: ValidatedEx[Option[NodeSeq]] = doc \ "Person" \\? "Cars"
 
     //Attributes
-    val mandatoryAttr: ValidatedRes[String] = doc \ "Person" \ "Cars" \ "Car" \@! "Brand"
-    val optionalAttr: ValidatedRes[Option[String]] = doc \ "Person" \ "Cars" \ "Car" \@? "Brand"
+    val mandatoryAttr: ValidatedEx[String] = doc \ "Person" \ "Cars" \ "Car" \@! "Brand"
+    val optionalAttr: ValidatedEx[Option[String]] = doc \ "Person" \ "Cars" \ "Car" \@? "Brand"
 
     //Text
-    val mandatoryText: ValidatedRes[String] = doc \ "Person" \ "Cars" \ "Car" \ "Price" !
-    val optionalText: ValidatedRes[Option[String]] = doc \ "Person" \ "Cars" \ "Car" \ "Price" ?
+    val mandatoryText: ValidatedEx[String] = doc \ "Person" \ "Cars" \ "Car" \ "Price" !
+    val optionalText: ValidatedEx[Option[String]] = doc \ "Person" \ "Cars" \ "Car" \ "Price" ?
 ```
   
 ### Convert <a name="Convert"></a>
-Conversion is not automatic and you need to manual map XML and Model.
+This feature provides several conversion utility.
+The main utility are:
+- ValidatedConverter //convert A to ValidatedEx[B]  
+- TextConverter //convert object to xml text
+- XmlConverter //convert object to xml and viceversa
+   
+*XmlConverter*   
+Conversion are not automatic and you need to manual map XML and Model.
 
 In the following example if some attribute or node is missing whole conversion will fail reporting ALL
 errors.
@@ -262,8 +277,9 @@ errors.
  *Example XML to Model*
 ```scala
     import com.github.geirolz.advxml.all._
-    import com.github.geirolz.advxml.convert.XmlConverter.XmlToModel
-    import com.github.geirolz.advxml.convert.ValidatedRes.ValidatedRes
+    import com.github.geirolz.advxml.validate.ValidatedEx
+    import com.github.geirolz.advxml.implicits.traverse.validated._
+    import com.github.geirolz.advxml.convert.impls.XmlConverter.XmlToModel
     import scala.xml._
     import cats.implicits._
 
@@ -273,18 +289,18 @@ errors.
       (
         x \@! "Name",
         x \@! "Surname",
-        x \@? "Age" mapValue (_.toInt)
+        (x \@? "Age").map(_.map(_.toInt)) //ValidatedEx[Option[String]] => //ValidatedEx[Option[Int]] 
       ).mapN(Person)
 
     val xml = <Person Name="Matteo" Surname="Bianchi"/>
-    val res: ValidatedRes[Person] = xml.as[Person]
+    val res: ValidatedEx[Person] = xml.as[Person]
 ```
 
  *Example Model to XML*
 ```scala
     import com.github.geirolz.advxml.all._
-    import com.github.geirolz.advxml.convert.XmlConverter.ModelToXml
-    import com.github.geirolz.advxml.convert.ValidatedRes.ValidatedRes
+    import com.github.geirolz.advxml.convert.impls.XmlConverter.ModelToXml
+    import com.github.geirolz.advxml.validate.ValidatedEx
     import scala.xml._
     import cats.implicits._
     import cats.data.Validated.Valid
@@ -297,7 +313,7 @@ errors.
       }
     
     val p = Person("Matteo", "Bianchi", Some(23))
-    val res: ValidatedRes[Elem] = p.asXml
+    val res: ValidatedEx[Elem] = p.asXml
 ```
 
 ### Normalize <a name="Normalize"></a>
