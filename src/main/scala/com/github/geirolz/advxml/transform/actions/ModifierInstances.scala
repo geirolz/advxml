@@ -21,6 +21,15 @@ private[actions] sealed trait ModifiersComposableInstances {
 
   lazy val NoAction: Replace = Replace(identity[NodeSeq])
 
+  case class Prepend(newNs: NodeSeq) extends ComposableXmlModifier {
+    override private[transform] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
+      collapse[F](ns.map {
+        case e: Elem  => F.pure[NodeSeq](e.copy(child = newNs ++ e.child))
+        case g: Group => F.pure[NodeSeq](g.copy(nodes = newNs ++ g.nodes))
+        case o        => UnsupportedException[F](this, o)
+      })
+  }
+
   case class Append(newNs: NodeSeq) extends ComposableXmlModifier {
     override private[transform] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
       collapse[F](ns.map {
