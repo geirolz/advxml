@@ -1,10 +1,9 @@
 package com.github.geirolz.advxml.transform.actions
 
 import cats.{Monoid, Semigroup}
-import com.github.geirolz.advxml.convert.impls.TextConverter
-import com.github.geirolz.advxml.convert.impls.TextConverter.TextConverter
 import com.github.geirolz.advxml.transform.actions.ModifiersBuilders.{collapse, UnsupportedException}
 import com.github.geirolz.advxml.validate.MonadEx
+
 import scala.xml._
 
 sealed trait XmlModifier {
@@ -35,14 +34,14 @@ private[actions] sealed trait ModifiersComposableInstances {
     override private[transform] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] = F.pure(f(ns))
   }
 
-  case class SetAttrs(values: (String, Text)*) extends ComposableXmlModifier {
+  case class SetAttrs(vs: SetAttributeData*) extends ComposableXmlModifier {
     override private[transform] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
       collapse[F](ns.map {
         case e: Elem =>
           F.pure[NodeSeq](
             e.copy(
-              attributes = values.foldRight(e.attributes)(
-                (value, metadata) => new UnprefixedAttribute(value._1, value._2, metadata)
+              attributes = vs.foldRight(e.attributes)(
+                (data, metadata) => new UnprefixedAttribute(data.q, data.valueToSet, metadata)
               )
             )
           )
@@ -103,3 +102,6 @@ private[actions] object ModifiersBuilders {
       F.raiseError[NodeSeq](new RuntimeException(s"Unsupported operation $modifier for type ${ns.getClass.getName}"))
   }
 }
+
+//DATA
+sealed case class SetAttributeData(q: String, valueToSet: Text)

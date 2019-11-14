@@ -1,5 +1,6 @@
 package com.github.geirolz.advxml.convert
 
+import cats.data.Kleisli
 import cats.data.Validated.Valid
 import com.github.geirolz.advxml.convert.impls.XmlConverter.{ModelToXml, XmlToModel}
 import com.github.geirolz.advxml.validate.ValidatedEx
@@ -23,13 +24,13 @@ class XmlConverterTest extends FunSuite {
 
     case class Person(name: String, surname: String, age: Option[Int])
 
-    implicit val converter: XmlToModel[Elem, Person] = x => {
+    implicit val converter: XmlToModel[Elem, Person] = Kleisli(x => {
       (
         (x \@! "Name"),
         (x \@! "Surname"),
         (x \@? "Age").map(_.map(_.toInt))
       ).mapN(Person)
-    }
+    })
 
     val xml = <Person Name="Matteo" Surname="Bianchi"/>
     val res: ValidatedEx[Person] = xml.as[Person]
@@ -43,10 +44,12 @@ class XmlConverterTest extends FunSuite {
 
     case class Person(name: String, surname: String, age: Option[Int])
 
-    implicit val converter: ModelToXml[Person, Elem] = x =>
-      Valid(
-        <Person Name={x.name} Surname={x.surname} Age={x.age.map(_.toString).getOrElse("")}/>
-      )
+    implicit val converter: ModelToXml[Person, Elem] = Kleisli(
+      x =>
+        Valid(
+          <Person Name={x.name} Surname={x.surname} Age={x.age.map(_.toString).getOrElse("")}/>
+        )
+    )
 
     val p = Person("Matteo", "Bianchi", Some(23))
     val res: ValidatedEx[Elem] = p.asXml[Elem]

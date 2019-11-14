@@ -42,7 +42,7 @@ class StressTest extends FeatureSpec {
 
       val z: XmlZoom = XmlZoom(_ \ "country") \ zoomByAttrs1 \ zoomByAttrs2 \ filterByChild
 
-      val result = elem.transform[Try]($(z) ==> SetAttrs("TEST" -> "1", "TEST2" -> "100"))
+      val result = elem.transform[Try]($(z) ==> SetAttrs("TEST" := "1", "TEST2" := "100"))
 
       assert(result.isSuccess)
       assert(z(result.get) \@ "TEST" == "1")

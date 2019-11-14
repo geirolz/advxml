@@ -47,7 +47,7 @@ private[transform] sealed trait RuleSyntax {
 
 private[transform] sealed trait ModifierSyntax {
   implicit class XmlAttributeTupleSetterBuilder(q: String) {
-    def +:>[T: TextConverter](v: T): (String, Text) = (q, TextConverter(v))
+    def :=[T: TextConverter](v: T): SetAttributeData = SetAttributeData(q, TextConverter(v))
   }
 }
 

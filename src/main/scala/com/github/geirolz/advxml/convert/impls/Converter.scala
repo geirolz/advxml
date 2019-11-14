@@ -1,6 +1,7 @@
 package com.github.geirolz.advxml.convert.impls
 
 import cats.{Applicative, Id}
+import cats.data.Kleisli
 
 import scala.annotation.implicitNotFound
 
@@ -21,7 +22,7 @@ object Converter {
     * @tparam A Contravariant input object type
     * @tparam B Output object type
     */
-  type Converter[F[_], -A, B] = A => F[B]
+  type Converter[F[_], -A, B] = Kleisli[F, A, B]
 
   /**
     * Represents a function `A => B` to simplify method and class signatures.
@@ -40,7 +41,7 @@ object Converter {
     * @return Identity [[Converter]] instance
     */
   @implicitNotFound("Missing Applicative instance for ${F}, used to create a pure value of ${A}")
-  def id[F[_]: Applicative, A]: Converter[F, A, A] = Applicative[F].pure(_)
+  def id[F[_]: Applicative, A]: Converter[F, A, A] = Kleisli[F, A, A](Applicative[F].pure(_))
 
   /**
     * Create an always safe converter that return the input instance.
@@ -48,7 +49,7 @@ object Converter {
     * @tparam A input and output type
     * @return Identity [[com.github.geirolz.advxml.convert.impls.Converter.UnsafeConverter]] instance
     */
-  def unsafeId[A]: UnsafeConverter[A, A] = identity[A]
+  def unsafeId[A]: UnsafeConverter[A, A] = Kleisli.apply[Id, A, A](identity)
 
   /**
     * Create an always pure converter that return the passed value ignoring the converter input.
@@ -57,7 +58,7 @@ object Converter {
     * @return Constant [[Converter]] instance
     */
   @implicitNotFound("Missing Applicative instance for ${F}, used to create a pure value of ${A}")
-  def const[F[_]: Applicative, A, B](v: B): Converter[F, A, B] = _ => Applicative[F].pure(v)
+  def const[F[_]: Applicative, A, B](v: B): Converter[F, A, B] = Kleisli.pure(v)
 
   /**
     * Create an always safe converter that return the passed value ignoring the converter input.
@@ -65,7 +66,7 @@ object Converter {
     * @tparam B inner output type
     * @return Constant [[UnsafeConverter]] instance
     */
-  def unsafeConst[A, B](v: B): UnsafeConverter[A, B] = _ => v
+  def unsafeConst[A, B](v: B): UnsafeConverter[A, B] = Kleisli.pure(v)
 
   /**
     * Apply conversion using implicit [[Converter]] instance.

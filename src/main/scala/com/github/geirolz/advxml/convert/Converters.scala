@@ -61,7 +61,7 @@ private[advxml] trait ConvertersSyntax {
       * @return [[Text]] representation of [[A]]
       */
     @implicitNotFound("Missing TextConverter to transform object into Text.")
-    def asText(implicit s: TextConverter[A]): Text = TextConverter.asText(a)
+    def asText(implicit s: TextConverter[A]): Text = TextConverter(a)
   }
 }
 
