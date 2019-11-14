@@ -13,11 +13,7 @@ import scala.xml.transform.{BasicTransformer, RewriteRule}
   *
   * @author geirolad
   */
-private[advxml] trait XmlTransformerSyntax
-    extends RuleSyntax
-    with ModifiersSyntax
-    with ZoomSyntax
-    with PredicateSyntax {
+private[advxml] trait XmlTransformerSyntax extends RuleSyntax with ZoomSyntax with PredicateSyntax {
 
   implicit class XmlTransformerOps(root: NodeSeq) {
 
@@ -44,13 +40,6 @@ private[transform] sealed trait RuleSyntax {
 
   implicit class ModifierCompatibleOps(r: ComposableXmlRule) {
     def ==>(modifier: ComposableXmlModifier): ComposableXmlRule = r.withModifier(modifier)
-  }
-}
-
-private[transform] sealed trait ModifiersSyntax {
-
-  implicit class ComposableXmlModifierOps(a: ComposableXmlModifier) {
-    def ++(that: ComposableXmlModifier): ComposableXmlModifier = a.andThen(that)
   }
 }
 

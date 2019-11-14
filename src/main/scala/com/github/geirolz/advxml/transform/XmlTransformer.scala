@@ -30,4 +30,4 @@ object XmlTransformer {
   }
 }
 
-private[advxml] trait XmlTransformerInstances extends Modifiers with Filters
+private[advxml] trait XmlTransformerInstances extends ModifierInstances with FiltersInstances

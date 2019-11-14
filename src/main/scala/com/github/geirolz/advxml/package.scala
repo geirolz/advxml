@@ -3,6 +3,7 @@ package com.github.geirolz
 import com.github.geirolz.advxml.convert._
 import com.github.geirolz.advxml.normalize.XmlNormalizerSyntax
 import com.github.geirolz.advxml.transform.{XmlTransformerInstances, XmlTransformerSyntax}
+import com.github.geirolz.advxml.transform.actions.{FiltersInstances, ModifierInstances}
 import com.github.geirolz.advxml.traverse.{
   XmlTraverserAbstractSyntax,
   XmlTraverserEitherSyntax,
@@ -80,7 +81,10 @@ package object advxml {
     */
   object instances extends AllInstances {
     // format: off
-    object transform  extends XmlTransformerInstances
+    object transform  extends XmlTransformerInstances{
+      object modifiers extends ModifierInstances
+      object filters extends FiltersInstances
+    }
     object convert    extends ConvertersInstances
     object validate   extends ValidationInstance
     // format: on

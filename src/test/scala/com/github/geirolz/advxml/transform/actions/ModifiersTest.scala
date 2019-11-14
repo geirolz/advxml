@@ -6,9 +6,9 @@ import scala.xml.Text
 
 class ModifiersTest extends WordSpec {
 
-  import Modifiers._
   import cats.instances.try_._
   import com.github.geirolz.advxml.instances.convert._
+  import com.github.geirolz.advxml.instances.transform.modifiers._
 
   "Append node modifier" when {
     "Applied with right data" should {
@@ -50,7 +50,7 @@ class ModifiersTest extends WordSpec {
             <Person Name="David"/>
           </Persons>
 
-        val modifier = Replace(<Person Name="Alessandro"/>)
+        val modifier = Replace(_ => <Person Name="Alessandro"/>)
         val result = modifier(xml \ "Person")
 
         assert(result.get.length == 1)

@@ -19,4 +19,11 @@ package object validate {
   type ValidatedEx[+T]      = ValidatedNel[Throwable, T]
   type ThrowableNel         = NonEmptyList[Throwable]
   // format: on
+
+  object MonadEx {
+    def apply[F[_]: MonadEx]: MonadEx[F] = implicitly[MonadEx[F]]
+  }
+  object MonadNelEx {
+    def apply[F[_]: MonadNelEx]: MonadNelEx[F] = implicitly[MonadNelEx[F]]
+  }
 }

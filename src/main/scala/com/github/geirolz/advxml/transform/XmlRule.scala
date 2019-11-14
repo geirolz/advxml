@@ -1,8 +1,9 @@
 package com.github.geirolz.advxml.transform
 
 import cats.Monad
-import com.github.geirolz.advxml.validate.MonadEx
+import cats.kernel.Monoid
 import com.github.geirolz.advxml.transform.actions.{ComposableXmlModifier, XmlModifier, XmlZoom, _}
+import com.github.geirolz.advxml.validate.MonadEx
 
 import scala.xml.{Node, NodeSeq}
 import scala.xml.transform.RewriteRule
@@ -21,9 +22,12 @@ sealed trait PartialXmlRule extends ModifierComposableXmlRule {
 sealed trait XmlRule {
   val zoom: XmlZoom
 
+  import com.github.geirolz.advxml.instances.transform._
+
+  //TODO IMPROVE
   final def toRewriteRule[F[_]: MonadEx](root: NodeSeq): F[RewriteRule] =
     (this match {
-      case r: ComposableXmlRule => RewriteRuleBuilder(r.modifiers.reduce((m1, m2) => m1.andThen(m2)))
+      case r: ComposableXmlRule => RewriteRuleBuilder(Monoid.combineAll(r.modifiers))
       case r: FinalXmlRule      => RewriteRuleBuilder[F](r.modifier)
     })(zoom, root)
 
@@ -35,7 +39,7 @@ sealed trait XmlRule {
         Monad[F].map(modifier[F](target))(updated => {
           new RewriteRule {
             override def transform(ns: collection.Seq[Node]): collection.Seq[Node] =
-              if (ns == root || Filters.strictEqualsTo(target)(ns)) updated else ns
+              if (ns == root || strictEqualsTo(target)(ns)) updated else ns
           }
         })
       }

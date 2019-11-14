@@ -33,7 +33,7 @@ object XmlTransformationSpec extends Properties("List") {
   property("Replace") = forAll { (base: NodeSeq, newNode: NodeSeq) =>
     val selector = XmlGenerator.xmlNodeSelectorGenerator(base.asInstanceOf[Elem])
     val selectedNode = selector.sample.get
-    val rule = $(Function.const(selectedNode)) ==> Replace(newNode)
+    val rule = $(Function.const(selectedNode)) ==> Replace(_ => newNode)
     val result: Node = base.transform[Try](rule).get.head
 
     result.asInstanceOf[Node].descendant.contains(newNode)

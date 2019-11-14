@@ -4,7 +4,7 @@ import com.github.geirolz.advxml.utils.PredicateUtils
 
 import scala.xml.{Node, NodeSeq}
 
-private[transform] trait Filters {
+private[advxml] trait FiltersInstances {
 
   lazy val always: XmlPredicate = _ => true
 
@@ -40,5 +40,3 @@ private[transform] trait Filters {
         case _                            => false
       }
 }
-
-object Filters extends Filters
