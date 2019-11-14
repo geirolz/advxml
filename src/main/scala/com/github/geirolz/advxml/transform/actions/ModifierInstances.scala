@@ -35,14 +35,14 @@ private[actions] sealed trait ModifiersComposableInstances {
     override private[transform] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] = F.pure(f(ns))
   }
 
-  case class SetAttrs[T: TextConverter](values: (String, T)*) extends ComposableXmlModifier {
+  case class SetAttrs(values: (String, Text)*) extends ComposableXmlModifier {
     override private[transform] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
       collapse[F](ns.map {
         case e: Elem =>
           F.pure[NodeSeq](
             e.copy(
               attributes = values.foldRight(e.attributes)(
-                (value, metadata) => new UnprefixedAttribute(value._1, TextConverter.asText(value._2), metadata)
+                (value, metadata) => new UnprefixedAttribute(value._1, value._2, metadata)
               )
             )
           )

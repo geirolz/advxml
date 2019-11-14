@@ -28,21 +28,7 @@ object TextConverter {
   type TextConverter[-A] = UnsafeConverter[A, Text]
 
   def mapAsText[F[_]: Applicative, A](fa: F[A])(implicit s: TextConverter[A]): F[Text] =
-    Applicative[F].map(fa)(asText(_))
-
-  /**
-    * Syntactic sugar to convert a `A` instance into `Text` using an implicit [[TextConverter]] instance.
-    * This method catch a [[TextConverter]] instance in the scope that conforms with type `A` and then invoke
-    * in it the method `apply` passing `a`.
-    *
-    * See [[TextConverter]] for further information.
-    *
-    * @param a Converter input
-    * @param f Implicit instance of [[TextConverter]]
-    * @tparam A Input type
-    * @return `A` converted into `Text`
-    */
-  def asText[A](a: A)(implicit f: TextConverter[A]): Text = f(a)
+    Applicative[F].map(fa)(apply(_))
 
   /**
     * Apply conversion using implicit [[TextConverter]] instance.
@@ -54,7 +40,7 @@ object TextConverter {
     * @return Unsafe conversion of `A` into `Text`
     */
   @implicitNotFound("Missing TextConverter to transform ${A} into `Text`")
-  def apply[A](a: A)(implicit F: TextConverter[A]): Text = F.apply(a)
+  def apply[A](a: A)(implicit F: TextConverter[A]): Text = F(a)
 }
 
 /**

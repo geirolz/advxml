@@ -1,10 +1,12 @@
 package com.github.geirolz.advxml.transform
 
+import com.github.geirolz.advxml.convert.impls.TextConverter
+import com.github.geirolz.advxml.convert.impls.TextConverter.TextConverter
 import com.github.geirolz.advxml.validate.MonadEx
 import com.github.geirolz.advxml.transform.actions._
 import com.github.geirolz.advxml.utils.PredicateUtils
 
-import scala.xml.NodeSeq
+import scala.xml.{NodeSeq, Text}
 import scala.xml.transform.{BasicTransformer, RewriteRule}
 
 /**
@@ -13,7 +15,7 @@ import scala.xml.transform.{BasicTransformer, RewriteRule}
   *
   * @author geirolad
   */
-private[advxml] trait XmlTransformerSyntax extends RuleSyntax with ZoomSyntax with PredicateSyntax {
+private[advxml] trait XmlTransformerSyntax extends RuleSyntax with ModifierSyntax with ZoomSyntax with PredicateSyntax {
 
   implicit class XmlTransformerOps(root: NodeSeq) {
 
@@ -40,6 +42,12 @@ private[transform] sealed trait RuleSyntax {
 
   implicit class ModifierCompatibleOps(r: ComposableXmlRule) {
     def ==>(modifier: ComposableXmlModifier): ComposableXmlRule = r.withModifier(modifier)
+  }
+}
+
+private[transform] sealed trait ModifierSyntax {
+  implicit class XmlAttributeTupleSetterBuilder(q: String) {
+    def +:>[T: TextConverter](v: T): (String, Text) = (q, TextConverter(v))
   }
 }
 
