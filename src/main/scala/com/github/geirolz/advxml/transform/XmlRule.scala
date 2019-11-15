@@ -75,7 +75,7 @@ object PartialXmlRule {
       extends ComposableXmlRule {
 
     override def withModifier(modifier: ComposableXmlModifier): ComposableXmlRule =
-      copy(modifiers = Seq(modifier) ++ modifiers)
+      copy(modifiers = modifiers :+ modifier)
   }
 
   private case class FinalXmlRuleImpl(zoom: XmlZoom, modifier: FinalXmlModifier) extends FinalXmlRule

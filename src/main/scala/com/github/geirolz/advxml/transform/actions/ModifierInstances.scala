@@ -110,4 +110,4 @@ private[actions] object ModifiersBuilders {
 }
 
 //DATA
-sealed case class SetAttributeData(q: String, valueToSet: Text)
+case class SetAttributeData(q: String, valueToSet: Text)
