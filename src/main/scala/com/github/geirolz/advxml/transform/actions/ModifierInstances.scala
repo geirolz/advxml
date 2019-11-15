@@ -5,6 +5,7 @@ import com.github.geirolz.advxml.transform.actions.ModifiersBuilders.{collapse, 
 import com.github.geirolz.advxml.validate.MonadEx
 
 import scala.xml._
+import cats.implicits._
 
 sealed trait XmlModifier {
   private[transform] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq]
@@ -77,8 +78,6 @@ private[actions] sealed trait ModifiersFinalInstances {
 
 private[actions] sealed trait ModifiersTypeClassesInstances { this: ModifiersComposableInstances =>
 
-  import cats.syntax.flatMap._
-
   sealed trait ComposableXmlModifierSemigroup extends Semigroup[ComposableXmlModifier] {
     override def combine(x: ComposableXmlModifier, y: ComposableXmlModifier): ComposableXmlModifier =
       new ComposableXmlModifier {
@@ -101,10 +100,8 @@ private[actions] sealed trait ModifiersTypeClassesInstances { this: ModifiersCom
 
 private[actions] object ModifiersBuilders {
 
-  def collapse[F[_]: MonadEx](seq: Seq[F[NodeSeq]]): F[NodeSeq] = {
-    import cats.implicits._ //TODO
+  def collapse[F[_]: MonadEx](seq: Seq[F[NodeSeq]]): F[NodeSeq] =
     seq.toList.sequence.map(_.reduce(_ ++ _))
-  }
 
   object UnsupportedException {
     def apply[F[_]](modifier: XmlModifier, ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =

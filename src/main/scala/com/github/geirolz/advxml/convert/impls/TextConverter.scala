@@ -1,6 +1,6 @@
 package com.github.geirolz.advxml.convert.impls
 
-import cats.Applicative
+import cats.{Applicative, Id}
 import cats.data.Kleisli
 import com.github.geirolz.advxml.convert.impls.Converter.UnsafeConverter
 import com.github.geirolz.advxml.convert.impls.TextConverter.TextConverter
@@ -49,15 +49,17 @@ object TextConverter {
   */
 private[convert] trait TextConverterInstances {
   // format: off
-  implicit val text_converter_text         : TextConverter[Text]         = Kleisli(identity)
-  implicit val text_converter_string       : TextConverter[String]       = Kleisli(v => Text(v.toString))
-  implicit val text_converter_scalaNumber  : TextConverter[ScalaNumber]  = Kleisli(v => Text(v.toString))
-  implicit val text_converter_byte         : TextConverter[Byte]         = Kleisli(v => Text(v.toString))
-  implicit val text_converter_short        : TextConverter[Short]        = Kleisli(v => Text(v.toString))
-  implicit val text_converter_char         : TextConverter[Char]         = Kleisli(v => Text(v.toString))
-  implicit val text_converter_int          : TextConverter[Int]          = Kleisli(v => Text(v.toString))
-  implicit val text_converter_long         : TextConverter[Long]         = Kleisli(v => Text(v.toString))
-  implicit val text_converter_float        : TextConverter[Float]        = Kleisli(v => Text(v.toString))
-  implicit val text_converter_double       : TextConverter[Double]       = Kleisli(v => Text(v.toString))
+  implicit val text_converter_text         : TextConverter[Text]         = Converter.id
+  implicit val text_converter_string       : TextConverter[String]       = toText[String]
+  implicit val text_converter_scalaNumber  : TextConverter[ScalaNumber]  = toText[ScalaNumber]
+  implicit val text_converter_byte         : TextConverter[Byte]         = toText[Byte]
+  implicit val text_converter_short        : TextConverter[Short]        = toText[Short]
+  implicit val text_converter_char         : TextConverter[Char]         = toText[Char]
+  implicit val text_converter_int          : TextConverter[Int]          = toText[Int]
+  implicit val text_converter_long         : TextConverter[Long]         = toText[Long]
+  implicit val text_converter_float        : TextConverter[Float]        = toText[Float]
+  implicit val text_converter_double       : TextConverter[Double]       = toText[Double]
+  
+  private def toText[I] : TextConverter[I] = Kleisli[Id, I, Text](v => Text(v.toString))
   // format: on
 }

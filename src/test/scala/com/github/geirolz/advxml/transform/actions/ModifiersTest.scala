@@ -8,6 +8,7 @@ class ModifiersTest extends WordSpec {
 
   import cats.instances.try_._
   import com.github.geirolz.advxml.instances.convert._
+  import com.github.geirolz.advxml.implicits.transform._
   import com.github.geirolz.advxml.instances.transform.modifiers._
 
   "Append node modifier" when {
@@ -84,9 +85,9 @@ class ModifiersTest extends WordSpec {
         val xml = <Root/>
 
         val modifier = SetAttrs(
-          "T1" -> "1",
-          "T2" -> "2",
-          "T3" -> "3"
+          "T1" := "1",
+          "T2" := "2",
+          "T3" := "3"
         )
         val result = modifier(xml)
 
@@ -102,10 +103,10 @@ class ModifiersTest extends WordSpec {
         val xml = <Root/>
 
         val modifier = SetAttrs(
-          "T1" -> 1,
-          "T2" -> 2,
-          "T3" -> 3
-        )(v => Text(v.toString))
+          "T1" := 1,
+          "T2" := 2,
+          "T3" := 3
+        )
 
         val result = modifier(xml)
 
@@ -120,9 +121,9 @@ class ModifiersTest extends WordSpec {
         val xml = Text("TEST")
 
         val modifier = SetAttrs(
-          "T1" -> "1",
-          "T2" -> "2",
-          "T3" -> "3"
+          "T1" := "1",
+          "T2" := "2",
+          "T3" := "3"
         )
         val result = modifier(xml)
 

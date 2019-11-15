@@ -2,11 +2,11 @@ package com.github.geirolz.advxml.transform
 
 import com.github.geirolz.advxml.convert.impls.TextConverter
 import com.github.geirolz.advxml.convert.impls.TextConverter.TextConverter
-import com.github.geirolz.advxml.validate.MonadEx
 import com.github.geirolz.advxml.transform.actions._
 import com.github.geirolz.advxml.utils.PredicateUtils
+import com.github.geirolz.advxml.validate.MonadEx
 
-import scala.xml.{NodeSeq, Text}
+import scala.xml.NodeSeq
 import scala.xml.transform.{BasicTransformer, RewriteRule}
 
 /**
@@ -46,7 +46,7 @@ private[transform] sealed trait RuleSyntax {
 }
 
 private[transform] sealed trait ModifierSyntax {
-  implicit class XmlAttributeTupleSetterBuilder(q: String) {
+  implicit class SetAttributeDataBuilder(q: String) {
     def :=[T: TextConverter](v: T): SetAttributeData = SetAttributeData(q, TextConverter(v))
   }
 }
