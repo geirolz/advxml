@@ -1,7 +1,7 @@
 package com.github.geirolz.advxml.validate
 
 import cats.data.Validated.{Invalid, Valid}
-import cats.MonadError
+import cats.{Alternative, MonadError}
 import cats.data.{NonEmptyList, Validated}
 import com.github.geirolz.advxml.validate.exceptions.AggregatedException
 
@@ -12,24 +12,33 @@ object ValidatedEx {
   def fromTry[A](t: Try[A]): ValidatedEx[A] =
     t.fold(e => Invalid(NonEmptyList.of(e)), Valid(_))
 
-  def fromEither[A](e: EitherNelEx[A]): ValidatedEx[A] =
+  def fromEither[A](e: EitherEx[A]): ValidatedEx[A] =
+    fromEitherNel(e.left.map(NonEmptyList.one))
+
+  def fromEitherNel[A](e: EitherNelEx[A]): ValidatedEx[A] =
     Validated.fromEither(e)
 
-  def fromOption[A](o: Option[A], ifNone: => ThrowableNel): ValidatedEx[A] =
-    Validated.fromOption(o, ifNone)
+  def fromOption[A](o: Option[A], ifNone: => Throwable): ValidatedEx[A] =
+    Validated.fromOption(o, NonEmptyList.one(ifNone))
 
-  def transform[F[_], A](validated: ValidatedEx[A])(implicit F: MonadEx[F] \/ MonadNelEx[F]): F[A] = {
-    F match {
-      case Left(m) =>
-        validated match {
-          case Valid(value) => m.pure(value)
-          case Invalid(exs) => m.raiseError(new AggregatedException(exs.toList))
-        }
-      case Right(m) =>
-        validated match {
-          case Valid(value) => m.pure(value)
-          case Invalid(exs) => m.raiseError(exs)
-        }
+  def transformE[F[_], A](validated: ValidatedEx[A])(implicit F: MonadEx[F]): F[A] = {
+    validated match {
+      case Valid(value) => F.pure(value)
+      case Invalid(exs) => F.raiseError(new AggregatedException(exs.toList))
+    }
+  }
+
+  def transformNE[F[_], A](validated: ValidatedEx[A])(implicit F: MonadNelEx[F]): F[A] = {
+    validated match {
+      case Valid(value) => F.pure(value)
+      case Invalid(exs) => F.raiseError(exs)
+    }
+  }
+
+  def transformA[F[_], A](validated: ValidatedEx[A])(implicit F: Alternative[F]): F[A] = {
+    validated match {
+      case Valid(a)   => F.pure(a)
+      case Invalid(_) => F.empty
     }
   }
 }
@@ -92,25 +101,30 @@ private[advxml] trait ValidationSyntax {
   implicit def monadExRightDsj[F[_]](implicit F: MonadEx[F]): MonadNelEx[F] \/ MonadEx[F] = Right(F)
 
   implicit class ValidatedExTryOps[A](t: Try[A]) {
-    def toValidatedNel: ValidatedEx[A] = ValidatedEx.fromTry(t)
+    def toValidatedEx: ValidatedEx[A] = ValidatedEx.fromTry(t)
   }
 
   implicit class ValidatedExEitherOps[A](e: EitherEx[A]) {
-    def toValidatedNel: ValidatedEx[A] =
-      Validated.fromEither(e.left.map(NonEmptyList.of(_)))
+    def toValidatedEx: ValidatedEx[A] = ValidatedEx.fromEither(e)
   }
 
   implicit class ValidatedExEitherNelOps[A](e: EitherNelEx[A]) {
-    def toValidatedNel: ValidatedEx[A] = ValidatedEx.fromEither(e)
+    def toValidatedEx: ValidatedEx[A] = ValidatedEx.fromEitherNel(e)
   }
 
   implicit class ValidatedExOptionOps[A](e: Option[A]) {
-    def toValidatedNel(ifNone: => ThrowableNel): ValidatedEx[A] = ValidatedEx.fromOption(e, ifNone)
+    def toValidatedEx(ifNone: => Throwable): ValidatedEx[A] = ValidatedEx.fromOption(e, ifNone)
   }
 
   implicit class ValidatedExOps[A](validated: ValidatedEx[A]) {
 
-    def transform[F[_]](implicit F: MonadEx[F] \/ MonadNelEx[F]): F[A] =
-      ValidatedEx.transform[F, A](validated)(F)
+    def transformE[F[_]](implicit F: MonadEx[F]): F[A] =
+      ValidatedEx.transformE[F, A](validated)(F)
+
+    def transformNE[F[_]](implicit F: MonadNelEx[F]): F[A] =
+      ValidatedEx.transformNE[F, A](validated)(F)
+
+    def transformA[F[_]](implicit F: Alternative[F]): F[A] =
+      ValidatedEx.transformA[F, A](validated)(F)
   }
 }

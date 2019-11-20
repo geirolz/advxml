@@ -1,7 +1,7 @@
 package com.github.geirolz.advxml
 
 import cats.MonadError
-import cats.data.{NonEmptyList, ValidatedNel}
+import cats.data.{EitherNel, NonEmptyList, ValidatedNel}
 
 /**
   * Advxml
@@ -15,7 +15,7 @@ package object validate {
   type MonadEx[F[_]]        = MonadError[F, Throwable]
   type MonadNelEx[F[_]]     = MonadError[F, ThrowableNel]
   type EitherEx[+T]         = Either[Throwable, T]
-  type EitherNelEx[+T]      = Either[ThrowableNel, T]
+  type EitherNelEx[+T]      = EitherNel[Throwable, T]
   type ValidatedEx[+T]      = ValidatedNel[Throwable, T]
   type ThrowableNel         = NonEmptyList[Throwable]
   // format: on
