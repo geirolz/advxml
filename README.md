@@ -17,7 +17,7 @@ Maven for 2.12
 <dependency>
     <groupId>com.github.geirolz</groupId>
     <artifactId>advxml_2.12</artifactId>
-    <version>0.1.5</version>
+    <version>0.1.6</version>
 </dependency>
 ```
 
@@ -26,13 +26,13 @@ Maven for 2.13
 <dependency>
     <groupId>com.github.geirolz</groupId>
     <artifactId>advxml_2.13</artifactId>
-    <version>0.1.5</version>
+    <version>0.1.6</version>
 </dependency>
 ```
 
 Sbt
 ```sbt
-libraryDependencies += "com.github.geirolz" %% "advxml" % "0.1.5"
+libraryDependencies += "com.github.geirolz" %% "advxml" % "0.1.6"
 ```
 
 ## Structure
@@ -106,7 +106,6 @@ If you need apply more that one modification on a selected node you can combine 
  *Example*
 ```scala
     import com.github.geirolz.advxml.all._
-    import com.github.geirolz.advxml.transform._
     import scala.xml._
     import scala.util._
    
@@ -133,41 +132,6 @@ If you need apply more that one modification on a selected node you can combine 
 //      .withModifier(Append(<Car Brand="Lamborghini"/>))
 //      .withModifier(Append(<Car Brand="Ferrari"/>))
 //      .withModifier(Append(<Car Brand="Bmw"/>))
-        
-    val result: Try[NodeSeq] = doc.transform[Try](rules)  
-```
-
-#### Combine modifiers
-You can combine multiple modifiers using `andThen` method or with syntax sugar `++`
-
- *Example*
-```scala
-    import com.github.geirolz.advxml.all._
-    import com.github.geirolz.advxml.transform._
-    import scala.xml._
-    import scala.util._
-    
-    //import MonadError instance for Try
-    import cats.instances.try_._
-    
-    val doc: Elem = 
-    <Persons>
-      <Person Name="Mimmo">
-        <Cars>
-          <Car Brand="Fiat"/>
-        </Cars>
-      </Person>
-    </Persons>
-    
-    val rules = $(_ \ "Person" \ "Cars") ==> (
-      Append(<Car Brand="Lamborghini"/>) ++ Append(<Car Brand="Ferrari"/>) ++ Append(<Car Brand="Bmw"/>)
-    )
-
-//  Desugared
-//  val rules: XmlRule = PartialXmlRule(_ \ "Person" \ "Cars")
-//      .withModifier(Append(<Car Brand="Lamborghini"/>)
-//        .andThen(Append(<Car Brand="Ferrari"/>)
-//        .andThen(Append(<Car Brand="Bmw"/>))))
         
     val result: Try[NodeSeq] = doc.transform[Try](rules)  
 ```
