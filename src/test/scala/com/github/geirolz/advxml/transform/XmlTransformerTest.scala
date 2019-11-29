@@ -1,11 +1,11 @@
 package com.github.geirolz.advxml.transform
 
-import org.scalatest.FeatureSpec
 
 import scala.util.Try
 import scala.xml.Elem
+import org.scalatest.featurespec.AnyFeatureSpec
 
-class XmlTransformerTest extends FeatureSpec {
+class XmlTransformerTest extends AnyFeatureSpec {
 
   import cats.instances.try_._
   import com.github.geirolz.advxml.implicits.transform._

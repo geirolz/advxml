@@ -1,6 +1,6 @@
 package com.github.geirolz.advxml.normalize
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
   * Advxml
@@ -8,7 +8,7 @@ import org.scalatest.FunSuite
   *
   * @author geirolad
   */
-class XmlNormalizerTest extends FunSuite {
+class XmlNormalizerTest extends AnyFunSuite {
 
   import com.github.geirolz.advxml.implicits.normalize._
 

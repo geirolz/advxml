@@ -1,10 +1,10 @@
 package com.github.geirolz.advxml.transform.actions
 
-import org.scalatest.WordSpec
 
 import scala.xml.Text
+import org.scalatest.wordspec.AnyWordSpec
 
-class ModifiersTest extends WordSpec {
+class ModifiersTest extends AnyWordSpec {
 
   import Modifiers._
   import cats.instances.try_._

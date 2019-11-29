@@ -1,12 +1,12 @@
 package com.github.geirolz.advxml.transform
 
 import com.github.geirolz.advxml.transform.actions.XmlZoom
-import org.scalatest.FeatureSpec
 
 import scala.util.Try
 import scala.xml.XML
+import org.scalatest.featurespec.AnyFeatureSpec
 
-class StressTest extends FeatureSpec {
+class StressTest extends AnyFeatureSpec {
 
   import cats.instances.try_._
   import com.github.geirolz.advxml.instances.convert._

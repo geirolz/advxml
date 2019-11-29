@@ -3,9 +3,9 @@ package com.github.geirolz.advxml.convert
 import cats.data.Validated.Valid
 import com.github.geirolz.advxml.convert.impls.XmlConverter.{ModelToXml, XmlToModel}
 import com.github.geirolz.advxml.validate.ValidatedEx
-import org.scalatest.FunSuite
 
 import scala.xml.Elem
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
   * Advxml
@@ -13,7 +13,7 @@ import scala.xml.Elem
   *
   * @author geirolad
   */
-class XmlConverterTest extends FunSuite {
+class XmlConverterTest extends AnyFunSuite {
 
   import cats.implicits._
   import com.github.geirolz.advxml.implicits.traverse.validated._

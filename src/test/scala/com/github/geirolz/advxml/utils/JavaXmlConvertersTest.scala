@@ -3,9 +3,9 @@ package com.github.geirolz.advxml.utils
 import java.io.StringReader
 
 import javax.xml.parsers.{DocumentBuilder, DocumentBuilderFactory}
-import org.scalatest.FunSuite
 
 import scala.xml.{InputSource, Node}
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
   * Advxml
@@ -13,7 +13,7 @@ import scala.xml.{InputSource, Node}
   *
   * @author geirolad
   */
-class JavaXmlConvertersTest extends FunSuite {
+class JavaXmlConvertersTest extends AnyFunSuite {
 
   import JavaXmlConverters._
 

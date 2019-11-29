@@ -1,6 +1,6 @@
 package com.github.geirolz.advxml.convert
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
   * Advxml
@@ -8,7 +8,7 @@ import org.scalatest.FunSuite
   *
   * @author geirolad
   */
-class TextConverterTest extends FunSuite {
+class TextConverterTest extends AnyFunSuite {
 
   import cats.instances.option._
   import com.github.geirolz.advxml.implicits.convert._

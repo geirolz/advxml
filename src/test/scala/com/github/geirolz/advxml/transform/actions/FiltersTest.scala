@@ -1,10 +1,10 @@
 package com.github.geirolz.advxml.transform.actions
 
-import org.scalatest.FunSuite
 
 import scala.xml.{Elem, NodeSeq}
+import org.scalatest.funsuite.AnyFunSuite
 
-class FiltersTest extends FunSuite {
+class FiltersTest extends AnyFunSuite {
 
   import Filters._
   import com.github.geirolz.advxml.implicits.normalize._

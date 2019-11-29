@@ -1,8 +1,8 @@
 package com.github.geirolz.advxml.utils
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
-class PredicateUtilsTests extends FunSuite {
+class PredicateUtilsTests extends AnyFunSuite {
 
   test("Combine two predicate with in and") {
     val p1: String => Boolean = _.contains("A")

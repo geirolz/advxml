@@ -1,10 +1,10 @@
 package com.github.geirolz.advxml.traverse
 
-import org.scalatest.FeatureSpec
 
 import scala.language.postfixOps
 import scala.util.Try
 import scala.xml.NodeSeq
+import org.scalatest.featurespec.AnyFeatureSpec
 
 /**
   * Advxml
@@ -12,7 +12,7 @@ import scala.xml.NodeSeq
   *
   * @author geirolad
   */
-class XmlTraverserSyntaxTest extends FeatureSpec {
+class XmlTraverserSyntaxTest extends AnyFeatureSpec {
 
   import com.github.geirolz.advxml.implicits.traverse.try_._
 
