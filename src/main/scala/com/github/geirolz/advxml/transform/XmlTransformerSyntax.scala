@@ -46,8 +46,8 @@ private[transform] sealed trait RuleSyntax {
 }
 
 private[transform] sealed trait ModifierSyntax {
-  implicit class SetAttributeDataBuilder(q: String) {
-    def :=[T: TextConverter](v: T): SetAttributeData = SetAttributeData(q, TextConverter(v))
+  implicit class AttributeDataBuilder(q: String) {
+    def :=[T: TextConverter](v: T): AttributeData = AttributeData(q, TextConverter(v))
   }
 }
 

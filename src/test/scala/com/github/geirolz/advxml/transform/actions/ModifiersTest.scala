@@ -138,7 +138,7 @@ class ModifiersTest extends WordSpec {
 
         val xml = <Root T1="1" T2="2" T3="3"/>
 
-        val modifier = RemoveAttrs("T1", "T2", "T3")
+        val modifier = RemoveAttrs(_.key == "T1", _.key == "T2", _.key == "T3")
         val result = modifier(xml)
 
         assert(!(result.get exists (_ \@ "T1" == "1")))
@@ -151,7 +151,7 @@ class ModifiersTest extends WordSpec {
       "Return a failure" in {
         val xml = Text("TEST")
 
-        val modifier = RemoveAttrs("T1", "T2", "T3")
+        val modifier = RemoveAttrs(_.key == "T1", _.key == "T2", _.key == "T3")
         val result = modifier(xml)
 
         assert(result.isFailure)

@@ -1,11 +1,11 @@
 package com.github.geirolz.advxml.transform.actions
 
 import cats.{Monoid, Semigroup}
-import com.github.geirolz.advxml.transform.actions.ModifiersBuilders.{collapse, UnsupportedException}
+import cats.implicits._
+import com.github.geirolz.advxml.transform.actions.ModifiersBuilders.{collapse, ExceptionF}
 import com.github.geirolz.advxml.validate.MonadEx
 
 import scala.xml._
-import cats.implicits._
 
 sealed trait XmlModifier {
   private[transform] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq]
@@ -20,57 +20,98 @@ private[advxml] trait ModifierInstances
 
 private[actions] sealed trait ModifiersComposableInstances {
 
+  /**
+    * No-Action modifiers, equals to `Replace` passing an identity function.
+    */
   lazy val NoAction: Replace = Replace(identity[NodeSeq])
 
+  /**
+    * Prepend nodes to current nodes.
+    * Supported only for `Node` and `Group` elements, in other case will fail.
+    * @param newNs Nodes to prepend.
+    */
   case class Prepend(newNs: NodeSeq) extends ComposableXmlModifier {
     override private[transform] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
       collapse[F](ns.map {
         case e: Elem  => F.pure[NodeSeq](e.copy(child = newNs ++ e.child))
         case g: Group => F.pure[NodeSeq](g.copy(nodes = newNs ++ g.nodes))
-        case o        => UnsupportedException[F](this, o)
+        case o        => ExceptionF.unsupported(this, o)
       })
   }
 
+  /**
+    * Append nodes to current nodes.
+    * Supported only for `Node` and `Group` elements, in other case will fail.
+    * @param newNs Nodes to append.
+    */
   case class Append(newNs: NodeSeq) extends ComposableXmlModifier {
     override private[transform] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
       collapse[F](ns.map {
         case e: Elem  => F.pure[NodeSeq](e.copy(child = e.child ++ newNs))
         case g: Group => F.pure[NodeSeq](g.copy(nodes = g.nodes ++ newNs))
-        case o        => UnsupportedException[F](this, o)
+        case o        => ExceptionF.unsupported(this, o)
       })
   }
 
+  /**
+    * Replace current nodes.
+    * @param f Function to from current nodes to new nodes.
+    */
   case class Replace(f: NodeSeq => NodeSeq) extends ComposableXmlModifier {
     override private[transform] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] = F.pure(f(ns))
   }
 
-  case class SetAttrs(vs: SetAttributeData*) extends ComposableXmlModifier {
+  /**
+    * Append attributes to current node.
+    *
+    * Supported only for `Node` elements, in other case will fail.
+    * @param d Attribute data.
+    * @param ds Attributes data.
+    */
+  case class SetAttrs(d: AttributeData, ds: AttributeData*) extends ComposableXmlModifier {
     override private[transform] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
       collapse[F](ns.map {
         case e: Elem =>
           F.pure[NodeSeq](
             e.copy(
-              attributes = vs.foldRight(e.attributes)(
-                (data, metadata) => new UnprefixedAttribute(data.q, data.valueToSet, metadata)
+              attributes = (d +: ds).foldRight(e.attributes)(
+                (data, metadata) => new UnprefixedAttribute(data.key, data.value, metadata)
               )
             )
           )
-        case o => UnsupportedException[F](this, o)
+        case o => ExceptionF.unsupported(this, o)
       })
   }
 
-  case class RemoveAttrs(key: String, keys: String*) extends ComposableXmlModifier {
+  /**
+    * Remove attributes.
+    *
+    * Supported only for `Node` elements, in other case will fail.
+    * @param p Attribute predicate.
+    * @param ps Attribute predicates.
+    */
+  case class RemoveAttrs(p: AttributeData => Boolean, ps: AttributeData => Boolean*) extends ComposableXmlModifier {
     override private[transform] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
       collapse[F](ns.map {
         case e: Elem =>
-          val newAttrs = (Seq(key) ++ keys).foldLeft(e.attributes)((attrs, key) => attrs.remove(key))
+          val newAttrs = e.attributes.asAttrMap
+            .filter(_ match {
+              case (k, v) => p(AttributeData(k, Text(v)))
+            })
+            .keys
+            .foldLeft(e.attributes)((attrs, key) => attrs.remove(key))
+
           F.pure[NodeSeq](e.copy(attributes = newAttrs))
-        case o => UnsupportedException[F](this, o)
+        case o => ExceptionF.unsupported(this, o)
       })
   }
 }
 
 private[actions] sealed trait ModifiersFinalInstances {
+
+  /**
+    * Remove selected nodes.
+    */
   case object Remove extends FinalXmlModifier {
     override private[transform] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] = F.pure(NodeSeq.Empty)
   }
@@ -103,11 +144,16 @@ private[actions] object ModifiersBuilders {
   def collapse[F[_]: MonadEx](seq: Seq[F[NodeSeq]]): F[NodeSeq] =
     seq.toList.sequence.map(_.reduce(_ ++ _))
 
-  object UnsupportedException {
-    def apply[F[_]](modifier: XmlModifier, ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
-      F.raiseError[NodeSeq](new RuntimeException(s"Unsupported operation $modifier for type ${ns.getClass.getName}"))
+  protected[actions] object ExceptionF {
+
+    def apply[F[_]](msg: String)(implicit F: MonadEx[F]): F[NodeSeq] =
+      F.raiseError[NodeSeq](new RuntimeException(msg))
+
+    def unsupported[F[_]](modifier: XmlModifier, ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
+      ExceptionF(s"Unsupported operation $modifier for type ${ns.getClass.getName}")
   }
+
 }
 
 //DATA
-case class SetAttributeData(q: String, valueToSet: Text)
+case class AttributeData(key: String, value: Text)
