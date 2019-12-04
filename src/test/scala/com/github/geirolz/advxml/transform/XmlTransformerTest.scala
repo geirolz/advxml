@@ -183,7 +183,7 @@ class XmlTransformerTest extends FeatureSpec {
       </Order>
 
       val result = elem.transform(
-        $(_ \ "OrderLines") ==> RemoveAttrs("T1")
+        $(_ \ "OrderLines") ==> RemoveAttrs(_.key == "T1")
       )
 
       assert(result.get \ "OrderLines" \@ "T1" == "")

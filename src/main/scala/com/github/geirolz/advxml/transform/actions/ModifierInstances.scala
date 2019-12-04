@@ -1,11 +1,10 @@
 package com.github.geirolz.advxml.transform.actions
 
 import cats.{Monoid, Semigroup}
-import cats.implicits._
 import com.github.geirolz.advxml.transform.actions.ModifiersBuilders.{collapse, ExceptionF}
 import com.github.geirolz.advxml.validate.MonadEx
-
 import scala.xml._
+import cats.syntax.flatMap._
 
 sealed trait XmlModifier {
   private[transform] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq]
@@ -35,7 +34,7 @@ private[actions] sealed trait ModifiersComposableInstances {
       collapse[F](ns.map {
         case e: Elem  => F.pure[NodeSeq](e.copy(child = newNs ++ e.child))
         case g: Group => F.pure[NodeSeq](g.copy(nodes = newNs ++ g.nodes))
-        case o        => ExceptionF.unsupported(this, o)
+        case o        => ExceptionF.unsupported[F](this, o)
       })
   }
 
@@ -49,7 +48,7 @@ private[actions] sealed trait ModifiersComposableInstances {
       collapse[F](ns.map {
         case e: Elem  => F.pure[NodeSeq](e.copy(child = e.child ++ newNs))
         case g: Group => F.pure[NodeSeq](g.copy(nodes = g.nodes ++ newNs))
-        case o        => ExceptionF.unsupported(this, o)
+        case o        => ExceptionF.unsupported[F](this, o)
       })
   }
 
@@ -79,7 +78,7 @@ private[actions] sealed trait ModifiersComposableInstances {
               )
             )
           )
-        case o => ExceptionF.unsupported(this, o)
+        case o => ExceptionF.unsupported[F](this, o)
       })
   }
 
@@ -102,7 +101,7 @@ private[actions] sealed trait ModifiersComposableInstances {
             .foldLeft(e.attributes)((attrs, key) => attrs.remove(key))
 
           F.pure[NodeSeq](e.copy(attributes = newAttrs))
-        case o => ExceptionF.unsupported(this, o)
+        case o => ExceptionF.unsupported[F](this, o)
       })
   }
 }
@@ -122,9 +121,8 @@ private[actions] sealed trait ModifiersTypeClassesInstances { this: ModifiersCom
   sealed trait ComposableXmlModifierSemigroup extends Semigroup[ComposableXmlModifier] {
     override def combine(x: ComposableXmlModifier, y: ComposableXmlModifier): ComposableXmlModifier =
       new ComposableXmlModifier {
-        override def apply[F[_]: MonadEx](ns: NodeSeq): F[NodeSeq] = {
+        override def apply[F[_]: MonadEx](ns: NodeSeq): F[NodeSeq] =
           x.apply[F](ns).flatMap(y.apply[F](_))
-        }
       }
   }
 
@@ -141,16 +139,18 @@ private[actions] sealed trait ModifiersTypeClassesInstances { this: ModifiersCom
 
 private[actions] object ModifiersBuilders {
 
-  def collapse[F[_]: MonadEx](seq: Seq[F[NodeSeq]]): F[NodeSeq] =
+  def collapse[F[_]: MonadEx](seq: Seq[F[NodeSeq]]): F[NodeSeq] = {
+    import cats.implicits._
     seq.toList.sequence.map(_.reduce(_ ++ _))
+  }
 
   protected[actions] object ExceptionF {
 
     def apply[F[_]](msg: String)(implicit F: MonadEx[F]): F[NodeSeq] =
       F.raiseError[NodeSeq](new RuntimeException(msg))
 
-    def unsupported[F[_]](modifier: XmlModifier, ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
-      ExceptionF(s"Unsupported operation $modifier for type ${ns.getClass.getName}")
+    def unsupported[F[_]: MonadEx](modifier: XmlModifier, ns: NodeSeq): F[NodeSeq] =
+      ExceptionF[F](s"Unsupported operation $modifier for type ${ns.getClass.getName}")
   }
 
 }

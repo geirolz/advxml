@@ -1,5 +1,6 @@
 # Advxml
-[![Build Status](https://img.shields.io/travis/geirolz/advxml)](https://travis-ci.org/geirolz/advxml)
+
+[![Build Status](https://img.shields.io/travis/geirolz/advxml/master)](https://travis-ci.org/geirolz/advxml)
 [![codecov](https://img.shields.io/codecov/c/github/geirolz/advxml)](https://codecov.io/gh/geirolz/advxml)
 [![Sonatype Nexus (Releases)](https://img.shields.io/nexus/r/com.github.geirolz/advxml_2.13?server=https%3A%2F%2Foss.sonatype.org)](https://mvnrepository.com/artifact/com.github.geirolz/advxml)
 [![javadoc.io](https://javadoc.io/badge2/com.github.geirolz/advxml_2.13/javadoc.io.svg)](https://javadoc.io/doc/com.github.geirolz/advxml_2.13)
