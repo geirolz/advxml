@@ -74,10 +74,7 @@ The idea behind this library is offer a fluent syntax to edit and read xml.
  
  *Example*
 ```scala
-    import com.github.geirolz.advxml.all._
-    import com.github.geirolz.advxml.transform._
-    import scala.xml._
-    import scala.util._
+    
     
     //import MonadError instance for Try
     import cats.instances.try_._
@@ -106,7 +103,7 @@ If you need apply more that one modification on a selected node you can combine 
 
  *Example*
 ```scala
-    import com.github.geirolz.advxml.all._
+    import advxml.all._
     import scala.xml._
     import scala.util._
    
@@ -143,7 +140,7 @@ the `XmlModifier` and no the `XmlRule` instance, this means no zooming actions.
 
  *Example*
 ```scala
-    import com.github.geirolz.advxml.all._
+    import advxml.all._
     import scala.xml._
     import scala.util._
     
@@ -194,8 +191,8 @@ handle the presence of what you are looking for.
 
  *Example*
 ```scala
-    import com.github.geirolz.advxml.validate.ValidatedEx
-    import com.github.geirolz.advxml.implicits.traverse.validated._
+    import advxml.validate.ValidatedEx
+    import .traverse.validated._
     import scala.xml._
     
     val doc: Elem = 
@@ -241,31 +238,13 @@ errors.
     
  *Example XML to Model*
 ```scala
-    import com.github.geirolz.advxml.all._
-    import com.github.geirolz.advxml.validate.ValidatedEx
-    import com.github.geirolz.advxml.implicits.traverse.validated._
-    import com.github.geirolz.advxml.convert.impls.XmlConverter.XmlToModel
-    import scala.xml._
-    import cats.implicits._
-
-    case class Person(name: String, surname: String, age: Option[Int])
-
-    implicit val converter: XmlToModel[Elem, Person] = x =>
-      (
-        x \@! "Name",
-        x \@! "Surname",
-        (x \@? "Age").map(_.map(_.toInt)) //ValidatedEx[Option[String]] => //ValidatedEx[Option[Int]] 
-      ).mapN(Person)
-
-    val xml = <Person Name="Matteo" Surname="Bianchi"/>
-    val res: ValidatedEx[Person] = xml.as[Person]
 ```
 
  *Example Model to XML*
 ```scala
-    import com.github.geirolz.advxml.all._
-    import com.github.geirolz.advxml.convert.impls.XmlConverter.ModelToXml
-    import com.github.geirolz.advxml.validate.ValidatedEx
+    import advxml.all._
+    import advxml.core.converters.XmlConverter.ModelToXml
+    import advxml.validate.ValidatedEx
     import scala.xml._
     import cats.implicits._
     import cats.data.Validated.Valid
