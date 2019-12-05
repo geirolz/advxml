@@ -2,6 +2,7 @@ package com.github.geirolz
 
 import com.github.geirolz.advxml.convert._
 import com.github.geirolz.advxml.normalize.XmlNormalizerSyntax
+import com.github.geirolz.advxml.predicate.PredicateSyntax
 import com.github.geirolz.advxml.transform.{XmlTransformerInstances, XmlTransformerSyntax}
 import com.github.geirolz.advxml.transform.actions.{FiltersInstances, ModifierInstances}
 import com.github.geirolz.advxml.traverse.{
@@ -55,6 +56,7 @@ package object advxml {
       object either     extends XmlTraverserEitherSyntax
       object validated  extends XmlTraverserValidatedSyntax
     }
+    object predicate    extends PredicateSyntax
     // format: on
   }
 

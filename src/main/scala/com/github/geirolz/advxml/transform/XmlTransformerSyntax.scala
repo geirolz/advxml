@@ -3,7 +3,6 @@ package com.github.geirolz.advxml.transform
 import com.github.geirolz.advxml.convert.impls.TextConverter
 import com.github.geirolz.advxml.convert.impls.TextConverter.TextConverter
 import com.github.geirolz.advxml.transform.actions._
-import com.github.geirolz.advxml.utils.PredicateUtils
 import com.github.geirolz.advxml.validate.MonadEx
 
 import scala.xml.NodeSeq
@@ -15,7 +14,7 @@ import scala.xml.transform.{BasicTransformer, RewriteRule}
   *
   * @author geirolad
   */
-private[advxml] trait XmlTransformerSyntax extends RuleSyntax with ModifierSyntax with ZoomSyntax with PredicateSyntax {
+private[advxml] trait XmlTransformerSyntax extends RuleSyntax with ModifierSyntax with ZoomSyntax {
 
   implicit class XmlTransformerOps(root: NodeSeq) {
 
@@ -55,19 +54,5 @@ private[transform] sealed trait ZoomSyntax {
 
   implicit class XmlZoomOps(z: XmlZoom) {
     def \(that: XmlZoom): XmlZoom = z.andThen(that)
-  }
-}
-
-private[transform] sealed trait PredicateSyntax {
-
-  implicit class XmlPredicateOps(p: XmlPredicate) {
-
-    def &&(that: XmlPredicate): XmlPredicate = p.and(that)
-
-    def and(that: XmlPredicate): XmlPredicate = PredicateUtils.and(p, that)
-
-    def ||(that: XmlPredicate): XmlPredicate = p.or(that)
-
-    def or(that: XmlPredicate): XmlPredicate = PredicateUtils.or(p, that)
   }
 }

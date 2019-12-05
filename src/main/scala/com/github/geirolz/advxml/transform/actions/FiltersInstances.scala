@@ -1,6 +1,6 @@
 package com.github.geirolz.advxml.transform.actions
 
-import com.github.geirolz.advxml.utils.PredicateUtils
+import com.github.geirolz.advxml.predicate.Predicate
 
 import scala.xml.{Node, NodeSeq}
 
@@ -44,7 +44,7 @@ private[advxml] trait FiltersInstances {
 
     (Seq(value) ++ values)
       .map(t => attr(t._1, t._2))
-      .reduce(PredicateUtils.and[NodeSeq])
+      .reduce(Predicate.and[NodeSeq])
   }
 
   def hasImmediateChild(name: String, predicate: XmlPredicate = always): XmlPredicate = { xml =>

@@ -3,8 +3,10 @@ package com.github.geirolz.advxml.transform.actions
 import cats.{Monoid, Semigroup}
 import com.github.geirolz.advxml.transform.actions.ModifiersBuilders.{collapse, ExceptionF}
 import com.github.geirolz.advxml.validate.MonadEx
+
 import scala.xml._
 import cats.syntax.flatMap._
+import com.github.geirolz.advxml.implicits.predicate._
 
 sealed trait XmlModifier {
   private[transform] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq]
@@ -89,20 +91,22 @@ private[actions] sealed trait ModifiersComposableInstances {
     * @param p Attribute predicate.
     * @param ps Attribute predicates.
     */
-  case class RemoveAttrs(p: AttributeData => Boolean, ps: AttributeData => Boolean*) extends ComposableXmlModifier {
-    override private[transform] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
+  case class RemoveAttrs(p: AttributeData => Boolean, ps: (AttributeData => Boolean)*) extends ComposableXmlModifier {
+    override private[transform] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] = {
+      val filter = (p +: ps).reduce((p1, p2) => p1 || p2)
       collapse[F](ns.map {
         case e: Elem =>
           val newAttrs = e.attributes.asAttrMap
-            .filter(_ match {
-              case (k, v) => p(AttributeData(k, Text(v)))
-            })
+            .filter {
+              case (k, v) => filter(AttributeData(k, Text(v)))
+            }
             .keys
             .foldLeft(e.attributes)((attrs, key) => attrs.remove(key))
 
           F.pure[NodeSeq](e.copy(attributes = newAttrs))
         case o => ExceptionF.unsupported[F](this, o)
       })
+    }
   }
 }
 
