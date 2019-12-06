@@ -45,7 +45,6 @@ sealed trait XmlRule {
         })
       }
   }
-
 }
 
 sealed trait ComposableXmlRule extends XmlRule with ModifierComposableXmlRule {

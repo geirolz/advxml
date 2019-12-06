@@ -2,15 +2,16 @@ package advxml.syntax
 
 import advxml.core.converters._
 import advxml.core.validation.ValidatedEx
-import cats.Applicative
+import cats.{Id, Monad}
 
 import scala.annotation.implicitNotFound
 import scala.xml.{NodeSeq, Text}
 
 private[syntax] trait ConvertersSyntax {
 
-  implicit class TextConverterApplicativeOps[F[_]: Applicative, A](t: F[A]) {
-    def mapAsText(implicit s: TextConverter[A]): F[Text] = TextConverter.mapAsText(t)
+  implicit class MonadConverterOps[F[_]: Monad, A](t: F[A]) {
+    def flatMapAs[B](implicit s: Converter[F, A, B]): F[B] = Monad[F].flatMap(t)(Converter(_))
+    def mapAs[B](implicit s: UnsafeConverter[A, B]): F[Id[B]] = Monad[F].map(t)(a => Converter(a))
   }
 
   //TODO: Maybe i can split this class into multiple implicit classes

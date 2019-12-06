@@ -29,7 +29,7 @@ private[instances] sealed trait TextConverterInstances {
   implicit val text_converter_long         : TextConverter[Long]         = toText[Long]
   implicit val text_converter_float        : TextConverter[Float]        = toText[Float]
   implicit val text_converter_double       : TextConverter[Double]       = toText[Double]
-
+  
   private def toText[I] : TextConverter[I] = Kleisli[Id, I, Text](v => Text(v.toString))
   // format: on
 }
