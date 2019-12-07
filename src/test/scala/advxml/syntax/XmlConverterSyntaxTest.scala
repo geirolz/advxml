@@ -26,9 +26,9 @@ class XmlConverterSyntaxTest extends FunSuite {
 
     implicit val converter: XmlToModel[Elem, Person] = Kleisli(x => {
       (
-        (x \@! "Name"),
-        (x \@! "Surname"),
-        (x \@? "Age").deepMap(_.toInt)
+        x \@! "Name",
+        x \@! "Surname",
+        x \@? "Age" deepMap (_.toInt)
       ).mapN(Person)
     })
 
