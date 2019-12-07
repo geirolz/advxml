@@ -1,7 +1,7 @@
 package advxml.instances
 
-import advxml.core.validation.{MonadEx, ThrowableNel, ValidatedEx}
-import advxml.core.validation.exceptions.AggregatedException
+import advxml.core.validate.{MonadEx, ThrowableNel, ValidatedEx}
+import advxml.core.validate.exceptions.AggregatedException
 import cats.data.Validated.{Invalid, Valid}
 import cats.MonadError
 import cats.data.{NonEmptyList, Validated}

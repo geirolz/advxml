@@ -1,17 +1,28 @@
 package advxml.syntax
 
-import advxml.core.converters._
-import advxml.core.validation.ValidatedEx
-import cats.{Id, Monad}
+import advxml.core.convert._
+import advxml.core.validate.ValidatedEx
+import cats.{Applicative, Id, Monad}
 
 import scala.annotation.implicitNotFound
 import scala.xml.{NodeSeq, Text}
 
 private[syntax] trait ConvertersSyntax {
 
+  implicit class ApplicativeConverterOps[F[_]: Applicative, A](t: F[A]) {
+    def mapAs[B](implicit s: UnsafeConverter[A, B]): F[Id[B]] = Applicative[F].map(t)(Converter(_))
+  }
+
   implicit class MonadConverterOps[F[_]: Monad, A](t: F[A]) {
     def flatMapAs[B](implicit s: Converter[F, A, B]): F[B] = Monad[F].flatMap(t)(Converter(_))
-    def mapAs[B](implicit s: UnsafeConverter[A, B]): F[Id[B]] = Monad[F].map(t)(a => Converter(a))
+  }
+
+  implicit class ApplicativeDeepMapOps[F[_]: Applicative, G[_]: Applicative, A](fg: F[G[A]]) {
+    def deepMap[B](f: A => B): F[G[B]] = Applicative[F].map(fg)(Applicative[G].map(_)(f))
+  }
+
+  implicit class ApplicativeDeepFlatMapOps[F[_]: Applicative, G[_]: Monad, A](fg: F[G[A]]) {
+    def deepFlatMap[B](f: A => G[B]): F[G[B]] = Applicative[F].map(fg)(Monad[G].flatMap(_)(f))
   }
 
   //TODO: Maybe i can split this class into multiple implicit classes

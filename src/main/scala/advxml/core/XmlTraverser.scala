@@ -1,6 +1,6 @@
 package advxml.core
 
-import advxml.core.validation.MonadEx
+import advxml.core.validate.MonadEx
 import advxml.core.XmlTraverser.exceptions.{
   XmlMissingAttributeException,
   XmlMissingNodeException,

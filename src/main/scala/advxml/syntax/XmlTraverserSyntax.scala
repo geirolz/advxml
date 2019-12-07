@@ -1,6 +1,6 @@
 package advxml.syntax
 
-import advxml.core.validation.{EitherEx, MonadEx, ValidatedEx}
+import advxml.core.validate.{EitherEx, MonadEx, ValidatedEx}
 import advxml.core.XmlTraverser
 import cats.{~>, Id, Monad}
 import cats.data.NonEmptyList

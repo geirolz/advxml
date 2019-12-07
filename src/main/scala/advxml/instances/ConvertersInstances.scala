@@ -1,6 +1,6 @@
 package advxml.instances
 
-import advxml.core.converters.{Converter, TextConverter, UnsafeConverter}
+import advxml.core.convert.{Converter, TextConverter, UnsafeConverter}
 import cats.{Applicative, Id}
 import cats.data.Kleisli
 

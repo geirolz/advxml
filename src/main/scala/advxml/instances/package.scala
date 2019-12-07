@@ -1,7 +1,5 @@
 package advxml
 
-import advxml.instances.transformation.{AllXmlModifierInstances, XmlPredicateInstances, XmlTransformerInstances}
-
 /*
  * In order to keep project clean keep in mind the following rules:
  * - Each object represent a feature

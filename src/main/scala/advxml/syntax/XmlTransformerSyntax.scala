@@ -1,10 +1,10 @@
 package advxml.syntax
 
-import advxml.core.converters.TextConverter
-import advxml.core.transformation._
-import advxml.core.transformation.actions.{AttributeData, ComposableXmlModifier, FinalXmlModifier, XmlModifier}
-import advxml.core.transformation.actions.XmlZoom.XmlZoom
-import advxml.core.validation.MonadEx
+import advxml.core.convert.TextConverter
+import advxml.core.transform._
+import advxml.core.transform.actions.{AttributeData, ComposableXmlModifier, FinalXmlModifier, XmlModifier}
+import advxml.core.transform.actions.XmlZoom.XmlZoom
+import advxml.core.validate.MonadEx
 
 import scala.xml.NodeSeq
 import scala.xml.transform.{BasicTransformer, RewriteRule}
