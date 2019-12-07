@@ -1,7 +1,7 @@
 package advxml.syntax
 
-import advxml.core.converters._
-import advxml.core.validation.ValidatedEx
+import advxml.core.convert._
+import advxml.core.validate.ValidatedEx
 import cats.{Id, Monad}
 
 import scala.annotation.implicitNotFound

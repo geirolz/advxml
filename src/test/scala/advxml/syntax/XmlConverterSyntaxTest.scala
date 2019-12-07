@@ -1,7 +1,7 @@
 package advxml.syntax
 
-import advxml.core.converters.{ModelToXml, XmlToModel}
-import advxml.core.validation.ValidatedEx
+import advxml.core.convert.{ModelToXml, XmlToModel}
+import advxml.core.validate.ValidatedEx
 import cats.data.Kleisli
 import cats.data.Validated.Valid
 import org.scalatest.FunSuite

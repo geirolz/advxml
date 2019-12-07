@@ -1,6 +1,6 @@
 package advxml.syntax
 
-import advxml.core.validation.{EitherEx, EitherNelEx, ValidatedExAsserts}
+import advxml.core.validate.{EitherEx, EitherNelEx, ValidatedExAsserts}
 import org.scalatest.FunSuite
 
 import scala.util.Try

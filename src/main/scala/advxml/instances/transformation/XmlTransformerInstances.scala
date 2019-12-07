@@ -1,3 +1,0 @@
-package advxml.instances.transformation
-
-trait XmlTransformerInstances extends AllXmlModifierInstances with XmlPredicateInstances

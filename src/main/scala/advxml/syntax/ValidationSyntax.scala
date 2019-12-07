@@ -1,6 +1,6 @@
 package advxml.syntax
 
-import advxml.core.validation._
+import advxml.core.validate._
 import cats.Alternative
 
 import scala.util.Try
