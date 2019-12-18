@@ -1,6 +1,7 @@
 package advxml.syntax
 
 import org.scalatest.FunSuite
+
 import scala.xml.Text
 
 /**

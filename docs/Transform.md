@@ -86,9 +86,9 @@ a selected node you can combine actions calling again `withModifier` method.
     
     //you can use postfixOps and remove dots and useless brackets 
     val rules = $(_ \ "Person" \ "Cars") 
-      .==>(Append(<Car Brand="Lamborghini"/>))
-      .==>(Append(<Car Brand="Ferrari"/>)) 
-      .==>(Append(<Car Brand="Bmw"/>))
+          ==> Append(<Car Brand="Lamborghini"/>)
+          ==> Append(<Car Brand="Ferrari"/>)
+          ==> Append(<Car Brand="Bmw"/>)
 
 //  Desugared
 //  val rules: XmlRule = PartialXmlRule(_ \ "Person" \ "Cars")
