@@ -82,11 +82,11 @@ object XmlTraverser {
     }
 
     case class XmlMissingNodeException(q: String, target: NodeSeq)
-        extends XmlMissingException(s"Missing match for node: $q.")
+        extends XmlMissingException(s"Missing match for node: $q")
 
     case class XmlMissingAttributeException(q: String, target: NodeSeq)
-        extends XmlMissingException(s"Missing match for attribute: $q.")
+        extends XmlMissingException(s"Missing match for attribute: $q")
 
-    case class XmlMissingTextException(target: NodeSeq) extends XmlMissingException(s"Missing text, content is empty.")
+    case class XmlMissingTextException(target: NodeSeq) extends XmlMissingException(s"Missing text, content is empty")
   }
 }
