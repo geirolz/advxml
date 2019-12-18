@@ -2,6 +2,7 @@ package advxml.syntax
 
 import advxml.core.validate.{EitherEx, MonadEx, ValidatedEx}
 import advxml.core.XmlTraverser
+import advxml.core.transform.actions.XmlPredicate.XmlPredicate
 import cats.{~>, Id, Monad}
 import cats.data.NonEmptyList
 import cats.data.Validated.{Invalid, Valid}
@@ -23,16 +24,16 @@ private[syntax] trait XmlTraverserAbstractSyntax {
 
   implicit class XmlTraverseNodeSeqOps(target: NodeSeq) {
 
-    def \![F[_]: MonadEx](q: String): F[Id[NodeSeq]] =
+    def \![F[_]: MonadEx](q: String): F[NodeSeq] =
       XmlTraverser.mandatory.immediateChildren(target, q)
 
-    def \\![F[_]: MonadEx](q: String): F[Id[NodeSeq]] =
+    def \\![F[_]: MonadEx](q: String): F[NodeSeq] =
       XmlTraverser.mandatory.children(target, q)
 
-    def \@![F[_]: MonadEx](q: String): F[Id[String]] =
+    def \@![F[_]: MonadEx](q: String): F[String] =
       XmlTraverser.mandatory.attr(target, q)
 
-    def ![F[_]: MonadEx]: F[Id[String]] =
+    def ![F[_]: MonadEx]: F[String] =
       XmlTraverser.mandatory.text(target)
 
     def \?[F[_]: MonadEx](q: String): F[Option[NodeSeq]] =
@@ -55,13 +56,13 @@ private[syntax] trait XmlTraverserAbstractSyntax {
 
     import cats.implicits._
 
-    def \!(q: String): F[Id[NodeSeq]] = mandatory(_.\![F](q))
+    def \!(q: String): F[NodeSeq] = mandatory(_.\![F](q))
 
-    def \\!(q: String): F[Id[NodeSeq]] = mandatory(_.\\![F](q))
+    def \\!(q: String): F[NodeSeq] = mandatory(_.\\![F](q))
 
-    def \@!(q: String): F[Id[String]] = mandatory(_.\@![F](q))
+    def \@!(q: String): F[String] = mandatory(_.\@![F](q))
 
-    def ! : F[Id[String]] = mandatory(_.![F])
+    def ! : F[String] = mandatory(_.![F])
 
     def \?(q: String): F[Option[NodeSeq]] = optional(_.\?[Try](q))
 
