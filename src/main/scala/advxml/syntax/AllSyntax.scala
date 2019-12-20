@@ -7,3 +7,4 @@ private[advxml] trait AllSyntax
     with ConvertersSyntax
     with ValidationSyntax
     with PredicateSyntax
+    with NestedMapSyntax

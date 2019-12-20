@@ -35,5 +35,6 @@ package object syntax {
     object validated  extends XmlTraverserValidatedSyntax
   }
   object predicate    extends PredicateSyntax
+  object nestedMap    extends NestedMapSyntax
   // format: on
 }

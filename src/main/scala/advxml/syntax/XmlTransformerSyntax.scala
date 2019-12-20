@@ -32,7 +32,7 @@ private[syntax] trait XmlTransformerSyntax extends RuleSyntax with ModifierSynta
 
 private[syntax] sealed trait RuleSyntax {
 
-  def $(zoom: XmlZoom): PartialXmlRule = PartialXmlRule(zoom)
+  def $(zoom: XmlZoom, zooms: XmlZoom*): PartialXmlRule = PartialXmlRule(zoom, zooms: _*)
 
   implicit class PartialRuleOps(r: PartialXmlRule) {
     def ==>(modifier: FinalXmlModifier): FinalXmlRule = r.withModifier(modifier)

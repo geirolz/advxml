@@ -16,6 +16,7 @@ import scala.xml.Elem
   */
 class XmlConverterSyntaxTest extends FunSuite {
 
+  import advxml.syntax.nestedMap._
   import advxml.syntax.convert._
   import advxml.syntax.traverse.validated._
   import cats.implicits._
@@ -28,7 +29,7 @@ class XmlConverterSyntaxTest extends FunSuite {
       (
         x \@! "Name",
         x \@! "Surname",
-        x \@? "Age" deepMap (_.toInt)
+        x \@? "Age" nMap (_.toInt)
       ).mapN(Person)
     })
 

@@ -61,7 +61,11 @@ private[transform] sealed trait ModifierComposableXmlRule {
 
 object PartialXmlRule {
 
-  def apply(zoom: XmlZoom): PartialXmlRule = PartialXmlRuleImpl(zoom)
+  def apply(zoom: XmlZoom, zooms: XmlZoom*): PartialXmlRule =
+    PartialXmlRuleImpl(
+      (zoom +: zooms)
+        .reduce((a, b) => a.andThen(b))
+    )
 
   private case class PartialXmlRuleImpl(zoom: XmlZoom) extends PartialXmlRule {
     override def withModifier(modifier: ComposableXmlModifier): ComposableXmlRule =

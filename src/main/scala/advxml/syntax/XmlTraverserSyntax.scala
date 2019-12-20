@@ -2,7 +2,6 @@ package advxml.syntax
 
 import advxml.core.validate.{EitherEx, MonadEx, ValidatedEx}
 import advxml.core.XmlTraverser
-import advxml.core.transform.actions.XmlPredicate.XmlPredicate
 import cats.{~>, Id, Monad}
 import cats.data.NonEmptyList
 import cats.data.Validated.{Invalid, Valid}
@@ -107,8 +106,8 @@ private[syntax] trait XmlTraverserEitherSyntax extends XmlTraverserAbstractSynta
 
 private[syntax] trait XmlTraverserValidatedSyntax extends XmlTraverserAbstractSyntax {
 
-  import cats.instances.option._
   import advxml.instances.validate._
+  import cats.instances.option._
 
   implicit private[syntax] val idToValidatedExConverter: Id ~> ValidatedEx = λ[Id ~> ValidatedEx](Valid(_))
 
