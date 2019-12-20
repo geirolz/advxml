@@ -15,12 +15,12 @@ import scala.xml.transform.RewriteRule
   * @author geirolad
   */
 sealed trait PartialXmlRule extends ModifierComposableXmlRule {
-  val zoom: XmlZoom
+  val zooms: List[XmlZoom]
   def withModifier(modifier: FinalXmlModifier): FinalXmlRule
 }
 
 sealed trait XmlRule {
-  val zoom: XmlZoom
+  val zooms: List[XmlZoom]
 
   import cats.syntax.functor._
   import advxml.instances.transform._
@@ -29,7 +29,7 @@ sealed trait XmlRule {
     (this match {
       case r: ComposableXmlRule => RewriteRuleBuilder(Monoid.combineAll(r.modifiers))
       case r: FinalXmlRule      => RewriteRuleBuilder[F](r.modifier)
-    })(zoom, root)
+    })(zooms.reduce((a, b) => a.andThen(b)), root)
 
   private object RewriteRuleBuilder {
 
@@ -48,7 +48,7 @@ sealed trait XmlRule {
 }
 
 sealed trait ComposableXmlRule extends XmlRule with ModifierComposableXmlRule {
-  val modifiers: Seq[ComposableXmlModifier]
+  val modifiers: List[ComposableXmlModifier]
 }
 
 sealed trait FinalXmlRule extends XmlRule {
@@ -62,25 +62,22 @@ private[transform] sealed trait ModifierComposableXmlRule {
 object PartialXmlRule {
 
   def apply(zoom: XmlZoom, zooms: XmlZoom*): PartialXmlRule =
-    PartialXmlRuleImpl(
-      (zoom +: zooms)
-        .reduce((a, b) => a.andThen(b))
-    )
+    PartialXmlRuleImpl((zoom +: zooms).toList)
 
-  private case class PartialXmlRuleImpl(zoom: XmlZoom) extends PartialXmlRule {
+  private case class PartialXmlRuleImpl(zooms: List[XmlZoom]) extends PartialXmlRule {
     override def withModifier(modifier: ComposableXmlModifier): ComposableXmlRule =
-      ComposableXmlRuleImpl(zoom, Seq(modifier))
+      ComposableXmlRuleImpl(zooms, List(modifier))
 
     override def withModifier(modifier: FinalXmlModifier): FinalXmlRule =
-      FinalXmlRuleImpl(zoom, modifier)
+      FinalXmlRuleImpl(zooms, modifier)
   }
 
-  private case class ComposableXmlRuleImpl(zoom: XmlZoom, modifiers: Seq[ComposableXmlModifier])
+  private case class ComposableXmlRuleImpl(zooms: List[XmlZoom], modifiers: List[ComposableXmlModifier])
       extends ComposableXmlRule {
 
     override def withModifier(modifier: ComposableXmlModifier): ComposableXmlRule =
       copy(modifiers = modifiers :+ modifier)
   }
 
-  private case class FinalXmlRuleImpl(zoom: XmlZoom, modifier: FinalXmlModifier) extends FinalXmlRule
+  private case class FinalXmlRuleImpl(zooms: List[XmlZoom], modifier: FinalXmlModifier) extends FinalXmlRule
 }
