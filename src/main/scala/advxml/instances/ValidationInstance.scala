@@ -13,12 +13,12 @@ private[instances] trait ValidationInstance {
       NonEmptyList.of(_),
       nelE => new AggregatedException(nelE.toList)
     )
-
-  implicit def validatedMonadErrorInstanceSameError[FE, ME](
-    implicit C1: ME =:= FE,
-    C2: FE =:= ME
-  ): MonadError[Validated[FE, *], ME] =
-    validatedMonadErrorInstance[FE, ME](C1.apply, C2.apply)
+//
+//  implicit def validatedMonadErrorInstanceSameError[FE, ME](
+//    implicit C1: ME =:= FE,
+//    C2: FE =:= ME
+//  ): MonadError[Validated[FE, *], ME] =
+//    validatedMonadErrorInstance[FE, ME](C1.apply, C2.apply)
 
   implicit def validatedMonadErrorInstance[FE, ME](
     implicit toFe: ME => FE,

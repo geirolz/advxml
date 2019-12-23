@@ -45,7 +45,7 @@ class ValidateExTest extends FunSuite with ValidatedExAsserts {
 
   test("Test ValidatedEx.transformA[Option] - Invalid") {
     import cats.instances.option._
-    assert_ValidatedEx_to_Option_Valid(ValidatedEx.transformA[Option, String](_))
+    assert_ValidatedEx_to_Option_Invalid(ValidatedEx.transformA[Option, String](_))
   }
 
   //Converters

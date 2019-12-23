@@ -5,7 +5,7 @@ import java.io.StringReader
 import javax.xml.parsers.{DocumentBuilder, DocumentBuilderFactory}
 import org.scalatest.FunSuite
 
-import scala.xml.{InputSource, Node}
+import scala.xml.{Elem, InputSource, Node}
 
 /**
   * Advxml
@@ -17,34 +17,35 @@ class JavaXmlConvertersTest extends FunSuite {
 
   import JavaXmlConverters._
 
+  private val xmlStr: String = "<Test T1=\"TEST\"><NestedTest T2=\"NestedTest\"/></Test>"
+  private val xml: Elem = <Test T1="TEST"><NestedTest T2="NestedTest"/></Test>
+
   test("Convert Java w3c Node to Scala xml Node") {
-    val jDocument: JNode = buildJavaDoc("<Test></Test>")
+    val jDocument: JNode = buildJavaDoc(xmlStr)
     val scalaNode = jDocument.asScala
 
-    assert(scalaNode == <Test></Test>)
+    assert(scalaNode == xml)
   }
 
   test("Convert Java w3c document to Scala xml Node") {
-    val jDocument: JDocument = buildJavaDoc("<Test></Test>")
+    val jDocument: JDocument = buildJavaDoc(xmlStr)
     val scalaNode = jDocument.asScala
 
-    assert(scalaNode == <Test></Test>)
+    assert(scalaNode == xml)
   }
 
   test("Convert Scala xml Node to Java w3c Node") {
-    val scalaNode: Node = <Test/>
-    val jDoc: JNode = scalaNode.asJava(documentBuilder.newDocument())
+    val jDoc: JNode = xml.asInstanceOf[Node].asJava(documentBuilder.newDocument())
     val jDocAsStr = jDoc.toPrettyString
 
-    assert(jDocAsStr.trim == "<Test/>")
+    assert(jDocAsStr == xmlStr)
   }
 
   test("Convert Scala xml Elem to Java w3c Document") {
-    val scalaNode = <Test/>
-    val jDoc: JDocument = scalaNode.asJava
+    val jDoc: JDocument = xml.asJava
     val jDocAsStr = jDoc.toPrettyString
 
-    assert(jDocAsStr.trim == "<Test/>")
+    assert(jDocAsStr == xmlStr)
   }
 
   lazy val javaDocBuilder: DocumentBuilder = DocumentBuilderFactory
