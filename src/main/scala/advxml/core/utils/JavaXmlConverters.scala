@@ -39,7 +39,7 @@ private[utils] sealed trait JavaNodeOps {
       val transformer = TransformerFactory.newInstance.newTransformer
       transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes")
       transformer.setOutputProperty(OutputKeys.METHOD, "xml")
-      transformer.setOutputProperty(OutputKeys.INDENT, "yes")
+      transformer.setOutputProperty(OutputKeys.INDENT, "no")
       transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8")
       toPrettyString(transformer)
     }
