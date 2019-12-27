@@ -22,8 +22,8 @@ sealed trait PartialXmlRule extends ModifierComposableXmlRule {
 sealed trait XmlRule {
   val zooms: List[XmlZoom]
 
-  import cats.syntax.functor._
   import advxml.instances.transform._
+  import cats.syntax.functor._
 
   final def toRewriteRule[F[_]: MonadEx](root: NodeSeq): F[RewriteRule] =
     (this match {

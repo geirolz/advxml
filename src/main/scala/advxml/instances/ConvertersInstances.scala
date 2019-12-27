@@ -1,8 +1,7 @@
 package advxml.instances
 
-import advxml.core.convert.{Converter, TextConverter, UnsafeConverter}
-import cats.{Applicative, Id}
-import cats.data.Kleisli
+import advxml.core.convert.{Converter, PureConverter, TextConverter}
+import cats.Applicative
 
 import scala.math.ScalaNumber
 import scala.xml.Text
@@ -10,8 +9,8 @@ import scala.xml.Text
 private[instances] trait ConvertersInstances extends CommonConvertersInstances with TextConverterInstances
 
 private[instances] sealed trait CommonConvertersInstances {
-  implicit def safeIdentityConverter[F[_]: Applicative, A]: Converter[F, A, A] = Converter.id[F, A]
-  implicit def unsafeIdentityConverter[A]: UnsafeConverter[A, A] = Converter.id[Id, A]
+  implicit def identityConverter[F[_]: Applicative, A]: Converter[F, A, A] = Converter.id[F, A]
+  implicit def pureIdentityConverter[A]: PureConverter[A, A] = PureConverter.id[A]
 }
 
 /**
@@ -30,6 +29,6 @@ private[instances] sealed trait TextConverterInstances {
   implicit val text_converter_float        : TextConverter[Float]        = toText[Float]
   implicit val text_converter_double       : TextConverter[Double]       = toText[Double]
   
-  private def toText[I] : TextConverter[I] = Kleisli[Id, I, Text](v => Text(v.toString))
+  private def toText[I] : TextConverter[I] = PureConverter.of(v => Text(v.toString))
   // format: on
 }

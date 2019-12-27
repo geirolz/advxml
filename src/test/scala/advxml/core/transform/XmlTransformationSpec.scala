@@ -16,11 +16,22 @@ import scala.xml.{Elem, Node, NodeSeq}
 object XmlTransformationSpec extends Properties("List") {
 
   implicit val elemGenerator: Arbitrary[NodeSeq] = Arbitrary(
-    XmlGenerator.xmlNodeGenerator.filter(_.children.nonEmpty).map(_.toNode)
+    XmlGenerator
+      .xmlNodeGenerator(5)
+      .filter(_.children.nonEmpty)
+      .map(_.toNode)
   )
 
   import advxml.implicits._
   import cats.instances.try_._
+
+  property("Prepend") = forAll { (base: NodeSeq, newNode: NodeSeq) =>
+    val selector = XmlGenerator.xmlNodeSelectorGenerator(base.asInstanceOf[Elem])
+    val rule = $(Function.const(selector.sample.get)) ==> Prepend(newNode)
+    val result: Node = base.transform[Try](rule).get.head
+
+    result.asInstanceOf[Node].descendant.contains(newNode)
+  }
 
   property("Append") = forAll { (base: NodeSeq, newNode: NodeSeq) =>
     val selector = XmlGenerator.xmlNodeSelectorGenerator(base.asInstanceOf[Elem])

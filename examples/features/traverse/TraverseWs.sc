@@ -26,4 +26,4 @@ val document =
   </Orders>
 
 val order2Opt : Try[Option[NodeSeq]] = (document \? "Order")
-  .nMap(_.filter(attrs(("Id", _ == "2"))))
+  .nestedMap(_.filter(attrs(("Id", _ == "2"))))

@@ -29,6 +29,27 @@ class XmlTransformerSyntaxTest extends FeatureSpec {
   }
 
   feature("Xml manipulation: Nodes") {
+    scenario("PrependNode") {
+      val elem: Elem = <Order>
+        <OrderLines>
+          <OrderLine PrimeLineNo="4" />
+        </OrderLines>
+      </Order>
+
+      val result = elem.transform(
+        $(_ \ "OrderLines")
+        ==> Prepend(<OrderLine PrimeLineNo="3"/>)
+        ==> Prepend(<OrderLine PrimeLineNo="2"/>)
+        ==> Prepend(<OrderLine PrimeLineNo="1"/>)
+      )
+
+      val orderLinesResult = (result.get \ "OrderLines" \ "OrderLine").toList
+      assert(orderLinesResult.size == 4)
+      assert(orderLinesResult.head \@ "PrimeLineNo" == "1")
+      assert(orderLinesResult(1) \@ "PrimeLineNo" == "2")
+      assert(orderLinesResult(2) \@ "PrimeLineNo" == "3")
+      assert(orderLinesResult(3) \@ "PrimeLineNo" == "4")
+    }
 
     scenario("AppendNode") {
       val elem: Elem = <Order>
@@ -37,29 +58,20 @@ class XmlTransformerSyntaxTest extends FeatureSpec {
         </OrderLines>
       </Order>
 
-      val result = elem.transform(
-        $(_ \ "OrderLines")
-        ==> Append(<OrderLine PrimeLineNo="2"/>)
-        ==> Append(<OrderLine PrimeLineNo="3"/>)
-        ==> Append(<OrderLine PrimeLineNo="4"/>)
-      )
+      val result = elem
+        .transform(
+          $(_ \ "OrderLines")
+          ==> Append(<OrderLine PrimeLineNo="2"/>)
+          ==> Append(<OrderLine PrimeLineNo="3"/>)
+          ==> Append(<OrderLine PrimeLineNo="4"/>)
+        )
 
-      assert(
-        result.get \ "OrderLines" \ "OrderLine"
-        exists attrs("PrimeLineNo" -> (_ == "1"))
-      )
-      assert(
-        result.get \ "OrderLines" \ "OrderLine"
-        exists attrs("PrimeLineNo" -> (_ == "2"))
-      )
-      assert(
-        result.get \ "OrderLines" \ "OrderLine"
-        exists attrs("PrimeLineNo" -> (_ == "3"))
-      )
-      assert(
-        result.get \ "OrderLines" \ "OrderLine"
-        exists attrs("PrimeLineNo" -> (_ == "4"))
-      )
+      val orderLinesResult = (result.get \ "OrderLines" \ "OrderLine").toList
+      assert(orderLinesResult.size == 4)
+      assert(orderLinesResult.head \@ "PrimeLineNo" == "1")
+      assert(orderLinesResult(1) \@ "PrimeLineNo" == "2")
+      assert(orderLinesResult(2) \@ "PrimeLineNo" == "3")
+      assert(orderLinesResult(3) \@ "PrimeLineNo" == "4")
     }
 
     scenario("ReplaceNode") {
