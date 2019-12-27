@@ -28,7 +28,7 @@ class XmlConverterSyntaxTest extends FunSuite {
       (
         x \@! "Name",
         x \@! "Surname",
-        x \@? "Age" nMap (_.toInt)
+        x \@? "Age" nestedMap (_.toInt)
       ).mapN(Person)
     })
 

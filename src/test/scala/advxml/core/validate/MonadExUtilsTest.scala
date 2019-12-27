@@ -4,7 +4,7 @@ import org.scalatest.FunSuite
 
 import scala.util.Try
 
-object MonadExUtilsTest extends FunSuite {
+class MonadExUtilsTest extends FunSuite {
 
   test("Test get implicit MonadEx instance using apply method") {
     import cats.instances.try_._

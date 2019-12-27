@@ -2,6 +2,8 @@ package advxml.syntax
 
 import org.scalatest.FunSuite
 
+import scala.xml.Group
+
 /**
   * Advxml
   * Created by geirolad on 19/07/2019.
@@ -12,7 +14,7 @@ class XmlNormalizerSyntaxTest extends FunSuite {
 
   import advxml.syntax.normalize._
 
-  test("Xml Normalizer") {
+  test("XmlNormalizer - Normalize | On Elem") {
 
     val v1 =
       <Cars>
@@ -21,9 +23,11 @@ class XmlNormalizerSyntaxTest extends FunSuite {
           <Properties>
             <Property K="1"/>
             <Property K="2"></Property>
+            <Property K="3">TEXT</Property>
           </Properties>
         </Car>
-        <Car V1="3" ></Car>
+        <Car V1="4" ></Car>
+        <Car V1="5" >TEXT</Car>
       </Cars>
 
     val expected =
@@ -33,15 +37,24 @@ class XmlNormalizerSyntaxTest extends FunSuite {
           <Properties>
             <Property K="1"/>
             <Property K="2"/>
+            <Property K="3">TEXT</Property>
           </Properties>
         </Car>
-        <Car V1="3"/>
+        <Car V1="4" />
+        <Car V1="5" >TEXT</Car>
       </Cars>
 
     assert(v1.normalize |==| expected)
   }
 
-  test("Xml Equality") {
+  test("XmlNormalizer - Normalize | On Group | NOT SUPPORTED") {
+    val data = <Test></Test>
+    val ns: Group = Group(data)
+
+    assert(ns.normalize === data)
+  }
+
+  test("XmlNormalizer - Equality") {
 
     val v1 =
       <Cars>
@@ -70,7 +83,7 @@ class XmlNormalizerSyntaxTest extends FunSuite {
     assert(v1 |==| v2)
   }
 
-  test("Xml Equality - with Scalatric") {
+  test("XmlNormalizer - Equality | with Scalatric") {
 
     val v1 =
       <Cars>
@@ -99,7 +112,7 @@ class XmlNormalizerSyntaxTest extends FunSuite {
     assert(v1 === v2)
   }
 
-  test("Xml Equality - Not equals") {
+  test("XmlNormalizer - Equality | Not equals") {
 
     val v1 =
       <Cars>
@@ -115,7 +128,7 @@ class XmlNormalizerSyntaxTest extends FunSuite {
     assert(v1 |!=| v2)
   }
 
-  test("Xml Equality - Not equals - with Scalatric") {
+  test("XmlNormalizer - Equality | Not equals | with Scalatric") {
 
     val v1 =
       <Cars>

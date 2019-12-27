@@ -17,8 +17,8 @@ class JavaXmlConvertersTest extends FunSuite {
 
   import JavaXmlConverters._
 
-  private val xmlStr: String = "<Test T1=\"TEST\"><NestedTest T2=\"NestedTest\"/></Test>"
-  private val xml: Elem = <Test T1="TEST"><NestedTest T2="NestedTest"/></Test>
+  private val xmlStr: String = "<Test T1=\"TEST\"><NestedTest T2=\"NestedTest\"/>TEXT</Test>"
+  private val xml: Elem = <Test T1="TEST"><NestedTest T2="NestedTest"/>TEXT</Test>
 
   test("Convert Java w3c Node to Scala xml Node") {
     val jDocument: JNode = buildJavaDoc(xmlStr)

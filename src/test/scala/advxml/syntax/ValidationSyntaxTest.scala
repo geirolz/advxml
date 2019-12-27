@@ -5,7 +5,7 @@ import org.scalatest.FunSuite
 
 import scala.util.Try
 
-class ValidateExSyntaxTest extends FunSuite with ValidatedExAsserts {
+class ValidationSyntaxTest extends FunSuite with ValidatedExAsserts {
 
   import advxml.syntax.validate._
 
