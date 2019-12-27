@@ -1,8 +1,7 @@
 package advxml.syntax
 
-import advxml.core.convert.{ModelToXml, XmlToModel}
+import advxml.core.convert.{ModelToXml, ValidatedConverter, XmlToModel}
 import advxml.core.validate.ValidatedEx
-import cats.data.Kleisli
 import cats.data.Validated.Valid
 import org.scalatest.FunSuite
 
@@ -16,8 +15,8 @@ import scala.xml.Elem
   */
 class XmlConverterSyntaxTest extends FunSuite {
 
-  import advxml.syntax.nestedMap._
   import advxml.syntax.convert._
+  import advxml.syntax.nestedMap._
   import advxml.syntax.traverse.validated._
   import cats.implicits._
 
@@ -25,7 +24,7 @@ class XmlConverterSyntaxTest extends FunSuite {
 
     case class Person(name: String, surname: String, age: Option[Int])
 
-    implicit val converter: XmlToModel[Elem, Person] = Kleisli(x => {
+    implicit val converter: XmlToModel[Elem, Person] = ValidatedConverter.of(x => {
       (
         x \@! "Name",
         x \@! "Surname",
@@ -45,7 +44,7 @@ class XmlConverterSyntaxTest extends FunSuite {
 
     case class Person(name: String, surname: String, age: Option[Int])
 
-    implicit val converter: ModelToXml[Person, Elem] = Kleisli(
+    implicit val converter: ModelToXml[Person, Elem] = ValidatedConverter.of(
       x =>
         Valid(
           <Person Name={x.name} Surname={x.surname} Age={x.age.map(_.toString).getOrElse("")}/>
@@ -53,7 +52,7 @@ class XmlConverterSyntaxTest extends FunSuite {
     )
 
     val p = Person("Matteo", "Bianchi", Some(23))
-    val res: ValidatedEx[Elem] = p.asXml[Elem]
+    val res: ValidatedEx[Elem] = p.as[Elem]
 
     assert(res.isValid)
     assert(res.toOption.get == <Person Name="Matteo" Surname="Bianchi" Age="23"/>)

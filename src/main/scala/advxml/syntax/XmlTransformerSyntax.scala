@@ -1,12 +1,12 @@
 package advxml.syntax
 
-import advxml.core.convert.TextConverter
+import advxml.core.convert.{PureConverter, TextConverter}
 import advxml.core.transform._
 import advxml.core.transform.actions.{AttributeData, ComposableXmlModifier, FinalXmlModifier, XmlModifier}
 import advxml.core.transform.actions.XmlZoom.XmlZoom
 import advxml.core.validate.MonadEx
 
-import scala.xml.NodeSeq
+import scala.xml.{NodeSeq, Text}
 import scala.xml.transform.{BasicTransformer, RewriteRule}
 
 /**
@@ -46,7 +46,7 @@ private[syntax] sealed trait RuleSyntax {
 
 private[syntax] sealed trait ModifierSyntax {
   implicit class AttributeDataBuilder(q: String) {
-    def :=[T: TextConverter](v: T): AttributeData = AttributeData(q, TextConverter(v))
+    def :=[T: TextConverter](v: T): AttributeData = AttributeData(q, PureConverter[T, Text].run(v))
   }
 }
 

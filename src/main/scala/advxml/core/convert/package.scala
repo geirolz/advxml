@@ -28,7 +28,7 @@ package object convert {
     * @tparam A Contravariant input object type
     * @tparam B Output object type
     */
-  type UnsafeConverter[-A, B] = Converter[Id, A, B]
+  type PureConverter[-A, B] = Converter[Id, A, B]
 
   /**
     * Represents a function `A => ValidatedEx[B]` to simplify method and class signatures.
@@ -46,10 +46,10 @@ package object convert {
     *
     * The invocation of this function can fail and/or throw an runtime exception.
     *
-    * @see [[advxml.core.convert.UnsafeConverter]] for further information.
+    * @see [[advxml.core.convert.PureConverter]] for further information.
     * @tparam A Contravariant input object type
     */
-  type TextConverter[-A] = UnsafeConverter[A, Text]
+  type TextConverter[-A] = PureConverter[A, Text]
 
   /**
     * Represents a function `O => ValidatedEx[NodeSeq]` to simplify method and class signatures.

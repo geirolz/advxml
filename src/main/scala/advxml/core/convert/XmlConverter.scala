@@ -18,7 +18,7 @@ object XmlConverter {
     * @return [[advxml.core.validate.ValidatedEx]] instance that, if on success case contains `X` instance.
     */
   @implicitNotFound("Missing XmlToModel to transform ${X} into ValidatedEx[${O}]")
-  def asModel[X <: NodeSeq: XmlToModel[*, O], O](xml: X): ValidatedEx[O] = Converter(xml)
+  def asModel[X <: NodeSeq: XmlToModel[*, O], O](xml: X): ValidatedEx[O] = ValidatedConverter[X, O].run(xml)
 
   /**
     * Syntactic sugar to convert a `X` instance into `O` using an implicit [[XmlToModel]] instance.
@@ -34,5 +34,5 @@ object XmlConverter {
     * @return [[advxml.core.validate.ValidatedEx]] instance that, if on success case contains `O` instance.
     */
   @implicitNotFound("Missing ModelToXml to transform ${O} into ValidatedEx[${X}]")
-  def asXml[O: ModelToXml[*, X], X <: NodeSeq](model: O): ValidatedEx[X] = Converter(model)
+  def asXml[O: ModelToXml[*, X], X <: NodeSeq](model: O): ValidatedEx[X] = ValidatedConverter[O, X].run(model)
 }

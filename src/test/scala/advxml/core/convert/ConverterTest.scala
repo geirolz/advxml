@@ -1,7 +1,6 @@
 package advxml.core.convert
 
 import cats.Id
-import cats.data.Kleisli
 import org.scalatest.FunSuite
 
 import scala.util.Try
@@ -29,14 +28,14 @@ class ConverterTest extends FunSuite {
 
   test("Test Converter.unsafeId") {
     val testValue = "TEST"
-    val converter: UnsafeConverter[String, String] = Converter.unsafeId
+    val converter: PureConverter[String, String] = PureConverter.id
     val result: Id[String] = converter.run(testValue)
     assert(result == testValue)
   }
 
   test("Test Converter.unsafeConst") {
     val testValue = "TEST"
-    val converter: UnsafeConverter[Int, String] = Converter.unsafeConst(testValue)
+    val converter: PureConverter[Int, String] = PureConverter.const(testValue)
 
     assert(converter.run(100) == testValue)
     assert(converter.run(200) == testValue)
@@ -44,18 +43,18 @@ class ConverterTest extends FunSuite {
   }
 
   test("Test Converter.apply - using implicit safe Converter") {
-    implicit val converter: Converter[Try, Int, String] = Kleisli(int => Try(int.toString))
+    implicit val converter: Converter[Try, Int, String] = Converter.of(int => Try(int.toString))
 
-    assert(Converter(10).get == "10")
-    assert(Converter(20).get == "20")
-    assert(Converter(30).get == "30")
+    assert(Converter[Try, Int, String].run(10).get == "10")
+    assert(Converter[Try, Int, String].run(20).get == "20")
+    assert(Converter[Try, Int, String].run(30).get == "30")
   }
 
   test("Test Converter.apply - using implicit unsafe Converter") {
-    implicit val converter: UnsafeConverter[Int, String] = Kleisli[Id, Int, String](_.toString)
+    implicit val converter: PureConverter[Int, String] = PureConverter.of(_.toString)
 
-    assert(Converter(10) == "10")
-    assert(Converter(20) == "20")
-    assert(Converter(30) == "30")
+    assert(Converter[Id, Int, String].run(10) == "10")
+    assert(Converter[Id, Int, String].run(20) == "20")
+    assert(Converter[Id, Int, String].run(30) == "30")
   }
 }
