@@ -36,11 +36,16 @@ sealed trait XmlRule {
     def apply[F[_]: MonadEx](modifier: XmlModifier): (XmlZoom, NodeSeq) => F[RewriteRule] =
       (zoom, root) => {
         val target = zoom(root)
-
         modifier[F](target).map(updated => {
           new RewriteRule {
+            var found = false
             override def transform(ns: collection.Seq[Node]): collection.Seq[Node] =
-              if (ns == root || strictEqualsTo(target)(ns)) updated else ns
+              if (!found && (ns == root || strictEqualsTo(target)(ns))) {
+                found = true
+                updated
+              } else {
+                ns
+              }
           }
         })
       }
