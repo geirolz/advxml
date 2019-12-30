@@ -3,7 +3,7 @@ package advxml.syntax
 import org.scalatest.FeatureSpec
 
 import scala.util.Try
-import scala.xml.Elem
+import scala.xml.{Elem, NodeSeq}
 
 class XmlTransformerSyntaxTest extends FeatureSpec {
 
@@ -11,6 +11,7 @@ class XmlTransformerSyntaxTest extends FeatureSpec {
   import advxml.instances.transform._
   import advxml.syntax.transform._
   import cats.instances.try_._
+  import advxml.syntax.normalize._
 
   feature("Xml manipulation: Filters") {
     scenario("Filter By Attribute") {
@@ -96,6 +97,15 @@ class XmlTransformerSyntaxTest extends FeatureSpec {
       )
     }
 
+    scenario("Replace With same node") {
+      val xml = <A><B>1</B></A>
+      val result: Try[NodeSeq] = xml.transform(
+        $(_ \ "B") ==> Replace(_ => <B>1</B>)
+      )
+
+      assert(result.get === <A><B>1</B></A>)
+    }
+
     scenario("RemoveNode") {
       val elem: Elem = <Order>
         <OrderLines>
@@ -125,7 +135,7 @@ class XmlTransformerSyntaxTest extends FeatureSpec {
         </OrderLines>
       </Order>
 
-      val result = elem.transform(Remove)
+      val result = elem.transform(root ==> Remove)
 
       assert(result.get.isEmpty)
     }
@@ -134,7 +144,7 @@ class XmlTransformerSyntaxTest extends FeatureSpec {
       val elem: Elem = <OrderLines />
       val result = elem
         .transform[Try](
-          Append(<OrderLine PrimeLineNo="1"/>)
+          root ==> Append(<OrderLine PrimeLineNo="1"/>)
         )
         .get
 
@@ -161,7 +171,7 @@ class XmlTransformerSyntaxTest extends FeatureSpec {
       val elem: Elem = <Order />
 
       val result = elem.transform(
-        SetAttrs("A1" := "1", "A2" := "2", "A3" := "3")
+        root ==> SetAttrs("A1" := "1", "A2" := "2", "A3" := "3")
       )
 
       assert(result.get \@ "A1" == "1")

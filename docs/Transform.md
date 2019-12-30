@@ -100,8 +100,8 @@ a selected node you can combine actions calling again `withModifier` method.
 ```
 
 ## Root transformation
-If you need to edit the document root you can invoke `transform` method passing directly 
-the `XmlModifier` and no the `XmlRule` instance, this means no zooming actions.
+If you need to edit the document root you can use `root` as zoom action.
+`root` value is provided by `advxml.instances.transform._` 
 
  *Example*
 ```scala
@@ -113,5 +113,5 @@ the `XmlModifier` and no the `XmlRule` instance, this means no zooming actions.
     import cats.instances.try_._
     
     val doc: Elem = <Root/>
-    val result: Try[NodeSeq] = doc.transform[Try](SetAttrs("Attr1" := "TEST"))
+    val result: Try[NodeSeq] = doc.transform[Try](root => SetAttrs("Attr1" := "TEST"))
 ```

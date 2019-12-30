@@ -1,12 +1,7 @@
 package advxml.core.transform
 
-import advxml.core.transform.actions.{ComposableXmlModifier, FinalXmlModifier, XmlModifier}
+import advxml.core.transform.actions.{ComposableXmlModifier, FinalXmlModifier}
 import advxml.core.transform.actions.XmlZoom.XmlZoom
-import advxml.core.validate.MonadEx
-import cats.kernel.Monoid
-
-import scala.xml.{Node, NodeSeq}
-import scala.xml.transform.RewriteRule
 
 /**
   * advxml
@@ -21,30 +16,6 @@ sealed trait PartialXmlRule extends ModifierComposableXmlRule {
 
 sealed trait XmlRule {
   val zooms: List[XmlZoom]
-
-  import advxml.instances.transform._
-  import cats.syntax.functor._
-
-  final def toRewriteRule[F[_]: MonadEx](root: NodeSeq): F[RewriteRule] =
-    (this match {
-      case r: ComposableXmlRule => RewriteRuleBuilder(Monoid.combineAll(r.modifiers))
-      case r: FinalXmlRule      => RewriteRuleBuilder[F](r.modifier)
-    })(zooms.reduce((a, b) => a.andThen(b)), root)
-
-  private object RewriteRuleBuilder {
-
-    def apply[F[_]: MonadEx](modifier: XmlModifier): (XmlZoom, NodeSeq) => F[RewriteRule] =
-      (zoom, root) => {
-        val target = zoom(root)
-
-        modifier[F](target).map(updated => {
-          new RewriteRule {
-            override def transform(ns: collection.Seq[Node]): collection.Seq[Node] =
-              if (ns == root || strictEqualsTo(target)(ns)) updated else ns
-          }
-        })
-      }
-  }
 }
 
 sealed trait ComposableXmlRule extends XmlRule with ModifierComposableXmlRule {
