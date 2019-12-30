@@ -125,7 +125,7 @@ class XmlTransformerSyntaxTest extends FeatureSpec {
         </OrderLines>
       </Order>
 
-      val result = elem.transform(Remove)
+      val result = elem.transform(root ==> Remove)
 
       assert(result.get.isEmpty)
     }
@@ -134,7 +134,7 @@ class XmlTransformerSyntaxTest extends FeatureSpec {
       val elem: Elem = <OrderLines />
       val result = elem
         .transform[Try](
-          Append(<OrderLine PrimeLineNo="1"/>)
+          root ==> Append(<OrderLine PrimeLineNo="1"/>)
         )
         .get
 
@@ -161,7 +161,7 @@ class XmlTransformerSyntaxTest extends FeatureSpec {
       val elem: Elem = <Order />
 
       val result = elem.transform(
-        SetAttrs("A1" := "1", "A2" := "2", "A3" := "3")
+        root ==> SetAttrs("A1" := "1", "A2" := "2", "A3" := "3")
       )
 
       assert(result.get \@ "A1" == "1")
