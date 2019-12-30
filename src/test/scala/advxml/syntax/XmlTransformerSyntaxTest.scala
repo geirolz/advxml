@@ -3,7 +3,7 @@ package advxml.syntax
 import org.scalatest.FeatureSpec
 
 import scala.util.Try
-import scala.xml.Elem
+import scala.xml.{Elem, NodeSeq}
 
 class XmlTransformerSyntaxTest extends FeatureSpec {
 
@@ -11,6 +11,7 @@ class XmlTransformerSyntaxTest extends FeatureSpec {
   import advxml.instances.transform._
   import advxml.syntax.transform._
   import cats.instances.try_._
+  import advxml.syntax.normalize._
 
   feature("Xml manipulation: Filters") {
     scenario("Filter By Attribute") {
@@ -94,6 +95,15 @@ class XmlTransformerSyntaxTest extends FeatureSpec {
         result.get \ "OrderLines" \ "OrderLine"
         exists attrs("PrimeLineNo" -> (_ == "4"))
       )
+    }
+
+    scenario("Replace With same node") {
+      val xml = <A><B>1</B></A>
+      val result: Try[NodeSeq] = xml.transform(
+        $(_ \ "B") ==> Replace(_ => <B>1</B>)
+      )
+
+      assert(result.get === <A><B>1</B></A>)
     }
 
     scenario("RemoveNode") {
