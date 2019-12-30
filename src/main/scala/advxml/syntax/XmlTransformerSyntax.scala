@@ -2,7 +2,7 @@ package advxml.syntax
 
 import advxml.core.convert.{PureConverter, TextConverter}
 import advxml.core.transform._
-import advxml.core.transform.actions.{AttributeData, ComposableXmlModifier, FinalXmlModifier, XmlModifier}
+import advxml.core.transform.actions.{AttributeData, ComposableXmlModifier, FinalXmlModifier}
 import advxml.core.transform.actions.XmlZoom.XmlZoom
 import advxml.core.validate.MonadEx
 
@@ -21,9 +21,6 @@ private[syntax] trait XmlTransformerSyntax extends RuleSyntax with ModifierSynta
 
     def transform[F[_]: MonadEx](rule: XmlRule, rules: XmlRule*): F[NodeSeq] =
       XmlTransformer.transform(root, rule +: rules)
-
-    def transform[F[_]: MonadEx](modifier: XmlModifier): F[NodeSeq] =
-      XmlTransformer.transform(root, modifier)
 
     def transform[F[_]: MonadEx](f: Seq[RewriteRule] => BasicTransformer)(rules: XmlRule*): F[NodeSeq] =
       XmlTransformer.transform(f)(root, rules.toSeq)
