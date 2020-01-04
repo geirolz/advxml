@@ -58,7 +58,7 @@ trait XmlNormalizerAsserts {
     assert(f(data) xml_sameElements data)
   }
 
-  def assert_equality_Equals(p: (NodeSeq, NodeSeq) => Boolean) {
+  def assert_equality_Equals(p: (NodeSeq, NodeSeq) => Boolean): Unit = {
     val v1 =
       <Cars>
         <Car V1="1" />
