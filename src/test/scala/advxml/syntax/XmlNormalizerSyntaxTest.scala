@@ -1,8 +1,9 @@
 package advxml.syntax
 
-import org.scalatest.FunSuite
+import advxml.core.XmlNormalizerAsserts
+import org.scalatest.{Assertion, FunSuite}
 
-import scala.xml.Group
+import scala.xml.NodeSeq
 
 /**
   * Advxml
@@ -10,126 +11,35 @@ import scala.xml.Group
   *
   * @author geirolad
   */
-class XmlNormalizerSyntaxTest extends FunSuite {
+class XmlNormalizerSyntaxTest extends FunSuite with XmlNormalizerAsserts {
 
   import advxml.syntax.normalize._
 
-  test("XmlNormalizer - Normalize | On Elem") {
-
-    val v1 =
-      <Cars>
-        <Car V1="1" />
-        <Car V1="2" >
-          <Properties>
-            <Property K="1"/>
-            <Property K="2"></Property>
-            <Property K="3">TEXT</Property>
-          </Properties>
-        </Car>
-        <Car V1="4" ></Car>
-        <Car V1="5" >TEXT</Car>
-      </Cars>
-
-    val expected =
-      <Cars>
-        <Car V1="1" />
-        <Car V1="2" >
-          <Properties>
-            <Property K="1"/>
-            <Property K="2"/>
-            <Property K="3">TEXT</Property>
-          </Properties>
-        </Car>
-        <Car V1="4" />
-        <Car V1="5" >TEXT</Car>
-      </Cars>
-
-    assert(v1.normalize |==| expected)
+  test("XmlNormalizer - Normalize | with Elem") {
+    assert_normalized_Equals(n => n.normalize)
   }
 
-  test("XmlNormalizer - Normalize | On Group | NOT SUPPORTED") {
-    val data = <Test></Test>
-    val ns: Group = Group(data)
-
-    assert(ns.normalize === data)
+  test("XmlNormalizer - Normalize | with Comment | NOT SUPPORTED -> NO ACTIONS") {
+    assert_normalized_unsupported_NodeSeq(_.normalize)
   }
 
   test("XmlNormalizer - Equality") {
-
-    val v1 =
-      <Cars>
-        <Car V1="1" />
-        <Car V1="2" >
-          <Properties>
-            <Property K="1"/>
-            <Property K="2"/>
-          </Properties>
-        </Car>
-        <Car V1="3"/>
-      </Cars>
-
-    val v2 =
-      <Cars>
-        <Car V1="1" />
-        <Car V1="2" >
-          <Properties>
-            <Property K="1"/>
-            <Property K="2"></Property>
-          </Properties>
-        </Car>
-        <Car V1="3" ></Car>
-      </Cars>
-
-    assert(v1 |==| v2)
-  }
-
-  test("XmlNormalizer - Equality | with Scalatric") {
-
-    val v1 =
-      <Cars>
-        <Car V1="1" />
-        <Car V1="2" >
-          <Properties>
-            <Property K="1"/>
-            <Property K="2"/>
-          </Properties>
-        </Car>
-        <Car V1="3"/>
-      </Cars>
-
-    val v2 =
-      <Cars>
-        <Car V1="1" />
-        <Car V1="2" >
-          <Properties>
-            <Property K="1"/>
-            <Property K="2"></Property>
-          </Properties>
-        </Car>
-        <Car V1="3" ></Car>
-      </Cars>
-
-    assert(v1 === v2)
+    assert_equality_Equals((v1, v2) => v1 |==| v2)
   }
 
   test("XmlNormalizer - Equality | Not equals") {
+    assert_equality_notEquals((v1, v2) => v1 |!=| v2)
+  }
 
-    val v1 =
-      <Cars>
-        <Car V1="1"/>
-        <Car V1="3"/>
-      </Cars>
-
-    val v2 =
-      <Cars>
-        <Car V1="3" ></Car>
-      </Cars>
-
-    assert(v1 |!=| v2)
+  test("XmlNormalizer - Equality | with Scalatric") {
+    assert_equality_Equals((v1, v2) => v1 === v2)
   }
 
   test("XmlNormalizer - Equality | Not equals | with Scalatric") {
+    assert_equality_notEquals((v1, v2) => v1 !== v2)
+  }
 
+  private def assert_equality_notEquals(p: (NodeSeq, NodeSeq) => Boolean): Assertion = {
     val v1 =
       <Cars>
         <Car V1="1"/>
@@ -141,6 +51,6 @@ class XmlNormalizerSyntaxTest extends FunSuite {
         <Car V1="3" ></Car>
       </Cars>
 
-    assert(v1 !== v2)
+    assert(p(v1, v2))
   }
 }
