@@ -23,6 +23,10 @@ class XmlNormalizerSyntaxTest extends FunSuite with XmlNormalizerAsserts {
     assert_normalized_unsupported_NodeSeq(_.normalize)
   }
 
+  test("XmlNormalizer - Equality - with normalizedEquals") {
+    assert_equality_Equals((v1, v2) => v1.normalizedEquals(v2))
+  }
+
   test("XmlNormalizer - Equality") {
     assert_equality_Equals((v1, v2) => v1 |==| v2)
   }
