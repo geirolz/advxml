@@ -4,6 +4,7 @@ import advxml.core.transform.actions.XmlModifier
 import advxml.core.transform.actions.XmlZoom.XmlZoom
 import advxml.core.validate.MonadEx
 import advxml.core.XmlNormalizer
+import advxml.core.transform.exceptions.EmptyTargetException
 import advxml.core.utils.internals.MutableSingleUse
 import advxml.instances.transform._
 import cats.instances.list._
@@ -31,18 +32,22 @@ object XmlTransformer {
 
     def buildRewriteRule(modifier: XmlModifier): (XmlZoom, NodeSeq) => F[RewriteRule] =
       (zoom, root) => {
-        val target = zoom(root)
-        modifier[F](target)
-          .map(MutableSingleUse(_))
-          .map(updated => {
-            new RewriteRule {
-              override def transform(ns: collection.Seq[Node]): collection.Seq[Node] =
-                if (XmlNormalizer.normalizedEquals(target, ns))
-                  updated.getOrElse(ns)
-                else
-                  ns
-            }
-          })
+        zoom(root) match {
+          case target if target.isEmpty => MonadEx[F].raiseError(EmptyTargetException(root, zoom))
+          case target =>
+            modifier[F](target)
+              .map(MutableSingleUse(_))
+              .map(updatedState => {
+                new RewriteRule {
+                  override def transform(ns: collection.Seq[Node]): collection.Seq[Node] =
+                    if (XmlNormalizer.normalizedEquals(target, ns))
+                      updatedState.getOrElse(ns)
+                    else
+                      ns
+                }
+              })
+        }
+
       }
 
     (rule match {
