@@ -19,7 +19,7 @@ class XmlNormalizerTest extends FunSuite with XmlNormalizerAsserts {
   }
 }
 
-trait XmlNormalizerAsserts {
+private[advxml] trait XmlNormalizerAsserts {
 
   def assert_normalized_Equals(f: NodeSeq => NodeSeq): Unit = {
     val v1 =
