@@ -1,5 +1,7 @@
-package advxml.core.convert
+package advxml.core.convert.xml
 
+import advxml.core.convert
+import advxml.core.convert.ValidatedConverter
 import advxml.core.validate.ValidatedEx
 
 import scala.annotation.implicitNotFound
@@ -34,5 +36,6 @@ object XmlConverter {
     * @return [[advxml.core.validate.ValidatedEx]] instance that, if on success case contains `O` instance.
     */
   @implicitNotFound("Missing ModelToXml to transform ${O} into ValidatedEx[${X}]")
-  def asXml[O: ModelToXml[*, X], X <: NodeSeq](model: O): ValidatedEx[X] = ValidatedConverter[O, X].run(model)
+  def asXml[O: convert.xml.ModelToXml[*, X], X <: NodeSeq](model: O): ValidatedEx[X] =
+    ValidatedConverter[O, X].run(model)
 }

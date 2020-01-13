@@ -1,5 +1,6 @@
-package advxml.core.convert
+package advxml.core.convert.xml
 
+import advxml.core.convert.ValidatedConverter
 import cats.data.Validated.Valid
 import org.scalatest.FunSuite
 
