@@ -1,10 +1,10 @@
 package advxml.syntax
 
-import org.scalatest.WordSpec
+import org.scalatest.wordspec.AnyWordSpec
 
 import scala.xml.Text
 
-class ModifiersTest extends WordSpec {
+class ModifiersTest extends AnyWordSpec {
 
   import advxml.instances.convert._
   import advxml.instances.transform.modifiers._

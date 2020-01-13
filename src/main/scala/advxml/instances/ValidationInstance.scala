@@ -1,6 +1,6 @@
 package advxml.instances
 
-import advxml.core.validate.{MonadEx, ThrowableNel, ValidatedEx}
+import advxml.core.validate.ThrowableNel
 import advxml.core.validate.exceptions.AggregatedException
 import cats.data.Validated.{Invalid, Valid}
 import cats.MonadError
@@ -8,49 +8,44 @@ import cats.data.{NonEmptyList, Validated}
 
 private[instances] trait ValidationInstance {
 
-  implicit val validatedNelMonadErrorThrowableInstance: MonadEx[ValidatedEx] =
-    validatedMonadErrorInstance[ThrowableNel, Throwable](
-      NonEmptyList.of(_),
-      nelE => new AggregatedException(nelE.toList)
-    )
-//
-//  implicit def validatedMonadErrorInstanceSameError[FE, ME](
-//    implicit C1: ME =:= FE,
-//    C2: FE =:= ME
-//  ): MonadError[Validated[FE, *], ME] =
-//    validatedMonadErrorInstance[FE, ME](C1.apply, C2.apply)
+  implicit val Throwable_to_ThrowableNel: Throwable => ThrowableNel = {
+    case ex: AggregatedException => ex.exceptions
+    case ex                      => NonEmptyList.one(ex)
+  }
 
-  implicit def validatedMonadErrorInstance[FE, ME](
-    implicit toFe: ME => FE,
-    toMe: FE => ME
-  ): MonadError[Validated[FE, *], ME] =
-    new MonadError[Validated[FE, *], ME] {
+  implicit val ThrowableNel_to_Throwable: ThrowableNel => Throwable = nelE => new AggregatedException(nelE)
 
-      def raiseError[A](e: ME): Validated[FE, A] = Invalid(e)
+  implicit def validatedMonadErrorInstance[E1, E2](
+    implicit toE1: E2 => E1,
+    toE2: E1 => E2
+  ): MonadError[Validated[E1, *], E2] =
+    new MonadError[Validated[E1, *], E2] {
 
-      def pure[A](x: A): Validated[FE, A] = Valid(x)
+      def raiseError[A](e: E2): Validated[E1, A] = Invalid(toE1(e))
 
-      def handleErrorWith[A](fa: Validated[FE, A])(f: ME => Validated[FE, A]): Validated[FE, A] =
+      def pure[A](x: A): Validated[E1, A] = Valid(x)
+
+      def handleErrorWith[A](fa: Validated[E1, A])(f: E2 => Validated[E1, A]): Validated[E1, A] =
         fa match {
-          case Valid(a)   => Valid(a)
-          case Invalid(e) => f(toMe(e))
+          case Valid(_)   => fa
+          case Invalid(e) => f(toE2(e))
         }
 
-      def flatMap[A, B](fa: Validated[FE, A])(f: A => Validated[FE, B]): Validated[FE, B] =
+      def flatMap[A, B](fa: Validated[E1, A])(f: A => Validated[E1, B]): Validated[E1, B] =
         fa match {
-          case Valid(a)   => f(a)
-          case Invalid(e) => Invalid(e)
+          case Valid(a)       => f(a)
+          case i @ Invalid(_) => i
         }
 
       @scala.annotation.tailrec
-      def tailRecM[A, B](a: A)(f: A => Validated[FE, Either[A, B]]): Validated[FE, B] =
+      def tailRecM[A, B](a: A)(f: A => Validated[E1, Either[A, B]]): Validated[E1, B] =
         f(a) match {
           case Valid(eitherAb) =>
             eitherAb match {
               case Right(b) => Valid(b)
               case Left(a)  => tailRecM(a)(f)
             }
-          case Invalid(e) => Invalid(e)
+          case i @ Invalid(_) => i
         }
     }
 }

@@ -3,7 +3,7 @@ package advxml.core.utils
 import java.io.StringReader
 
 import javax.xml.parsers.{DocumentBuilder, DocumentBuilderFactory}
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.xml.{Elem, InputSource, Node}
 
@@ -13,12 +13,15 @@ import scala.xml.{Elem, InputSource, Node}
   *
   * @author geirolad
   */
-class JavaXmlConvertersTest extends FunSuite {
+class JavaXmlConvertersTest extends AnyFunSuite {
 
   import JavaXmlConverters._
 
-  private val xmlStr: String = "<Test T1=\"TEST\"><NestedTest T2=\"NestedTest\"/>TEXT</Test>"
-  private val xml: Elem = <Test T1="TEST"><NestedTest T2="NestedTest"/>TEXT</Test>
+  lazy val javaDocBuilder: DocumentBuilder = DocumentBuilderFactory
+    .newInstance()
+    .newDocumentBuilder()
+  lazy val buildJavaDoc: String => JDocument = xmlString =>
+    javaDocBuilder.parse(new InputSource(new StringReader(xmlString)))
 
   test("Convert Java w3c Node to Scala xml Node") {
     val jDocument: JNode = buildJavaDoc(xmlStr)
@@ -47,11 +50,6 @@ class JavaXmlConvertersTest extends FunSuite {
 
     assert(jDocAsStr == xmlStr)
   }
-
-  lazy val javaDocBuilder: DocumentBuilder = DocumentBuilderFactory
-    .newInstance()
-    .newDocumentBuilder()
-
-  lazy val buildJavaDoc: String => JDocument = xmlString =>
-    javaDocBuilder.parse(new InputSource(new StringReader(xmlString)))
+  private val xmlStr: String = "<Test T1=\"TEST\"><NestedTest T2=\"NestedTest\"/>TEXT</Test>"
+  private val xml: Elem = <Test T1="TEST"><NestedTest T2="NestedTest"/>TEXT</Test>
 }

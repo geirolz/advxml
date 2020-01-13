@@ -1,11 +1,11 @@
 package advxml.syntax
 
 import advxml.core.validate.{EitherEx, EitherNelEx, ValidatedExAsserts}
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Try
 
-class ValidationSyntaxTest extends FunSuite with ValidatedExAsserts {
+class ValidationSyntaxTest extends AnyFunSuite with ValidatedExAsserts {
 
   import advxml.syntax.validate._
 

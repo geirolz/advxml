@@ -1,8 +1,8 @@
 package advxml.core
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
-class PredicateTests extends FunSuite with PredicateAsserts {
+class PredicateTests extends AnyFunSuite with PredicateAsserts {
 
   test("Combine two predicate with in and") {
     testAnd((p1, p2) => Predicate.and(p1, p2))

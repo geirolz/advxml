@@ -1,11 +1,11 @@
 package advxml.instances
 
 import advxml.core.transform.actions.XmlPredicate.XmlPredicate
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.xml.{Document, Elem, Group}
 
-class XmlPredicateInstancesTest extends FunSuite {
+class XmlPredicateInstancesTest extends AnyFunSuite {
 
   import advxml.instances.transform.predicates._
 
