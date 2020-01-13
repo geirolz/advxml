@@ -1,12 +1,12 @@
 package advxml.syntax
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Try
 import scala.xml.{Elem, NodeSeq}
 import scala.xml.transform.RuleTransformer
 
-class XmlTransformerSyntaxTest extends FunSuite {
+class XmlTransformerSyntaxTest extends AnyFunSuite {
 
   import advxml.instances.convert._
   import advxml.instances.transform._

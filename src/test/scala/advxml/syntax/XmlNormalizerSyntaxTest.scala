@@ -1,7 +1,8 @@
 package advxml.syntax
 
 import advxml.core.XmlNormalizerAsserts
-import org.scalatest.{Assertion, FunSuite}
+import org.scalatest.Assertion
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.xml.NodeSeq
 
@@ -11,7 +12,7 @@ import scala.xml.NodeSeq
   *
   * @author geirolad
   */
-class XmlNormalizerSyntaxTest extends FunSuite with XmlNormalizerAsserts {
+class XmlNormalizerSyntaxTest extends AnyFunSuite with XmlNormalizerAsserts {
 
   import advxml.syntax.normalize._
 

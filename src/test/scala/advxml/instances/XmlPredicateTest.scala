@@ -1,10 +1,10 @@
 package advxml.instances
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.xml.{Elem, NodeSeq}
 
-class XmlPredicateTest extends FunSuite {
+class XmlPredicateTest extends AnyFunSuite {
 
   import advxml.instances.transform.predicates._
   import advxml.syntax.normalize._

@@ -2,12 +2,12 @@ package advxml.core.transform
 
 import advxml.core.transform.actions.XmlZoom
 import advxml.core.transform.actions.XmlZoom.XmlZoom
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Try
 import scala.xml.XML
 
-class StressTest extends FunSuite {
+class StressTest extends AnyFunSuite {
 
   import advxml.instances.convert._
   import advxml.instances.transform._

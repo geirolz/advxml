@@ -3,11 +3,11 @@ package advxml.syntax
 import advxml.core.convert.{Converter, PureConverter, ValidatedConverter}
 import advxml.core.validate.ValidatedEx
 import cats.data.Validated.Valid
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.{Success, Try}
 
-class ConvertersSyntaxTest extends FunSuite {
+class ConvertersSyntaxTest extends AnyFunSuite {
 
   import advxml.syntax.convert._
   import cats.instances.option._

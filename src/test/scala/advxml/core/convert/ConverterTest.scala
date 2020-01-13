@@ -1,11 +1,11 @@
 package advxml.core.convert
 
 import cats.Id
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Try
 
-class ConverterTest extends FunSuite {
+class ConverterTest extends AnyFunSuite {
 
   test("Test Converter.id") {
     import cats.instances.try_._

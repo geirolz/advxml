@@ -1,10 +1,10 @@
 package advxml.core
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.xml.{Comment, Group, NodeSeq}
 
-class XmlNormalizerTest extends FunSuite with XmlNormalizerAsserts {
+class XmlNormalizerTest extends AnyFunSuite with XmlNormalizerAsserts {
 
   test("XmlNormalizer - Normalize | with Elem") {
     assert_normalized_Equals(n => XmlNormalizer.normalize(n))

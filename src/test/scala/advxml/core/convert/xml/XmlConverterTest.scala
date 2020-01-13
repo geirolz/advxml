@@ -2,11 +2,11 @@ package advxml.core.convert.xml
 
 import advxml.core.convert.ValidatedConverter
 import cats.data.Validated.Valid
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.xml.Elem
 
-class XmlConverterTest extends FunSuite {
+class XmlConverterTest extends AnyFunSuite {
 
   test("XmlConverter - asModel") {
 

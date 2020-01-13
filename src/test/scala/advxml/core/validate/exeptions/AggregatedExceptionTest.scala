@@ -1,7 +1,7 @@
 package advxml.core.validate.exeptions
 
 import advxml.core.validate.exceptions.AggregatedException
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
   * Advxml
@@ -9,7 +9,7 @@ import org.scalatest.FunSuite
   *
   * @author geirolad
   */
-class AggregatedExceptionTest extends FunSuite {
+class AggregatedExceptionTest extends AnyFunSuite {
 
   test("Test printStackTrace") {
     val ex = new AggregatedException(

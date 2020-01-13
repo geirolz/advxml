@@ -1,6 +1,6 @@
 package advxml.syntax
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.xml.Text
 
@@ -10,7 +10,7 @@ import scala.xml.Text
   *
   * @author geirolad
   */
-class TextConverterSyntaxTest extends FunSuite {
+class TextConverterSyntaxTest extends AnyFunSuite {
 
   import advxml.instances.convert._
   import advxml.syntax.convert._

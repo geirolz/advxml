@@ -1,8 +1,8 @@
 package advxml.core.utils.internals
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
-class MutableSingleUseTest extends FunSuite {
+class MutableSingleUseTest extends AnyFunSuite {
 
   test("SingleUse - getOrElse - unused") {
     val value = MutableSingleUse[String]("TEST")

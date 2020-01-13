@@ -1,14 +1,14 @@
 package advxml.syntax
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.{Success, Try}
 
-class NestedMapSyntaxTest extends FunSuite {
+class NestedMapSyntaxTest extends AnyFunSuite {
 
   import advxml.syntax.nestedMap._
-  import cats.instances.try_._
   import cats.instances.option._
+  import cats.instances.try_._
 
   test("Test nestedMap | Try[Option[String]]") {
     val strValue: Try[Option[String]] = Success(Some("1"))
