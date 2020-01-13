@@ -1,6 +1,7 @@
 package advxml.core.validate.exeptions
 
 import advxml.core.validate.exceptions.AggregatedException
+import cats.data.NonEmptyList
 import org.scalatest.funsuite.AnyFunSuite
 
 /**
@@ -13,7 +14,7 @@ class AggregatedExceptionTest extends AnyFunSuite {
 
   test("Test printStackTrace") {
     val ex = new AggregatedException(
-      Seq(
+      NonEmptyList.of(
         new RuntimeException("EX1"),
         new RuntimeException("EX2"),
         new RuntimeException("EX3")
@@ -25,7 +26,7 @@ class AggregatedExceptionTest extends AnyFunSuite {
 
   test("Test getStackTraces - Has size == 3") {
     val ex = new AggregatedException(
-      Seq(
+      NonEmptyList.of(
         new RuntimeException("EX1"),
         new RuntimeException("EX2"),
         new RuntimeException("EX3")
@@ -38,7 +39,7 @@ class AggregatedExceptionTest extends AnyFunSuite {
 
   test("Test getStackTrace - non Empty") {
     val ex = new AggregatedException(
-      Seq(
+      NonEmptyList.of(
         new RuntimeException("EX1"),
         new RuntimeException("EX2"),
         new RuntimeException("EX3")
@@ -50,7 +51,7 @@ class AggregatedExceptionTest extends AnyFunSuite {
 
   test("Test setStackTrace - should throw UnsupportedOperationException") {
     val ex = new AggregatedException(
-      Seq(
+      NonEmptyList.of(
         new RuntimeException("EX1"),
         new RuntimeException("EX2"),
         new RuntimeException("EX3")

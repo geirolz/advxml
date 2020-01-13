@@ -1,12 +1,29 @@
 package advxml.instances
 
+import advxml.core.validate.{ThrowableNel, ValidatedEx}
+import cats.Eq
 import org.scalatest.funsuite.AnyFunSuite
+import org.typelevel.discipline.scalatest.Discipline
 
-class ValidationInstanceTest extends AnyFunSuite {
+class ValidationInstanceTest extends AnyFunSuite with Discipline {
 
-//  test("") {
-//
-//    import advxml.instances.validate.validatedNelMonadErrorThrowableInstance
-//    cats.laws.discipline.MonadErrorTests[ValidatedEx, Throwable].monadError.all
-//  }
+  import advxml.instances.validate._
+  import cats.implicits._
+  import cats.laws.discipline.arbitrary._
+
+  implicit val eqThrowable: Eq[Throwable] = Eq.allEqual
+
+  checkAll(
+    "MonadTests[ValidatedEx, Throwable]",
+    cats.laws.discipline
+      .MonadErrorTests[ValidatedEx, Throwable]
+      .monad[Int, Int, Int]
+  )
+
+  checkAll(
+    "MonadTests[ValidatedEx, ThrowableNel]",
+    cats.laws.discipline
+      .MonadErrorTests[ValidatedEx, ThrowableNel]
+      .monad[Int, Int, Int]
+  )
 }

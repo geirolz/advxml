@@ -2,21 +2,23 @@ package advxml.core.validate.exceptions
 
 import java.io.{OutputStreamWriter, PrintStream, PrintWriter}
 
+import cats.data.NonEmptyList
+
 /**
   * Advxml
   * Created by geirolad on 11/07/2019.
   *
   * @author geirolad
   */
-class AggregatedException(exceptions: Seq[Throwable])
+class AggregatedException(val exceptions: NonEmptyList[Throwable])
     extends RuntimeException(
-      exceptions
+      exceptions.toList
         .map(_.getMessage)
         .mkString(",\n")
     ) {
 
   def getStackTraces: Map[Throwable, Array[StackTraceElement]] =
-    exceptions.map(e => (e, e.getStackTrace)).toMap
+    exceptions.toList.map(e => (e, e.getStackTrace)).toMap
 
   override def printStackTrace(): Unit = printStackTrace(System.err)
 
@@ -24,7 +26,7 @@ class AggregatedException(exceptions: Seq[Throwable])
     printStackTrace(new PrintWriter(new OutputStreamWriter(s)))
 
   override def printStackTrace(s: PrintWriter): Unit =
-    exceptions.foreach(e => {
+    exceptions.toList.foreach(e => {
       e.printStackTrace(s)
       s.print(s"\n\n${(0 to 70).map(_ => "#").mkString("")}\n\n")
     })
