@@ -4,7 +4,7 @@ import advxml.core.validate.ValidatedEx
 import cats.Id
 import cats.data.Kleisli
 
-import scala.xml.{NodeSeq, Text}
+import scala.xml.NodeSeq
 
 package object convert {
 
@@ -39,17 +39,6 @@ package object convert {
     * @tparam B Output object type
     */
   type ValidatedConverter[-A, B] = Converter[ValidatedEx, A, B]
-
-  /**
-    * Represents a function `A => Text` to simplify method and class signatures.
-    * This alias represent an unsafe converter to transform `A` into `Text`.
-    *
-    * The invocation of this function can fail and/or throw an runtime exception.
-    *
-    * @see [[advxml.core.convert.PureConverter]] for further information.
-    * @tparam A Contravariant input object type
-    */
-  type TextConverter[-A] = PureConverter[A, Text]
 
   /**
     * Represents a function `O => ValidatedEx[NodeSeq]` to simplify method and class signatures.
