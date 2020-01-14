@@ -43,7 +43,7 @@ private[syntax] sealed trait RuleSyntax {
 
 private[syntax] sealed trait ModifierSyntax {
   implicit class AttributeDataBuilder(q: String) {
-    def :=[T](v: T)(implicit C: PureConverter[T, Text]): AttributeData = AttributeData(q, C.run(v))
+    def :=[T](v: T)(implicit converter: PureConverter[T, Text]): AttributeData = AttributeData(q, converter(v))
   }
 }
 
