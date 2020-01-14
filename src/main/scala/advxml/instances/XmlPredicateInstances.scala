@@ -6,7 +6,7 @@ import advxml.core.Predicate
 
 import scala.xml.{Node, NodeSeq}
 
-trait XmlPredicateInstances {
+private[instances] trait XmlPredicateInstances {
 
   /**
     * Always true predicate.

@@ -10,7 +10,7 @@ import scala.xml._
 
 private[instances] trait AllXmlModifierInstances extends XmlModifierInstances with XmlModifierTypeClassesInstances
 
-private[advxml] trait XmlModifierInstances {
+private[instances] trait XmlModifierInstances {
 
   /**
     * No-Action modifiers, equals to `Replace` passing an identity function.

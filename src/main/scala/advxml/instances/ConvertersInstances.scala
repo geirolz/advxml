@@ -5,7 +5,7 @@ import advxml.core.validate.MonadEx
 import cats.Applicative
 
 import scala.math.ScalaNumber
-import scala.util.{Success, Try}
+import scala.util.Try
 import scala.xml.Text
 
 private[instances] trait ConvertersInstances extends CommonConvertersInstances with TextConverterInstances
@@ -18,38 +18,28 @@ private[instances] sealed trait CommonConvertersInstances {
 private[instances] sealed trait TextConverterInstances {
 
   // format: off
-  implicit def text_converter_text       [F[_] : Applicative]  : Converter[F, Text, Text]         = Converter.id
-  implicit def text_converter_string     [F[_] : Applicative]  : Converter[F, String, Text]       = toText
-  implicit def text_converter_scalaNumber[F[_] : Applicative]  : Converter[F, ScalaNumber, Text]  = toText
-  implicit def text_converter_byte       [F[_] : Applicative]  : Converter[F, Byte, Text]         = toText
-  implicit def text_converter_short      [F[_] : Applicative]  : Converter[F, Short, Text]        = toText
-  implicit def text_converter_char       [F[_] : Applicative]  : Converter[F, Char, Text]         = toText
-  implicit def text_converter_int        [F[_] : Applicative]  : Converter[F, Int, Text]          = toText
-  implicit def text_converter_long       [F[_] : Applicative]  : Converter[F, Long, Text]         = toText
-  implicit def text_converter_float      [F[_] : Applicative]  : Converter[F, Float, Text]        = toText
-  implicit def text_converter_double     [F[_] : Applicative]  : Converter[F, Double, Text]       = toText
-
-  implicit def string_converter_text     [F[_] : MonadEx]  : Converter[F, Text, String] =
-    toT(Success(_))
-  implicit def byte_converter_text       [F[_] : MonadEx]  : Converter[F, Text, Byte]   =
-    toT(v => Try(v.toByte))
-  implicit def char_converter_text       [F[_] : MonadEx]  : Converter[F, Text, Char]   =
-    toT(v => Try(v.toCharArray.apply(0)))
-  implicit def short_converter_text      [F[_] : MonadEx]  : Converter[F, Text, Short]  =
-    toT(v => Try(v.toShort))
-  implicit def int_converter_text        [F[_] : MonadEx]  : Converter[F, Text, Int]    =
-    toT(v => Try(v.toInt))
-  implicit def long_converter_text       [F[_] : MonadEx]  : Converter[F, Text, Long]  =
-    toT(v => Try(v.toLong))
-  implicit def float_converter_text      [F[_] : MonadEx]  : Converter[F, Text, Float]  =
-    toT(v => Try(v.toFloat))
-  implicit def double_converter_text     [F[_] : MonadEx]  : Converter[F, Text, Double] =
-    toT(v => Try(v.toDouble))
-
-  
-  private def toText[F[_] : Applicative, I] : Converter[F, I, Text] = 
+  private def toText[F[_] : Applicative, I] : Converter[F, I, Text] =
     Converter.of(v => Applicative[F].pure(Text(v.toString)))
-  private def toT[F[_] : MonadEx, O](f: String => Try[O]) : Converter[F, Text, O]    =
-    Converter.of(t => MonadEx[F].fromTry(Try(t.text).flatMap(f)))
+  private def fromText[F[_] : MonadEx, O](f: String => O) : Converter[F, Text, O]    =
+    Converter.of(t => MonadEx[F].fromTry(Try(t.text).flatMap(v => Try(f(v)))))
+  
+  implicit def string_to_text      [F[_] : Applicative] : Converter[F, String     , Text] = toText
+  implicit def scalaNumber_to_text [F[_] : Applicative] : Converter[F, ScalaNumber, Text] = toText
+  implicit def byte_to_text        [F[_] : Applicative] : Converter[F, Byte       , Text] = toText
+  implicit def short_to_text       [F[_] : Applicative] : Converter[F, Short      , Text] = toText
+  implicit def char_to_text        [F[_] : Applicative] : Converter[F, Char       , Text] = toText
+  implicit def int_to_text         [F[_] : Applicative] : Converter[F, Int        , Text] = toText
+  implicit def long_to_text        [F[_] : Applicative] : Converter[F, Long       , Text] = toText
+  implicit def float_to_text       [F[_] : Applicative] : Converter[F, Float      , Text] = toText
+  implicit def double_to_text      [F[_] : Applicative] : Converter[F, Double     , Text] = toText
+
+  implicit def text_to_string      [F[_] : MonadEx] : Converter[F, Text, String]        = fromText(identity)
+  implicit def text_to_byte        [F[_] : MonadEx] : Converter[F, Text, Byte]          = fromText(_.toByte)
+  implicit def text_to_char        [F[_] : MonadEx] : Converter[F, Text, Char]          = fromText(_.toCharArray.apply(0))
+  implicit def text_to_short       [F[_] : MonadEx] : Converter[F, Text, Short]         = fromText(_.toShort)
+  implicit def text_to_int         [F[_] : MonadEx] : Converter[F, Text, Int]           = fromText(_.toInt)
+  implicit def text_to_long        [F[_] : MonadEx] : Converter[F, Text, Long]          = fromText(_.toLong)
+  implicit def text_to_float       [F[_] : MonadEx] : Converter[F, Text, Float]         = fromText(_.toFloat)
+  implicit def text_to_double      [F[_] : MonadEx] : Converter[F, Text, Double]        = fromText(_.toDouble)
   // format: on
 }
