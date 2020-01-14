@@ -1,6 +1,6 @@
 package advxml.instances
 
-import advxml.core.convert.{Converter, PureConverter}
+import advxml.core.convert.Converter
 import advxml.core.validate.MonadEx
 import cats.Applicative
 
@@ -11,7 +11,7 @@ private[instances] trait ConvertersInstances extends CommonConvertersInstances w
 
 private[instances] sealed trait CommonConvertersInstances {
   implicit def identityConverter[F[_]: Applicative, A]: Converter[F, A, A] = Converter.id[F, A]
-  implicit def pureIdentityConverter[A]: PureConverter[A, A] = PureConverter.id[A]
+//  implicit def pureIdentityConverter[A]: PureConverter[A, A] = PureConverter.id[A]
 }
 
 private[instances] sealed trait TextConverterInstances {

@@ -1,10 +1,22 @@
 package advxml.instances
 
 import advxml.core.convert.Converter
-import cats.Monad
+import cats.{Id, Monad}
 import org.scalatest.funsuite.AnyFunSuite
 
+import scala.util.Try
 import scala.xml.Text
+
+class Common_ConvertersInstancesTest extends AnyFunSuite with ConvertersAssertsUtils {
+
+  import advxml.instances.convert._
+  import cats.instances.try_._
+
+  // format: off
+  implicitly[Converter[Try, Int, Int]].test(1, 1)
+  implicitly[Converter[Id,  Int, Int]].test(1, 1)
+  // format: on
+}
 
 class FromText_ConvertersInstancesTest extends AnyFunSuite with ConvertersAssertsUtils {
 
@@ -49,9 +61,9 @@ private[instances] sealed trait ConvertersAssertsUtils { $this: AnyFunSuite =>
   import scala.reflect.runtime.universe._
 
   protected implicit class TestConverterOps[F[_]: Monad, I: TypeTag, O: TypeTag](converter: Converter[F, I, O]) {
-    def test(in: I, expectedOut: O): Unit = {
+    def test(in: I, expectedOut: O)(implicit foTag: TypeTag[F[O]]): Unit = {
       $this.test(
-        s"Converter[${typeOf[I].finalResultType}, ${typeOf[O].finalResultType}]" +
+        s"Converter[${typeOf[I].finalResultType}, ${foTag.tpe.finalResultType}]" +
         s".apply('$in') should be '$expectedOut'"
       ) {
         Monad[F].map(converter(in))(v => assert(v == expectedOut))

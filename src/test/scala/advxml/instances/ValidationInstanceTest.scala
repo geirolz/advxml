@@ -17,13 +17,13 @@ class ValidationInstanceTest extends AnyFunSuite with Discipline {
     "MonadTests[ValidatedEx, Throwable]",
     cats.laws.discipline
       .MonadErrorTests[ValidatedEx, Throwable]
-      .monad[Int, Int, Int]
+      .monad[Int, Int, Int] //TODO: monadError
   )
 
   checkAll(
     "MonadTests[ValidatedEx, ThrowableNel]",
     cats.laws.discipline
       .MonadErrorTests[ValidatedEx, ThrowableNel]
-      .monad[Int, Int, Int]
+      .monadError[Int, Int, Int]
   )
 }
