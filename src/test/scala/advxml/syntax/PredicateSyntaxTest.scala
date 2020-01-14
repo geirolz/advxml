@@ -1,9 +1,9 @@
 package advxml.syntax
 
 import advxml.core.PredicateAsserts
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
-class PredicateSyntaxTest extends FunSuite with PredicateAsserts {
+class PredicateSyntaxTest extends AnyFunSuite with PredicateAsserts {
 
   import advxml.syntax.predicate._
 

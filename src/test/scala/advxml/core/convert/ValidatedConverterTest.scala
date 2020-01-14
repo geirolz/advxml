@@ -2,9 +2,9 @@ package advxml.core.convert
 
 import advxml.core.validate.ValidatedEx
 import cats.data.Validated.Valid
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
-class ValidatedConverterTest extends FunSuite {
+class ValidatedConverterTest extends AnyFunSuite {
 
   test("Test ValidatedConverter.of") {
     val converter: ValidatedConverter[Int, String] = ValidatedConverter.of(int => Valid(int.toString))

@@ -6,7 +6,7 @@ import advxml.core.Predicate
 
 import scala.xml.{Node, NodeSeq}
 
-trait XmlPredicateInstances {
+private[instances] trait XmlPredicateInstances {
 
   /**
     * Always true predicate.
@@ -19,10 +19,7 @@ trait XmlPredicateInstances {
     * @param p Text predicate
     * @return
     */
-  def text(p: String => Boolean): XmlPredicate = {
-    case n: Node => p(n.text)
-    case _       => false
-  }
+  def text(p: String => Boolean): XmlPredicate = e => p(e.text)
 
   /**
     * Filter nodes by label property.

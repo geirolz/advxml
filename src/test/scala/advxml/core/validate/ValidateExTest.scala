@@ -1,11 +1,11 @@
 package advxml.core.validate
 
 import cats.data.{NonEmptyList, Validated}
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.{Failure, Success, Try}
 
-class ValidateExTest extends FunSuite with ValidatedExAsserts {
+class ValidateExTest extends AnyFunSuite with ValidatedExAsserts {
 
   //Transform
   test("Test ValidatedEx.transformE[Try] - Valid") {
@@ -93,11 +93,6 @@ private[advxml] trait ValidatedExAsserts {
     new RuntimeException("TEXT_EX_1"),
     new RuntimeException("TEXT_EX_2")
   )
-  private def assertValid[T](v: ValidatedEx[T], expectedValue: => T): Unit = {
-    assert(v.isValid)
-    assert(v.toOption.get == expectedValue)
-  }
-  private def assertInvalid(v: ValidatedEx[_]): Unit = assert(v.isInvalid)
 
   def assert_ValidatedEx_to_Try_Valid(f: ValidatedEx[String] => Try[String]): Unit = {
     val value = "TEST"
@@ -195,6 +190,8 @@ private[advxml] trait ValidatedExAsserts {
     assertInvalid(validatedExValue)
   }
 
+  private def assertInvalid(v: ValidatedEx[_]): Unit = assert(v.isInvalid)
+
   def assert_EitherNelEx_Right(f: EitherNelEx[String] => ValidatedEx[String]): Unit = {
     val value = "TEST"
     val eitherValue: EitherNelEx[String] = Right(value)
@@ -217,6 +214,11 @@ private[advxml] trait ValidatedExAsserts {
     val validatedExValue = f(optionValue, TEST_EXCEPTION)
 
     assertValid(validatedExValue, value)
+  }
+
+  private def assertValid[T](v: ValidatedEx[T], expectedValue: => T): Unit = {
+    assert(v.isValid)
+    assert(v.toOption.get == expectedValue)
   }
 
   def assert_Option_None(f: (Option[String], Throwable) => ValidatedEx[String]): Unit = {

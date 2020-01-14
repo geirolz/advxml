@@ -1,10 +1,10 @@
 package advxml.core.validate
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Try
 
-class MonadExUtilsTest extends FunSuite {
+class MonadExUtilsTest extends AnyFunSuite {
 
   test("Test get implicit MonadEx instance using apply method") {
     import cats.instances.try_._

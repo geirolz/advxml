@@ -1,6 +1,6 @@
 package advxml.syntax
 
-import org.scalatest.FeatureSpec
+import org.scalatest.featurespec.AnyFeatureSpec
 
 import scala.language.postfixOps
 import scala.util.Try
@@ -12,12 +12,12 @@ import scala.xml.NodeSeq
   *
   * @author geirolad
   */
-class XmlTraverserSyntaxTest extends FeatureSpec {
+class XmlTraverserSyntaxTest extends AnyFeatureSpec {
 
   import advxml.syntax.traverse.try_._
 
-  feature("XmlTraverseSyntaxTest: Read Attributes") {
-    scenario("Read optional attribute") {
+  Feature("XmlTraverseSyntaxTest: Read Attributes") {
+    Scenario("Read optional attribute") {
       val xml =
         <Employers>
           <Employee Name="David"/>
@@ -34,7 +34,7 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       assert(age.get.isEmpty)
     }
 
-    scenario("Read required attribute") {
+    Scenario("Read required attribute") {
       val xml =
         <Employers>
           <Employee Name="David"/>
@@ -49,8 +49,8 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
     }
   }
 
-  feature("XmlTraverseSyntaxTest: Read Immediate Nodes") {
-    scenario("Read optional immediate nodes") {
+  Feature("XmlTraverseSyntaxTest: Read Immediate Nodes") {
+    Scenario("Read optional immediate nodes") {
       val xml =
         <Employers>
           <Employee Name="David">
@@ -71,7 +71,7 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       assert(works.get.isEmpty)
     }
 
-    scenario("Read optional immediate nodes waterfall") {
+    Scenario("Read optional immediate nodes waterfall") {
       val xml =
         <Employers>
           <Employee Name="David">
@@ -96,7 +96,7 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       assert(data.get.isEmpty)
     }
 
-    scenario("Read required immediate nodes") {
+    Scenario("Read required immediate nodes") {
       val xml =
         <Employers>
           <Employee Name="David">
@@ -114,7 +114,7 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       assert(works.isFailure)
     }
 
-    scenario("Read required immediate nodes waterfall") {
+    Scenario("Read required immediate nodes waterfall") {
       val xml =
         <Employers>
           <Employee Name="David">
@@ -137,8 +137,8 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
     }
   }
 
-  feature("XmlTraverseSyntaxTest: Read nested Nodes") {
-    scenario("Read optional nested nodes") {
+  Feature("XmlTraverseSyntaxTest: Read nested Nodes") {
+    Scenario("Read optional nested nodes") {
       val xml =
         <Employers>
           <Employee Name="David">
@@ -159,7 +159,7 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       assert(works.get.isEmpty)
     }
 
-    scenario("Read required nested nodes") {
+    Scenario("Read required nested nodes") {
       val xml =
         <Employers>
           <Employee Name="David">
@@ -178,8 +178,8 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
     }
   }
 
-  feature("XmlTraverseSyntaxTest: Read content") {
-    scenario("Read optional text") {
+  Feature("XmlTraverseSyntaxTest: Read content") {
+    Scenario("Read optional text") {
       val noteData = "This is a test"
       val xml =
         <Employers>
@@ -201,7 +201,7 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       assert(works.get.isEmpty)
     }
 
-    scenario("Read optional text waterfall") {
+    Scenario("Read optional text waterfall") {
       val noteData = "This is a test"
       val xml =
         <Employers>
@@ -223,7 +223,7 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       assert(works.get.isEmpty)
     }
 
-    scenario("Read required text") {
+    Scenario("Read required text") {
       val noteData = "This is a test"
       val xml =
         <Employers>
@@ -242,7 +242,7 @@ class XmlTraverserSyntaxTest extends FeatureSpec {
       assert(works.isFailure)
     }
 
-    scenario("Read required text waterfall") {
+    Scenario("Read required text waterfall") {
       val noteData = "This is a test"
       val xml =
         <Employers>

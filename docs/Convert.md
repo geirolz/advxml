@@ -18,20 +18,21 @@ errors.
 
 #### Example(Model to XML) 
 ```scala
-  import advxml.implicits._
-  import advxml.core.validate.ValidatedEx
-  import advxml.core.convert.ModelToXml
-  import scala.xml._
-  import cats.implicits._
-  import cats.data.Validated.Valid
+    import advxml.implicits._
+    import advxml.core.validate.ValidatedEx
+    import advxml.core.convert.xml.ModelToXml
+    import scala.xml._
+    import cats.data.Kleisli
+    import cats.implicits._
+    import cats.data.Validated.Valid
 
   case class Person(name: String, surname: String, age: Option[Int])
   
-  implicit val converter: ModelToXml[Person, Elem] = x =>
+  implicit val converter: ModelToXml[Person, Elem] = Kleisli(x =>
     Valid {
       <Person Name={x.name} Surname={x.surname} Age={x.age.map(_.toString).getOrElse("")}/>
-    }
+    })
   
   val p = Person("Matteo", "Bianchi", Some(23))
-  val res: ValidatedEx[Elem] = p.asXml
+  val res: ValidatedEx[Elem] = p.as[Elem]
 ```

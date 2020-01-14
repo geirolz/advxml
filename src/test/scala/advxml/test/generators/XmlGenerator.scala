@@ -12,6 +12,8 @@ import scala.xml._
   */
 object XmlGenerator {
 
+  lazy val xmlNodeSelectorGenerator: Node => Gen[NodeSeq] = elem => Gen.oneOf(elem.descendant).filter(_ != elem)
+
   def genStr(size: Int): Gen[String] = Gen.listOfN(size, Gen.alphaChar).map(_.mkString)
 
   def attrsGenerator(maxSize: Int, nameMaxSize: Int): Gen[Map[String, String]] = {
@@ -24,7 +26,6 @@ object XmlGenerator {
       map <- Gen.mapOfN(n, kvGen)
     } yield map
   }
-  lazy val xmlNodeSelectorGenerator: Node => Gen[NodeSeq] = elem => Gen.oneOf(elem.descendant).filter(_ != elem)
 
   def xmlNodeGenerator(maxLevel: Int, level: Int = 0): Gen[BasicXmlNode] =
     for {

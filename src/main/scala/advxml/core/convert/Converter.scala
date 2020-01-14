@@ -20,7 +20,7 @@ object Converter {
     * @tparam F Effect type
     * @tparam A Input type
     * @tparam B Output type
-    * @return
+    * @return Converter instance
     */
   def of[F[_], A, B](f: A => F[B]): Converter[F, A, B] = Kleisli(f)
 

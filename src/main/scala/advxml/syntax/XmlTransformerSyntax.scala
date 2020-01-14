@@ -1,6 +1,6 @@
 package advxml.syntax
 
-import advxml.core.convert.{PureConverter, TextConverter}
+import advxml.core.convert.PureConverter
 import advxml.core.transform._
 import advxml.core.transform.actions.{AttributeData, ComposableXmlModifier, FinalXmlModifier}
 import advxml.core.transform.actions.XmlZoom.XmlZoom
@@ -43,7 +43,7 @@ private[syntax] sealed trait RuleSyntax {
 
 private[syntax] sealed trait ModifierSyntax {
   implicit class AttributeDataBuilder(q: String) {
-    def :=[T: TextConverter](v: T): AttributeData = AttributeData(q, PureConverter[T, Text].run(v))
+    def :=[T](v: T)(implicit converter: PureConverter[T, Text]): AttributeData = AttributeData(q, converter(v))
   }
 }
 

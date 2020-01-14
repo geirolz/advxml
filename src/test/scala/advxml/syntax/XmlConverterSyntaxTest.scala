@@ -1,9 +1,10 @@
 package advxml.syntax
 
-import advxml.core.convert.{ModelToXml, ValidatedConverter, XmlToModel}
+import advxml.core.convert.ValidatedConverter
+import advxml.core.convert.xml.{ModelToXml, XmlToModel}
 import advxml.core.validate.ValidatedEx
 import cats.data.Validated.Valid
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 import scala.xml.Elem
 
@@ -13,7 +14,7 @@ import scala.xml.Elem
   *
   * @author geirolad
   */
-class XmlConverterSyntaxTest extends FunSuite {
+class XmlConverterSyntaxTest extends AnyFunSuite {
 
   import advxml.syntax.convert._
   import advxml.syntax.nestedMap._

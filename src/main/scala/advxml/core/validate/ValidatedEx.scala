@@ -24,7 +24,7 @@ object ValidatedEx {
   def transformE[F[_], A](validated: ValidatedEx[A])(implicit F: MonadEx[F]): F[A] = {
     validated match {
       case Valid(value) => F.pure(value)
-      case Invalid(exs) => F.raiseError(new AggregatedException(exs.toList))
+      case Invalid(exs) => F.raiseError(new AggregatedException(exs))
     }
   }
 
