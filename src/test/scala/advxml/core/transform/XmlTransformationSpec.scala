@@ -1,7 +1,7 @@
 package advxml.core.transform
 
 import advxml.test.generators.XmlGenerator
-import org.scalacheck.{Arbitrary, Properties}
+import org.scalacheck.{Arbitrary, Prop, Properties}
 import org.scalacheck.Prop.forAll
 
 import scala.util.Try
@@ -47,7 +47,7 @@ object XmlTransformationSpec extends Properties("List") {
     val rule = $(Function.const(selectedNode)) ==> Replace(_ => newNode)
     val result: Node = base.transform[Try](rule).get.head
 
-    result.asInstanceOf[Node].descendant.contains(newNode)
+    result.asInstanceOf[Node].descendant.contains(newNode) &&
     !result.asInstanceOf[Node].descendant.contains(selectedNode)
   }
 
