@@ -1,6 +1,7 @@
 package advxml.core.validate
 
 import cats.data.{NonEmptyList, Validated}
+import cats.data.Validated.Valid
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.{Failure, Success, Try}
@@ -97,10 +98,9 @@ private[advxml] trait ValidatedExAsserts {
   def assert_ValidatedEx_to_Try_Valid(f: ValidatedEx[String] => Try[String]): Unit = {
     val value = "TEST"
     val validatedExValue: ValidatedEx[String] = Validated.Valid(value)
-    val result = f(validatedExValue)
+    val result: Try[String] = f(validatedExValue)
 
-    assert(result.isSuccess)
-    assert(result.get == value)
+    assert(result == Success(value))
   }
 
   def assert_ValidatedEx_to_Try_Invalid(f: ValidatedEx[String] => Try[String]): Unit = {
@@ -116,8 +116,7 @@ private[advxml] trait ValidatedExAsserts {
     val validatedExValue: ValidatedEx[String] = Validated.Valid(value)
     val result: EitherEx[String] = f(validatedExValue)
 
-    assert(result.isRight)
-    assert(result.toOption.get == value)
+    assert(result == Right(value))
   }
 
   def assert_ValidatedEx_to_EitherEx_Invalid(f: ValidatedEx[String] => EitherEx[String]): Unit = {
@@ -132,8 +131,7 @@ private[advxml] trait ValidatedExAsserts {
     val validatedExValue: ValidatedEx[String] = Validated.Valid(value)
     val result: EitherNelEx[String] = f(validatedExValue)
 
-    assert(result.isRight)
-    assert(result.toOption.get == value)
+    assert(result == Right(value))
   }
 
   def assert_ValidatedEx_to_EitherNelEx_Invalid(f: ValidatedEx[String] => EitherNelEx[String]): Unit = {
@@ -149,8 +147,7 @@ private[advxml] trait ValidatedExAsserts {
     val validatedExValue: ValidatedEx[String] = Validated.Valid(value)
     val result: Option[String] = f(validatedExValue)
 
-    assert(result.isDefined)
-    assert(result.get == value)
+    assert(result.contains(value))
   }
 
   def assert_ValidatedEx_to_Option_Invalid(f: ValidatedEx[String] => Option[String]): Unit = {
@@ -217,8 +214,7 @@ private[advxml] trait ValidatedExAsserts {
   }
 
   private def assertValid[T](v: ValidatedEx[T], expectedValue: => T): Unit = {
-    assert(v.isValid)
-    assert(v.toOption.get == expectedValue)
+    assert(v == Valid(expectedValue))
   }
 
   def assert_Option_None(f: (Option[String], Throwable) => ValidatedEx[String]): Unit = {
