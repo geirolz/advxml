@@ -19,8 +19,8 @@ class XmlConverterTest extends AnyFunSuite {
     val model = XmlConverter.asModel[Elem, Person](xml)
 
     assert(model.isValid)
-    assert(model.toOption.get.name == "Mario")
-    assert(model.toOption.get.surname == "Bianchi")
+    assert(model.map(_.name) == Valid("Mario"))
+    assert(model.map(_.surname) == Valid("Bianchi"))
   }
 
   test("XmlConverter - asXml") {
@@ -34,7 +34,7 @@ class XmlConverterTest extends AnyFunSuite {
     val xml = XmlConverter.asXml[Person, Elem](model)
 
     assert(xml.isValid)
-    assert(xml.toOption.get \@ "Name" == "Mario")
-    assert(xml.toOption.get \@ "Surname" == "Bianchi")
+    assert(xml.map(_ \@ "Name") == Valid("Mario"))
+    assert(xml.map(_ \@ "Surname") == Valid("Bianchi"))
   }
 }

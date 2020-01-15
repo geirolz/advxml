@@ -36,9 +36,8 @@ class XmlConverterSyntaxTest extends AnyFunSuite {
     val xml = <Person Name="Matteo" Surname="Bianchi"/>
     val res: ValidatedEx[Person] = xml.as[Person]
 
-    assert(res.isValid)
-    assert(res.toOption.get.name == "Matteo")
-    assert(res.toOption.get.surname == "Bianchi")
+    assert(res.map(_.name) == Valid("Matteo"))
+    assert(res.map(_.surname) == Valid("Bianchi"))
   }
 
   test("Model to XML - Convert simple case class") {
@@ -55,7 +54,6 @@ class XmlConverterSyntaxTest extends AnyFunSuite {
     val p = Person("Matteo", "Bianchi", Some(23))
     val res: ValidatedEx[Elem] = p.as[Elem]
 
-    assert(res.isValid)
-    assert(res.toOption.get == <Person Name="Matteo" Surname="Bianchi" Age="23"/>)
+    assert(res == Valid(<Person Name="Matteo" Surname="Bianchi" Age="23"/>))
   }
 }
