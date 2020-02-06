@@ -2,12 +2,11 @@ package advxml.syntax
 
 import advxml.core.convert.PureConverter
 import advxml.core.transform._
-import advxml.core.transform.actions.{AttributeData, ComposableXmlModifier, FinalXmlModifier}
-import advxml.core.transform.actions.XmlZoom.XmlZoom
+import advxml.core.transform.actions.{AttributeData, ComposableXmlModifier, FinalXmlModifier, XmlZoom}
+import advxml.core.transform.actions.XmlPredicate.XmlPredicate
 import advxml.core.validate.MonadEx
 
 import scala.xml.{NodeSeq, Text}
-import scala.xml.transform.{BasicTransformer, RewriteRule}
 
 /**
   * Advxml
@@ -21,19 +20,17 @@ private[syntax] trait XmlTransformerSyntax extends RuleSyntax with ModifierSynta
 
     def transform[F[_]: MonadEx](rule: XmlRule, rules: XmlRule*): F[NodeSeq] =
       XmlTransformer.transform(root, rule +: rules)
-
-    def transform[F[_]: MonadEx](f: Seq[RewriteRule] => BasicTransformer)(rules: XmlRule*): F[NodeSeq] =
-      XmlTransformer.transform(f)(root, rules.toSeq)
   }
 }
 
 private[syntax] sealed trait RuleSyntax {
 
-  def $(zoom: XmlZoom, zooms: XmlZoom*): PartialXmlRule = PartialXmlRule(zoom, zooms: _*)
+  implicit class XmlZoomToRuleOps(zoom: XmlZoom) {
+    def withModifier(modifier: FinalXmlModifier): FinalXmlRule = XmlRule(zoom, modifier)
+    def withModifier(modifier: ComposableXmlModifier): ComposableXmlRule = XmlRule(zoom, List(modifier))
 
-  implicit class PartialRuleOps(r: PartialXmlRule) {
-    def ==>(modifier: FinalXmlModifier): FinalXmlRule = r.withModifier(modifier)
-    def ==>(modifier: ComposableXmlModifier): ComposableXmlRule = r.withModifier(modifier)
+    def ==>(modifier: FinalXmlModifier): FinalXmlRule = zoom.withModifier(modifier)
+    def ==>(modifier: ComposableXmlModifier): ComposableXmlRule = zoom.withModifier(modifier)
   }
 
   implicit class ModifierCompatibleOps(r: ComposableXmlRule) {
@@ -50,6 +47,17 @@ private[syntax] sealed trait ModifierSyntax {
 private[syntax] sealed trait ZoomSyntax {
 
   implicit class XmlZoomOps(z: XmlZoom) {
-    def \(that: XmlZoom): XmlZoom = z.andThen(that)
+
+    def \(nodeName: String): XmlZoom =
+      z.immediateDown(nodeName)
+
+    def \+(that: XmlZoom): XmlZoom =
+      z.andThen(that)
+
+    def \++(that: List[XmlZoom]): XmlZoom =
+      z.andThenAll(that)
+
+    def |(p: XmlPredicate): XmlZoom =
+      z.filter(p)
   }
 }

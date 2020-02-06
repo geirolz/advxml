@@ -1,11 +1,10 @@
 package advxml.core.transform
 
 import advxml.core.transform.actions.XmlZoom
-import advxml.core.transform.actions.XmlZoom.XmlZoom
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Try
-import scala.xml.XML
+import scala.xml.{NodeSeq, XML}
 
 class StressTest extends AnyFunSuite {
 
@@ -13,24 +12,25 @@ class StressTest extends AnyFunSuite {
   import advxml.instances.transform._
   import advxml.syntax.transform._
   import cats.instances.try_._
+  import cats.instances.option._
 
   test("Xml manipulation stress test -Large file: 1MB") {
 
     val elem = XML.loadFile(getClass.getResource("/transform/stressTest_1mb.xml").getPath)
 
-    val zoomByAttrs1: XmlZoom = _ filter attrs(
+    val zoomByAttrs1: XmlZoom = root filter attrs(
         "gdp_serv"   -> (_ == "55.2"),
         "government" -> (_ == "republic"),
         "inflation"  -> (_ == "28.3"),
         "population" -> (_ == "10002541")
       )
 
-    val zoomByAttrs2: XmlZoom = _ filter attrs(
+    val zoomByAttrs2: XmlZoom = root filter attrs(
         "capital"  -> (_ == "f0_1533"),
         "car_code" -> (_ == "H")
       )
 
-    val filterByChild: XmlZoom = _ filter hasImmediateChild(
+    val filterByChild: XmlZoom = root filter hasImmediateChild(
         "province",
         attrs(
           "population" -> (_ == "422500"),
@@ -40,12 +40,12 @@ class StressTest extends AnyFunSuite {
         )
       )
 
-    val z: XmlZoom = XmlZoom(_ \ "country") \ zoomByAttrs1 \ zoomByAttrs2 \ filterByChild
+    val z: XmlZoom = root \ "country" \+ zoomByAttrs1 \+ zoomByAttrs2 \+ filterByChild
 
-    val result = elem.transform[Try]($(z) ==> SetAttrs("TEST" := "1", "TEST2" := "100"))
+    val result: Try[NodeSeq] = elem.transform[Try](z ==> SetAttrs("TEST" := "1", "TEST2" := "100"))
 
     assert(result.isSuccess)
-    assert(z(result.get) \@ "TEST" == "1")
-    assert(z(result.get) \@ "TEST2" == "100")
+    assert(z[Option](result.get).get.node \@ "TEST" == "1")
+    assert(z[Option](result.get).get.node \@ "TEST2" == "100")
   }
 }

@@ -39,14 +39,14 @@ class JavaXmlConvertersTest extends AnyFunSuite {
 
   test("Convert Scala xml Node to Java w3c Node") {
     val jDoc: JNode = xml.asInstanceOf[Node].asJava(documentBuilder.newDocument())
-    val jDocAsStr = jDoc.toPrettyString
+    val jDocAsStr: String = jDoc.toPrettyString
 
     assert(jDocAsStr == xmlStr)
   }
 
   test("Convert Scala xml Elem to Java w3c Document") {
     val jDoc: JDocument = xml.asJava
-    val jDocAsStr = jDoc.toPrettyString
+    val jDocAsStr: String = jDoc.toPrettyString
 
     assert(jDocAsStr == xmlStr)
   }

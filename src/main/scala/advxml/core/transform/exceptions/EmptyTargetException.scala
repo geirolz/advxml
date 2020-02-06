@@ -1,6 +1,6 @@
 package advxml.core.transform.exceptions
 
-import advxml.core.transform.actions.XmlZoom.XmlZoom
+import advxml.core.transform.actions.XmlZoom
 
 import scala.xml.NodeSeq
 
