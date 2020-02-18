@@ -1,9 +1,10 @@
 package advxml.syntax
 
+import advxml.core.transform.exceptions.EmptyTargetException
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Try
-import scala.xml.{Elem, NodeSeq}
+import scala.xml.NodeSeq
 
 class XmlTransformerSyntaxTest extends AnyFunSuite {
 
@@ -12,6 +13,21 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
   import advxml.syntax.normalize._
   import advxml.syntax.transform._
   import cats.instances.try_._
+
+  test("Transform XML with empty target") {
+
+    val elem = <data>
+      <foo>
+        <test Id="1"/>
+      </foo>
+    </data>
+
+    val xmlZoom = root \ "test" \ "unknown" \ "node"
+    val result: Try[NodeSeq] = elem.transform(xmlZoom ==> Remove)
+
+    assert(result.isFailure)
+    assert(result.failed.get.isInstanceOf[EmptyTargetException])
+  }
 
   test("Transform XML with equals nodes in different paths") {
     assert(
@@ -38,21 +54,6 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
             )
             .get
     )
-  }
-
-  //TODO: TO REMOVE
-  test("Filter By Attribute") {
-    val elem: Elem = <Order>
-      <OrderLines>
-        <OrderLine PrimeLineNo="1" />
-        <OrderLine PrimeLineNo="2" />
-        <OrderLine PrimeLineNo="3" />
-      </OrderLines>
-    </Order>
-
-    val result = elem \ "OrderLines" \ "OrderLine" filter attrs("PrimeLineNo" -> (_ == "1"))
-
-    assert(result \@ "PrimeLineNo" == "1")
   }
 
   test("PrependNode") {

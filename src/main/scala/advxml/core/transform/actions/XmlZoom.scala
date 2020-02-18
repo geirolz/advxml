@@ -47,13 +47,14 @@ case class XmlZoom private (zoomActions: List[ZoomAction]) {
 
 object XmlZoom {
 
-  val root: XmlZoom = XmlZoom(Nil)
+  lazy val empty: XmlZoom = XmlZoom(Nil)
+  lazy val root: XmlZoom = empty
 
   sealed trait ZoomAction {
     def apply(ns: NodeSeq): NodeSeq
     val predicate: XmlPredicate = (apply _).andThen(_.nonEmpty)
   }
-  case class ImmediateDown(value: String) extends ZoomAction {
+  final case class ImmediateDown(value: String) extends ZoomAction {
     def apply(ns: NodeSeq): NodeSeq = ns \ value
   }
 
@@ -61,7 +62,7 @@ object XmlZoom {
 //  case class Down(value: String) extends ZoomAction {
 //    def apply(ns: NodeSeq): NodeSeq = ns \\ value
 //  }
-  case class Filter(p: XmlPredicate) extends ZoomAction {
+  final case class Filter(p: XmlPredicate) extends ZoomAction {
     def apply(ns: NodeSeq): NodeSeq = ns.filter(p)
   }
 }

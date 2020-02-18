@@ -19,7 +19,10 @@ Each example is written with fluent syntax using implicits but commented you can
 scala xml `RewriteRule`.
 
 #### Syntax
-- **root** is the default XmlZoom that is empty so select the document root node.
+- **root** is the default XmlZoom that is empty so select the document root node, delegated to `XmlZoom.empty`
+- **>** equals to `root` and `XmlZoom.empty` but with different name, you should use it when your zoom will not start from 
+ the root so using `root` variable can create confusion. This is very util when you have a huge `XmlZoom` expression and 
+ you what to split in into smaller `XmlZoom` and then recompose the entire zoom using `\+` or `andThen`.
 - **==>** is an alias to `withModifier` method.
  
 #### Example
