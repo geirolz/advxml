@@ -30,7 +30,8 @@ class StressTest extends AnyFunSuite {
         "car_code" -> (_ == "H")
       )
 
-    val filterByChild: XmlZoom = root | hasImmediateChild("province")(
+    val filterByChild: XmlZoom = root | hasImmediateChild(
+        "province",
         attrs(
           "population" -> (_ == "422500"),
           "country"    -> (_ == "f0_251"),

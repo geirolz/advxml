@@ -48,7 +48,7 @@ private[instances] trait XmlPredicateInstances {
       .reduce(Predicate.and[NodeSeq])
   }
 
-  def hasImmediateChild(label: String)(predicate: XmlPredicate = alwaysTrue): XmlPredicate = { xml =>
+  def hasImmediateChild(label: String, predicate: XmlPredicate = alwaysTrue): XmlPredicate = { xml =>
     import advxml.syntax.traverse.try_._
     (xml \? label).toOption.flatten.fold(false)(_.exists(predicate))
   }
