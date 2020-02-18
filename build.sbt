@@ -1,8 +1,8 @@
 inThisBuild(
   List(
     organization := "com.github.geirolz",
-    homepage := Some(url("https://github.com/geirolz/advxml")),
-    licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
+    homepage     := Some(url("https://github.com/geirolz/advxml")),
+    licenses     := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
     developers := List(
         Developer(
           "DavidGeirola",
@@ -22,14 +22,14 @@ lazy val settings = Seq(
   name := "Advxml",
   //scala options
   crossScalaVersions := List("2.12.8", "2.13.0"),
-  scalaVersion := crossScalaVersions.value.head,
+  scalaVersion       := crossScalaVersions.value.head,
   scalacOptions ++= scalacSettings(scalaVersion.value),
   scalacOptions in (Compile, console) --= Seq(
       "-Ywarn-unused:imports",
       "-Xfatal-warnings"
     ),
   //coverage
-  coverageEnabled in (Test, compile) := true,
+  coverageEnabled in (Test, compile)    := true,
   coverageEnabled in (Compile, compile) := false,
   //dependencies
   resolvers ++= Resolvers.all,

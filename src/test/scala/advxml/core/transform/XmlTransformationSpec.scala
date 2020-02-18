@@ -1,6 +1,8 @@
 package advxml.core.transform
 
+import advxml.core.transform.actions.XmlZoom
 import advxml.test.generators.XmlGenerator
+import advxml.test.generators.XmlGenerator.XmlGeneratorConfig
 import org.scalacheck.{Arbitrary, Properties}
 import org.scalacheck.Prop.forAll
 
@@ -13,50 +15,63 @@ import scala.xml.{Elem, Node, NodeSeq}
   *
   * @author geirolad
   */
-object XmlTransformationSpec extends Properties("List") {
+object XmlTransformationSpec extends Properties("XmlTransformationSpec") {
 
-  implicit val elemGenerator: Arbitrary[NodeSeq] = Arbitrary(
+  //noinspection RedundantDefaultArgument
+  implicit val xmlGenConfig: XmlGeneratorConfig = XmlGeneratorConfig(
+    childMaxSize = 1,
+    attrsMaxSize = 1,
+    attrsMaxNameSize = 3
+  )
+
+  implicit val elemGenerator: Arbitrary[Elem] = Arbitrary(
     XmlGenerator
-      .xmlNodeGenerator(5)
+      .xmlElemGenerator()
       .filter(_.children.nonEmpty)
-      .map(_.toNode)
+      .map(_.toElem)
   )
 
   import advxml.implicits._
+  import cats.instances.option._
   import cats.instances.try_._
 
-  property("Prepend") = forAll { (base: NodeSeq, newNode: NodeSeq) =>
-    val selector = XmlGenerator.xmlNodeSelectorGenerator(base.asInstanceOf[Elem])
-    val rule = $(Function.const(selector.sample.get)) ==> Prepend(newNode)
-    val result: Node = base.transform[Try](rule).get.head
+  property("Prepend") = forAll { (base: Elem, newElem: Elem) =>
+    val zoom: XmlZoom = XmlGenerator.xmlZoomGenerator(base).sample.get
+    val rule: ComposableXmlRule = zoom ==> Prepend(newElem)
+    val result: Try[NodeSeq] = base.transform[Try](rule)
+    val targetUpdated: NodeSeq = result.toOption
+      .flatMap(zoom(_))
+      .map(_.node)
+      .get
 
-    result.asInstanceOf[Node].descendant.contains(newNode)
+    (targetUpdated \ newElem.label).nonEmpty
   }
 
-  property("Append") = forAll { (base: NodeSeq, newNode: NodeSeq) =>
-    val selector = XmlGenerator.xmlNodeSelectorGenerator(base.asInstanceOf[Elem])
-    val rule = $(Function.const(selector.sample.get)) ==> Append(newNode)
-    val result: Node = base.transform[Try](rule).get.head
+  property("Append") = forAll { (base: Elem, newElem: Elem) =>
+    val zoom: XmlZoom = XmlGenerator.xmlZoomGenerator(base).sample.get
+    val rule: ComposableXmlRule = zoom ==> Append(newElem)
+    val result: Try[NodeSeq] = base.transform[Try](rule)
+    val targetUpdated: NodeSeq = result.toOption
+      .flatMap(zoom(_))
+      .map(_.node)
+      .get
 
-    result.asInstanceOf[Node].descendant.contains(newNode)
+    (targetUpdated \ newElem.label).nonEmpty
   }
 
-  property("Replace") = forAll { (base: NodeSeq, newNode: NodeSeq) =>
-    val selector = XmlGenerator.xmlNodeSelectorGenerator(base.asInstanceOf[Elem])
-    val selectedNode = selector.sample.get
-    val rule = $(Function.const(selectedNode)) ==> Replace(_ => newNode)
-    val result: Node = base.transform[Try](rule).get.head
+  property("Replace") = forAll { (base: Elem, newElem: Elem) =>
+    val zoom: XmlZoom = XmlGenerator.xmlZoomGenerator(base).sample.get
+    val rule: ComposableXmlRule = zoom ==> Replace(_ => newElem)
+    val result: Try[NodeSeq] = base.transform[Try](rule)
 
-    result.asInstanceOf[Node].descendant.contains(newNode)
-    !result.asInstanceOf[Node].descendant.contains(selectedNode)
+    result.toOption.flatMap(zoom(_)).isEmpty
   }
 
-  property("Remove") = forAll { base: NodeSeq =>
-    val selector = XmlGenerator.xmlNodeSelectorGenerator(base.asInstanceOf[Elem])
-    val selectedNode = selector.sample.get
-    val rule = $(Function.const(selectedNode)) ==> Remove
-    val result = base.transform[Try](rule).get.headOption
+  property("Remove") = forAll { base: Elem =>
+    val zoom: XmlZoom = XmlGenerator.xmlZoomGenerator(base).sample.get
+    val rule: FinalXmlRule = zoom ==> Remove
+    val result: Option[Node] = base.transform[Try](rule).get.headOption
 
-    result.forall(r => !r.descendant.contains(selectedNode))
+    result.flatMap(zoom(_)).isEmpty
   }
 }

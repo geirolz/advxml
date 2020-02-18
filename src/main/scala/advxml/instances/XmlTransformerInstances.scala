@@ -1,7 +1,8 @@
 package advxml.instances
 
-import advxml.core.transform.PartialXmlRule
+import advxml.core.transform.actions.XmlZoom
 
 private[instances] trait XmlTransformerInstances extends AllXmlModifierInstances with XmlPredicateInstances {
-  lazy val root: PartialXmlRule = PartialXmlRule(identity)
+  lazy val root: XmlZoom = XmlZoom.root
+  lazy val > : XmlZoom = XmlZoom.root
 }

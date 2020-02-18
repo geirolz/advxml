@@ -1,58 +1,52 @@
 package advxml.core.transform
 
-import advxml.core.transform.actions.XmlModifier
-import advxml.core.transform.actions.XmlZoom.XmlZoom
-import advxml.core.validate.MonadEx
-import advxml.core.XmlNormalizer
+import advxml.core.transform.actions.{XmlModifier, XmlZoom, ZoomedNode}
 import advxml.core.transform.exceptions.EmptyTargetException
-import advxml.core.utils.internals.MutableSingleUse
+import advxml.core.validate.MonadEx
 import advxml.instances.transform._
-import cats.instances.list._
 import cats.kernel.Monoid
 import cats.syntax.all._
 
-import scala.xml.{Node, NodeSeq}
-import scala.xml.transform.{BasicTransformer, RewriteRule, RuleTransformer}
+import scala.xml.{Elem, NodeSeq}
 
 object XmlTransformer {
 
-  def transform[F[_]: MonadEx](root: NodeSeq, rules: Seq[XmlRule]): F[NodeSeq] =
-    transform(new RuleTransformer(_: _*))(root, rules)
+  def transform[F[_]](root: NodeSeq, rules: Seq[XmlRule])(implicit F: MonadEx[F]): F[NodeSeq] =
+    rules.foldLeft(F.pure(root))((actDoc, rule) => actDoc.flatMap(doc => transform(rule, doc)))
 
-  def transform[F[_]: MonadEx](
-    f: Seq[RewriteRule] => BasicTransformer
-  )(root: NodeSeq, rules: Seq[XmlRule]): F[NodeSeq] =
-    rules
-      .map(toRewriteRule[F](_, root))
-      .toList
-      .sequence
-      .map(f(_).transform(root))
+  private final def transform[F[_]](rule: XmlRule, root: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] = {
 
-  private final def toRewriteRule[F[_]: MonadEx](rule: XmlRule, root: NodeSeq): F[RewriteRule] = {
+    def buildRewriteRule(modifier: XmlModifier): (XmlZoom, NodeSeq) => F[NodeSeq] = (zoom, root) => {
 
-    def buildRewriteRule(modifier: XmlModifier): (XmlZoom, NodeSeq) => F[RewriteRule] =
-      (zoom, root) => {
-        zoom(root) match {
-          case target if target.isEmpty => MonadEx[F].raiseError(EmptyTargetException(root, zoom))
-          case target =>
-            modifier[F](target)
-              .map(MutableSingleUse(_))
-              .map(updatedState => {
-                new RewriteRule {
-                  override def transform(ns: collection.Seq[Node]): collection.Seq[Node] =
-                    if (XmlNormalizer.normalizedEquals(target, ns))
-                      updatedState.getOrElse(ns)
-                    else
-                      ns
-                }
-              })
+      import cats.implicits._
+
+      for {
+        target <- zoom[Option](root) match {
+          case Some(target_) => F.pure[ZoomedNode](target_)
+          case None          => F.raiseError[ZoomedNode](EmptyTargetException(root, zoom))
         }
-
-      }
+        targetNode = target.node
+        targetParents = target.parents
+        updatedTarget <- modifier[F](targetNode)
+        updatedWholeDocument = {
+          targetParents
+            .foldRight((targetNode, updatedTarget))((parent, originalUpdatedTuple) => {
+              val (original, updated) = originalUpdatedTuple
+              parent -> parent.flatMap {
+                case e: Elem =>
+                  val originalIndex = e.child.indexWhere(x => original.xml_sameElements(x))
+                  val updatedChild = e.child.updated(originalIndex, updated).flatten
+                  e.copy(child = updatedChild)
+              }
+            })
+            ._2
+        }
+      } yield updatedWholeDocument
+    }
 
     (rule match {
       case r: ComposableXmlRule => buildRewriteRule(Monoid.combineAll(r.modifiers))
       case r: FinalXmlRule      => buildRewriteRule(r.modifier)
-    })(rule.zooms.reduce((a, b) => a.andThen(b)), root)
+    })(rule.zoom, root)
   }
 }

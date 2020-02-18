@@ -19,8 +19,7 @@ class ValidatedConverterTest extends AnyFunSuite {
     val converter: ValidatedConverter[String, String] = ValidatedConverter.id
     val value: ValidatedEx[String] = converter.run(testValue)
 
-    assert(value.isValid)
-    assert(value.toOption.get == testValue)
+    assert(value == Valid(testValue))
   }
 
   test("Test ValidatedConverter.const") {

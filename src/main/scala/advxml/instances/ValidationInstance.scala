@@ -8,12 +8,12 @@ import cats.data.{NonEmptyList, Validated}
 
 private[instances] trait ValidationInstance {
 
-  implicit val Throwable_to_ThrowableNel: Throwable => ThrowableNel = {
+  implicit val throwable_to_ThrowableNel: Throwable => ThrowableNel = {
     case ex: AggregatedException => ex.exceptions
     case ex                      => NonEmptyList.one(ex)
   }
 
-  implicit val ThrowableNel_to_Throwable: ThrowableNel => Throwable = nelE => new AggregatedException(nelE)
+  implicit val throwableNel_to_Throwable: ThrowableNel => Throwable = nelE => new AggregatedException(nelE)
 
   implicit def validatedMonadErrorInstance[E1, E2](
     implicit toE1: E2 => E1,

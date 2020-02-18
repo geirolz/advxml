@@ -10,7 +10,7 @@ class XmlPredicateInstancesTest extends AnyFunSuite {
   import advxml.instances.transform.predicates._
 
   test("Test 'always' predicate") {
-    assert(always(<Node>TEST</Node>))
+    assert(alwaysTrue(<Node>TEST</Node>))
   }
 
   test("Test 'text' predicate") {

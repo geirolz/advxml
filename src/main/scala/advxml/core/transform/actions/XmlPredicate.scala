@@ -6,5 +6,5 @@ object XmlPredicate {
 
   type XmlPredicate = NodeSeq => Boolean
 
-  def apply(f: NodeSeq => Boolean): XmlPredicate = f(_)
+  def apply(f: XmlPredicate): XmlPredicate = f
 }

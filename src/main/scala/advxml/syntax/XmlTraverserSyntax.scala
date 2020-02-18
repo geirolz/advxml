@@ -22,8 +22,8 @@ private[syntax] trait XmlTraverserAbstractSyntax {
   implicit private[syntax] val idToOptionConverter: Id ~> Option = λ[Id ~> Option](Some(_))
 
   class XmlTraverseOps[F[_]: MonadEx, G[_]: Monad](fg: F[G[NodeSeq]])(
-    implicit G_to_F: G ~> F,
-    G_to_Option: G ~> Option
+    implicit g_to_f: G ~> F,
+    g_to_option: G ~> Option
   ) {
 
     import cats.implicits._
@@ -53,10 +53,10 @@ private[syntax] trait XmlTraverserAbstractSyntax {
       optional(XmlTraverser.optional[Try].text(_))
 
     private def mandatory[T](op: NodeSeq => F[T]): F[T] =
-      fg.flatMap(G_to_F.apply).flatMap(op)
+      fg.flatMap(g_to_f.apply).flatMap(op)
 
     private def optional[T](op: NodeSeq => Try[Option[T]]): F[Option[T]] =
-      fg.map(G_to_Option.apply(_).map(op).flatMap {
+      fg.map(g_to_option.apply(_).map(op).flatMap {
         case Failure(_)     => None
         case Success(value) => value
       })

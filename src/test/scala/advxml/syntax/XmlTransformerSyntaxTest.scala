@@ -1,10 +1,10 @@
 package advxml.syntax
 
+import advxml.core.transform.exceptions.EmptyTargetException
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Try
-import scala.xml.{Elem, NodeSeq}
-import scala.xml.transform.RuleTransformer
+import scala.xml.NodeSeq
 
 class XmlTransformerSyntaxTest extends AnyFunSuite {
 
@@ -14,213 +14,244 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
   import advxml.syntax.transform._
   import cats.instances.try_._
 
-  test("Transform syntax with custom BasicTransformer") {
-    val elem: Elem = <Order>
-      <OrderLines>
-        <OrderLine PrimeLineNo="1" />
-      </OrderLines>
-    </Order>
+  test("Transform XML with empty target") {
 
-    val result = elem
-      .transform(new RuleTransformer(_: _*))(
-        $(_ \ "OrderLines") ==> Append(<OrderLine PrimeLineNo="2"/>)
-      )
+    val elem = <data>
+      <foo>
+        <test Id="1"/>
+      </foo>
+    </data>
 
-    val orderLinesResult = (result.get \ "OrderLines" \ "OrderLine").toList
-    assert(orderLinesResult.size == 2)
-    assert(orderLinesResult.head \@ "PrimeLineNo" == "1")
-    assert(orderLinesResult(1) \@ "PrimeLineNo" == "2")
+    val xmlZoom = root \ "test" \ "unknown" \ "node"
+    val result: Try[NodeSeq] = elem.transform(xmlZoom ==> Remove)
+
+    assert(result.isFailure)
+    assert(result.failed.get.isInstanceOf[EmptyTargetException])
   }
 
-  test("Filter By Attribute") {
-    val elem: Elem = <Order>
+  test("Transform XML with equals nodes in different paths") {
+    assert(
+      <data>
+        <foo>
+          <test Id="1" />
+        </foo>
+        <bar>
+          <test Id="1"><newNode value="x"/></test>
+        </bar>
+      </data>
+        ===
+          <data>
+          <foo>
+            <test Id="1"/>
+          </foo>
+          <bar>
+            <test Id="1"/>
+          </bar>
+        </data>
+            .transform(
+              (root \ "bar" \ "test" filter attrs("Id" -> (_ == "1")))
+              ==> Append(<newNode value="x"/>)
+            )
+            .get
+    )
+  }
+
+  test("PrependNode") {
+    assert(
+      <Order>
         <OrderLines>
-          <OrderLine PrimeLineNo="1" />
+          <OrderLine PrimeLineNo="1"/>
+          <OrderLine PrimeLineNo="2"/>
+          <OrderLine PrimeLineNo="3"/>
+          <OrderLine PrimeLineNo="4"/>
+        </OrderLines>
+      </Order>
+        ===
+          <Order>
+          <OrderLines>
+            <OrderLine PrimeLineNo="4"/>
+          </OrderLines>
+        </Order>
+            .transform(
+              (root \ "OrderLines")
+              ==> Prepend(<OrderLine PrimeLineNo="3"/>)
+              ==> Prepend(<OrderLine PrimeLineNo="2"/>)
+              ==> Prepend(<OrderLine PrimeLineNo="1"/>)
+            )
+            .get
+    )
+  }
+
+  test("AppendNode") {
+    assert(
+      <Order>
+        <OrderLines>
+          <OrderLine PrimeLineNo="1"/>
+          <OrderLine PrimeLineNo="2"/>
+          <OrderLine PrimeLineNo="3"/>
+          <OrderLine PrimeLineNo="4"/>
+        </OrderLines>
+      </Order>
+        ===
+          <Order>
+          <OrderLines>
+            <OrderLine PrimeLineNo="1"/>
+          </OrderLines>
+        </Order>
+            .transform(
+              (root \ "OrderLines")
+              ==> Append(<OrderLine PrimeLineNo="2"/>)
+              ==> Append(<OrderLine PrimeLineNo="3"/>)
+              ==> Append(<OrderLine PrimeLineNo="4"/>)
+            )
+            .get
+    )
+  }
+
+  test("ReplaceNode") {
+    assert(
+      <Order>
+        <OrderLines>
+          <OrderLine PrimeLineNo="3" />
           <OrderLine PrimeLineNo="2" />
           <OrderLine PrimeLineNo="3" />
         </OrderLines>
       </Order>
-
-    val result = elem \ "OrderLines" \ "OrderLine" filter attrs("PrimeLineNo" -> (_ == "1"))
-
-    assert(result \@ "PrimeLineNo" == "1")
-  }
-
-  test("PrependNode") {
-    val elem: Elem = <Order>
-        <OrderLines>
-          <OrderLine PrimeLineNo="4" />
-        </OrderLines>
-      </Order>
-
-    val result = elem.transform(
-      $(_ \ "OrderLines")
-      ==> Prepend(<OrderLine PrimeLineNo="3"/>)
-      ==> Prepend(<OrderLine PrimeLineNo="2"/>)
-      ==> Prepend(<OrderLine PrimeLineNo="1"/>)
-    )
-
-    val orderLinesResult = (result.get \ "OrderLines" \ "OrderLine").toList
-    assert(orderLinesResult.size == 4)
-    assert(orderLinesResult.head \@ "PrimeLineNo" == "1")
-    assert(orderLinesResult(1) \@ "PrimeLineNo" == "2")
-    assert(orderLinesResult(2) \@ "PrimeLineNo" == "3")
-    assert(orderLinesResult(3) \@ "PrimeLineNo" == "4")
-  }
-
-  test("AppendNode") {
-    val elem: Elem = <Order>
-        <OrderLines>
-          <OrderLine PrimeLineNo="1" />
-        </OrderLines>
-      </Order>
-
-    val result = elem
-      .transform(
-        $(_ \ "OrderLines")
-        ==> Append(<OrderLine PrimeLineNo="2"/>)
-        ==> Append(<OrderLine PrimeLineNo="3"/>)
-        ==> Append(<OrderLine PrimeLineNo="4"/>)
-      )
-
-    val orderLinesResult = (result.get \ "OrderLines" \ "OrderLine").toList
-    assert(orderLinesResult.size == 4)
-    assert(orderLinesResult.head \@ "PrimeLineNo" == "1")
-    assert(orderLinesResult(1) \@ "PrimeLineNo" == "2")
-    assert(orderLinesResult(2) \@ "PrimeLineNo" == "3")
-    assert(orderLinesResult(3) \@ "PrimeLineNo" == "4")
-  }
-
-  test("ReplaceNode") {
-    val elem: Elem = <Order>
-        <OrderLines>
-          <OrderLine PrimeLineNo="1" />
-        </OrderLines>
-      </Order>
-
-    val result = elem.transform(
-      $(_ \ "OrderLines" \ "OrderLine" filter attrs("PrimeLineNo" -> (_ == "1")))
-      ==> Replace(_ => <OrderLine PrimeLineNo="4"/>)
-    )
-
-    assert(
-      (result.get \ "OrderLines" \ "OrderLine"
-      filter attrs("PrimeLineNo" -> (_ == "1"))).length == 0
-    )
-    assert(
-      result.get \ "OrderLines" \ "OrderLine"
-      exists attrs("PrimeLineNo" -> (_ == "4"))
+        ===
+          <Order>
+          <OrderLines>
+            <OrderLine PrimeLineNo="1"/>
+            <OrderLine PrimeLineNo="2"/>
+            <OrderLine PrimeLineNo="3"/>
+          </OrderLines>
+        </Order>
+            .transform(
+              (root \ "OrderLines" \ "OrderLine" | attrs("PrimeLineNo" -> (_ == "1")))
+              ==> Replace(_ => <OrderLine PrimeLineNo="3"/>)
+            )
+            .get
     )
   }
 
   test("Replace With same node") {
     val xml = <A><B>1</B></A>
     val result: Try[NodeSeq] = xml.transform(
-      $(_ \ "B") ==> Replace(_ => <B>1</B>)
+      (root \ "B") ==> Replace(_ => <B>1</B>)
     )
 
     assert(result.get === <A><B>1</B></A>)
   }
 
   test("RemoveNode") {
-    val elem: Elem = <Order>
+    assert(
+      <Order>
         <OrderLines>
           <OrderLine PrimeLineNo="1" />
-          <OrderLine PrimeLineNo="2" />
         </OrderLines>
       </Order>
-
-    val result = elem.transform(
-      $(
-        _ \ "OrderLines" \ "OrderLine" filter
-        attrs("PrimeLineNo" -> (_ == "1"))
-      ) ==> Remove
-    )
-
-    assert(
-      (result.get \ "OrderLines" \ "OrderLine"
-      filter attrs("PrimeLineNo" -> (_ == "1"))).length == 0
+        ===
+          <Order>
+          <OrderLines>
+            <OrderLine PrimeLineNo="1"/>
+            <OrderLine PrimeLineNo="2"/>
+          </OrderLines>
+        </Order>
+            .transform(
+              (root \ "OrderLines" \ "OrderLine" | attrs("PrimeLineNo" -> (_ == "2")))
+              ==> Remove
+            )
+            .get
     )
   }
 
   test("RemoveNode root") {
-    val elem: Elem = <Order>
-        <OrderLines>
-          <OrderLine PrimeLineNo="1" />
-          <OrderLine PrimeLineNo="2" />
-        </OrderLines>
-      </Order>
-
-    val result = elem.transform(root ==> Remove)
+    val result = <Order>
+      <OrderLines>
+        <OrderLine PrimeLineNo="1"/>
+        <OrderLine PrimeLineNo="2"/>
+      </OrderLines>
+    </Order>.transform(root ==> Remove)
 
     assert(result.get.isEmpty)
   }
 
   test("AppendNode to Root") {
-    val elem: Elem = <OrderLines />
-    val result = elem
-      .transform[Try](
-        root ==> Append(<OrderLine PrimeLineNo="1"/>)
-      )
-      .get
-
-    assert((result \ "OrderLine").length == 1)
-    assert(result \ "OrderLine" \@ "PrimeLineNo" == "1")
+    assert(
+      <OrderLines>
+        <OrderLine PrimeLineNo="1"/>
+      </OrderLines>
+        ===
+          <OrderLines/>
+            .transform[Try](
+              root ==> Append(<OrderLine PrimeLineNo="1"/>)
+            )
+            .get
+    )
   }
 
   test("SetAttribute") {
-    val elem: Elem = <Order><OrderLines /></Order>
-
-    val result = elem.transform(
-      $(_ \ "OrderLines") ==> SetAttrs("A1" := "1", "A2" := "2", "A3" := "3")
+    assert(
+      <Order>
+        <OrderLines A1="1" A2="2" A3="3"/>
+      </Order>
+        ===
+          <Order>
+          <OrderLines/>
+        </Order>
+            .transform(
+              root \ "OrderLines" ==> SetAttrs("A1" := "1", "A2" := "2", "A3" := "3")
+            )
+            .get
     )
-
-    assert(result.get \ "OrderLines" \@ "A1" == "1")
-    assert(result.get \ "OrderLines" \@ "A2" == "2")
-    assert(result.get \ "OrderLines" \@ "A3" == "3")
   }
 
   test("SetAttribute to root") {
-    val elem: Elem = <Order />
-
-    val result = elem.transform(
-      root ==> SetAttrs("A1" := "1", "A2" := "2", "A3" := "3")
+    assert(
+      <Order A1="1" A2="2" A3="3"/> === <Order/>
+          .transform(
+            root ==> SetAttrs("A1" := "1", "A2" := "2", "A3" := "3")
+          )
+          .get
     )
-
-    assert(result.get \@ "A1" == "1")
-    assert(result.get \@ "A2" == "2")
-    assert(result.get \@ "A3" == "3")
   }
 
   test("ReplaceAttribute") {
-    val elem: Elem = <Order>
-        <OrderLines T1="1">
+    assert(
+      <Order>
+        <OrderLines T1="EDITED">
           <OrderLine PrimeLineNo="1"></OrderLine>
-          <OrderLine PrimeLineNo="2"></OrderLine>
-          <OrderLine PrimeLineNo="3"></OrderLine>
         </OrderLines>
       </Order>
-
-    val result = elem.transform(
-      $(_ \ "OrderLines") ==> SetAttrs("T1" := "EDITED")
+        ===
+          <Order>
+          <OrderLines T1="1">
+            <OrderLine PrimeLineNo="1"></OrderLine>
+          </OrderLines>
+        </Order>
+            .transform(
+              root \ "OrderLines" ==> SetAttrs("T1" := "EDITED")
+            )
+            .get
     )
-
-    assert(result.get \ "OrderLines" \@ "T1" == "EDITED")
   }
 
   test("RemoveAttribute") {
-    val elem: Elem = <Order>
-        <OrderLines T1="1">
+    assert(
+      <Order>
+        <OrderLines>
           <OrderLine PrimeLineNo="1"></OrderLine>
-          <OrderLine PrimeLineNo="2"></OrderLine>
-          <OrderLine PrimeLineNo="3"></OrderLine>
         </OrderLines>
       </Order>
-
-    val result = elem.transform(
-      $(_ \ "OrderLines") ==> RemoveAttrs(_.key == "T1")
+        ===
+          <Order>
+          <OrderLines T1="1">
+            <OrderLine PrimeLineNo="1"></OrderLine>
+          </OrderLines>
+        </Order>
+            .transform(
+              root \ "OrderLines" ==> RemoveAttrs(_.key == "T1")
+            )
+            .get
     )
-
-    assert(result.get \ "OrderLines" \@ "T1" == "")
   }
 }

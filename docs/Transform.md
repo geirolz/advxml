@@ -4,25 +4,25 @@ and then pass it as argument to `transform` method provided via extensions metho
 `transform` method will return the XML edited wrapped in `F[_]`.
 
 A modification rule is composed by:
-- `Zoom`: A function with the the aim to zoom inside document and select the node to edit.
+- `XmlZoom`: A case class with the the aim to zoom inside document and select the node to edit.
 - `XmlModifier`: A function that apply a transformation over selected node.
 
-The pseudo code for this is something like: `modifier.apply(zoom.apply(document))`
-
 Note: Integrated with `AdvXml` there are implicits in order to add a more fluent syntax for rule creation.
-Each example is written with fluent syntax using implicit but commented you can see the "Desugared" version.
+Each example is written with fluent syntax using implicits but commented you can see the "Desugared" version.
  
 #### Classes
 - **XmlModifier** = Object that represent an XML modification, is a function like `NodeSeq => F[NodeSeq]`.
    - *ComposableXmlModifier* = Modifier that can be combined with other `ComposableXmlModifier`.
    - *FinalXmlModifier* = Modifier that can not be combine with other `XmlModifier`, for example `Remove`.
-- **Zoom** = Type alias to `NodeSeq => NodeSeq` used to zoom on specific node.
-- **PartialXmlRule** = An incomplete `XmlRule` so it has the `Zoom` instance but no the `XmlModifier`.
+- **XmlZoom** = Case class that contains the traverse information to arrive to the target node.
 - **XmlRule** = An object that contains `Zoom` instance and `XmlModifier`, this class provides a method to create the 
 scala xml `RewriteRule`.
 
 #### Syntax
-- **$** create a partial rule.
+- **root** is the default XmlZoom that is empty so select the document root node, delegated to `XmlZoom.empty`
+- **>** equals to `root` and `XmlZoom.empty` but with different name, you should use it when your zoom will not start from 
+ the root so using `root` variable can create confusion. This is very util when you have a huge `XmlZoom` expression and 
+ you what to split in into smaller `XmlZoom` and then recompose the entire zoom using `\+` or `andThen`.
 - **==>** is an alias to `withModifier` method.
  
 #### Example
@@ -52,12 +52,13 @@ scala xml `RewriteRule`.
       </Person>
     </Persons>
     
-    //Example with sugar
-    val rule: XmlRule = $(_ \ "Person" \ "Cars") ==> Append(<Car Brand="Lamborghini"/>) 
+    val rule: XmlRule = (root \ "Person" \ "Cars") ==> Append(<Car Brand="Lamborghini"/>) 
 
 //  Desugared
-//  val rule: XmlRule = PartialXmlRule(_ \ "Person" \ "Cars")
-//      .withModifier(Append(<Car Brand="Lamborghini"/>))
+//  val rule: XmlRule = root
+//    .immediateDown("Person")
+//    .immediateDown("Cars")
+//    .withModifier(Append(<Car Brand="Lamborghini"/>))
 
     val result: Try[NodeSeq] = doc.transform[Try](rule)
 ```
@@ -85,13 +86,15 @@ a selected node you can combine actions calling again `withModifier` method.
     </Persons>
     
     //you can use postfixOps and remove dots and useless brackets 
-    val rules = $(_ \ "Person" \ "Cars") 
+    val rules = (root \ "Person" \ "Cars") 
           ==> Append(<Car Brand="Lamborghini"/>)
           ==> Append(<Car Brand="Ferrari"/>)
           ==> Append(<Car Brand="Bmw"/>)
 
 //  Desugared
-//  val rules: XmlRule = PartialXmlRule(_ \ "Person" \ "Cars")
+//  val rules: XmlRule = root
+//      .immediateDown("Person")
+//      .immediateDown("Cars")
 //      .withModifier(Append(<Car Brand="Lamborghini"/>))
 //      .withModifier(Append(<Car Brand="Ferrari"/>))
 //      .withModifier(Append(<Car Brand="Bmw"/>))
@@ -108,7 +111,7 @@ If you need to edit the document root you can use `root` as zoom action.
     import advxml.implicits._
     import scala.xml._
     import scala.util._
-    
+   
     //import MonadError instance for Try
     import cats.instances.try_._
     

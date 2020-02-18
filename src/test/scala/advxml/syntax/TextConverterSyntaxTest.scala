@@ -63,7 +63,7 @@ class TextConverterSyntaxTest extends AnyFunSuite {
     val value: Option[Float] = Some(100.55373f)
     val res = <Test Value={value.mapAs[Text]}/>
 
-    assert(res \@ "Value" == value.get.toString)
+    assert(value.map(_.toString).contains(res \@ "Value"))
   }
 
   test("Double to Text") {
