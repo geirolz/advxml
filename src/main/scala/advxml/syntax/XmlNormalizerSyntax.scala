@@ -9,7 +9,10 @@ import scala.xml.NodeSeq
 private[syntax] trait XmlNormalizerSyntax {
 
   implicit def streamlinedXmlNormalizedEquality[T <: NodeSeq]: Equality[T] =
-    (a: T, b: Any) => Try(XmlNormalizer.normalizedEquals(a, b.asInstanceOf[NodeSeq])).getOrElse(false)
+    (a: T, b: Any) =>
+      Try(
+        XmlNormalizer.normalizedEquals(a, b.asInstanceOf[NodeSeq])
+      ).getOrElse(false)
 
   implicit class NodeSeqNormalizationAndEqualityOps(ns: NodeSeq) {
 
