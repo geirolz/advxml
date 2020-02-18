@@ -11,7 +11,7 @@ private[instances] trait XmlPredicateInstances {
   /**
     * Always true predicate.
     */
-  lazy val always: XmlPredicate = _ => true
+  lazy val alwaysTrue: XmlPredicate = _ => true
 
   /**
     * Filter nodes by text property.
@@ -48,9 +48,9 @@ private[instances] trait XmlPredicateInstances {
       .reduce(Predicate.and[NodeSeq])
   }
 
-  def hasImmediateChild(name: String, predicate: XmlPredicate = always): XmlPredicate = { xml =>
+  def hasImmediateChild(label: String)(predicate: XmlPredicate = alwaysTrue): XmlPredicate = { xml =>
     import advxml.syntax.traverse.try_._
-    (xml \? name).toOption.flatten.fold(false)(_.exists(predicate))
+    (xml \? label).toOption.flatten.fold(false)(_.exists(predicate))
   }
 
   def strictEqualsTo(ns: NodeSeq): XmlPredicate =
