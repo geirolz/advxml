@@ -12,13 +12,13 @@ class XmlZoomTest extends AnyFunSuite {
   import cats.instances.option._
 
   test("Test immediateDown") {
-    val xmlZoom = root immediateDown ("TEST")
-    assert(xmlZoom.zoomActions == List(ImmediateDown("TEST")))
+    val xmlZoom = root immediateDown "N1"
+    assert(xmlZoom.zoomActions == List(ImmediateDown("N1")))
   }
 
   test("Test andThen") {
-    val xmlZoom1 = root immediateDown ("N1")
-    val xmlZoom2 = > immediateDown ("N1")
+    val xmlZoom1 = root immediateDown "N1"
+    val xmlZoom2 = > immediateDown "N2"
     val result = xmlZoom1.andThen(xmlZoom2)
 
     assert(result.zoomActions.size == 2)
