@@ -3,7 +3,7 @@ package advxml.instances
 import advxml.core.transform.actions.XmlPredicate.XmlPredicate
 import org.scalatest.funsuite.AnyFunSuite
 
-import scala.xml.{Document, Elem, Group}
+import scala.xml.{Document, Elem, Group, NodeSeq}
 
 class XmlPredicateInstancesTest extends AnyFunSuite {
 
@@ -74,5 +74,11 @@ class XmlPredicateInstancesTest extends AnyFunSuite {
     val target: Group = Group(<Node><SubNode>TEST</SubNode></Node>)
     val result: Boolean = p(target)
     assert(!result)
+  }
+
+  test("Test 'strictEqualsTo' predicate - with NodeSeq-NodeSeq") {
+    val ns1: NodeSeq = <Node><SubNode>TEST</SubNode></Node>.asInstanceOf[NodeSeq]
+    val ns2: NodeSeq = <Node><SubNode>TEST</SubNode></Node>.asInstanceOf[NodeSeq]
+    assert(strictEqualsTo(ns1)(ns2))
   }
 }

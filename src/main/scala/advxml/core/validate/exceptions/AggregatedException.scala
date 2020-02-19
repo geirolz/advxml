@@ -35,6 +35,7 @@ class AggregatedException(val exceptions: NonEmptyList[Throwable])
   @Deprecated
   override def getStackTrace: Array[StackTraceElement] = super.getStackTrace
 
+  /** @deprecated This method is not supported by [[AggregatedException]] */
   @Deprecated
   override def setStackTrace(stackTrace: Array[StackTraceElement]): Unit =
     throw new UnsupportedOperationException

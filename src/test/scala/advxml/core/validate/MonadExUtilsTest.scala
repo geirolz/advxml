@@ -14,7 +14,7 @@ class MonadExUtilsTest extends AnyFunSuite {
 
   test("Test get implicit MonadNelEx instance using apply method") {
     import advxml.instances.validate._
-    val monadNelExInstance = MonadNelEx[ValidatedEx]
+    val monadNelExInstance = MonadNelEx[ValidatedNelEx]
     assert(monadNelExInstance != null)
   }
 }

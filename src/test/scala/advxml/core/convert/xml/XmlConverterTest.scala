@@ -18,7 +18,6 @@ class XmlConverterTest extends AnyFunSuite {
     val xml = <Person Name="Mario" Surname="Bianchi"/>
     val model = XmlConverter.asModel[Elem, Person](xml)
 
-    assert(model.isValid)
     assert(model.map(_.name) == Valid("Mario"))
     assert(model.map(_.surname) == Valid("Bianchi"))
   }

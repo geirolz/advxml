@@ -15,6 +15,8 @@ import scala.xml.NodeSeq
 class XmlTraverserSyntaxTest extends AnyFeatureSpec {
 
   import advxml.syntax.traverse.try_._
+  import cats.instances.option._
+  import cats.instances.try_._
 
   Feature("XmlTraverseSyntaxTest: Read Attributes") {
     Scenario("Read optional attribute") {
@@ -23,11 +25,11 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec {
           <Employee Name="David"/>
         </Employers>
 
-      val name: Try[Option[String]] = xml \ "Employee" \@? "Name"
-      val age: Try[Option[String]] = xml \ "Employee" \@? "Age"
+      val name: Option[String] = xml \ "Employee" \@? "Name"
+      val age: Option[String] = xml \ "Employee" \@? "Age"
 
-      assert(name == Success(Some("David")))
-      assert(age == Success(None))
+      assert(name == Some("David"))
+      assert(age.isEmpty)
     }
 
     Scenario("Read required attribute") {
@@ -55,11 +57,11 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec {
           </Employee>
         </Employers>
 
-      val cars: Try[Option[NodeSeq]] = xml \ "Employee" \? "Cars"
-      val works: Try[Option[NodeSeq]] = xml \ "Employee" \? "Works"
+      val cars: Option[NodeSeq] = xml \ "Employee" \? "Cars"
+      val works: Option[NodeSeq] = xml \ "Employee" \? "Works"
 
-      assert(cars.map(_.map(_.length)) == Success(Some(1)))
-      assert(works == Success(None))
+      assert(cars.map(_.length) == Some(1))
+      assert(works.isEmpty)
     }
 
     Scenario("Read optional immediate nodes waterfall") {
@@ -72,13 +74,13 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec {
           </Employee>
         </Employers>
 
-      val cars: Try[Option[NodeSeq]] = xml \? "Employee" \? "Cars"
-      val works: Try[Option[NodeSeq]] = xml \? "Employee" \? "Works"
-      val data: Try[Option[NodeSeq]] = xml \? "Other" \? "Data"
+      val cars: Option[NodeSeq] = xml \? "Employee" \? "Cars"
+      val works: Option[NodeSeq] = xml \? "Employee" \? "Works"
+      val data: Option[NodeSeq] = xml \? "Other" \? "Data"
 
-      assert(cars.map(_.map(_.length)) == Success(Some(1)))
-      assert(works == Success(None))
-      assert(data == Success(None))
+      assert(cars.map(_.length) == Some(1))
+      assert(works.isEmpty)
+      assert(data.isEmpty)
     }
 
     Scenario("Read required immediate nodes") {
@@ -129,12 +131,11 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec {
           </Employee>
         </Employers>
 
-      val cars: Try[Option[NodeSeq]] = xml \\? "Cars"
-      val works: Try[Option[NodeSeq]] = xml \\? "Works"
+      val cars: Option[NodeSeq] = xml \\? "Cars"
+      val works: Option[NodeSeq] = xml \\? "Works"
 
-      assert(cars.get.isDefined)
-      assert(cars.map(_.map(_.length)) == Success(Some(1)))
-      assert(works == Success(None))
+      assert(cars.map(_.length) == Some(1))
+      assert(works.isEmpty)
     }
 
     Scenario("Read required nested nodes") {
@@ -167,11 +168,11 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec {
           </Employee>
         </Employers>
 
-      val note: Try[Option[String]] = xml \ "Employee" \ "Note" ?
-      val works: Try[Option[String]] = xml \ "Employee" \ "Works" ?
+      val note: Option[String] = xml \ "Employee" \ "Note" |?|
+      val works: Option[String] = xml \ "Employee" \ "Works" |?|
 
-      assert(note.map(_.map(_.trim)) == Success(Some(noteData)))
-      assert(works == Success(None))
+      assert(note === Some(noteData))
+      assert(works.isEmpty)
     }
 
     Scenario("Read optional text waterfall") {
@@ -185,11 +186,11 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec {
           </Employee>
         </Employers>
 
-      val note: Try[Option[String]] = xml \? "Employee" \? "Note" ?
-      val works: Try[Option[String]] = xml \? "Employee" \? "Works" ?
+      val note: Option[String] = xml \? "Employee" \? "Note" |?|
+      val works: Option[String] = xml \? "Employee" \? "Works" |?|
 
-      assert(note.map(_.map(_.trim)) == Success(Some(noteData)))
-      assert(works == Success(None))
+      assert(note === Some(noteData))
+      assert(works.isEmpty)
     }
 
     Scenario("Read required text") {
@@ -203,8 +204,8 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec {
           </Employee>
         </Employers>
 
-      val note: Try[String] = xml \ "Employee" \ "Note" !
-      val works: Try[String] = xml \ "Employee" \ "Works" !
+      val note: Try[String] = xml \ "Employee" \ "Note" |!|
+      val works: Try[String] = xml \ "Employee" \ "Works" |!|
 
       assert(note.map(_.trim) == Success(noteData))
       assert(works.isFailure)
@@ -221,8 +222,8 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec {
           </Employee>
         </Employers>
 
-      val note: Try[String] = xml \ "Employee" \ "Note" !
-      val works: Try[String] = xml \! "Employee" \! "Works" !
+      val note: Try[String] = xml \ "Employee" \ "Note" |!|
+      val works: Try[String] = xml \! "Employee" \! "Works" |!|
 
       assert(note.map(_.trim) == Success(noteData))
       assert(works.isFailure)

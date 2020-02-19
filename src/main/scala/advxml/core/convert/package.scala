@@ -1,6 +1,6 @@
 package advxml.core
 
-import advxml.core.validate.ValidatedEx
+import advxml.core.validate.ValidatedNelEx
 import cats.Id
 import cats.data.Kleisli
 
@@ -31,10 +31,10 @@ package object convert {
   /**
     * Represents a function `A => ValidatedEx[B]` to simplify method and class signatures.
     * Converter to easily transform an object of type `A` to another object of type `B`.
-    * Because the conversion can fail the output is wrapped into cats [[advxml.core.validate.ValidatedEx]] in order to handle the errors.
+    * Because the conversion can fail the output is wrapped into cats [[advxml.core.validate.ValidatedNelEx]] in order to handle the errors.
     *
     * @tparam A Contravariant input object type
     * @tparam B Output object type
     */
-  type ValidatedConverter[-A, B] = Converter[ValidatedEx, A, B]
+  type ValidatedConverter[-A, B] = Converter[ValidatedNelEx, A, B]
 }

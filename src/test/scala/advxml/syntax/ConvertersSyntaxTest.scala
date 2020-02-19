@@ -1,7 +1,7 @@
 package advxml.syntax
 
 import advxml.core.convert.{Converter, PureConverter, ValidatedConverter}
-import advxml.core.validate.ValidatedEx
+import advxml.core.validate.ValidatedNelEx
 import cats.data.Validated.Valid
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -68,7 +68,7 @@ class ConvertersSyntaxTest extends AnyFunSuite {
       ValidatedConverter.of(str => Valid(str.toInt))
 
     val value: String = "1"
-    val result: ValidatedEx[Int] = value.as[Int]
+    val result: ValidatedNelEx[Int] = value.as[Int]
 
     assert(result.toOption.get == 1)
   }

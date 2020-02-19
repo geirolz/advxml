@@ -1,6 +1,6 @@
 package advxml.core.convert
 
-import advxml.core.validate.ValidatedEx
+import advxml.core.validate.ValidatedNelEx
 import cats.{Applicative, Id}
 import cats.data.Kleisli
 
@@ -71,4 +71,4 @@ private[convert] sealed abstract class FixedWrapperConverter[F[_]: Applicative, 
 }
 
 object PureConverter extends FixedWrapperConverter[Id, PureConverter]
-object ValidatedConverter extends FixedWrapperConverter[ValidatedEx, ValidatedConverter]
+object ValidatedConverter extends FixedWrapperConverter[ValidatedNelEx, ValidatedConverter]

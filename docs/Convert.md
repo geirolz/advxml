@@ -1,7 +1,7 @@
 ### Convert <a name="Convert"></a>
 This feature provides several conversion utility.
 The main utility are:
-- ValidatedConverter: convert A to ValidatedEx[B]  
+- ValidatedConverter: convert A to ValidatedNelEx[B]  
 - TextConverter: convert object to xml text
 - XmlConverter: convert object to xml and viceversa
    
@@ -13,16 +13,17 @@ errors.
     
 #### Example(XML to Model)
 ```scala
-  import advxml.implicits._
   import advxml.core.convert.ValidatedConverter
-  import advxml.core.validate.ValidatedEx
-  import advxml.core.convert.xml.XmlToModel
-  import advxml.syntax.nestedMap._
-  import advxml.syntax.traverse.validated._
-  import scala.xml._
-  import cats.data.Kleisli
-  import cats.implicits._
+  import advxml.core.convert.xml.{ModelToXml, XmlToModel}
+  import advxml.core.validate.ValidatedNelEx
   import cats.data.Validated.Valid
+  import scala.xml.Elem
+
+  import advxml.syntax.convert._
+  import advxml.syntax.traverse.validated._
+  import cats.syntax.all._
+  import cats.instances.option._
+  import advxml.instances.validate._
 
   case class Person(name: String, surname: String, age: Option[Int])
 
@@ -30,12 +31,12 @@ errors.
     (
       x \@! "Name",
       x \@! "Surname",
-      x \@? "Age" nestedMap (_.toInt)
+      x.\@?("Age").map(_.toInt).valid
     ).mapN(Person)
   })
 
   val xml = <Person Name="Matteo" Surname="Bianchi"/>
-  val res: ValidatedEx[Person] = xml.as[Person]
+  val res: ValidatedNelEx[Person] = xml.as[Person]
 
   assert(res.map(_.name) == Valid("Matteo"))
   assert(res.map(_.surname) == Valid("Bianchi"))
@@ -43,14 +44,17 @@ errors.
 
 #### Example(Model to XML) 
 ```scala
-  import advxml.implicits._
-  import advxml.core.validate.ValidatedEx
   import advxml.core.convert.ValidatedConverter
-  import advxml.core.convert.xml.ModelToXml
-  import scala.xml._
-  import cats.data.Kleisli
-  import cats.implicits._
+  import advxml.core.convert.xml.{ModelToXml, XmlToModel}
+  import advxml.core.validate.ValidatedNelEx
   import cats.data.Validated.Valid
+  import scala.xml.Elem
+
+  import advxml.syntax.convert._
+  import advxml.syntax.traverse.validated._
+  import cats.syntax.all._
+  import cats.instances.option._
+  import advxml.instances.validate._
 
   case class Person(name: String, surname: String, age: Option[Int])
 
@@ -62,7 +66,7 @@ errors.
   )
 
   val p = Person("Matteo", "Bianchi", Some(23))
-  val res: ValidatedEx[Elem] = p.as[Elem]
+  val res: ValidatedNelEx[Elem] = p.as[Elem]
 
   assert(res == Valid(<Person Name="Matteo" Surname="Bianchi" Age="23"/>))
 ```

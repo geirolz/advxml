@@ -49,8 +49,9 @@ private[instances] trait XmlPredicateInstances {
   }
 
   def hasImmediateChild(label: String, predicate: XmlPredicate = alwaysTrue): XmlPredicate = { xml =>
-    import advxml.syntax.traverse.try_._
-    (xml \? label).toOption.flatten.fold(false)(_.exists(predicate))
+    import cats.instances.option._
+    import advxml.syntax.traverse.option._
+    (xml \? label).fold(false)(_.exists(predicate))
   }
 
   def strictEqualsTo(ns: NodeSeq): XmlPredicate =
@@ -58,6 +59,5 @@ private[instances] trait XmlPredicateInstances {
       (ns, that) match {
         case (e1: Node, e2: Node)         => e1 strict_== e2
         case (ns1: NodeSeq, ns2: NodeSeq) => ns1 strict_== ns2
-        case _                            => false
       }
 }

@@ -1,6 +1,6 @@
 package advxml.core.convert
 
-import advxml.core.validate.ValidatedEx
+import advxml.core.validate.ValidatedNelEx
 import cats.data.Validated.Valid
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -17,7 +17,7 @@ class ValidatedConverterTest extends AnyFunSuite {
   test("Test ValidatedConverter.id") {
     val testValue = "TEST"
     val converter: ValidatedConverter[String, String] = ValidatedConverter.id
-    val value: ValidatedEx[String] = converter.run(testValue)
+    val value: ValidatedNelEx[String] = converter.run(testValue)
 
     assert(value == Valid(testValue))
   }

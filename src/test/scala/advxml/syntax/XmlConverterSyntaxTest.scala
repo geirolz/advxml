@@ -2,7 +2,7 @@ package advxml.syntax
 
 import advxml.core.convert.ValidatedConverter
 import advxml.core.convert.xml.{ModelToXml, XmlToModel}
-import advxml.core.validate.ValidatedEx
+import advxml.core.validate.ValidatedNelEx
 import cats.data.Validated.Valid
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -14,12 +14,14 @@ import scala.xml.Elem
   *
   * @author geirolad
   */
+//TODO: Check duplication into advxml.core.convert.xml.XmlConverterTest
 class XmlConverterSyntaxTest extends AnyFunSuite {
 
+  import advxml.instances.validate._
   import advxml.syntax.convert._
-  import advxml.syntax.nestedMap._
   import advxml.syntax.traverse.validated._
-  import cats.implicits._
+  import cats.instances.option._
+  import cats.syntax.all._
 
   test("XML to Model - Convert simple case class") {
 
@@ -29,12 +31,12 @@ class XmlConverterSyntaxTest extends AnyFunSuite {
       (
         x \@! "Name",
         x \@! "Surname",
-        x \@? "Age" nestedMap (_.toInt)
+        x.\@?("Age").map(_.toInt).valid
       ).mapN(Person)
     })
 
     val xml = <Person Name="Matteo" Surname="Bianchi"/>
-    val res: ValidatedEx[Person] = xml.as[Person]
+    val res: ValidatedNelEx[Person] = xml.as[Person]
 
     assert(res.map(_.name) == Valid("Matteo"))
     assert(res.map(_.surname) == Valid("Bianchi"))
@@ -52,7 +54,7 @@ class XmlConverterSyntaxTest extends AnyFunSuite {
     )
 
     val p = Person("Matteo", "Bianchi", Some(23))
-    val res: ValidatedEx[Elem] = p.as[Elem]
+    val res: ValidatedNelEx[Elem] = p.as[Elem]
 
     assert(res == Valid(<Person Name="Matteo" Surname="Bianchi" Age="23"/>))
   }
