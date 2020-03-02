@@ -66,8 +66,8 @@ private[instances] trait XmlModifierInstances {
         case e: Elem =>
           F.pure[NodeSeq](
             e.copy(
-              attributes = (d +: ds).foldRight(e.attributes)(
-                (data, metadata) => new UnprefixedAttribute(data.key, data.value, metadata)
+              attributes = (d +: ds).foldRight(e.attributes)((data, metadata) =>
+                new UnprefixedAttribute(data.key, data.value, metadata)
               )
             )
           )

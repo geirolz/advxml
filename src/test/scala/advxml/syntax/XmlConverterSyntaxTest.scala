@@ -46,11 +46,10 @@ class XmlConverterSyntaxTest extends AnyFunSuite {
 
     case class Person(name: String, surname: String, age: Option[Int])
 
-    implicit val converter: ModelToXml[Person, Elem] = ValidatedConverter.of(
-      x =>
-        Valid(
-          <Person Name={x.name} Surname={x.surname} Age={x.age.map(_.toString).getOrElse("")}/>
-        )
+    implicit val converter: ModelToXml[Person, Elem] = ValidatedConverter.of(x =>
+      Valid(
+        <Person Name={x.name} Surname={x.surname} Age={x.age.map(_.toString).getOrElse("")}/>
+      )
     )
 
     val p = Person("Matteo", "Bianchi", Some(23))
