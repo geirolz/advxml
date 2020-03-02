@@ -5,9 +5,10 @@ import advxml.core.validate.exceptions.AggregatedException
 import cats.Eq
 import cats.data.NonEmptyList
 import org.scalatest.funsuite.AnyFunSuite
-import org.typelevel.discipline.scalatest.Discipline
+import org.scalatest.prop.Configuration
+import org.typelevel.discipline.scalatest.FunSuiteDiscipline
 
-class ValidationInstanceTest extends AnyFunSuite with Discipline {
+class ValidationInstanceTest extends AnyFunSuite with FunSuiteDiscipline with Configuration {
 
   import advxml.instances.validate._
   import cats.implicits._
