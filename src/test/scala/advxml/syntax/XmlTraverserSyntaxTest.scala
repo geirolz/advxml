@@ -26,7 +26,7 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec with XmlTraverserContractAss
       mandatory.assertText(_.![Try])
     }
     Scenario("|!|") {
-      mandatory.assertText(_.|!|[Try])
+      mandatory.assertTrimmedText(_.|!|[Try])
     }
   }
 
@@ -49,7 +49,7 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec with XmlTraverserContractAss
       optional.assertText(_.?[Option])
     }
     Scenario("|?|") {
-      optional.assertText(_.|?|[Option])
+      optional.assertTrimmedText(_.|?|[Option])
     }
   }
 
@@ -72,11 +72,11 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec with XmlTraverserContractAss
       mandatory.assertText(_.!)
     }
     Scenario("|!|") {
-      mandatory.assertText(_.|!|)
+      mandatory.assertTrimmedText(_.|!|)
     }
   }
 
-  Feature("XmlTraverserOptionalFloatOpsForId") {
+  Feature("XmlTraverserOptionalFixedOps") {
 
     import advxml.syntax.traverse.option._
     import cats.instances.option._
@@ -95,7 +95,7 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec with XmlTraverserContractAss
       optional.assertText(_.?)
     }
     Scenario("|?|") {
-      optional.assertText(_.|?|)
+      optional.assertTrimmedText(_.|?|)
     }
   }
 }

@@ -25,7 +25,7 @@ class XmlTraverseTest extends AnyFeatureSpec with XmlTraverserContractAsserts {
       mandatory.assertText(XmlTraverser.mandatory[Try].text(_))
     }
     Scenario("|!|") {
-      mandatory.assertText(XmlTraverser.mandatory[Try].trimmedText(_))
+      mandatory.assertTrimmedText(XmlTraverser.mandatory[Try].trimmedText(_))
     }
   }
 
@@ -47,7 +47,7 @@ class XmlTraverseTest extends AnyFeatureSpec with XmlTraverserContractAsserts {
       optional.assertText(XmlTraverser.optional[Option].text(_))
     }
     Scenario("|?|") {
-      optional.assertText(XmlTraverser.optional[Option].trimmedText(_))
+      optional.assertTrimmedText(XmlTraverser.optional[Option].trimmedText(_))
     }
   }
 }
