@@ -1,6 +1,5 @@
 # Advxml
-
-[![Build Status](https://img.shields.io/travis/com/geirolz/advxml/master)](https://travis-ci.org/geirolz/advxml)
+[![Build Status](https://img.shields.io/travis/com/geirolz/advxml/master)](https://travis-ci.com/geirolz/advxml)
 [![codecov](https://img.shields.io/codecov/c/github/geirolz/advxml)](https://codecov.io/gh/geirolz/advxml)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/db3274b55e0c4031803afb45f58d4413)](https://www.codacy.com/manual/david.geirola/advxml?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=geirolz/advxml&amp;utm_campaign=Badge_Grade)
 [![Sonatype Nexus (Releases)](https://img.shields.io/nexus/r/com.github.geirolz/advxml_2.13?server=https%3A%2F%2Foss.sonatype.org)](https://mvnrepository.com/artifact/com.github.geirolz/advxml)
