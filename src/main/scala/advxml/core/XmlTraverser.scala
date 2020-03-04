@@ -6,8 +6,9 @@ import advxml.core.XmlTraverser.exceptions.{
   XmlMissingNodeException,
   XmlMissingTextException
 }
-import cats.Id
+import cats.Alternative
 
+import scala.util.{Failure, Success, Try}
 import scala.xml.NodeSeq
 
 /**
@@ -15,64 +16,77 @@ import scala.xml.NodeSeq
   * Created by geirolad on 28/06/2019.
   * @author geirolad
   */
-sealed trait XmlTraverser[F[_], G[_]] {
-  def immediateChildren(target: NodeSeq, q: String): F[G[NodeSeq]]
-
-  def children(target: NodeSeq, q: String): F[G[NodeSeq]]
-
-  def attr(target: NodeSeq, q: String): F[G[String]]
-
-  def text(target: NodeSeq): F[G[String]]
-}
-
 object XmlTraverser {
 
-  def mandatory[F[_]](implicit F: MonadEx[F]): XmlTraverser[F, Id] = new XmlTraverser[F, Id] {
+  import cats.syntax.functor._
 
-    def immediateChildren(target: NodeSeq, q: String): F[NodeSeq] = {
-      target \ q match {
-        case value if value.isEmpty => F.raiseError(XmlMissingNodeException(q, target))
-        case value                  => F.pure(value)
-      }
-    }
+  sealed trait XmlTraverser[F[_]] {
+    def immediateChildren(target: NodeSeq, q: String): F[NodeSeq]
 
-    def children(target: NodeSeq, q: String): F[NodeSeq] = {
-      target \\ q match {
-        case value if value.isEmpty => F.raiseError(XmlMissingNodeException(q, target))
-        case value                  => F.pure(value)
-      }
-    }
+    def children(ns: NodeSeq, q: String): F[NodeSeq]
 
-    def attr(target: NodeSeq, q: String): F[String] = {
-      target \@ q match {
-        case value if value.isEmpty => F.raiseError(XmlMissingAttributeException(q, target))
-        case value                  => F.pure(value)
-      }
-    }
+    def attr(ns: NodeSeq, q: String): F[String]
 
-    def text(target: NodeSeq): F[String] = {
-      target.text match {
-        case value if value.isEmpty => F.raiseError(XmlMissingTextException(target))
-        case value                  => F.pure(value)
-      }
-    }
+    def text(ns: NodeSeq): F[String]
+
+    def trimmedText(ns: NodeSeq): F[String]
   }
 
-  def optional[F[_]](implicit F: MonadEx[F]): XmlTraverser[F, Option] = new XmlTraverser[F, Option] {
+  def mandatory[F[_]](implicit F: MonadEx[F]): XmlTraverser[F] = new XmlTraverser[F] {
 
-    import cats.implicits._
+    override def immediateChildren(ns: NodeSeq, q: String): F[NodeSeq] = {
+      ns \ q match {
+        case value if value.isEmpty => F.raiseError(XmlMissingNodeException(q, ns))
+        case value                  => F.pure(value)
+      }
+    }
 
-    def immediateChildren(ns: NodeSeq, q: String): F[Option[NodeSeq]] =
-      mandatory[F].immediateChildren(ns, q).map[Option[NodeSeq]](Some(_)).orElse(F.pure(None))
+    override def children(ns: NodeSeq, q: String): F[NodeSeq] = {
+      ns \\ q match {
+        case value if value.isEmpty => F.raiseError(XmlMissingNodeException(q, ns))
+        case value                  => F.pure(value)
+      }
+    }
 
-    def children(ns: NodeSeq, q: String): F[Option[NodeSeq]] =
-      mandatory[F].children(ns, q).map[Option[NodeSeq]](Some(_)).orElse(F.pure(None))
+    override def attr(ns: NodeSeq, q: String): F[String] = {
+      ns \@ q match {
+        case value if value.isEmpty => F.raiseError(XmlMissingAttributeException(q, ns))
+        case value                  => F.pure(value)
+      }
+    }
 
-    def attr(ns: NodeSeq, q: String): F[Option[String]] =
-      mandatory[F].attr(ns, q).map[Option[String]](Some(_)).orElse(F.pure(None))
+    override def text(ns: NodeSeq): F[String] = {
+      ns.text match {
+        case value if value.isEmpty => F.raiseError(XmlMissingTextException(ns))
+        case value                  => F.pure(value)
+      }
+    }
 
-    def text(ns: NodeSeq): F[Option[String]] =
-      mandatory[F].text(ns).map[Option[String]](Some(_)).orElse(F.pure(None))
+    override def trimmedText(ns: NodeSeq): F[String] = text(ns).map(_.trim)
+  }
+
+  def optional[F[_]](implicit F: Alternative[F]): XmlTraverser[F] = new XmlTraverser[F] {
+
+    import cats.instances.try_._
+
+    override def immediateChildren(ns: NodeSeq, q: String): F[NodeSeq] =
+      toAlternative(mandatory[Try].immediateChildren(ns, q))
+
+    override def children(ns: NodeSeq, q: String): F[NodeSeq] =
+      toAlternative(mandatory[Try].children(ns, q))
+
+    override def attr(ns: NodeSeq, q: String): F[String] =
+      toAlternative(mandatory[Try].attr(ns, q))
+
+    override def text(ns: NodeSeq): F[String] =
+      toAlternative(mandatory[Try].text(ns))
+
+    private def toAlternative[T](v: Try[T]): F[T] = v match {
+      case Failure(_)     => Alternative[F].empty
+      case Success(value) => Alternative[F].pure(value)
+    }
+
+    override def trimmedText(ns: NodeSeq): F[String] = text(ns).map(_.trim)
   }
 
   object exceptions {

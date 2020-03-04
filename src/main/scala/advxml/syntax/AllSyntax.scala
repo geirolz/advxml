@@ -2,7 +2,7 @@ package advxml.syntax
 
 private[advxml] trait AllSyntax
     extends XmlTransformerSyntax
-    with XmlTraverserAbstractSyntax
+    with XmlTraverserSyntax
     with XmlNormalizerSyntax
     with ConvertersSyntax
     with ValidationSyntax

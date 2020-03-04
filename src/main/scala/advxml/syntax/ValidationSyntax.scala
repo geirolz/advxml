@@ -8,30 +8,30 @@ import scala.util.Try
 private[syntax] trait ValidationSyntax {
 
   implicit class ValidatedExTryOps[A](t: Try[A]) {
-    def toValidatedEx: ValidatedEx[A] = ValidatedEx.fromTry(t)
+    def toValidatedEx: ValidatedNelEx[A] = ValidatedNelEx.fromTry(t)
   }
 
   implicit class ValidatedExEitherOps[A](e: EitherEx[A]) {
-    def toValidatedEx: ValidatedEx[A] = ValidatedEx.fromEither(e)
+    def toValidatedEx: ValidatedNelEx[A] = ValidatedNelEx.fromEither(e)
   }
 
   implicit class ValidatedExEitherNelOps[A](e: EitherNelEx[A]) {
-    def toValidatedEx: ValidatedEx[A] = ValidatedEx.fromEitherNel(e)
+    def toValidatedEx: ValidatedNelEx[A] = ValidatedNelEx.fromEitherNel(e)
   }
 
   implicit class ValidatedExOptionOps[A](e: Option[A]) {
-    def toValidatedEx(ifNone: => Throwable): ValidatedEx[A] = ValidatedEx.fromOption(e, ifNone)
+    def toValidatedEx(ifNone: => Throwable): ValidatedNelEx[A] = ValidatedNelEx.fromOption(e, ifNone)
   }
 
-  implicit class ValidatedExOps[A](validated: ValidatedEx[A]) {
+  implicit class ValidatedExOps[A](validated: ValidatedNelEx[A]) {
 
     def transformE[F[_]](implicit F: MonadEx[F]): F[A] =
-      ValidatedEx.transformE[F, A](validated)(F)
+      ValidatedNelEx.transformE[F, A](validated)(F)
 
     def transformNE[F[_]](implicit F: MonadNelEx[F]): F[A] =
-      ValidatedEx.transformNE[F, A](validated)(F)
+      ValidatedNelEx.transformNE[F, A](validated)(F)
 
     def transformA[F[_]](implicit F: Alternative[F]): F[A] =
-      ValidatedEx.transformA[F, A](validated)(F)
+      ValidatedNelEx.transformA[F, A](validated)(F)
   }
 }

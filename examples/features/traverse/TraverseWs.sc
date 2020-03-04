@@ -1,10 +1,7 @@
-import advxml.syntax.nestedMap._
 import advxml.syntax.traverse.try_._
-
-import scala.util.Try
-import scala.xml.NodeSeq
-import cats.instances.try_._
 import cats.instances.option._
+
+import scala.xml.NodeSeq
 
 //TODO: TO Fix location
 import advxml.instances.transform.predicates._
@@ -25,5 +22,5 @@ val document =
     </Order>
   </Orders>
 
-val order2Opt : Try[Option[NodeSeq]] = (document \? "Order")
-  .nestedMap(_.filter(attrs(("Id", _ == "2"))))
+val order2Opt: Option[NodeSeq] = (document \? "Order")
+    .map(_.filter(attrs(("Id", _ == "2"))))

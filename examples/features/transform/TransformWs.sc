@@ -21,10 +21,11 @@ val document =
     </Order>
   </Orders>
 
-
-val result: Try[NodeSeq] = document.transform((
-  (root \ "Order" filter attrs(("Id", _ == "1")))
-    \ "OrderLines"
-    \ "OrderLine" filter attrs("Id" -> (_ == "2"))
-) ==> Append(<Node>new node!</Node>))
+val result: Try[NodeSeq] = document.transform(
+    (
+      (root \ "Order" filter attrs(("Id", _ == "1")))
+      \ "OrderLines"
+      \ "OrderLine" filter attrs("Id" -> (_ == "2"))
+    ) ==> Append(<Node>new node!</Node>)
+  )
 

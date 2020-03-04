@@ -1,13 +1,14 @@
 package advxml.instances
 
-import advxml.core.validate.{ThrowableNel, ValidatedEx}
+import advxml.core.validate.{ThrowableNel, ValidatedNelEx}
 import advxml.core.validate.exceptions.AggregatedException
 import cats.Eq
 import cats.data.NonEmptyList
 import org.scalatest.funsuite.AnyFunSuite
-import org.typelevel.discipline.scalatest.Discipline
+import org.scalatest.prop.Configuration
+import org.typelevel.discipline.scalatest.FunSuiteDiscipline
 
-class ValidationInstanceTest extends AnyFunSuite with Discipline {
+class ValidationInstanceTest extends AnyFunSuite with FunSuiteDiscipline with Configuration {
 
   import advxml.instances.validate._
   import cats.implicits._
@@ -50,14 +51,14 @@ class ValidationInstanceTest extends AnyFunSuite with Discipline {
   checkAll(
     "MonadTests[ValidatedEx, Throwable]",
     cats.laws.discipline
-      .MonadErrorTests[ValidatedEx, Throwable]
+      .MonadErrorTests[ValidatedNelEx, Throwable]
       .monad[Int, Int, Int] //TODO: monadError
   )
 
   checkAll(
     "MonadTests[ValidatedEx, ThrowableNel]",
     cats.laws.discipline
-      .MonadErrorTests[ValidatedEx, ThrowableNel]
+      .MonadErrorTests[ValidatedNelEx, ThrowableNel]
       .monadError[Int, Int, Int]
   )
 }

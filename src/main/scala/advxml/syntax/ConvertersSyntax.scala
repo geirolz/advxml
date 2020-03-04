@@ -1,7 +1,7 @@
 package advxml.syntax
 
 import advxml.core.convert.{PureConverter, _}
-import advxml.core.validate.ValidatedEx
+import advxml.core.validate.ValidatedNelEx
 import cats.{Applicative, Id, Monad}
 import cats.implicits._
 
@@ -45,7 +45,7 @@ private[syntax] trait ConvertersSyntax {
       * @see [[Converter]] for further information.
       */
     @implicitNotFound("Missing ValidatedConverter to transform object into ValidatedConverter[${B}].")
-    def as[B](implicit F: ValidatedConverter[A, B], i1: DummyImplicit, i2: DummyImplicit): ValidatedEx[B] =
+    def as[B](implicit F: ValidatedConverter[A, B], i1: DummyImplicit, i2: DummyImplicit): ValidatedNelEx[B] =
       ValidatedConverter[A, B].run(a)
   }
 }
