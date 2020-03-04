@@ -1,232 +1,101 @@
 package advxml.syntax
 
+import advxml.core.XmlTraverserContractAsserts
 import org.scalatest.featurespec.AnyFeatureSpec
 
-import scala.language.postfixOps
-import scala.util.{Success, Try}
-import scala.xml.NodeSeq
+import scala.util.Try
 
-/**
-  * Advxml
-  * Created by geirolad on 19/06/2019.
-  *
-  * @author geirolad
-  */
-class XmlTraverserSyntaxTest extends AnyFeatureSpec {
+class XmlTraverserSyntaxTest extends AnyFeatureSpec with XmlTraverserContractAsserts {
 
-  import advxml.syntax.traverse.try_._
-  import cats.instances.option._
-  import cats.instances.try_._
+  Feature("XmlTraverserMandatoryFloatOpsForId") {
 
-  Feature("XmlTraverseSyntaxTest: Read Attributes") {
-    Scenario("Read optional attribute") {
-      val xml =
-        <Employers>
-          <Employee Name="David"/>
-        </Employers>
+    import advxml.syntax.traverse._
+    import cats.instances.try_._
 
-      val name: Option[String] = xml \ "Employee" \@? "Name"
-      val age: Option[String] = xml \ "Employee" \@? "Age"
-
-      assert(name == Some("David"))
-      assert(age.isEmpty)
+    Scenario("\\!") {
+      mandatory.assertImmediateChild((nodeName, doc) => doc.\![Try](nodeName))
     }
 
-    Scenario("Read required attribute") {
-      val xml =
-        <Employers>
-          <Employee Name="David"/>
-        </Employers>
-
-      val name: Try[String] = xml \ "Employee" \@! "Name"
-      val age: Try[String] = xml \ "Employee" \@! "Age"
-
-      assert(name == Success("David"))
-      assert(age.isFailure)
+    Scenario("\\\\!") {
+      mandatory.assertChildren((nodeName, doc) => doc.\\![Try](nodeName))
+    }
+    Scenario("\\@!") {
+      mandatory.assertAttribute((attrName, doc) => doc.\@![Try](attrName))
+    }
+    Scenario("!") {
+      mandatory.assertText(_.![Try])
+    }
+    Scenario("|!|") {
+      mandatory.assertText(_.|!|[Try])
     }
   }
 
-  Feature("XmlTraverseSyntaxTest: Read Immediate Nodes") {
-    Scenario("Read optional immediate nodes") {
-      val xml =
-        <Employers>
-          <Employee Name="David">
-            <Cars>
-              <Car Model="Fiat"/>
-            </Cars>
-          </Employee>
-        </Employers>
+  Feature("XmlTraverserOptionalFloatOpsForId") {
 
-      val cars: Option[NodeSeq] = xml \ "Employee" \? "Cars"
-      val works: Option[NodeSeq] = xml \ "Employee" \? "Works"
+    import advxml.syntax.traverse._
+    import cats.instances.option._
 
-      assert(cars.map(_.length) == Some(1))
-      assert(works.isEmpty)
+    Scenario("\\?") {
+      optional.assertImmediateChild((nodeName, doc) => doc.\?[Option](nodeName))
     }
 
-    Scenario("Read optional immediate nodes waterfall") {
-      val xml =
-        <Employers>
-          <Employee Name="David">
-            <Cars>
-              <Car Model="Fiat"/>
-            </Cars>
-          </Employee>
-        </Employers>
-
-      val cars: Option[NodeSeq] = xml \? "Employee" \? "Cars"
-      val works: Option[NodeSeq] = xml \? "Employee" \? "Works"
-      val data: Option[NodeSeq] = xml \? "Other" \? "Data"
-
-      assert(cars.map(_.length) == Some(1))
-      assert(works.isEmpty)
-      assert(data.isEmpty)
+    Scenario("\\\\?") {
+      optional.assertChildren((nodeName, doc) => doc.\\?[Option](nodeName))
     }
-
-    Scenario("Read required immediate nodes") {
-      val xml =
-        <Employers>
-          <Employee Name="David">
-            <Cars>
-              <Car Model="Fiat"/>
-            </Cars>
-          </Employee>
-        </Employers>
-
-      val cars: Try[NodeSeq] = xml \ "Employee" \! "Cars"
-      val works: Try[NodeSeq] = xml \ "Employee" \! "Works"
-
-      assert(cars.map(_.length) == Success(1))
-      assert(works.isFailure)
+    Scenario("\\@?") {
+      optional.assertAttribute((attrName, doc) => doc.\@?[Option](attrName))
     }
-
-    Scenario("Read required immediate nodes waterfall") {
-      val xml =
-        <Employers>
-          <Employee Name="David">
-            <Cars>
-              <Car Model="Fiat"/>
-            </Cars>
-          </Employee>
-        </Employers>
-
-      val cars: Try[NodeSeq] = xml \! "Employee" \! "Cars"
-      val works: Try[NodeSeq] = xml \! "Employee" \! "Works"
-      val data: Try[NodeSeq] = xml \! "Other" \! "Data"
-
-      assert(cars.map(_.length) == Success(1))
-      assert(works.isFailure)
-      assert(data.isFailure)
+    Scenario("?") {
+      optional.assertText(_.?[Option])
+    }
+    Scenario("|?|") {
+      optional.assertText(_.|?|[Option])
     }
   }
 
-  Feature("XmlTraverseSyntaxTest: Read nested Nodes") {
-    Scenario("Read optional nested nodes") {
-      val xml =
-        <Employers>
-          <Employee Name="David">
-            <Cars>
-              <Car Model="Fiat"/>
-            </Cars>
-          </Employee>
-        </Employers>
+  Feature("XmlTraverserMandatoryFixedOps") {
 
-      val cars: Option[NodeSeq] = xml \\? "Cars"
-      val works: Option[NodeSeq] = xml \\? "Works"
+    import advxml.syntax.traverse.try_._
+    import cats.instances.try_._
 
-      assert(cars.map(_.length) == Some(1))
-      assert(works.isEmpty)
+    Scenario("\\!") {
+      mandatory.assertImmediateChild((nodeName, doc) => doc.\!(nodeName))
     }
 
-    Scenario("Read required nested nodes") {
-      val xml =
-        <Employers>
-          <Employee Name="David">
-            <Cars>
-              <Car Model="Fiat"/>
-            </Cars>
-          </Employee>
-        </Employers>
-
-      val cars: Try[NodeSeq] = xml \\! "Cars"
-      val works: Try[NodeSeq] = xml \\! "Works"
-
-      assert(cars.map(_.length) == Success(1))
-      assert(works.isFailure)
+    Scenario("\\\\!") {
+      mandatory.assertChildren((nodeName, doc) => doc.\\!(nodeName))
+    }
+    Scenario("\\@!") {
+      mandatory.assertAttribute((attrName, doc) => doc.\@!(attrName))
+    }
+    Scenario("!") {
+      mandatory.assertText(_.!)
+    }
+    Scenario("|!|") {
+      mandatory.assertText(_.|!|)
     }
   }
 
-  Feature("XmlTraverseSyntaxTest: Read content") {
-    Scenario("Read optional text") {
-      val noteData = "This is a test"
-      val xml =
-        <Employers>
-          <Employee Name="David">
-            <Note>
-              {noteData}
-            </Note>
-          </Employee>
-        </Employers>
+  Feature("XmlTraverserOptionalFloatOpsForId") {
 
-      val note: Option[String] = xml \ "Employee" \ "Note" |?|
-      val works: Option[String] = xml \ "Employee" \ "Works" |?|
+    import advxml.syntax.traverse.option._
+    import cats.instances.option._
 
-      assert(note === Some(noteData))
-      assert(works.isEmpty)
+    Scenario("\\?") {
+      optional.assertImmediateChild((nodeName, doc) => doc.\?(nodeName))
     }
 
-    Scenario("Read optional text waterfall") {
-      val noteData = "This is a test"
-      val xml =
-        <Employers>
-          <Employee Name="David">
-            <Note>
-              {noteData}
-            </Note>
-          </Employee>
-        </Employers>
-
-      val note: Option[String] = xml \? "Employee" \? "Note" |?|
-      val works: Option[String] = xml \? "Employee" \? "Works" |?|
-
-      assert(note === Some(noteData))
-      assert(works.isEmpty)
+    Scenario("\\\\?") {
+      optional.assertChildren((nodeName, doc) => doc.\\?(nodeName))
     }
-
-    Scenario("Read required text") {
-      val noteData = "This is a test"
-      val xml =
-        <Employers>
-          <Employee Name="David">
-            <Note>
-              {noteData}
-            </Note>
-          </Employee>
-        </Employers>
-
-      val note: Try[String] = xml \ "Employee" \ "Note" |!|
-      val works: Try[String] = xml \ "Employee" \ "Works" |!|
-
-      assert(note.map(_.trim) == Success(noteData))
-      assert(works.isFailure)
+    Scenario("\\@?") {
+      optional.assertAttribute((attrName, doc) => doc.\@?(attrName))
     }
-
-    Scenario("Read required text waterfall") {
-      val noteData = "This is a test"
-      val xml =
-        <Employers>
-          <Employee Name="David">
-            <Note>
-              {noteData}
-            </Note>
-          </Employee>
-        </Employers>
-
-      val note: Try[String] = xml \ "Employee" \ "Note" |!|
-      val works: Try[String] = xml \! "Employee" \! "Works" |!|
-
-      assert(note.map(_.trim) == Success(noteData))
-      assert(works.isFailure)
+    Scenario("?") {
+      optional.assertText(_.?)
+    }
+    Scenario("|?|") {
+      optional.assertText(_.|?|)
     }
   }
 }
