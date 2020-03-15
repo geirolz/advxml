@@ -1,101 +1,76 @@
 package advxml.syntax
 
-import advxml.core.XmlTraverserContractAsserts
+import advxml.core.XmlTraverserTest
+import advxml.core.XmlTraverserTest.ContractFuncs
+import advxml.test.FeatureSpecContract
 import org.scalatest.featurespec.AnyFeatureSpec
 
 import scala.util.Try
 
-class XmlTraverserSyntaxTest extends AnyFeatureSpec with XmlTraverserContractAsserts {
+class XmlTraverserSyntaxTest extends AnyFeatureSpec with FeatureSpecContract {
 
-  Feature("XmlTraverserMandatoryFloatOpsForId") {
+  import advxml.syntax.traverse._
 
-    import advxml.syntax.traverse._
-    import cats.instances.try_._
+  // format: off
+  //########################## FLOAT ##########################
+  XmlTraverserTest.Contract[Try](
+    "Syntax.Float.Mandatory",
+    {
+      import cats.instances.try_._
+      ContractFuncs(
+        immediateChild    = (doc, nodeName) => doc.\![Try](nodeName),
+        children          = (doc, nodeName) => doc.\\![Try](nodeName),
+        attribute         = (doc, attrName) => doc.\@![Try](attrName),
+        text              = _.![Try],
+        trimmedText       = _.|!|[Try]
+      )
+    }
+  )(XmlTraverserTest.TryExtractor).runAll()
 
-    Scenario("\\!") {
-      mandatory.assertImmediateChild((nodeName, doc) => doc.\![Try](nodeName))
+  XmlTraverserTest.Contract[Option](
+    "Syntax.Float.Optional",
+    {
+      import cats.instances.option._
+      ContractFuncs(
+        immediateChild      = (doc, nodeName) => doc.\?[Option](nodeName),
+        children            = (doc, nodeName) => doc.\\?[Option](nodeName),
+        attribute           = (doc, attrName) => doc.\@?[Option](attrName),
+        text                = _.?[Option],
+        trimmedText         = _.|?|[Option]
+      )
     }
+  )(XmlTraverserTest.OptionExtractor).runAll()
 
-    Scenario("\\\\!") {
-      mandatory.assertChildren((nodeName, doc) => doc.\\![Try](nodeName))
-    }
-    Scenario("\\@!") {
-      mandatory.assertAttribute((attrName, doc) => doc.\@![Try](attrName))
-    }
-    Scenario("!") {
-      mandatory.assertText(_.![Try])
-    }
-    Scenario("|!|") {
-      mandatory.assertTrimmedText(_.|!|[Try])
-    }
-  }
 
-  Feature("XmlTraverserOptionalFloatOpsForId") {
+  //########################## FIXED ##########################
+  XmlTraverserTest.Contract[Try](
+    "Syntax.Fixed.Mandatory",
+    {
+      import cats.instances.try_._
+      import advxml.syntax.traverse.try_._
+      ContractFuncs(
+        immediateChild      = (doc, nodeName) => doc.\!(nodeName),
+        children            = (doc, nodeName) => doc.\\!(nodeName),
+        attribute           = (doc, attrName) => doc.\@!(attrName),
+        text                = _.!,
+        trimmedText         = _.|!|
+      )
+    }
+  )(XmlTraverserTest.TryExtractor).runAll()
 
-    import advxml.syntax.traverse._
-    import cats.instances.option._
-
-    Scenario("\\?") {
-      optional.assertImmediateChild((nodeName, doc) => doc.\?[Option](nodeName))
+  XmlTraverserTest.Contract[Option](
+    "Syntax.Fixed.Optional",
+    {
+      import cats.instances.option._
+      import advxml.syntax.traverse.option._
+      ContractFuncs(
+        immediateChild      = (doc, nodeName) => doc.\?(nodeName),
+        children            = (doc, nodeName) => doc.\\?(nodeName),
+        attribute           = (doc, attrName) => doc.\@?(attrName),
+        text                = _.?,
+        trimmedText         = _.|?|
+      )
     }
-
-    Scenario("\\\\?") {
-      optional.assertChildren((nodeName, doc) => doc.\\?[Option](nodeName))
-    }
-    Scenario("\\@?") {
-      optional.assertAttribute((attrName, doc) => doc.\@?[Option](attrName))
-    }
-    Scenario("?") {
-      optional.assertText(_.?[Option])
-    }
-    Scenario("|?|") {
-      optional.assertTrimmedText(_.|?|[Option])
-    }
-  }
-
-  Feature("XmlTraverserMandatoryFixedOps") {
-
-    import advxml.syntax.traverse.try_._
-    import cats.instances.try_._
-
-    Scenario("\\!") {
-      mandatory.assertImmediateChild((nodeName, doc) => doc.\!(nodeName))
-    }
-
-    Scenario("\\\\!") {
-      mandatory.assertChildren((nodeName, doc) => doc.\\!(nodeName))
-    }
-    Scenario("\\@!") {
-      mandatory.assertAttribute((attrName, doc) => doc.\@!(attrName))
-    }
-    Scenario("!") {
-      mandatory.assertText(_.!)
-    }
-    Scenario("|!|") {
-      mandatory.assertTrimmedText(_.|!|)
-    }
-  }
-
-  Feature("XmlTraverserOptionalFixedOps") {
-
-    import advxml.syntax.traverse.option._
-    import cats.instances.option._
-
-    Scenario("\\?") {
-      optional.assertImmediateChild((nodeName, doc) => doc.\?(nodeName))
-    }
-
-    Scenario("\\\\?") {
-      optional.assertChildren((nodeName, doc) => doc.\\?(nodeName))
-    }
-    Scenario("\\@?") {
-      optional.assertAttribute((attrName, doc) => doc.\@?(attrName))
-    }
-    Scenario("?") {
-      optional.assertText(_.?)
-    }
-    Scenario("|?|") {
-      optional.assertTrimmedText(_.|?|)
-    }
-  }
+  )(XmlTraverserTest.OptionExtractor).runAll()
+  // format: on
 }

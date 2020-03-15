@@ -1,8 +1,10 @@
 package advxml.syntax
 
-import advxml.core.XmlNormalizerAsserts
-import org.scalatest.Assertion
+import advxml.core.XmlNormalizerTest
+import advxml.core.XmlNormalizerTest.ContractFuncs
+import advxml.test.FunSuiteContract
 import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.Assertion
 
 import scala.xml.NodeSeq
 
@@ -12,39 +14,41 @@ import scala.xml.NodeSeq
   *
   * @author geirolad
   */
-class XmlNormalizerSyntaxTest extends AnyFunSuite with XmlNormalizerAsserts {
+class XmlNormalizerSyntaxTest extends AnyFunSuite with FunSuiteContract {
 
   import advxml.syntax.normalize._
 
-  test("XmlNormalizer - Normalize | with Elem") {
-    assert_normalized_Equals(n => n.normalize)
+  XmlNormalizerTest
+    .Contract(
+      "Syntax", {
+        ContractFuncs(
+          normalizeAction = _.normalize,
+          normalizedEqualsAction = (v1, v2) => v1.normalizedEquals(v2)
+        )
+      }
+    )
+    .runAll()
+
+  XmlNormalizerTest
+    .Contract(
+      "Syntax.Symbols", {
+        ContractFuncs(
+          normalizeAction = _.normalize,
+          normalizedEqualsAction = (v1, v2) => v1 === v2
+        )
+      }
+    )
+    .runAll()
+
+  test("[XmlNormalizer.Syntax.Symbols] - Equality.NotEqualsMethod") {
+    assertEqualityNotEquals((v1, v2) => v1 |!=| v2)
   }
 
-  test("XmlNormalizer - Normalize | with Comment | NOT SUPPORTED -> NO ACTIONS") {
-    assert_normalized_unsupported_NodeSeq(_.normalize)
+  test("[XmlNormalizer.Syntax.Symbols] - Equality.NotEqualsMethod[Scalatric]") {
+    assertEqualityNotEquals((v1, v2) => v1 !== v2)
   }
 
-  test("XmlNormalizer - Equality - with normalizedEquals") {
-    assert_equality_Equals((v1, v2) => v1.normalizedEquals(v2))
-  }
-
-  test("XmlNormalizer - Equality") {
-    assert_equality_Equals((v1, v2) => v1 |==| v2)
-  }
-
-  test("XmlNormalizer - Equality | Not equals") {
-    assert_equality_notEquals((v1, v2) => v1 |!=| v2)
-  }
-
-  test("XmlNormalizer - Equality | with Scalatric") {
-    assert_equality_Equals((v1, v2) => v1 === v2)
-  }
-
-  test("XmlNormalizer - Equality | Not equals | with Scalatric") {
-    assert_equality_notEquals((v1, v2) => v1 !== v2)
-  }
-
-  private def assert_equality_notEquals(p: (NodeSeq, NodeSeq) => Boolean): Assertion = {
+  private def assertEqualityNotEquals(p: (NodeSeq, NodeSeq) => Boolean): Assertion = {
     val v1 =
       <Cars>
         <Car V1="1"/>
