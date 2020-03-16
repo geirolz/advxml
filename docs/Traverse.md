@@ -32,8 +32,8 @@ handle the presence of what you are looking for.
 - _\\!_ mandatory node
 
 *Nested nodes*
-- _\\\?_ optional nested node
-- _\\\!_ mandatory nested node
+- _\\\\\?_ optional nested node
+- _\\\\\!_ mandatory nested node
 
 *Text*
 - _?_ optional text
