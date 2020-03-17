@@ -1,87 +1,34 @@
 package advxml.syntax
 
-import advxml.core.validate.{EitherEx, EitherNelEx, ValidatedExAsserts}
+import advxml.core.validate.{EitherEx, EitherNelEx, ValidateExTest}
+import advxml.core.validate.ValidateExTest.ContractFuncs
+import advxml.test.FunSuiteContract
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Try
 
-class ValidationSyntaxTest extends AnyFunSuite with ValidatedExAsserts {
+class ValidationSyntaxTest extends AnyFunSuite with FunSuiteContract {
 
-  import advxml.syntax.validate._
-
-  //Transform
-  test("Test ValidatedEx.transformE[Try] - Valid") {
-    import cats.instances.try_._
-    assert_ValidatedEx_to_Try_Valid(_.transformE[Try])
-  }
-
-  test("Test ValidatedEx.transformE[Try] - Invalid") {
-    import cats.instances.try_._
-    assert_ValidatedEx_to_Try_Invalid(_.transformE[Try])
-  }
-
-  test("Test ValidatedEx.transformE[EitherEx] - Valid") {
-    import cats.instances.either._
-    assert_ValidatedEx_to_EitherEx_Valid(_.transformE[EitherEx])
-  }
-
-  test("Test ValidatedEx.transformE[EitherEx] - Invalid") {
-    import cats.instances.either._
-    assert_ValidatedEx_to_EitherEx_Invalid(_.transformE[EitherEx])
-  }
-
-  test("Test ValidatedEx.transformE[EitherNelEx] - Valid") {
-    import cats.instances.either._
-    assert_ValidatedEx_to_EitherNelEx_Valid(_.transformNE[EitherNelEx])
-  }
-
-  test("Test ValidatedEx.transformE[EitherNelEx] - Invalid") {
-    import cats.instances.either._
-    assert_ValidatedEx_to_EitherNelEx_Invalid(_.transformNE[EitherNelEx])
-  }
-
-  test("Test ValidatedEx.transformA[Option] - Valid") {
-    import cats.instances.option._
-    assert_ValidatedEx_to_Option_Valid(_.transformA[Option])
-  }
-
-  test("Test ValidatedEx.transformA[Option] - Invalid") {
-    import cats.instances.option._
-    assert_ValidatedEx_to_Option_Valid(_.transformA[Option])
-  }
-
-  //Try
-  test("Test Try.toValidatedEx - Success") {
-    assert_Try_Success(_.toValidatedEx)
-  }
-
-  test("Test Try.toValidatedEx - Failure") {
-    assert_Try_Failure(_.toValidatedEx)
-  }
-
-  //Either
-  test("Test EitherEx.toValidatedEx - Right") {
-    assert_EitherEx_Right(_.toValidatedEx)
-  }
-
-  test("Test EitherEx.toValidatedEx - Left") {
-    assert_EitherEx_Left(_.toValidatedEx)
-  }
-
-  test("Test EitherNelEx.toValidatedEx - Right") {
-    assert_EitherNelEx_Right(_.toValidatedEx)
-  }
-
-  test("Test EitherNelEx.toValidatedEx - Left") {
-    assert_EitherNelEx_Left(_.toValidatedEx)
-  }
-
-  //Option
-  test("Test Option.toValidatedEx - Some") {
-    assert_Option_Some((optionValue, ex) => optionValue.toValidatedEx(ex))
-  }
-
-  test("Test Option.toValidatedEx - None") {
-    assert_Option_None((optionValue, ex) => optionValue.toValidatedEx(ex))
-  }
+  // format: off
+  ValidateExTest.Contract(
+    "Syntax",
+    {
+      import advxml.syntax.validate._
+      import cats.instances.either._
+      import cats.instances.option._
+      import cats.instances.try_._
+      
+      ContractFuncs(
+        toTry           = _.transformE[Try],
+        fromTry         = _.toValidatedEx,
+        toEitherEx      = _.transformE[EitherEx],
+        fromEitherEx    = _.toValidatedEx,
+        toEitherNelEx   = _.transformNE[EitherNelEx],
+        fromEitherNelEx = _.toValidatedEx,
+        toOption        = _.transformA[Option],
+        fromOption      = (optionValue, ex) => optionValue.toValidatedEx(ex)
+      )
+    }
+  ).runAll()
+  // format: on
 }
