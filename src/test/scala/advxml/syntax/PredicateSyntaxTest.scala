@@ -1,25 +1,32 @@
 package advxml.syntax
 
-import advxml.core.PredicateAsserts
+import advxml.core.PredicateTests
+import advxml.test.FunSuiteContract
 import org.scalatest.funsuite.AnyFunSuite
 
-class PredicateSyntaxTest extends AnyFunSuite with PredicateAsserts {
+class PredicateSyntaxTest extends AnyFunSuite with FunSuiteContract {
 
   import advxml.syntax.predicate._
 
-  test("Combine two predicate with in and - && syntax") {
-    testAnd((p1, p2) => p1 && p2)
-  }
+  PredicateTests
+    .Contract(
+      "Syntax", {
+        PredicateTests.ContractFuncs(
+          and = (p1, p2) => p1.and(p2),
+          or = (p1, p2) => p1.or(p2)
+        )
+      }
+    )
+    .runAll()
 
-  test("Combine two predicate with in or - || syntax") {
-    testOr((p1, p2) => p1 || p2)
-  }
-
-  test("Combine two predicate with in and - and syntax") {
-    testAnd((p1, p2) => p1.and(p2))
-  }
-
-  test("Combine two predicate with in or - or syntax") {
-    testOr((p1, p2) => p1.or(p2))
-  }
+  PredicateTests
+    .Contract(
+      "Syntax.Symbols", {
+        PredicateTests.ContractFuncs(
+          and = (p1, p2) => p1 && p2,
+          or = (p1, p2) => p1 || p2
+        )
+      }
+    )
+    .runAll()
 }
