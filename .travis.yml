@@ -1,5 +1,5 @@
 # Use container-based infrastructure
-sudo: false
+os: linux
 dist: xenial
 
 language: scala
@@ -47,6 +47,7 @@ before_cache:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -Ls https://coverage.codacy.com/get.sh)
 
 before_install:
   - git fetch --tags
