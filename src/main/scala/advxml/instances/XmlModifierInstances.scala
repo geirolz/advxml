@@ -15,7 +15,7 @@ private[instances] trait XmlModifierInstances {
   /**
     * No-Action modifiers, equals to `Replace` passing an identity function.
     */
-  lazy val NoAction: Replace = Replace(identity[NodeSeq])
+  lazy val NoAction: ComposableXmlModifier = Replace(identity[NodeSeq])
 
   /**
     * Prepend nodes to current nodes.
