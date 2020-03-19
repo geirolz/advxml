@@ -62,10 +62,12 @@ object XmlZoomTest {
 
       val doc: Elem = <Root>
         <N1 T1="V1"/>
+        <N1 T2="V2"/>
       </Root>
       val xmlZoom: XmlZoom = f.immediateDownAction(root, "N1")
-      val result: Option[ZoomedNode] = xmlZoom(doc)
-      assert(result.get.node |==| <N1 T1="V1"/>)
+      val result: Option[ZoomedNodeSeq] = xmlZoom(doc)
+      assert(result.get.nodeSeq(0) |==| <N1 T1="V1"/>)
+      assert(result.get.nodeSeq(1) |==| <N1 T2="V2"/>)
     }
 
     test("filterTest") {

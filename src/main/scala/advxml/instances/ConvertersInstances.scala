@@ -1,17 +1,24 @@
 package advxml.instances
 
-import advxml.core.convert.Converter
+import advxml.core.convert.{Converter, PureConverter}
+import advxml.core.utils.XmlUtils
 import advxml.core.validate.MonadEx
 import cats.Applicative
 
 import scala.util.Try
-import scala.xml.Text
+import scala.xml.{Elem, Node, Text}
 
-private[instances] trait ConvertersInstances extends CommonConvertersInstances with TextConverterInstances
+private[instances] trait ConvertersInstances
+    extends CommonConvertersInstances
+    with UtilsConvertersInstances
+    with TextConverterInstances
 
 private[instances] sealed trait CommonConvertersInstances {
   implicit def identityConverter[F[_]: Applicative, A]: Converter[F, A, A] = Converter.id[F, A]
-//  implicit def pureIdentityConverter[A]: PureConverter[A, A] = PureConverter.id[A]
+}
+
+private[instances] sealed trait UtilsConvertersInstances {
+  implicit def node_to_elem: PureConverter[Node, Elem] = PureConverter.of(XmlUtils.nodeToElem)
 }
 
 private[instances] sealed trait TextConverterInstances {

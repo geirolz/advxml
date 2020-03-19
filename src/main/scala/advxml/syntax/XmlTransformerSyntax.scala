@@ -16,7 +16,6 @@ import scala.xml.{NodeSeq, Text}
 private[syntax] trait XmlTransformerSyntax extends RuleSyntax with ModifierSyntax with ZoomSyntax {
 
   implicit class XmlTransformerOps(root: NodeSeq) {
-
     def transform[F[_]: MonadEx](rule: XmlRule, rules: XmlRule*): F[NodeSeq] =
       XmlTransformer.transform(root, rule +: rules)
   }

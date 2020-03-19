@@ -1,7 +1,8 @@
 package advxml.core.transform
 
-import advxml.core.transform.actions.{XmlModifier, XmlZoom, ZoomedNode}
+import advxml.core.transform.actions.{XmlModifier, XmlZoom, ZoomedNodeSeq}
 import advxml.core.transform.exceptions.EmptyTargetException
+import advxml.core.utils.XmlUtils
 import advxml.core.validate.MonadEx
 import advxml.instances.transform._
 import cats.kernel.Monoid
@@ -22,23 +23,29 @@ object XmlTransformer {
 
       for {
         target <- zoom[Option](root) match {
-          case Some(target_) => F.pure[ZoomedNode](target_)
-          case None          => F.raiseError[ZoomedNode](EmptyTargetException(root, zoom))
+          case Some(target_) => F.pure[ZoomedNodeSeq](target_)
+          case None          => F.raiseError[ZoomedNodeSeq](EmptyTargetException(root, zoom))
         }
-        targetNode = target.node
+        targetNodeSeq = target.nodeSeq
         targetParents = target.parents
-        updatedTarget <- modifier[F](targetNode)
+        updatedTarget <- modifier[F](targetNodeSeq)
         updatedWholeDocument = {
           targetParents
-            .foldRight((targetNode, updatedTarget))((parent, originalUpdatedTuple) => {
-              val (original, updated) = originalUpdatedTuple
-              parent -> parent.flatMap { case e: Elem =>
-                val originalIndex = e.child.indexWhere(x => original.xml_sameElements(x))
-                val updatedChild = e.child.updated(originalIndex, updated).flatten
-                e.copy(child = updatedChild)
-              }
-            })
-            ._2
+            .foldRight(XmlPatch.const(targetNodeSeq, updatedTarget))((parent, patch) =>
+              XmlPatch(
+                parent,
+                _.flatMap { case e: Elem =>
+                  XmlUtils.flatMapChildren(
+                    e,
+                    n =>
+                      patch.zipWithUpdated
+                        .getOrElse(Some(n), Some(n))
+                        .getOrElse(NodeSeq.Empty)
+                  )
+                }
+              )
+            )
+            .updated
         }
       } yield updatedWholeDocument
     }
