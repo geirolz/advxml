@@ -50,7 +50,7 @@ class StressTest extends AnyFunSuite {
     )
 
     assert(result.isSuccess)
-    assert(z[Option](result.get).get.node \@ "TEST" == "1")
-    assert(z[Option](result.get).get.node \@ "TEST2" == "100")
+    assert(z[Option](result.get).get.nodeSeq \@ "TEST" == "1")
+    assert(z[Option](result.get).get.nodeSeq \@ "TEST2" == "100")
   }
 }

@@ -1,6 +1,6 @@
 package advxml.core.transform
 
-import advxml.core.transform.actions.{XmlModifier, XmlZoom, ZoomedNode}
+import advxml.core.transform.actions.{XmlModifier, XmlZoom, ZoomedNodeSeq}
 import advxml.core.transform.exceptions.EmptyTargetException
 import advxml.core.validate.MonadEx
 import advxml.instances.transform._
@@ -22,15 +22,15 @@ object XmlTransformer {
 
       for {
         target <- zoom[Option](root) match {
-          case Some(target_) => F.pure[ZoomedNode](target_)
-          case None          => F.raiseError[ZoomedNode](EmptyTargetException(root, zoom))
+          case Some(target_) => F.pure[ZoomedNodeSeq](target_)
+          case None          => F.raiseError[ZoomedNodeSeq](EmptyTargetException(root, zoom))
         }
-        targetNode = target.node
+        targetNodeSeq = target.nodeSeq
         targetParents = target.parents
-        updatedTarget <- modifier[F](targetNode)
+        updatedTarget <- modifier[F](targetNodeSeq)
         updatedWholeDocument = {
           targetParents
-            .foldRight((targetNode, updatedTarget))((parent, originalUpdatedTuple) => {
+            .foldRight((targetNodeSeq, updatedTarget))((parent, originalUpdatedTuple) => {
               val (original, updated) = originalUpdatedTuple
               parent -> parent.flatMap {
                 case e: Elem =>

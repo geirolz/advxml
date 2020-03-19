@@ -6,8 +6,8 @@ import cats.Alternative
 
 import scala.xml.NodeSeq
 
-sealed trait ZoomedNode {
-  val node: NodeSeq
+sealed trait ZoomedNodeSeq {
+  val nodeSeq: NodeSeq
   val parents: List[NodeSeq]
 }
 
@@ -25,23 +25,23 @@ case class XmlZoom private (zoomActions: List[ZoomAction]) {
   def filter(p: XmlPredicate): XmlZoom =
     XmlZoom(zoomActions :+ Filter(p))
 
-  def apply[F[_]](wholeDocument: NodeSeq)(implicit F: Alternative[F]): F[ZoomedNode] = {
+  def apply[F[_]](wholeDocument: NodeSeq)(implicit F: Alternative[F]): F[ZoomedNodeSeq] = {
 
-    case class ZoomedNodeImpl(node: NodeSeq, parents: List[NodeSeq]) extends ZoomedNode
+    case class ZoomedNodeSeqImpl(nodeSeq: NodeSeq, parents: List[NodeSeq]) extends ZoomedNodeSeq
 
     @scala.annotation.tailrec
-    def rec(current: ZoomedNode, zActions: List[ZoomAction]): F[ZoomedNode] = {
+    def rec(current: ZoomedNodeSeq, zActions: List[ZoomAction]): F[ZoomedNodeSeq] = {
       zActions.headOption match {
         case None => F.pure(current)
-        case Some(f @ ImmediateDown(_)) if f.predicate(current.node) =>
-          rec(ZoomedNodeImpl(f(current.node), current.parents :+ current.node), zActions.tail)
+        case Some(f @ ImmediateDown(_)) if f.predicate(current.nodeSeq) =>
+          rec(ZoomedNodeSeqImpl(f(current.nodeSeq), current.parents :+ current.nodeSeq), zActions.tail)
         case Some(f @ Filter(_)) =>
-          rec(ZoomedNodeImpl(f(current.node), current.parents), zActions.tail)
+          rec(ZoomedNodeSeqImpl(f(current.nodeSeq), current.parents), zActions.tail)
         case _ => F.empty
       }
     }
 
-    rec(ZoomedNodeImpl(wholeDocument, Nil), this.zoomActions)
+    rec(ZoomedNodeSeqImpl(wholeDocument, Nil), this.zoomActions)
   }
 }
 

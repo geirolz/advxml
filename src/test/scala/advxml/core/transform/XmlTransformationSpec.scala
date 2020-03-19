@@ -41,7 +41,7 @@ object XmlTransformationSpec extends Properties("XmlTransformationSpec") {
     val result: Try[NodeSeq] = base.transform[Try](rule)
     val targetUpdated: NodeSeq = result.toOption
       .flatMap(zoom(_))
-      .map(_.node)
+      .map(_.nodeSeq)
       .get
 
     (targetUpdated \ newElem.label).nonEmpty
@@ -53,7 +53,7 @@ object XmlTransformationSpec extends Properties("XmlTransformationSpec") {
     val result: Try[NodeSeq] = base.transform[Try](rule)
     val targetUpdated: NodeSeq = result.toOption
       .flatMap(zoom(_))
-      .map(_.node)
+      .map(_.nodeSeq)
       .get
 
     (targetUpdated \ newElem.label).nonEmpty
