@@ -4,7 +4,7 @@ import advxml.core.transform.exceptions.EmptyTargetException
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Try
-import scala.xml.NodeSeq
+import scala.xml.{Elem, NodeSeq}
 
 class XmlTransformerSyntaxTest extends AnyFunSuite {
 
@@ -27,6 +27,47 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
 
     assert(result.isFailure)
     assert(result.failed.get.isInstanceOf[EmptyTargetException])
+  }
+
+  test("Transform XML map nested element") {
+    import advxml.implicits._
+    import cats.instances.try_._
+
+    val pets =
+      <Pet>
+        <Cat a="TEST">
+          <Kitty>small</Kitty>
+          <Kitty>big</Kitty>
+          <Kitty>large</Kitty>
+        </Cat>
+        <Dog>
+          <Kitty>large</Kitty>
+        </Dog>
+      </Pet>
+
+    val result: NodeSeq = pets
+      .transform(
+        (> \ "Cat") ==> Replace(oldCatNode => {
+          oldCatNode.head.asPure[Elem].copy(child = oldCatNode \ "Kitty" map (k => <c>
+            {k.text}
+          </c>))
+        })
+      )
+      .get
+
+    assert(
+      result ===
+        <Pet>
+        <Cat a="TEST">
+          <c>small</c>
+          <c>big</c>
+          <c>large</c>
+        </Cat>
+        <Dog>
+          <Kitty>large</Kitty>
+        </Dog>
+      </Pet>
+    )
   }
 
   test("Transform XML with equals nodes in different paths") {

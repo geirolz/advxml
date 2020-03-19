@@ -27,7 +27,8 @@ private[syntax] trait ConvertersSyntax {
       * @see [[Converter]] for further information.
       */
     @implicitNotFound("Missing Converter to transform object into ${F} of ${B}.")
-    def as[F[_], B](implicit F: Converter[F, A, B]): F[B] = Converter[F, A, B].run(a)
+    def asF[F[_], B](implicit F: Converter[F, A, B]): F[B] =
+      Converter[F, A, B].run(a)
 
     /**
       * Convert [[A]] into [[B]] using implicit [[PureConverter]] if available
@@ -36,7 +37,8 @@ private[syntax] trait ConvertersSyntax {
       * @see [[PureConverter]] for further information.
       */
     @implicitNotFound("Missing PureConverter to transform object into ${B}.")
-    def as[B](implicit F: PureConverter[A, B], i1: DummyImplicit): B = PureConverter[A, B].run(a)
+    def asPure[B](implicit F: PureConverter[A, B]): B =
+      PureConverter[A, B].run(a)
 
     /**
       * Convert [[A]] into [[B]] using implicit [[ValidatedConverter]] if available
@@ -45,7 +47,29 @@ private[syntax] trait ConvertersSyntax {
       * @see [[Converter]] for further information.
       */
     @implicitNotFound("Missing ValidatedConverter to transform object into ValidatedConverter[${B}].")
-    def as[B](implicit F: ValidatedConverter[A, B], i1: DummyImplicit, i2: DummyImplicit): ValidatedNelEx[B] =
+    def asValidated[B](implicit F: ValidatedConverter[A, B]): ValidatedNelEx[B] =
       ValidatedConverter[A, B].run(a)
+
+    //************************************** ALIASES **************************************
+    /**
+      * Alias to [[AnyConvertersOps.asF]]
+      */
+    @implicitNotFound("Missing Converter to transform object into ${F} of ${B}.")
+    def as[F[_], B](implicit F: Converter[F, A, B]): F[B] =
+      asF[F, B]
+
+    /**
+      * Alias to [[AnyConvertersOps.asPure]]
+      */
+    @implicitNotFound("Missing PureConverter to transform object into ${B}.")
+    def as[B](implicit F: PureConverter[A, B], i1: DummyImplicit): B =
+      asPure[B]
+
+    /**
+      * Alias to [[AnyConvertersOps.asValidated]]
+      */
+    @implicitNotFound("Missing ValidatedConverter to transform object into ValidatedConverter[${B}].")
+    def as[B](implicit F: ValidatedConverter[A, B], i1: DummyImplicit, i2: DummyImplicit): ValidatedNelEx[B] =
+      asValidated[B]
   }
 }

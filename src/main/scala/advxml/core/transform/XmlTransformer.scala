@@ -2,6 +2,7 @@ package advxml.core.transform
 
 import advxml.core.transform.actions.{XmlModifier, XmlZoom, ZoomedNodeSeq}
 import advxml.core.transform.exceptions.EmptyTargetException
+import advxml.core.utils.XmlUtils
 import advxml.core.validate.MonadEx
 import advxml.instances.transform._
 import cats.kernel.Monoid
@@ -30,16 +31,19 @@ object XmlTransformer {
         updatedTarget <- modifier[F](targetNodeSeq)
         updatedWholeDocument = {
           targetParents
-            .foldRight((targetNodeSeq, updatedTarget))((parent, originalUpdatedTuple) => {
-              val (original, updated) = originalUpdatedTuple
-              parent -> parent.flatMap {
+            .foldRight(XmlPatch(targetNodeSeq, updatedTarget))((parent, patch) =>
+              XmlPatch(parent)(_.flatMap {
                 case e: Elem =>
-                  val originalIndex = e.child.indexWhere(x => original.xml_sameElements(x))
-                  val updatedChild = e.child.updated(originalIndex, updated).flatten
-                  e.copy(child = updatedChild)
-              }
-            })
-            ._2
+                  XmlUtils.flatMapChildren(
+                    e,
+                    n =>
+                      patch.zipWithUpdated
+                        .getOrElse(Some(n), Some(n))
+                        .getOrElse(NodeSeq.Empty)
+                  )
+              })
+            )
+            .updated
         }
       } yield updatedWholeDocument
     }

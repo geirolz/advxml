@@ -3,7 +3,6 @@ package advxml.core.transform.actions
 import advxml.core.transform.actions.XmlPredicate.XmlPredicate
 import advxml.core.transform.actions.XmlZoom.{Filter, ImmediateDown, ZoomAction}
 import cats.Alternative
-
 import scala.xml.NodeSeq
 
 sealed trait ZoomedNodeSeq {
