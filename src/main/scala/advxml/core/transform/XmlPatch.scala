@@ -1,10 +1,12 @@
 package advxml.core.transform
 
+import advxml.core.transform.XmlPatch.NodeSeqPatchMap
+
 import scala.xml.NodeSeq
 
-case class XmlPatch(original: NodeSeq, updated: NodeSeq) {
+class XmlPatch private (val original: NodeSeq, val updated: NodeSeq) {
 
-  def zipWithUpdated: Map[Option[NodeSeq], Option[NodeSeq]] = {
+  private[transform] def zipWithUpdated: NodeSeqPatchMap = {
     import cats.implicits._
     original.toList.padZip(updated.toList).toMap
   }
@@ -12,7 +14,13 @@ case class XmlPatch(original: NodeSeq, updated: NodeSeq) {
 
 object XmlPatch {
 
-  def pure(original: NodeSeq): XmlPatch = XmlPatch(original, original)
+  type NodeSeqPatchMap = Map[Option[NodeSeq], Option[NodeSeq]]
 
-  def apply[T <: NodeSeq](original: T)(f: T => T): XmlPatch = XmlPatch(original, f(original))
+  private[transform] def id(original: NodeSeq): XmlPatch = const(original, original)
+
+  private[transform] def const(original: NodeSeq, updated: NodeSeq): XmlPatch =
+    apply(original, Function.const(updated))
+
+  private[transform] def apply(original: NodeSeq, f: NodeSeq => NodeSeq): XmlPatch =
+    new XmlPatch(original, f(original))
 }

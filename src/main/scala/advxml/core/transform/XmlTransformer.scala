@@ -31,8 +31,8 @@ object XmlTransformer {
         updatedTarget <- modifier[F](targetNodeSeq)
         updatedWholeDocument = {
           targetParents
-            .foldRight(XmlPatch(targetNodeSeq, updatedTarget))((parent, patch) =>
-              XmlPatch(parent)(_.flatMap {
+            .foldRight(XmlPatch.const(targetNodeSeq, updatedTarget))((parent, patch) =>
+              XmlPatch(parent, _.flatMap {
                 case e: Elem =>
                   XmlUtils.flatMapChildren(
                     e,
