@@ -8,7 +8,7 @@ object XmlUtils {
   def nodeToElem(n: Node): Elem =
     Elem(null, n.label, n.attributes, n.scope, false, n.child: _*)
 
-  def flatMapChildren(e: Node, f: Node => NodeSeq): Elem = {
+  def flatMapChildren(e: Elem, f: Node => NodeSeq): Elem = {
     val updatedChildren: Seq[Node] = e.child.filterNot(emptyText).flatMap {
       case n: Node => f(n)
       case o       => o

@@ -16,7 +16,7 @@ class XmlUtilsTest extends AnyFunSuite {
     assert(elem === <Node n="1"><Child n="2" />TEST</Node>)
   }
 
-  test("XmlUtils.flatMapChildren with Elem") {
+  test("XmlUtils.flatMapChildren") {
 
     val node: Elem =
       <a>
@@ -33,26 +33,6 @@ class XmlUtilsTest extends AnyFunSuite {
         <c>2</c>
         <c>3</c>
       </a>
-    )
-  }
-
-  test("XmlUtils.flatMapChildren with Node") {
-
-    val node: Node =
-      <a>
-        <b>1</b>
-        <b>2</b>
-        <b>3</b>
-      </a>.head
-    val result = XmlUtils.flatMapChildren(node, n => <c>{n.text}</c>)
-
-    assert(
-      result ===
-        <a>
-          <c>1</c>
-          <c>2</c>
-          <c>3</c>
-        </a>
     )
   }
 
