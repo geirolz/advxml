@@ -4,7 +4,6 @@ import advxml.core.convert
 import advxml.core.convert.ValidatedConverter
 import advxml.core.validate.ValidatedNelEx
 
-import scala.annotation.implicitNotFound
 import scala.xml.NodeSeq
 
 object XmlConverter {
@@ -18,7 +17,6 @@ object XmlConverter {
     * @tparam O Object output type
     * @return [[advxml.core.validate.ValidatedNelEx]] instance that, if on success case contains `X` instance.
     */
-  @implicitNotFound("Missing XmlToModel to transform ${X} into ValidatedEx[${O}]")
   def asModel[X <: NodeSeq: XmlToModel[*, O], O](xml: X): ValidatedNelEx[O] = ValidatedConverter[X, O].run(xml)
 
   /** Syntactic sugar to convert a `X` instance into `O` using an implicit [[XmlToModel]] instance.
@@ -33,7 +31,6 @@ object XmlConverter {
     * @tparam X Output xml type
     * @return [[advxml.core.validate.ValidatedNelEx]] instance that, if on success case contains `O` instance.
     */
-  @implicitNotFound("Missing ModelToXml to transform ${O} into ValidatedEx[${X}]")
   def asXml[O: convert.xml.ModelToXml[*, X], X <: NodeSeq](model: O): ValidatedNelEx[X] =
     ValidatedConverter[O, X].run(model)
 }

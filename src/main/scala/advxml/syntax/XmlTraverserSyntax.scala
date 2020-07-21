@@ -1,8 +1,9 @@
 package advxml.syntax
 
-import advxml.core.validate.MonadEx
 import advxml.core.XmlTraverser
-import cats.{Alternative, FlatMap, Monad}
+import advxml.core.validate.MonadEx
+import advxml.core.XmlTraverser._
+import cats.{Applicative, FlatMap}
 
 import scala.xml.NodeSeq
 
@@ -16,83 +17,164 @@ private[syntax] trait XmlTraverserSyntax {
   import cats.syntax.all._
 
   //######################################## FLOAT ########################################
+  implicit class XmlTraverserCommonFloatOps(ns: NodeSeq) {
+
+    def atIndexF[F[_]: XmlTraverser](idx: Int): F[NodeSeq] =
+      XmlTraverser[F].atIndexF(ns, idx)
+
+    def headF[F[_]: XmlTraverser]: F[NodeSeq] =
+      XmlTraverser[F].headF(ns)
+
+    def lastF[F[_]: XmlTraverser]: F[NodeSeq] =
+      XmlTraverser[F].lastF(ns)
+  }
+
   implicit class XmlTraverserMandatoryFloatOpsForId(ns: NodeSeq) {
-    def \![F[_]: MonadEx](q: String): F[NodeSeq] =
-      XmlTraverser.mandatory[F].immediateChildren(ns, q)
 
-    def \\![F[_]: MonadEx](q: String): F[NodeSeq] =
-      XmlTraverser.mandatory[F].children(ns, q)
+    def \![F[_]: XmlMandatoryTraverser](q: String): F[NodeSeq] =
+      XmlTraverser[F].immediateChildren(ns, q)
 
-    def \@![F[_]: MonadEx](q: String): F[String] =
-      XmlTraverser.mandatory[F].attr(ns, q)
+    def \\![F[_]: XmlMandatoryTraverser](q: String): F[NodeSeq] =
+      XmlTraverser[F].children(ns, q)
 
-    def ![F[_]: MonadEx]: F[String] =
-      XmlTraverser.mandatory[F].text(ns)
+    def \@![F[_]: XmlMandatoryTraverser](q: String): F[String] =
+      XmlTraverser[F].attr(ns, q)
 
-    def |!|[F[_]: MonadEx]: F[String] =
-      XmlTraverser.mandatory[F].trimmedText(ns)
+    def ![F[_]: XmlMandatoryTraverser]: F[String] =
+      XmlTraverser[F].text(ns)
+
+    def |!|[F[_]: XmlMandatoryTraverser]: F[String] =
+      XmlTraverser[F].trimmedText(ns)
+
+    def \!*[F[_]: Applicative: FlatMap: XmlMandatoryTraverser]: XmlImmediateDynamicTraverser[F] =
+      advxml.instances.traverse.dynamic.immediate[F](ns)
+
+    def \\!*[F[_]: Applicative: FlatMap: XmlMandatoryTraverser]: XmlDeepDynamicTraverser[F] =
+      advxml.instances.traverse.dynamic.deep[F](ns)
   }
 
   implicit class XmlTraverserOptionalFloatOpsForId(ns: NodeSeq) {
-    def \?[F[_]: Alternative](q: String): F[NodeSeq] =
-      XmlTraverser.optional[F].immediateChildren(ns, q)
 
-    def \\?[F[_]: Alternative](q: String): F[NodeSeq] =
-      XmlTraverser.optional[F].children(ns, q)
+    def \?[F[_]: XmlOptionalTraverser](q: String): F[NodeSeq] =
+      XmlTraverser[F].immediateChildren(ns, q)
 
-    def \@?[F[_]: Alternative](q: String): F[String] =
-      XmlTraverser.optional[F].attr(ns, q)
+    def \\?[F[_]: XmlOptionalTraverser](q: String): F[NodeSeq] =
+      XmlTraverser[F].children(ns, q)
 
-    def ?[F[_]: Alternative]: F[String] =
-      XmlTraverser.optional[F].text(ns)
+    def \@?[F[_]: XmlOptionalTraverser](q: String): F[String] =
+      XmlTraverser[F].attr(ns, q)
 
-    def |?|[F[_]: Alternative]: F[String] =
-      XmlTraverser.optional[F].trimmedText(ns)
+    def ?[F[_]: XmlOptionalTraverser]: F[String] =
+      XmlTraverser[F].text(ns)
+
+    def |?|[F[_]: XmlOptionalTraverser]: F[String] =
+      XmlTraverser[F].trimmedText(ns)
+
+    def \?*[F[_]: Applicative: FlatMap: XmlOptionalTraverser]: XmlImmediateDynamicTraverser[F] =
+      advxml.instances.traverse.dynamic.immediate[F](ns)
+
+    def \\?*[F[_]: Applicative: FlatMap: XmlOptionalTraverser]: XmlDeepDynamicTraverser[F] =
+      advxml.instances.traverse.dynamic.deep[F](ns)
   }
 
   //######################################## FIXED ########################################
-  implicit class XmlTraverserMandatoryFixedOps[F[_]: MonadEx](fa: F[NodeSeq]) {
+  implicit class XmlTraverserCommonFixedOps[F[_]: FlatMap: XmlTraverser](ns: F[NodeSeq]) {
+
+    def atIndex(idx: Int): F[NodeSeq] =
+      ns.flatMap(XmlTraverser[F].atIndexF(_, idx))
+
+    def head: F[NodeSeq] =
+      ns.flatMap(XmlTraverser[F].headF)
+
+    def last: F[NodeSeq] =
+      ns.flatMap(XmlTraverser[F].lastF)
+  }
+
+  implicit class XmlTraverserMandatoryFixedOps[F[_]: FlatMap: XmlMandatoryTraverser](fa: F[NodeSeq]) {
 
     def \!(q: String): F[NodeSeq] =
-      fa.flatMap(XmlTraverser.mandatory[F].immediateChildren(_, q))
+      fa.flatMap(XmlTraverser[F].immediateChildren(_, q))
 
     def \\!(q: String): F[NodeSeq] =
-      fa.flatMap(XmlTraverser.mandatory[F].children(_, q))
+      fa.flatMap(XmlTraverser[F].children(_, q))
 
     def \@!(q: String): F[String] =
-      fa.flatMap(XmlTraverser.mandatory[F].attr(_, q))
+      fa.flatMap(XmlTraverser[F].attr(_, q))
 
     def ! : F[String] =
-      fa.flatMap(XmlTraverser.mandatory[F].text(_))
+      fa.flatMap(XmlTraverser[F].text(_))
 
     def |!| : F[String] =
-      fa.flatMap(XmlTraverser.mandatory[F].trimmedText(_))
+      fa.flatMap(XmlTraverser[F].trimmedText(_))
+
+    def \!* : XmlImmediateDynamicTraverser[F] =
+      advxml.instances.traverse.dynamic.immediate[F](fa)
+
+    def \\!* : XmlDeepDynamicTraverser[F] =
+      advxml.instances.traverse.dynamic.deep[F](fa)
   }
 
-  implicit class XmlTraverserOptionalFixedOps[F[_]: Alternative: FlatMap](fa: F[NodeSeq]) {
+  implicit class XmlTraverserOptionalFixedOps[F[_]: FlatMap: XmlOptionalTraverser](fa: F[NodeSeq]) {
 
     def \?(q: String): F[NodeSeq] =
-      fa.flatMap(XmlTraverser.optional[F].immediateChildren(_, q))
+      fa.flatMap(XmlTraverser[F].immediateChildren(_, q))
 
     def \\?(q: String): F[NodeSeq] =
-      fa.flatMap(XmlTraverser.optional[F].children(_, q))
+      fa.flatMap(XmlTraverser[F].children(_, q))
 
     def \@?(q: String): F[String] =
-      fa.flatMap(XmlTraverser.optional[F].attr(_, q))
+      fa.flatMap(XmlTraverser[F].attr(_, q))
 
     def ? : F[String] =
-      fa.flatMap(XmlTraverser.optional[F].text(_))
+      fa.flatMap(XmlTraverser[F].text(_))
 
     def |?| : F[String] =
-      fa.flatMap(XmlTraverser.optional[F].trimmedText(_))
+      fa.flatMap(XmlTraverser[F].trimmedText(_))
+
+    def \?* : XmlImmediateDynamicTraverser[F] =
+      advxml.instances.traverse.dynamic.immediate[F](fa)
+
+    def \\?* : XmlDeepDynamicTraverser[F] =
+      advxml.instances.traverse.dynamic.deep[F](fa)
   }
+
+  //######################################## DYNAMIC ########################################
+  implicit class XmlDynamicTraverserMandatoryFixedOps[F[_]: FlatMap: XmlMandatoryTraverser, T <: XmlDynamicTraverser[
+    F,
+    T
+  ]](fa: T) {
+    def \!* : XmlImmediateDynamicTraverser[F] =
+      advxml.instances.traverse.dynamic.immediate[F](fa.get)
+
+    def \\!* : XmlDeepDynamicTraverser[F] =
+      advxml.instances.traverse.dynamic.deep[F](fa.get)
+  }
+
+  implicit class XmlDynamicTraverserOptionalFixedOps[F[_]: FlatMap: XmlOptionalTraverser, T <: XmlDynamicTraverser[
+    F,
+    T
+  ]](fa: T) {
+
+    def \?* : XmlImmediateDynamicTraverser[F] =
+      advxml.instances.traverse.dynamic.immediate[F](fa.get)
+
+    def \\?* : XmlDeepDynamicTraverser[F] =
+      advxml.instances.traverse.dynamic.deep[F](fa.get)
+  }
+
+  implicit def xmlDynamicTraverserToF[F[_], T <: XmlDynamicTraverser[F, T]](dynamic: T): F[NodeSeq] = dynamic.get
 }
 
 private[syntax] trait XmlTraverserSyntaxSpecified[F[_], G[_]] extends XmlTraverserSyntax {
 
-  implicit class XmlTraverserMandatoryFixedOpsForId(ns: NodeSeq)(implicit F: MonadEx[F])
-      extends XmlTraverserMandatoryFixedOps[F](F.pure(ns))
+  implicit class XmlTraverserMandatoryFixedOpsForId[F1[_] >: F[_]: Applicative: FlatMap: XmlMandatoryTraverser](
+    ns: NodeSeq
+  )(
+    implicit F: MonadEx[F],
+    T: XmlTraverser[F]
+  ) extends XmlTraverserMandatoryFixedOps[F1](Applicative[F1].pure(ns))
 
-  implicit class XmlTraverserOptionalFixedOpsForId(ns: NodeSeq)(implicit M: Monad[G], A: Alternative[G])
-      extends XmlTraverserOptionalFixedOps[G](M.pure(ns))
+  implicit class XmlTraverserOptionalFixedOpsForId[G1[_] >: G[_]: Applicative: FlatMap: XmlOptionalTraverser](
+    ns: NodeSeq
+  ) extends XmlTraverserOptionalFixedOps[G1](Applicative[G1].pure(ns))
 }

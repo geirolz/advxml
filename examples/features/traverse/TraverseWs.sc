@@ -1,3 +1,4 @@
+import advxml.instances.traverse._
 import advxml.syntax.traverse.try_._
 import cats.instances.option._
 
@@ -22,5 +23,8 @@ val document =
     </Order>
   </Orders>
 
-val order2Opt: Option[NodeSeq] = (document \? "Order")
+val order2Opt: Option[NodeSeq] = (document \? "Order" \? "OrderLines" \? "OrderLine")
+    .map(_.filter(attrs(("Id", _ == "2"))))
+
+val order2OptUsingDynamic: Option[NodeSeq] = document.\?*.Order.\?*.OrderLines.\?*.OrderLine.get
     .map(_.filter(attrs(("Id", _ == "2"))))

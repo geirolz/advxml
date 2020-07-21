@@ -28,6 +28,12 @@ package object instances {
     object modifiers extends AllXmlModifierInstances
   }
   object convert    extends ConvertersInstances
-  object validate   extends ValidationInstance
+  object validate   extends ValidationInstances
+  object traverse   extends AllXmlTraverserInstances {
+    object dynamic extends DynamicXmlTraverserInstances{
+      object immediate extends immediate
+      object deep extends deep
+    }
+  }
   // format: on
 }

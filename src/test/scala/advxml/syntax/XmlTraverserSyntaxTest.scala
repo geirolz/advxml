@@ -9,6 +9,7 @@ import scala.util.Try
 
 class XmlTraverserSyntaxTest extends AnyFeatureSpec with FeatureSpecContract {
 
+  import advxml.instances.traverse._
   import advxml.syntax.traverse._
 
   // format: off
@@ -17,12 +18,15 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec with FeatureSpecContract {
     "Syntax.Float.Mandatory",
     {
       import cats.instances.try_._
-      ContractFuncs(
+      ContractFuncs[Try](
         immediateChild    = (doc, nodeName) => doc.\![Try](nodeName),
         children          = (doc, nodeName) => doc.\\![Try](nodeName),
         attribute         = (doc, attrName) => doc.\@![Try](attrName),
         text              = _.![Try],
-        trimmedText       = _.|!|[Try]
+        trimmedText       = _.|!|[Try],
+        atIndex           = (doc, idx) => doc.atIndexF[Try](idx),
+        head              = _.headF[Try],
+        last              = _.lastF[Try]
       )
     }
   )(XmlTraverserTest.TryExtractor).runAll()
@@ -31,29 +35,34 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec with FeatureSpecContract {
     "Syntax.Float.Optional",
     {
       import cats.instances.option._
-      ContractFuncs(
+      ContractFuncs[Option](
         immediateChild      = (doc, nodeName) => doc.\?[Option](nodeName),
         children            = (doc, nodeName) => doc.\\?[Option](nodeName),
         attribute           = (doc, attrName) => doc.\@?[Option](attrName),
         text                = _.?[Option],
-        trimmedText         = _.|?|[Option]
+        trimmedText         = _.|?|[Option],
+        atIndex           = (doc, idx) => doc.atIndexF[Option](idx),
+        head              = _.headF[Option],
+        last              = _.lastF[Option]
       )
     }
   )(XmlTraverserTest.OptionExtractor).runAll()
-
-
+  
   //########################## FIXED ##########################
   XmlTraverserTest.Contract[Try](
     "Syntax.Fixed.Mandatory",
     {
-      import cats.instances.try_._
       import advxml.syntax.traverse.try_._
-      ContractFuncs(
+      import cats.instances.try_._
+      ContractFuncs[Try](
         immediateChild      = (doc, nodeName) => doc.\!(nodeName),
         children            = (doc, nodeName) => doc.\\!(nodeName),
         attribute           = (doc, attrName) => doc.\@!(attrName),
         text                = _.!,
-        trimmedText         = _.|!|
+        trimmedText         = _.|!|,
+        atIndex             = (doc, idx) => doc.atIndexF(idx),
+        head                = _.headF,
+        last                = _.lastF
       )
     }
   )(XmlTraverserTest.TryExtractor).runAll()
@@ -61,14 +70,17 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec with FeatureSpecContract {
   XmlTraverserTest.Contract[Option](
     "Syntax.Fixed.Optional",
     {
-      import cats.instances.option._
       import advxml.syntax.traverse.option._
-      ContractFuncs(
+      import cats.instances.option._
+      ContractFuncs[Option](
         immediateChild      = (doc, nodeName) => doc.\?(nodeName),
         children            = (doc, nodeName) => doc.\\?(nodeName),
         attribute           = (doc, attrName) => doc.\@?(attrName),
         text                = _.?,
-        trimmedText         = _.|?|
+        trimmedText         = _.|?|,
+        atIndex             = (doc, idx) => doc.atIndexF(idx),
+        head                = _.headF,
+        last                = _.lastF
       )
     }
   )(XmlTraverserTest.OptionExtractor).runAll()

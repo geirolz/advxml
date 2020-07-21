@@ -14,10 +14,7 @@ object XmlUtils {
       case o       => o
     }
 
-    (e match {
-      case el: Elem   => el
-      case node: Node => nodeToElem(node)
-    }).copy(child = updatedChildren)
+    e.copy(child = updatedChildren)
   }
 
   def emptyText(n: Node): Boolean = n match {

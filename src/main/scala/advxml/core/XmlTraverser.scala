@@ -1,14 +1,9 @@
 package advxml.core
 
-import advxml.core.validate.MonadEx
-import advxml.core.XmlTraverser.exceptions.{
-  XmlMissingAttributeException,
-  XmlMissingNodeException,
-  XmlMissingTextException
-}
-import cats.Alternative
+import advxml.core.utils.TraverserK
 
-import scala.util.{Failure, Success, Try}
+import scala.annotation.implicitNotFound
+import scala.language.dynamics
 import scala.xml.NodeSeq
 
 /** Advxml
@@ -17,9 +12,13 @@ import scala.xml.NodeSeq
   */
 object XmlTraverser {
 
-  import cats.syntax.functor._
+  def apply[F[_]: XmlTraverser]: XmlTraverser[F] = implicitly[XmlTraverser[F]]
 
-  sealed trait XmlTraverser[F[_]] {
+  @implicitNotFound(
+    "Missing an implicit instance of XmlTraverser for ${F}. Please try to import advxml.instances.traverse._"
+  )
+  trait XmlTraverser[F[_]] extends TraverserK[NodeSeq, NodeSeq, F] {
+
     def immediateChildren(target: NodeSeq, q: String): F[NodeSeq]
 
     def children(ns: NodeSeq, q: String): F[NodeSeq]
@@ -30,63 +29,31 @@ object XmlTraverser {
 
     def trimmedText(ns: NodeSeq): F[String]
   }
-
-  def mandatory[F[_]](implicit F: MonadEx[F]): XmlTraverser[F] = new XmlTraverser[F] {
-
-    override def immediateChildren(ns: NodeSeq, q: String): F[NodeSeq] = {
-      ns \ q match {
-        case value if value.isEmpty => F.raiseError(XmlMissingNodeException(q, ns))
-        case value                  => F.pure(value)
-      }
-    }
-
-    override def children(ns: NodeSeq, q: String): F[NodeSeq] = {
-      ns \\ q match {
-        case value if value.isEmpty => F.raiseError(XmlMissingNodeException(q, ns))
-        case value                  => F.pure(value)
-      }
-    }
-
-    override def attr(ns: NodeSeq, q: String): F[String] = {
-      ns \@ q match {
-        case value if value.isEmpty => F.raiseError(XmlMissingAttributeException(q, ns))
-        case value                  => F.pure(value)
-      }
-    }
-
-    override def text(ns: NodeSeq): F[String] = {
-      ns.text match {
-        case value if value.isEmpty => F.raiseError(XmlMissingTextException(ns))
-        case value                  => F.pure(value)
-      }
-    }
-
-    override def trimmedText(ns: NodeSeq): F[String] = text(ns).map(_.trim)
+  @implicitNotFound(
+    "Missing an implicit instance of XmlMandatoryTraverser for ${F}. Please try to import advxml.instances.traverse._"
+  )
+  trait XmlMandatoryTraverser[F[_]] extends XmlTraverser[F]
+  object XmlMandatoryTraverser {
+    def apply[F[_]: XmlMandatoryTraverser]: XmlMandatoryTraverser[F] = implicitly[XmlMandatoryTraverser[F]]
+  }
+  @implicitNotFound(
+    "Missing an implicit instance of XmlOptionalTraverser for ${F}. Please try to import advxml.instances.traverse._"
+  )
+  trait XmlOptionalTraverser[F[_]] extends XmlTraverser[F]
+  object XmlOptionalTraverser {
+    def apply[F[_]: XmlOptionalTraverser]: XmlOptionalTraverser[F] = implicitly[XmlOptionalTraverser[F]]
   }
 
-  def optional[F[_]](implicit F: Alternative[F]): XmlTraverser[F] = new XmlTraverser[F] {
+  sealed trait XmlDynamicTraverser[F[_], T <: XmlDynamicTraverser[F, T]] extends Dynamic {
 
-    import cats.instances.try_._
+    def get: F[NodeSeq]
 
-    override def immediateChildren(ns: NodeSeq, q: String): F[NodeSeq] =
-      toAlternative(mandatory[Try].immediateChildren(ns, q))
+    def selectDynamic(q: String): T
 
-    override def children(ns: NodeSeq, q: String): F[NodeSeq] =
-      toAlternative(mandatory[Try].children(ns, q))
-
-    override def attr(ns: NodeSeq, q: String): F[String] =
-      toAlternative(mandatory[Try].attr(ns, q))
-
-    override def text(ns: NodeSeq): F[String] =
-      toAlternative(mandatory[Try].text(ns))
-
-    private def toAlternative[T](v: Try[T]): F[T] = v match {
-      case Failure(_)     => Alternative[F].empty
-      case Success(value) => Alternative[F].pure(value)
-    }
-
-    override def trimmedText(ns: NodeSeq): F[String] = text(ns).map(_.trim)
+    def applyDynamic(q: String)(idx: Int): T
   }
+  trait XmlImmediateDynamicTraverser[F[_]] extends XmlDynamicTraverser[F, XmlImmediateDynamicTraverser[F]]
+  trait XmlDeepDynamicTraverser[F[_]] extends XmlDynamicTraverser[F, XmlDeepDynamicTraverser[F]]
 
   object exceptions {
 

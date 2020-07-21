@@ -17,6 +17,7 @@ class XmlTraverserSyntaxTest_old extends AnyFeatureSpec {
   import cats.instances.option._
   import cats.instances.try_._
   import advxml.syntax.traverse.try_._
+  import advxml.instances.traverse._
 
   Feature("XmlTraverseFixed: Read Attributes") {
     Scenario("Read optional attribute") {

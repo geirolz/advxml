@@ -45,8 +45,10 @@ private[instances] trait XmlPredicateInstances {
   }
 
   def hasImmediateChild(label: String, predicate: XmlPredicate = alwaysTrue): XmlPredicate = { xml =>
-    import cats.instances.option._
+    import advxml.instances.traverse._
     import advxml.syntax.traverse.option._
+    import cats.instances.option._
+
     (xml \? label).fold(false)(_.exists(predicate))
   }
 

@@ -1,5 +1,6 @@
 package advxml.core
 
+//TODO: Common
 object Predicate {
 
   /** Combine two predicates(`T => Boolean`) with `And` operator.
