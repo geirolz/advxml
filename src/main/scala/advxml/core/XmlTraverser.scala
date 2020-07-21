@@ -6,8 +6,10 @@ import advxml.core.XmlTraverser.exceptions.{
   XmlMissingNodeException,
   XmlMissingTextException
 }
-import cats.Alternative
+import advxml.core.transform.actions.XmlPredicate.XmlPredicate
+import cats.{~>, Alternative, FlatMap}
 
+import scala.language.dynamics
 import scala.util.{Failure, Success, Try}
 import scala.xml.NodeSeq
 
@@ -102,5 +104,151 @@ object XmlTraverser {
         extends XmlMissingException(s"Missing match for attribute: $q")
 
     case class XmlMissingTextException(target: NodeSeq) extends XmlMissingException(s"Missing text, content is empty")
+  }
+}
+
+object XmlDynamicTraverser {
+
+  sealed trait XmlDynamicTraverser[F[_]] extends Dynamic {
+
+    def selectDynamic(q: String): XmlDynamicTraverser[F]
+
+    def applyDynamic(q: String)(idx: Int): XmlDynamicTraverser[F]
+
+    def atIndex(idx: Int): XmlDynamicTraverser[F]
+
+    def head: XmlDynamicTraverser[F]
+
+    def last: XmlDynamicTraverser[F]
+
+    def filter(p: XmlPredicate): XmlDynamicTraverser[F]
+
+    def map(f: NodeSeq => NodeSeq): XmlDynamicTraverser[F]
+
+    def flatMap(f: NodeSeq => F[NodeSeq]): XmlDynamicTraverser[F]
+
+    def get: F[NodeSeq]
+
+    def attrOption(q: String): F[Option[String]]
+
+    def attr(q: String): F[String]
+
+    def textOption: F[Option[String]]
+
+    def text: F[String]
+
+    def trimmedText: F[String]
+  }
+
+  private class XmlDynamicTraverserImp[F[_]: FlatMap](
+    value: F[NodeSeq],
+    optHandler: Throwable => Option ~> F,
+    downAction: (NodeSeq, String) => F[NodeSeq]
+  ) extends XmlDynamicTraverser[F] {
+
+    import cats.syntax.all._
+
+    def selectDynamic(q: String): XmlDynamicTraverser[F] =
+      flatMap(v => downAction(v, q))
+
+    def applyDynamic(q: String)(idx: Int): XmlDynamicTraverser[F] =
+      selectDynamic(q).atIndex(idx)
+
+    def atIndex(idx: Int): XmlDynamicTraverser[F] =
+      flatMap(v => optHandler(new IndexOutOfBoundsException("" + idx))(v.lift(idx)))
+
+    def head: XmlDynamicTraverser[F] =
+      flatMap(v => optHandler(new NoSuchElementException())(v.headOption))
+
+    def last: XmlDynamicTraverser[F] =
+      flatMap(v => optHandler(new NoSuchElementException())(v.lastOption))
+
+    def filter(p: XmlPredicate): XmlDynamicTraverser[F] =
+      map(_.filter(p))
+
+    def map(f: NodeSeq => NodeSeq): XmlDynamicTraverser[F] =
+      new XmlDynamicTraverserImp(value.map(f), optHandler, downAction)
+
+    def flatMap(f: NodeSeq => F[NodeSeq]): XmlDynamicTraverser[F] =
+      new XmlDynamicTraverserImp(value.flatMap(f), optHandler, downAction)
+
+    //exit points
+    def get: F[NodeSeq] = value
+
+    def attrOption(q: String): F[Option[String]] =
+      value.map(n =>
+        n \@ q match {
+          case "" => None
+          case x  => Some(x)
+        }
+      )
+
+    def attr(q: String): F[String] =
+      for {
+        node    <- value
+        optAttr <- attrOption(q)
+        result  <- optHandler(XmlMissingAttributeException(q, node))(optAttr)
+      } yield result
+
+    def textOption: F[Option[String]] =
+      value.map(n =>
+        n.text match {
+          case x if x.isEmpty => None
+          case x              => Some(x)
+        }
+      )
+
+    def text: F[String] =
+      value.flatMap(ns => {
+        textOption.flatMap(textOpt => {
+          optHandler(XmlMissingTextException(ns))(textOpt)
+        })
+      })
+
+    def trimmedText: F[String] = text.map(_.trim)
+  }
+
+  object mandatory {
+
+    private def optHandler[F[_]: MonadEx]: Throwable => Option ~> F =
+      throwable =>
+        λ[Option ~> F] {
+          case Some(value) => MonadEx[F].pure(value)
+          case None        => MonadEx[F].raiseError(throwable)
+        }
+
+    def immediate[F[_]: MonadEx](v: NodeSeq): XmlDynamicTraverser[F] =
+      immediate(MonadEx[F].pure(v))
+
+    def immediate[F[_]: MonadEx](v: F[NodeSeq]): XmlDynamicTraverser[F] =
+      new XmlDynamicTraverserImp[F](v, optHandler, XmlTraverser.mandatory[F].immediateChildren)
+
+    def deep[F[_]: MonadEx](v: NodeSeq): XmlDynamicTraverser[F] =
+      deep(MonadEx[F].pure(v))
+
+    def deep[F[_]: MonadEx](v: F[NodeSeq]): XmlDynamicTraverser[F] =
+      new XmlDynamicTraverserImp[F](v, optHandler, XmlTraverser.mandatory[F].children)
+  }
+
+  object optional {
+
+    private def optHandler[F[_]: Alternative]: Throwable => Option ~> F =
+      _ =>
+        λ[Option ~> F] {
+          case Some(value) => Alternative[F].pure(value)
+          case None        => Alternative[F].empty
+        }
+
+    def immediate[F[_]: Alternative: FlatMap](v: NodeSeq): XmlDynamicTraverser[F] =
+      immediate(Alternative[F].pure(v))
+
+    def immediate[F[_]: Alternative: FlatMap](v: F[NodeSeq]): XmlDynamicTraverser[F] =
+      new XmlDynamicTraverserImp[F](v, optHandler, XmlTraverser.optional[F].immediateChildren)
+
+    def deep[F[_]: Alternative: FlatMap](v: NodeSeq): XmlDynamicTraverser[F] =
+      deep(Alternative[F].pure(v))
+
+    def deep[F[_]: Alternative: FlatMap](v: F[NodeSeq]): XmlDynamicTraverser[F] =
+      new XmlDynamicTraverserImp[F](v, optHandler, XmlTraverser.optional[F].children)
   }
 }

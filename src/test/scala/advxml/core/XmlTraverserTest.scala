@@ -15,11 +15,25 @@ class XmlTraverserTest extends AnyFeatureSpec with FeatureSpecContract {
     {
       import cats.instances.try_._
       ContractFuncs(
-        immediateChild = (doc, nodeName) => XmlTraverser.mandatory.immediateChildren(doc, nodeName),
-        children = (doc, nodeName) => XmlTraverser.mandatory.children(doc, nodeName),
-        attribute = (doc, attrName) => XmlTraverser.mandatory.attr(doc, attrName),
-        text = XmlTraverser.mandatory.text(_),
-        trimmedText = XmlTraverser.mandatory.trimmedText(_)
+        immediateChild  = (doc, nodeName) => XmlTraverser.mandatory.immediateChildren(doc, nodeName),
+        children        = (doc, nodeName) => XmlTraverser.mandatory.children(doc, nodeName),
+        attribute       = (doc, attrName) => XmlTraverser.mandatory.attr(doc, attrName),
+        text            = XmlTraverser.mandatory.text(_),
+        trimmedText     = XmlTraverser.mandatory.trimmedText(_)
+      )
+    }
+  )(XmlTraverserTest.TryExtractor).runAll()
+
+  XmlTraverserTest.Contract[Try](
+    "Dynamic_Mandatory",
+    {
+      import cats.instances.try_._
+      ContractFuncs(
+        immediateChild  = (doc, nodeName) => XmlDynamicTraverser.mandatory.immediate(doc).selectDynamic(nodeName).get,
+        children        = (doc, nodeName) => XmlDynamicTraverser.mandatory.deep(doc).selectDynamic(nodeName).get,
+        attribute       = (doc, attrName) => XmlDynamicTraverser.mandatory.immediate(doc).attr(attrName),
+        text            = XmlDynamicTraverser.mandatory.immediate(_).text,
+        trimmedText     = XmlDynamicTraverser.mandatory.immediate(_).trimmedText
       )
     }
   )(XmlTraverserTest.TryExtractor).runAll()
@@ -34,6 +48,21 @@ class XmlTraverserTest extends AnyFeatureSpec with FeatureSpecContract {
         immediateChild      = (doc, nodeName) => XmlTraverser.optional.immediateChildren(doc, nodeName),
         children            = (doc, nodeName) => XmlTraverser.optional.children(doc, nodeName),
         attribute           = (doc, attrName) => XmlTraverser.optional.attr(doc, attrName),
+        text                = XmlTraverser.optional.text(_),
+        trimmedText         = XmlTraverser.optional.trimmedText(_)
+      )
+    }
+  )(XmlTraverserTest.OptionExtractor).runAll()
+  
+  
+  XmlTraverserTest.Contract[Option](
+    "Dynamic_Optional",
+    {
+      import cats.instances.option._
+      ContractFuncs(
+        immediateChild      = (doc, nodeName) => XmlDynamicTraverser.optional.immediate(doc).selectDynamic(nodeName).get,
+        children            = (doc, nodeName) => XmlDynamicTraverser.optional.deep(doc).selectDynamic(nodeName).get,
+        attribute           = (doc, attrName) => XmlDynamicTraverser.optional.immediate(doc).attr(attrName),
         text                = XmlTraverser.optional.text(_),
         trimmedText         = XmlTraverser.optional.trimmedText(_)
       )

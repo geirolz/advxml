@@ -56,8 +56,8 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
       .get
 
     assert(
-      result ===
-        <Pet>
+      result |==|
+      <Pet>
         <Cat a="TEST">
           <c>small</c>
           <c>big</c>

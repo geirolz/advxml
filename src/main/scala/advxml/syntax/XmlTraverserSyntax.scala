@@ -1,7 +1,8 @@
 package advxml.syntax
 
+import advxml.core.{XmlDynamicTraverser, XmlTraverser}
 import advxml.core.validate.MonadEx
-import advxml.core.XmlTraverser
+import advxml.core.XmlDynamicTraverser.XmlDynamicTraverser
 import cats.{Alternative, FlatMap, Monad}
 
 import scala.xml.NodeSeq
@@ -32,6 +33,12 @@ private[syntax] trait XmlTraverserSyntax {
 
     def |!|[F[_]: MonadEx]: F[String] =
       XmlTraverser.mandatory[F].trimmedText(ns)
+
+    def \!*[F[_]: MonadEx]: XmlDynamicTraverser[F] =
+      XmlDynamicTraverser.mandatory.immediate[F](ns)
+
+    def \\!*[F[_]: MonadEx]: XmlDynamicTraverser[F] =
+      XmlDynamicTraverser.mandatory.deep[F](ns)
   }
 
   implicit class XmlTraverserOptionalFloatOpsForId(ns: NodeSeq) {
@@ -49,6 +56,12 @@ private[syntax] trait XmlTraverserSyntax {
 
     def |?|[F[_]: Alternative]: F[String] =
       XmlTraverser.optional[F].trimmedText(ns)
+
+    def \?*[F[_]: Alternative: FlatMap]: XmlDynamicTraverser[F] =
+      XmlDynamicTraverser.optional.immediate[F](ns)
+
+    def \\?*[F[_]: Alternative: FlatMap]: XmlDynamicTraverser[F] =
+      XmlDynamicTraverser.optional.deep[F](ns)
   }
 
   //######################################## FIXED ########################################
@@ -68,6 +81,12 @@ private[syntax] trait XmlTraverserSyntax {
 
     def |!| : F[String] =
       fa.flatMap(XmlTraverser.mandatory[F].trimmedText(_))
+
+    def \!* : XmlDynamicTraverser[F] =
+      XmlDynamicTraverser.mandatory.immediate[F](fa)
+
+    def \\!* : XmlDynamicTraverser[F] =
+      XmlDynamicTraverser.mandatory.deep[F](fa)
   }
 
   implicit class XmlTraverserOptionalFixedOps[F[_]: Alternative: FlatMap](fa: F[NodeSeq]) {
@@ -86,6 +105,12 @@ private[syntax] trait XmlTraverserSyntax {
 
     def |?| : F[String] =
       fa.flatMap(XmlTraverser.optional[F].trimmedText(_))
+
+    def \?* : XmlDynamicTraverser[F] =
+      XmlDynamicTraverser.optional.immediate[F](fa)
+
+    def \\?* : XmlDynamicTraverser[F] =
+      XmlDynamicTraverser.optional.deep[F](fa)
   }
 }
 
