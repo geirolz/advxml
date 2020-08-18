@@ -11,7 +11,7 @@ object Dependencies {
   lazy val all: Seq[ModuleID] = Seq(
     //SCALA
     "org.typelevel" %% "cats-core" % "2.1.1" cross CrossVersion.binary,
-    "org.scalactic" %% "scalactic" % "3.2.0" cross CrossVersion.binary,
+    "org.scalactic" %% "scalactic" % "3.2.1" cross CrossVersion.binary,
     //XML
     "org.scala-lang.modules" %% "scala-xml" % "2.0.0-M1" cross CrossVersion.binary,
     //TEST
