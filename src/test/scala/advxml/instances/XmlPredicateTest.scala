@@ -20,7 +20,7 @@ class XmlPredicateTest extends AnyFunSuite {
 
     val result: NodeSeq = data \ "Person" filter text(_ == "Simone")
 
-    assert(result === <Person>Simone</Person>)
+    assert(result |==| <Person>Simone</Person>)
   }
 
   test("Filter by label") {
@@ -34,7 +34,7 @@ class XmlPredicateTest extends AnyFunSuite {
 
     val result: NodeSeq = data.child filter label(_ == "Person3")
 
-    assert(result === <Person3>Simone</Person3>)
+    assert(result |==| <Person3>Simone</Person3>)
   }
 
   test("Filter by attrs") {
@@ -51,7 +51,7 @@ class XmlPredicateTest extends AnyFunSuite {
         "B" -> (_ == "C")
       )
 
-    assert(result === <Person A="3" B="C">Simone</Person>)
+    assert(result |==| <Person A="3" B="C">Simone</Person>)
   }
 
   test("Filter by strict equality") {
@@ -65,7 +65,7 @@ class XmlPredicateTest extends AnyFunSuite {
 
     val result: NodeSeq = data \ "Person" filter strictEqualsTo(<Person A="3"></Person>)
 
-    assert(result === <Person A="3"></Person>)
+    assert(result |==| <Person A="3"></Person>)
   }
 
   test("Filter by strict equality - minimized empty") {
@@ -79,6 +79,6 @@ class XmlPredicateTest extends AnyFunSuite {
 
     val result: NodeSeq = data \ "Person" filter strictEqualsTo(<Person A="3"/>)
 
-    assert(result === <Person A="3"></Person>)
+    assert(result |==| <Person A="3"></Person>)
   }
 }

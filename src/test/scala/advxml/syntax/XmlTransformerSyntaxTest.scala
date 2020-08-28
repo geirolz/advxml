@@ -39,8 +39,8 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
           <test Id="1"><newNode value="x"/></test>
         </bar>
       </data>
-        ===
-          <data>
+      |==|
+      <data>
           <foo>
             <test Id="1"/>
           </foo>
@@ -48,11 +48,11 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
             <test Id="1"/>
           </bar>
         </data>
-            .transform(
-              (root \ "bar" \ "test" filter attrs("Id" -> (_ == "1")))
-              ==> Append(<newNode value="x"/>)
-            )
-            .get
+        .transform(
+          (root \ "bar" \ "test" filter attrs("Id" -> (_ == "1")))
+          ==> Append(<newNode value="x"/>)
+        )
+        .get
     )
   }
 
@@ -66,19 +66,19 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
           <OrderLine PrimeLineNo="4"/>
         </OrderLines>
       </Order>
-        ===
-          <Order>
+      |==|
+      <Order>
           <OrderLines>
             <OrderLine PrimeLineNo="4"/>
           </OrderLines>
         </Order>
-            .transform(
-              (root \ "OrderLines")
-              ==> Prepend(<OrderLine PrimeLineNo="3"/>)
-              ==> Prepend(<OrderLine PrimeLineNo="2"/>)
-              ==> Prepend(<OrderLine PrimeLineNo="1"/>)
-            )
-            .get
+        .transform(
+          (root \ "OrderLines")
+          ==> Prepend(<OrderLine PrimeLineNo="3"/>)
+          ==> Prepend(<OrderLine PrimeLineNo="2"/>)
+          ==> Prepend(<OrderLine PrimeLineNo="1"/>)
+        )
+        .get
     )
   }
 
@@ -92,19 +92,19 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
           <OrderLine PrimeLineNo="4"/>
         </OrderLines>
       </Order>
-        ===
-          <Order>
+      |==|
+      <Order>
           <OrderLines>
             <OrderLine PrimeLineNo="1"/>
           </OrderLines>
         </Order>
-            .transform(
-              (root \ "OrderLines")
-              ==> Append(<OrderLine PrimeLineNo="2"/>)
-              ==> Append(<OrderLine PrimeLineNo="3"/>)
-              ==> Append(<OrderLine PrimeLineNo="4"/>)
-            )
-            .get
+        .transform(
+          (root \ "OrderLines")
+          ==> Append(<OrderLine PrimeLineNo="2"/>)
+          ==> Append(<OrderLine PrimeLineNo="3"/>)
+          ==> Append(<OrderLine PrimeLineNo="4"/>)
+        )
+        .get
     )
   }
 
@@ -117,19 +117,19 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
           <OrderLine PrimeLineNo="3" />
         </OrderLines>
       </Order>
-        ===
-          <Order>
+      |==|
+      <Order>
           <OrderLines>
             <OrderLine PrimeLineNo="1"/>
             <OrderLine PrimeLineNo="2"/>
             <OrderLine PrimeLineNo="3"/>
           </OrderLines>
         </Order>
-            .transform(
-              (root \ "OrderLines" \ "OrderLine" | attrs("PrimeLineNo" -> (_ == "1")))
-              ==> Replace(_ => <OrderLine PrimeLineNo="3"/>)
-            )
-            .get
+        .transform(
+          (root \ "OrderLines" \ "OrderLine" | attrs("PrimeLineNo" -> (_ == "1")))
+          ==> Replace(_ => <OrderLine PrimeLineNo="3"/>)
+        )
+        .get
     )
   }
 
@@ -139,7 +139,7 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
       (root \ "B") ==> Replace(_ => <B>1</B>)
     )
 
-    assert(result.get === <A><B>1</B></A>)
+    assert(result.get |==| <A><B>1</B></A>)
   }
 
   test("RemoveNode") {
@@ -149,18 +149,18 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
           <OrderLine PrimeLineNo="1" />
         </OrderLines>
       </Order>
-        ===
-          <Order>
+      |==|
+      <Order>
           <OrderLines>
             <OrderLine PrimeLineNo="1"/>
             <OrderLine PrimeLineNo="2"/>
           </OrderLines>
         </Order>
-            .transform(
-              (root \ "OrderLines" \ "OrderLine" | attrs("PrimeLineNo" -> (_ == "2")))
-              ==> Remove
-            )
-            .get
+        .transform(
+          (root \ "OrderLines" \ "OrderLine" | attrs("PrimeLineNo" -> (_ == "2")))
+          ==> Remove
+        )
+        .get
     )
   }
 
@@ -180,12 +180,12 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
       <OrderLines>
         <OrderLine PrimeLineNo="1"/>
       </OrderLines>
-        ===
-          <OrderLines/>
-            .transform[Try](
-              root ==> Append(<OrderLine PrimeLineNo="1"/>)
-            )
-            .get
+      |==|
+      <OrderLines/>
+        .transform[Try](
+          root ==> Append(<OrderLine PrimeLineNo="1"/>)
+        )
+        .get
     )
   }
 
@@ -194,24 +194,24 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
       <Order>
         <OrderLines A1="1" A2="2" A3="3"/>
       </Order>
-        ===
-          <Order>
+      |==|
+      <Order>
           <OrderLines/>
         </Order>
-            .transform(
-              root \ "OrderLines" ==> SetAttrs("A1" := "1", "A2" := "2", "A3" := "3")
-            )
-            .get
+        .transform(
+          root \ "OrderLines" ==> SetAttrs("A1" := "1", "A2" := "2", "A3" := "3")
+        )
+        .get
     )
   }
 
   test("SetAttribute to root") {
     assert(
-      <Order A1="1" A2="2" A3="3"/> === <Order/>
-          .transform(
-            root ==> SetAttrs("A1" := "1", "A2" := "2", "A3" := "3")
-          )
-          .get
+      <Order A1="1" A2="2" A3="3"/> |==| <Order/>
+        .transform(
+          root ==> SetAttrs("A1" := "1", "A2" := "2", "A3" := "3")
+        )
+        .get
     )
   }
 
@@ -222,16 +222,16 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
           <OrderLine PrimeLineNo="1"></OrderLine>
         </OrderLines>
       </Order>
-        ===
-          <Order>
+      |==|
+      <Order>
           <OrderLines T1="1">
             <OrderLine PrimeLineNo="1"></OrderLine>
           </OrderLines>
         </Order>
-            .transform(
-              root \ "OrderLines" ==> SetAttrs("T1" := "EDITED")
-            )
-            .get
+        .transform(
+          root \ "OrderLines" ==> SetAttrs("T1" := "EDITED")
+        )
+        .get
     )
   }
 
@@ -242,16 +242,16 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
           <OrderLine PrimeLineNo="1"></OrderLine>
         </OrderLines>
       </Order>
-        ===
-          <Order>
+      |==|
+      <Order>
           <OrderLines T1="1">
             <OrderLine PrimeLineNo="1"></OrderLine>
           </OrderLines>
         </Order>
-            .transform(
-              root \ "OrderLines" ==> RemoveAttrs(_.key == "T1")
-            )
-            .get
+        .transform(
+          root \ "OrderLines" ==> RemoveAttrs(_.key == "T1")
+        )
+        .get
     )
   }
 }
