@@ -3,7 +3,7 @@ package advxml.syntax
 import advxml.core.convert.{PureConverter, _}
 import advxml.core.validate.ValidatedNelEx
 import cats.{Applicative, Id, Monad}
-import cats.implicits._
+import cats.syntax.all._
 
 import scala.annotation.implicitNotFound
 

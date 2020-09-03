@@ -8,7 +8,6 @@ import scala.util.{Success, Try}
 class ConverterTest extends AnyFunSuite {
 
   test("Test Converter.id") {
-    import cats.instances.try_._
     val testValue = "TEST"
     val converter: Converter[Try, String, String] = Converter.id
     val result: Try[String] = converter.run(testValue)
@@ -17,7 +16,6 @@ class ConverterTest extends AnyFunSuite {
   }
 
   test("Test Converter.const") {
-    import cats.instances.try_._
     val testValue = "TEST"
     val converter: Converter[Try, Int, String] = Converter.const(testValue)
 

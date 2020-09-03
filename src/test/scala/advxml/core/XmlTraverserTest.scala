@@ -13,7 +13,6 @@ class XmlTraverserTest extends AnyFeatureSpec with FeatureSpecContract {
   XmlTraverserTest.Contract[Try](
     "Mandatory",
     {
-      import cats.instances.try_._
       ContractFuncs(
         immediateChild = (doc, nodeName) => XmlTraverser.mandatory.immediateChildren(doc, nodeName),
         children = (doc, nodeName) => XmlTraverser.mandatory.children(doc, nodeName),
@@ -29,7 +28,6 @@ class XmlTraverserTest extends AnyFeatureSpec with FeatureSpecContract {
   XmlTraverserTest.Contract[Option](
     "Optional",
     {
-      import cats.instances.option._
       ContractFuncs(
         immediateChild      = (doc, nodeName) => XmlTraverser.optional.immediateChildren(doc, nodeName),
         children            = (doc, nodeName) => XmlTraverser.optional.children(doc, nodeName),

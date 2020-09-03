@@ -16,7 +16,6 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec with FeatureSpecContract {
   XmlTraverserTest.Contract[Try](
     "Syntax.Float.Mandatory",
     {
-      import cats.instances.try_._
       ContractFuncs(
         immediateChild    = (doc, nodeName) => doc.\![Try](nodeName),
         children          = (doc, nodeName) => doc.\\![Try](nodeName),
@@ -30,7 +29,6 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec with FeatureSpecContract {
   XmlTraverserTest.Contract[Option](
     "Syntax.Float.Optional",
     {
-      import cats.instances.option._
       ContractFuncs(
         immediateChild      = (doc, nodeName) => doc.\?[Option](nodeName),
         children            = (doc, nodeName) => doc.\\?[Option](nodeName),
@@ -46,7 +44,6 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec with FeatureSpecContract {
   XmlTraverserTest.Contract[Try](
     "Syntax.Fixed.Mandatory",
     {
-      import cats.instances.try_._
       import advxml.syntax.traverse.try_._
       ContractFuncs(
         immediateChild      = (doc, nodeName) => doc.\!(nodeName),
@@ -61,7 +58,6 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec with FeatureSpecContract {
   XmlTraverserTest.Contract[Option](
     "Syntax.Fixed.Optional",
     {
-      import cats.instances.option._
       import advxml.syntax.traverse.option._
       ContractFuncs(
         immediateChild      = (doc, nodeName) => doc.\?(nodeName),
