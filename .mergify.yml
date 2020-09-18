@@ -1,0 +1,26 @@
+pull_request_rules:
+  - name: automatic merge for master when CI passes and 1 reviews and not WIP
+    conditions:
+      - "#approved-reviews-by>=1"
+      - status-success=codecov/patch
+      - status-success=codecov/project
+      - status-success=Travis CI - Branch
+      - status-success=Travis CI - Pull Request
+      - base=master
+      - label!=work-in-progress
+    actions:
+      merge:
+        method: merge
+        priority: high
+  - name: automatic merge for master when CI passes and author is steward
+    conditions:
+      - author=scala-steward
+      - status-success=codecov/patch
+      - status-success=codecov/project
+      - status-success=Travis CI - Branch
+      - status-success=Travis CI - Pull Request
+      - base=master
+    actions:
+      merge:
+        method: merge
+        priority: medium
