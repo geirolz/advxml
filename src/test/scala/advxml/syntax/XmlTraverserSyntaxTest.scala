@@ -41,6 +41,34 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec with FeatureSpecContract {
     }
   )(XmlTraverserTest.OptionExtractor).runAll()
 
+  //dynamics
+  XmlTraverserTest.Contract[Try](
+    "Syntax.Dynamic.Float.Mandatory",
+    {
+      import cats.instances.try_._
+      ContractFuncs(
+        immediateChild      = (doc, nodeName) => doc.\!*[Try].selectDynamic(nodeName).get,
+        children            = (doc, nodeName) => doc.\\!*[Try].selectDynamic(nodeName).get,
+        attribute           = (doc, attrName) => doc.\!*[Try].attr(attrName),
+        text                = doc => doc.\!*.text,
+        trimmedText         = doc => doc.\!*.trimmedText
+      )
+    }
+  )(XmlTraverserTest.TryExtractor).runAll()
+  
+  XmlTraverserTest.Contract[Option](
+    "Syntax.Dynamic.Float.Optional",
+    {
+      import cats.instances.option._
+      ContractFuncs(
+        immediateChild      = (doc, nodeName) => doc.\?*[Option].selectDynamic(nodeName).get,
+        children            = (doc, nodeName) => doc.\\?*[Option].selectDynamic(nodeName).get,
+        attribute           = (doc, attrName) => doc.\?*[Option].attr(attrName),
+        text                = doc => doc.\?*.text,
+        trimmedText         = doc => doc.\?*.trimmedText
+      )
+    }
+  )(XmlTraverserTest.OptionExtractor).runAll()
 
   //########################## FIXED ##########################
   XmlTraverserTest.Contract[Try](
@@ -72,5 +100,37 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec with FeatureSpecContract {
       )
     }
   )(XmlTraverserTest.OptionExtractor).runAll()
+  
+  //dynamics
+  XmlTraverserTest.Contract[Try](
+    "Syntax.Dynamic.Fixed.Mandatory",
+    {
+      import cats.instances.try_._
+      import advxml.syntax.traverse.try_._
+      ContractFuncs(
+        immediateChild      = (doc, nodeName) => doc.\!*.selectDynamic(nodeName).get,
+        children            = (doc, nodeName) => doc.\\!*.selectDynamic(nodeName).get,
+        attribute           = (doc, attrName) => doc.\!*.attr(attrName),
+        text                = doc => doc.\!*.text,
+        trimmedText         = doc => doc.\!*.trimmedText
+      )
+    }
+  )(XmlTraverserTest.TryExtractor).runAll()
+
+  XmlTraverserTest.Contract[Option](
+    "Syntax.Dynamic.Fixed.Optional",
+    {
+      import cats.instances.option._
+      import advxml.syntax.traverse.option._
+      ContractFuncs(
+        immediateChild      = (doc, nodeName) => doc.\?*.selectDynamic(nodeName).get,
+        children            = (doc, nodeName) => doc.\\?*.selectDynamic(nodeName).get,
+        attribute           = (doc, attrName) => doc.\?*.attr(attrName),
+        text                = doc => doc.\?*.text,
+        trimmedText         = doc => doc.\?*.trimmedText
+      )
+    }
+  )(XmlTraverserTest.OptionExtractor).runAll()
+  
   // format: on
 }

@@ -129,11 +129,7 @@ object XmlDynamicTraverser {
 
     def get: F[NodeSeq]
 
-    def attrOption(q: String): F[Option[String]]
-
     def attr(q: String): F[String]
-
-    def textOption: F[Option[String]]
 
     def text: F[String]
 
@@ -175,34 +171,30 @@ object XmlDynamicTraverser {
     //exit points
     def get: F[NodeSeq] = value
 
-    def attrOption(q: String): F[Option[String]] =
-      value.map(n =>
-        n \@ q match {
-          case "" => None
-          case x  => Some(x)
-        }
-      )
-
     def attr(q: String): F[String] =
       for {
-        node    <- value
-        optAttr <- attrOption(q)
-        result  <- optHandler(XmlMissingAttributeException(q, node))(optAttr)
+        node <- value
+        optAttr <- value.map(n =>
+          n \@ q match {
+            case "" => None
+            case x  => Some(x)
+          }
+        )
+        result <- optHandler(XmlMissingAttributeException(q, node))(optAttr)
       } yield result
-
-    def textOption: F[Option[String]] =
-      value.map(n =>
-        n.text match {
-          case x if x.isEmpty => None
-          case x              => Some(x)
-        }
-      )
 
     def text: F[String] =
       value.flatMap(ns => {
-        textOption.flatMap(textOpt => {
-          optHandler(XmlMissingTextException(ns))(textOpt)
-        })
+        value
+          .map(n =>
+            n.text match {
+              case x if x.isEmpty => None
+              case x              => Some(x)
+            }
+          )
+          .flatMap(textOpt => {
+            optHandler(XmlMissingTextException(ns))(textOpt)
+          })
       })
 
     def trimmedText: F[String] = text.map(_.trim)

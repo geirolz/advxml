@@ -24,3 +24,8 @@ val document =
 
 val order2Opt: Option[NodeSeq] = (document \? "Order")
     .map(_.filter(attrs(("Id", _ == "2"))))
+
+
+val order2OptUsingDynamic: Option[NodeSeq] = document.\?*.Order.\\?*.Test
+  .map(_.filter(attrs(("Id", _ == "2"))))
+  .get
