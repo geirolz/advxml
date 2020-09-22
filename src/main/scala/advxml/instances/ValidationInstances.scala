@@ -6,7 +6,7 @@ import cats.data.Validated.{Invalid, Valid}
 import cats.MonadError
 import cats.data.{NonEmptyList, Validated}
 
-private[instances] trait ValidationInstance {
+private[instances] trait ValidationInstances {
 
   implicit val throwable_to_ThrowableNel: Throwable => ThrowableNel = {
     case ex: AggregatedException => ex.exceptions

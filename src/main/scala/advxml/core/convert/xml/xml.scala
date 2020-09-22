@@ -1,5 +1,6 @@
 package advxml.core.convert
 
+import scala.annotation.implicitNotFound
 import scala.xml.NodeSeq
 
 package object xml {
@@ -13,6 +14,7 @@ package object xml {
     * @tparam O Contravariant input model type
     * @tparam X Output xml type, type constraint ensures that `X` is a subtype of scala-xml `NodeSeq`
     */
+  @implicitNotFound("Missing ModelToXml to transform ${O} into ValidatedEx[${X}]")
   type ModelToXml[-O, X <: NodeSeq] = ValidatedConverter[O, X]
 
   /**
@@ -24,5 +26,6 @@ package object xml {
     * @tparam X Contravariant input xml model, type constraint ensures that `X` is a subtype of scala-xml `NodeSeq`
     * @tparam O Output model type
     */
+  @implicitNotFound("Missing XmlToModel to transform ${X} into ValidatedEx[${O}]")
   type XmlToModel[-X <: NodeSeq, O] = ValidatedConverter[X, O]
 }

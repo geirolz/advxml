@@ -17,11 +17,13 @@ import scala.xml.Elem
 //TODO: Check duplication into advxml.core.convert.xml.XmlConverterTest
 class XmlConverterSyntaxTest extends AnyFunSuite {
 
-  import advxml.instances.validate._
   import advxml.syntax.convert._
   import advxml.syntax.traverse.validated._
-  import cats.instances.option._
   import cats.syntax.all._
+
+  import advxml.instances.validate._
+  import advxml.instances.traverse._
+  import cats.instances.option._
 
   test("XML to Model - Convert simple case class") {
 
@@ -33,6 +35,12 @@ class XmlConverterSyntaxTest extends AnyFunSuite {
         x \@! "Surname",
         x.\@?("Age").map(_.toInt).valid
       ).mapN(Person)
+
+//      (
+//        x.\@![ValidatedNelEx]("Name"),
+//        x.\@![ValidatedNelEx]("Surname"),
+//        x.\@?[Option]("Age").map(_.toInt).valid
+//        ).mapN(Person)
     })
 
     val xml = <Person Name="Matteo" Surname="Bianchi"/>

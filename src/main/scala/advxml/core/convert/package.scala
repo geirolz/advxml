@@ -4,6 +4,8 @@ import advxml.core.validate.ValidatedNelEx
 import cats.Id
 import cats.data.Kleisli
 
+import scala.annotation.implicitNotFound
+
 package object convert {
 
   /**
@@ -15,6 +17,7 @@ package object convert {
     * @tparam A Contravariant input object type
     * @tparam B Output object type
     */
+  @implicitNotFound("Missing implicit PureConverter instance for ${F}, used to covert ${A} to ${B} in ${F}")
   type Converter[F[_], -A, B] = Kleisli[F, A, B]
 
   /**
@@ -26,6 +29,7 @@ package object convert {
     * @tparam A Contravariant input object type
     * @tparam B Output object type
     */
+  @implicitNotFound("Missing implicit PureConverter instance, used to covert ${A} to ${B}")
   type PureConverter[-A, B] = Converter[Id, A, B]
 
   /**
@@ -36,5 +40,8 @@ package object convert {
     * @tparam A Contravariant input object type
     * @tparam B Output object type
     */
+  @implicitNotFound(
+    "Missing implicit ValidatedConverter instance for ValidatedNelEx, used to covert ${A} to ${B} in ValidatedNelEx"
+  )
   type ValidatedConverter[-A, B] = Converter[ValidatedNelEx, A, B]
 }
