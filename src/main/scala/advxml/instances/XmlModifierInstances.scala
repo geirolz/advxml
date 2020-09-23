@@ -88,8 +88,8 @@ private[instances] trait XmlModifierInstances {
       collapse[F](ns.map {
         case e: Elem =>
           val newAttrs = e.attributes.asAttrMap
-            .filter {
-              case (k, v) => filter(AttributeData(k, Text(v)))
+            .filter { case (k, v) =>
+              filter(AttributeData(k, Text(v)))
             }
             .keys
             .foldLeft(e.attributes)((attrs, key) => attrs.remove(key))

@@ -42,8 +42,8 @@ private[instances] trait XmlPredicateInstances {
     */
   def attrs(value: (String, String => Boolean), values: (String, String => Boolean)*): XmlPredicate = {
     (value +: values)
-      .map {
-        case (key, p) => XmlPredicate(ns => p(ns \@ key))
+      .map { case (key, p) =>
+        XmlPredicate(ns => p(ns \@ key))
       }
       .reduce(Predicate.and[NodeSeq])
   }

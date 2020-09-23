@@ -1,7 +1,6 @@
 package advxml.syntax
 
 import advxml.core.XmlTraverser
-import advxml.core.validate.MonadEx
 import advxml.core.XmlTraverser._
 import cats.{Applicative, FlatMap}
 
@@ -183,9 +182,6 @@ private[syntax] trait XmlTraverserSyntaxSpecified[F[_], G[_]] extends XmlTravers
 
   implicit class XmlTraverserMandatoryFixedOpsForId[F1[_] >: F[_]: Applicative: FlatMap: XmlMandatoryTraverser](
     ns: NodeSeq
-  )(
-    implicit F: MonadEx[F],
-    T: XmlTraverser[F]
   ) extends XmlTraverserMandatoryFixedOps[F1](Applicative[F1].pure(ns))
 
   implicit class XmlTraverserOptionalFixedOpsForId[G1[_] >: G[_]: Applicative: FlatMap: XmlOptionalTraverser](

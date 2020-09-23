@@ -32,8 +32,9 @@ object XmlTransformer {
         updatedWholeDocument = {
           targetParents
             .foldRight(XmlPatch.const(targetNodeSeq, updatedTarget))((parent, patch) =>
-              XmlPatch(parent, _.flatMap {
-                case e: Elem =>
+              XmlPatch(
+                parent,
+                _.flatMap { case e: Elem =>
                   XmlUtils.flatMapChildren(
                     e,
                     n =>
@@ -41,7 +42,8 @@ object XmlTransformer {
                         .getOrElse(Some(n), Some(n))
                         .getOrElse(NodeSeq.Empty)
                   )
-              })
+                }
+              )
             )
             .updated
         }
