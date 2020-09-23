@@ -31,16 +31,10 @@ class XmlConverterSyntaxTest extends AnyFunSuite {
 
     implicit val converter: XmlToModel[Elem, Person] = ValidatedConverter.of(x => {
       (
-        x \@! "Name",
-        x \@! "Surname",
-        x.\@?("Age").map(_.toInt).valid
+        x.\@![ValidatedNelEx]("Name"),
+        x.\@![ValidatedNelEx]("Surname"),
+        x.\@?[Option]("Age").map(_.toInt).valid
       ).mapN(Person)
-
-//      (
-//        x.\@![ValidatedNelEx]("Name"),
-//        x.\@![ValidatedNelEx]("Surname"),
-//        x.\@?[Option]("Age").map(_.toInt).valid
-//        ).mapN(Person)
     })
 
     val xml = <Person Name="Matteo" Surname="Bianchi"/>

@@ -43,20 +43,17 @@ private[syntax] trait ConvertersSyntax {
       ValidatedConverter[A, B].run(a)
 
     //************************************** ALIASES **************************************
-    /**
-      * Alias to [[AnyConvertersOps.asF]]
+    /** Alias to [[AnyConvertersOps.asF]]
       */
     def as[F[_], B](implicit F: Converter[F, A, B]): F[B] =
       asF[F, B]
 
-    /**
-      * Alias to [[AnyConvertersOps.asPure]]
+    /** Alias to [[AnyConvertersOps.asPure]]
       */
     def as[B](implicit F: PureConverter[A, B], i1: DummyImplicit): B =
       asPure[B]
 
-    /**
-      * Alias to [[AnyConvertersOps.asValidated]]
+    /** Alias to [[AnyConvertersOps.asValidated]]
       */
     def as[B](implicit F: ValidatedConverter[A, B], i1: DummyImplicit, i2: DummyImplicit): ValidatedNelEx[B] =
       asValidated[B]
