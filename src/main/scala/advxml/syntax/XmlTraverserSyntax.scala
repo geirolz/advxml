@@ -6,8 +6,7 @@ import cats.{Alternative, FlatMap, Monad}
 
 import scala.xml.NodeSeq
 
-/**
-  * Advxml
+/** Advxml
   * Created by geirolad on 14/06/2019.
   *
   * @author geirolad

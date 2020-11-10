@@ -2,8 +2,7 @@ package advxml.core
 
 import scala.xml.{Elem, Node, NodeSeq, Text}
 
-/**
-  * Advxml
+/** Advxml
   * Created by geirolad on 22/07/2019.
   *
   * @author geirolad

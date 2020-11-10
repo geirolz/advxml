@@ -11,8 +11,7 @@ import scala.util.Try
  * - Each feature must provide a trait containing all syntax implicits named `[feature_name]Syntax`
  * - For each object must be exist a package with the same name under `advxml`
  */
-/**
-  * This object is the entry point to access to all syntax implicits provided by Advxml.
+/** This object is the entry point to access to all syntax implicits provided by Advxml.
   *
   * You can import all implicits using:
   * {{{
