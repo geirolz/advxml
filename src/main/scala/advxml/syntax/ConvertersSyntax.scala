@@ -20,8 +20,7 @@ private[syntax] trait ConvertersSyntax {
 
   implicit class AnyConvertersOps[A](a: A) {
 
-    /**
-      * Convert [[A]] into [[B]] using implicit [[Converter]] if available
+    /** Convert [[A]] into [[B]] using implicit [[Converter]] if available
       * and if it conforms to required types [[F]], [[A]] and [[B]].
       *
       * @see [[Converter]] for further information.
@@ -29,8 +28,7 @@ private[syntax] trait ConvertersSyntax {
     @implicitNotFound("Missing Converter to transform object into ${F} of ${B}.")
     def as[F[_], B](implicit F: Converter[F, A, B]): F[B] = Converter[F, A, B].run(a)
 
-    /**
-      * Convert [[A]] into [[B]] using implicit [[PureConverter]] if available
+    /** Convert [[A]] into [[B]] using implicit [[PureConverter]] if available
       * and if it conforms to required types [[A]] and [[B]].
       *
       * @see [[PureConverter]] for further information.
@@ -38,8 +36,7 @@ private[syntax] trait ConvertersSyntax {
     @implicitNotFound("Missing PureConverter to transform object into ${B}.")
     def as[B](implicit F: PureConverter[A, B], i1: DummyImplicit): B = PureConverter[A, B].run(a)
 
-    /**
-      * Convert [[A]] into [[B]] using implicit [[ValidatedConverter]] if available
+    /** Convert [[A]] into [[B]] using implicit [[ValidatedConverter]] if available
       * and if it conforms to required types [[A]] and [[B]].
       *
       * @see [[Converter]] for further information.

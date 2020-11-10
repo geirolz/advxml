@@ -8,21 +8,18 @@ import scala.xml.{Node, NodeSeq}
 
 private[instances] trait XmlPredicateInstances {
 
-  /**
-    * Always true predicate.
+  /** Always true predicate.
     */
   lazy val alwaysTrue: XmlPredicate = _ => true
 
-  /**
-    * Filter nodes by text property.
+  /** Filter nodes by text property.
     *
     * @param p Text predicate
     * @return
     */
   def text(p: String => Boolean): XmlPredicate = e => p(e.text)
 
-  /**
-    * Filter nodes by label property.
+  /** Filter nodes by label property.
     *
     * @param p Label predicate
     * @return Predicate for nodes of type `Node`
@@ -32,8 +29,7 @@ private[instances] trait XmlPredicateInstances {
     case _       => false
   }
 
-  /**
-    * Filter nodes by attributes.
+  /** Filter nodes by attributes.
     *
     * @param value  Tuple2 where first value represent the attribute key and the second
     *               value represent a predicate function on attribute's value.
@@ -42,8 +38,8 @@ private[instances] trait XmlPredicateInstances {
     */
   def attrs(value: (String, String => Boolean), values: (String, String => Boolean)*): XmlPredicate = {
     (value +: values)
-      .map {
-        case (key, p) => XmlPredicate(ns => p(ns \@ key))
+      .map { case (key, p) =>
+        XmlPredicate(ns => p(ns \@ key))
       }
       .reduce(Predicate.and[NodeSeq])
   }
