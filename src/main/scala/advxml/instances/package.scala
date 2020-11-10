@@ -6,8 +6,7 @@ package advxml
  * - Each feature must provide a trait containing all feature instances named `[feature_name]Instances`
  * - For each object must be exist a package with the same name under `advxml`
  */
-/**
-  * This object is the entry point to access to all features instances provided by Advxml.
+/** This object is the entry point to access to all features instances provided by Advxml.
   *
   * You can import all instances using:
   * {{{

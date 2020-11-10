@@ -6,8 +6,7 @@ private[syntax] trait PredicateSyntax {
 
   implicit class PredicateOps[T](p: T => Boolean) {
 
-    /**
-      * Combine with another predicate(`T => Boolean`) with `And` operator.
+    /** Combine with another predicate(`T => Boolean`) with `And` operator.
       *
       * @see [[Predicate]] object for further information.
       * @param that Predicate to combine.
@@ -16,8 +15,7 @@ private[syntax] trait PredicateSyntax {
       */
     def &&(that: T => Boolean): T => Boolean = p.and(that)
 
-    /**
-      * Combine with another predicate(`T => Boolean`) with `And` operator.
+    /** Combine with another predicate(`T => Boolean`) with `And` operator.
       *
       * @see [[Predicate]] object for further information.
       * @param that Predicate to combine.
@@ -26,8 +24,7 @@ private[syntax] trait PredicateSyntax {
       */
     def and(that: T => Boolean): T => Boolean = Predicate.and(p, that)
 
-    /**
-      * Combine with another predicate(`T => Boolean`) with `Or` operator.
+    /** Combine with another predicate(`T => Boolean`) with `Or` operator.
       *
       * @see [[Predicate]] object for further information.
       * @param that Predicate to combine.
@@ -36,8 +33,7 @@ private[syntax] trait PredicateSyntax {
       */
     def ||(that: T => Boolean): T => Boolean = p.or(that)
 
-    /**
-      * Combine with another predicate(`T => Boolean`) with `Or` operator.
+    /** Combine with another predicate(`T => Boolean`) with `Or` operator.
       *
       * @see [[Predicate]] object for further information.
       * @param that Predicate to combine.

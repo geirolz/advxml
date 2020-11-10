@@ -21,7 +21,7 @@ lazy val global = project
 lazy val settings = Seq(
   name := "Advxml",
   //scala options
-  crossScalaVersions := List("2.12.8", "2.13.0"),
+  crossScalaVersions := List("2.12.8", "2.13.3"),
   scalaVersion       := crossScalaVersions.value.head,
   scalacOptions ++= scalacSettings(scalaVersion.value),
   scalacOptions in (Compile, console) --= Seq(

@@ -15,8 +15,8 @@ private[instances] trait ValidationInstance {
 
   implicit val throwableNel_to_Throwable: ThrowableNel => Throwable = nelE => new AggregatedException(nelE)
 
-  implicit def validatedMonadErrorInstance[E1, E2](
-    implicit toE1: E2 => E1,
+  implicit def validatedMonadErrorInstance[E1, E2](implicit
+    toE1: E2 => E1,
     toE2: E1 => E2
   ): MonadError[Validated[E1, *], E2] =
     new MonadError[Validated[E1, *], E2] {

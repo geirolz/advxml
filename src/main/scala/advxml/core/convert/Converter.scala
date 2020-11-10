@@ -6,16 +6,14 @@ import cats.data.Kleisli
 
 import scala.annotation.implicitNotFound
 
-/**
-  * Advxml
+/** Advxml
   * Created by geirolad on 31/10/2019.
   *
   * @author geirolad
   */
 object Converter {
 
-  /**
-    * Create an instance of [[Converter]]
+  /** Create an instance of [[Converter]]
     * @param f function to map input to output
     * @tparam F Effect type
     * @tparam A Input type
@@ -24,16 +22,14 @@ object Converter {
     */
   def of[F[_], A, B](f: A => F[B]): Converter[F, A, B] = Kleisli(f)
 
-  /**
-    * Create an always pure converter that return the input instance wrapped in `F`.
+  /** Create an always pure converter that return the input instance wrapped in `F`.
     * @tparam A input and output type
     * @return Identity [[Converter]] instance
     */
   @implicitNotFound("Missing Applicative instance for ${F}, used to create a pure value of ${A}")
   def id[F[_]: Applicative, A]: Converter[F, A, A] = Converter.of(Applicative[F].pure(_))
 
-  /**
-    * Create an always pure converter that return the passed value ignoring the converter input.
+  /** Create an always pure converter that return the passed value ignoring the converter input.
     * @param v Inner value returned when the [[Converter]] is invoked, the converter input is ignored.
     * @tparam B inner output type
     * @return Constant [[Converter]] instance
@@ -41,8 +37,7 @@ object Converter {
   @implicitNotFound("Missing Applicative instance for ${F}, used to create a pure value of ${A}")
   def const[F[_]: Applicative, A, B](v: B): Converter[F, A, B] = Converter.of(_ => Applicative[F].pure(v))
 
-  /**
-    * Apply conversion using implicit [[Converter]] instance.
+  /** Apply conversion using implicit [[Converter]] instance.
     * This method catch a [[Converter]] instance in the scope that conforms with types `F`, `A` and `B` and then invoke
     * in it the method `apply` passing `a`.
     *
