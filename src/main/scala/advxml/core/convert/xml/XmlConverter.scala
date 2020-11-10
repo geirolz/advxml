@@ -9,8 +9,7 @@ import scala.xml.NodeSeq
 
 object XmlConverter {
 
-  /**
-    * Syntactic sugar to convert a `O` instance into `X` using an implicit [[ModelToXml]] instance.
+  /** Syntactic sugar to convert a `O` instance into `X` using an implicit [[ModelToXml]] instance.
     * This method catch a [[XmlToModel]] instance in the scope that conforms with types `X``O` and then invoke
     * in it the method `apply` passing `xml`.
     *
@@ -22,8 +21,7 @@ object XmlConverter {
   @implicitNotFound("Missing XmlToModel to transform ${X} into ValidatedEx[${O}]")
   def asModel[X <: NodeSeq: XmlToModel[*, O], O](xml: X): ValidatedNelEx[O] = ValidatedConverter[X, O].run(xml)
 
-  /**
-    * Syntactic sugar to convert a `X` instance into `O` using an implicit [[XmlToModel]] instance.
+  /** Syntactic sugar to convert a `X` instance into `O` using an implicit [[XmlToModel]] instance.
     *
     * This method catch a [[ModelToXml]] instance in the scope that conforms with types `O``X` and then invoke
     * in it the method `apply` passing `model`.

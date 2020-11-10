@@ -32,11 +32,10 @@ object XmlTransformer {
           targetParents
             .foldRight((targetNode, updatedTarget))((parent, originalUpdatedTuple) => {
               val (original, updated) = originalUpdatedTuple
-              parent -> parent.flatMap {
-                case e: Elem =>
-                  val originalIndex = e.child.indexWhere(x => original.xml_sameElements(x))
-                  val updatedChild = e.child.updated(originalIndex, updated).flatten
-                  e.copy(child = updatedChild)
+              parent -> parent.flatMap { case e: Elem =>
+                val originalIndex = e.child.indexWhere(x => original.xml_sameElements(x))
+                val updatedChild = e.child.updated(originalIndex, updated).flatten
+                e.copy(child = updatedChild)
               }
             })
             ._2
