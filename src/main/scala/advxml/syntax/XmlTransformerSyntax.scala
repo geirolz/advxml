@@ -8,8 +8,7 @@ import advxml.core.validate.MonadEx
 
 import scala.xml.{NodeSeq, Text}
 
-/**
-  * Advxml
+/** Advxml
   * Created by geirolad on 18/06/2019.
   *
   * @author geirolad

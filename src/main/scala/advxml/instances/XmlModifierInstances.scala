@@ -12,13 +12,11 @@ private[instances] trait AllXmlModifierInstances extends XmlModifierInstances wi
 
 private[instances] trait XmlModifierInstances {
 
-  /**
-    * No-Action modifiers, equals to `Replace` passing an identity function.
+  /** No-Action modifiers, equals to `Replace` passing an identity function.
     */
   lazy val NoAction: ComposableXmlModifier = Replace(identity[NodeSeq])
 
-  /**
-    * Prepend nodes to current nodes.
+  /** Prepend nodes to current nodes.
     * Supported only for `Node` and `Group` elements, in other case will fail.
     * @param newNs Nodes to prepend.
     */
@@ -31,8 +29,7 @@ private[instances] trait XmlModifierInstances {
       })
   }
 
-  /**
-    * Append nodes to current nodes.
+  /** Append nodes to current nodes.
     * Supported only for `Node` and `Group` elements, in other case will fail.
     * @param newNs Nodes to append.
     */
@@ -45,16 +42,14 @@ private[instances] trait XmlModifierInstances {
       })
   }
 
-  /**
-    * Replace current nodes.
+  /** Replace current nodes.
     * @param f Function to from current nodes to new nodes.
     */
   case class Replace(f: NodeSeq => NodeSeq) extends ComposableXmlModifier {
     override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] = F.pure(f(ns))
   }
 
-  /**
-    * Append attributes to current node.
+  /** Append attributes to current node.
     *
     * Supported only for `Node` elements, in other case will fail.
     * @param d Attribute data.
@@ -75,8 +70,7 @@ private[instances] trait XmlModifierInstances {
       })
   }
 
-  /**
-    * Remove attributes.
+  /** Remove attributes.
     *
     * Supported only for `Node` elements, in other case will fail.
     * @param p Attribute predicate.
@@ -88,8 +82,8 @@ private[instances] trait XmlModifierInstances {
       collapse[F](ns.map {
         case e: Elem =>
           val newAttrs = e.attributes.asAttrMap
-            .filter {
-              case (k, v) => filter(AttributeData(k, Text(v)))
+            .filter { case (k, v) =>
+              filter(AttributeData(k, Text(v)))
             }
             .keys
             .foldLeft(e.attributes)((attrs, key) => attrs.remove(key))
@@ -100,8 +94,7 @@ private[instances] trait XmlModifierInstances {
     }
   }
 
-  /**
-    * Remove selected nodes.
+  /** Remove selected nodes.
     */
   case object Remove extends FinalXmlModifier {
     override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] = F.pure(NodeSeq.Empty)

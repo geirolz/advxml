@@ -2,8 +2,7 @@ package advxml.core.transform
 
 import advxml.core.transform.actions.{ComposableXmlModifier, FinalXmlModifier, XmlZoom}
 
-/**
-  * advxml
+/** advxml
   * Created by geirolad on 09/06/2019.
   *
   * @author geirolad

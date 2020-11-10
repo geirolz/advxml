@@ -4,8 +4,7 @@ import java.io.{OutputStreamWriter, PrintStream, PrintWriter}
 
 import cats.data.NonEmptyList
 
-/**
-  * Advxml
+/** Advxml
   * Created by geirolad on 11/07/2019.
   *
   * @author geirolad
