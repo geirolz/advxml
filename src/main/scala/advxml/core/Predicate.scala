@@ -2,8 +2,7 @@ package advxml.core
 
 object Predicate {
 
-  /**
-    * Combine two predicates(`T => Boolean`) with `And` operator.
+  /** Combine two predicates(`T => Boolean`) with `And` operator.
     *
     * @param p1 First predicate
     * @param p2 Second predicate
@@ -12,8 +11,7 @@ object Predicate {
     */
   def and[T](p1: T => Boolean, p2: T => Boolean): T => Boolean = t => p1(t) && p2(t)
 
-  /**
-    * Combine two predicates(`T => Boolean`) with `Or` operator.
+  /** Combine two predicates(`T => Boolean`) with `Or` operator.
     *
     * @param p1 First predicate
     * @param p2 Second predicate

@@ -11,8 +11,7 @@ import cats.Alternative
 import scala.util.{Failure, Success, Try}
 import scala.xml.NodeSeq
 
-/**
-  * Advxml
+/** Advxml
   * Created by geirolad on 28/06/2019.
   * @author geirolad
   */
