@@ -4,13 +4,13 @@ inThisBuild(
     homepage     := Some(url("https://github.com/geirolz/advxml")),
     licenses     := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
     developers := List(
-        Developer(
-          "DavidGeirola",
-          "David Geirola",
-          "david.geirola@gmail.com",
-          url("https://github.com/geirolz")
-        )
+      Developer(
+        "DavidGeirola",
+        "David Geirola",
+        "david.geirola@gmail.com",
+        url("https://github.com/geirolz")
       )
+    )
   )
 )
 
@@ -25,9 +25,9 @@ lazy val settings = Seq(
   scalaVersion       := crossScalaVersions.value.head,
   scalacOptions ++= scalacSettings(scalaVersion.value),
   scalacOptions in (Compile, console) --= Seq(
-      "-Ywarn-unused:imports",
-      "-Xfatal-warnings"
-    ),
+    "-Ywarn-unused:imports",
+    "-Xfatal-warnings"
+  ),
   //coverage
   coverageEnabled in (Test, compile)    := true,
   coverageEnabled in (Compile, compile) := false,
@@ -52,7 +52,7 @@ def scalacSettings(scalaVersion: String) =
     "-language:implicitConversions", // Allow definition of implicit functions called views
     "-unchecked", // Enable additional warnings where generated code depends on assumptions.
     "-Xcheckinit", // Wrap field accessors to throw an exception on uninitialized access.
-    "-Xfatal-warnings", // Fail the compilation if there are any warnings.
+//    "-Xfatal-warnings", // Fail the compilation if there are any warnings.
     "-Xlint:adapted-args", // Warn if an argument list is modified to match the receiver.
     "-Xlint:constant", // Evaluation of a constant arithmetic expression results in an error.
     "-Xlint:delayedinit-select", // Selecting member of DelayedInit.

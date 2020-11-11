@@ -1,6 +1,6 @@
 package advxml.core
 
-import advxml.test.{ContractTests, FunSuiteContract}
+import advxml.testUtils.{ContractTests, FunSuiteContract}
 import org.scalatest.funsuite.AnyFunSuite
 
 class PredicateTests extends AnyFunSuite with FunSuiteContract {

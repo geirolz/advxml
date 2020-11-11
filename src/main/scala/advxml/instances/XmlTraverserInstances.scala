@@ -2,19 +2,14 @@ package advxml.instances
 
 import advxml.core.XmlTraverser
 import advxml.core.validate.MonadEx
-import advxml.core.XmlTraverser.{
-  XmlDeepDynamicTraverser,
-  XmlImmediateDynamicTraverser,
-  XmlMandatoryTraverser,
-  XmlOptionalTraverser,
-  XmlTraverser
-}
+import advxml.core.XmlTraverser._
 import advxml.core.XmlTraverser.exceptions.{
   XmlMissingAttributeException,
   XmlMissingNodeException,
   XmlMissingTextException
 }
-import advxml.core.utils.OptErrorHandler
+import advxml.core.transform.actions.XmlPredicate.XmlPredicate
+import advxml.core.utils.{OptErrorHandler, TraverserK}
 import advxml.core.utils.OptErrorHandler.OptErrorHandler
 import cats.{Alternative, Applicative, FlatMap}
 
@@ -58,23 +53,25 @@ private[instances] trait XmlTraverserInstances {
     override def trimmedText(ns: NodeSeq): F[String] =
       text(ns).map(_.trim)
 
-    override def atIndexF(ns: NodeSeq, idx: Int): F[NodeSeq] =
-      errHandler(new IndexOutOfBoundsException("" + idx))(ns.lift(idx))
+    val childTraverser: TraverserK[NodeSeq, NodeSeq, F] = new TraverserK[NodeSeq, NodeSeq, F] {
+      override def atIndex(ns: NodeSeq, idx: Int): F[NodeSeq] =
+        errHandler(new IndexOutOfBoundsException("" + idx))(ns.\("_").lift(idx))
 
-    override def headF(ns: NodeSeq): F[NodeSeq] =
-      errHandler(XmlMissingNodeException("head", ns))(ns.headOption)
+      override def head(ns: NodeSeq): F[NodeSeq] =
+        errHandler(XmlMissingNodeException("head", ns))(ns.\("_").headOption)
 
-    override def lastF(ns: NodeSeq): F[NodeSeq] =
-      errHandler(XmlMissingNodeException("last", ns))(ns.lastOption)
+      override def last(ns: NodeSeq): F[NodeSeq] =
+        errHandler(XmlMissingNodeException("last", ns))(ns.\("_").lastOption)
 
-    override def tailF(ns: NodeSeq): F[NodeSeq] =
-      F.pure(ns.tail)
+      override def tail(ns: NodeSeq): F[NodeSeq] =
+        F.pure(ns.\("_").tail)
 
-    override def findF(ns: NodeSeq, p: NodeSeq => Boolean): F[NodeSeq] =
-      errHandler(new RuntimeException("Cannot find an Node that satisfies the predicate."))(ns.find(p))
+      override def find(ns: NodeSeq, p: XmlPredicate): F[NodeSeq] =
+        errHandler(new RuntimeException("Cannot find an Node that satisfies the predicate."))(ns.\("_").find(p))
 
-    override def filterF(ns: NodeSeq, p: NodeSeq => Boolean): F[NodeSeq] =
-      F.pure(ns.filter(p))
+      override def filter(ns: NodeSeq, p: XmlPredicate): F[NodeSeq] =
+        F.pure(ns.\("_").filter(p))
+    }
   }
 
   implicit def mandatory[F[_]](implicit F: MonadEx[F]): XmlMandatoryTraverser[F] = {
@@ -105,7 +102,7 @@ private[instances] trait DynamicXmlTraverserInstances {
           copy(value.flatMap(v => XmlTraverser[F].immediateChildren(v, q)))
 
         override def applyDynamic(q: String)(idx: Int): XmlImmediateDynamicTraverser[F] =
-          copy(selectDynamic(q).get.flatMap(XmlTraverser[F].atIndexF(_, idx)))
+          copy(selectDynamic(q).get.flatMap(XmlTraverser[F].childTraverser.atIndex(_, idx)))
       }
 
       XmlImmediateDynamicTraverserImpl(v)
@@ -127,7 +124,7 @@ private[instances] trait DynamicXmlTraverserInstances {
           copy(value.flatMap(v => XmlTraverser[F].children(v, q)))
 
         override def applyDynamic(q: String)(idx: Int): XmlDeepDynamicTraverser[F] =
-          copy(selectDynamic(q).get.flatMap(XmlTraverser[F].atIndexF(_, idx)))
+          copy(selectDynamic(q).get.flatMap(XmlTraverser[F].childTraverser.atIndex(_, idx)))
       }
 
       XmlDeepDynamicTraverserImpl(v)

@@ -1,7 +1,7 @@
 package advxml.core.validate
 
 import advxml.core.validate.ValidateExTest.ContractFuncs
-import advxml.test.{ContractTests, FunSuiteContract}
+import advxml.testUtils.{ContractTests, FunSuiteContract}
 import cats.data.{NonEmptyList, Validated}
 import cats.data.Validated.Valid
 import org.scalatest.funsuite.AnyFunSuite

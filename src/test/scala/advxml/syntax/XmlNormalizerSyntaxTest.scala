@@ -2,14 +2,13 @@ package advxml.syntax
 
 import advxml.core.XmlNormalizerTest
 import advxml.core.XmlNormalizerTest.ContractFuncs
-import advxml.test.FunSuiteContract
+import advxml.testUtils.FunSuiteContract
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.Assertion
 
 import scala.xml.NodeSeq
 
-/**
-  * Advxml
+/** Advxml
   * Created by geirolad on 19/07/2019.
   *
   * @author geirolad
@@ -34,7 +33,7 @@ class XmlNormalizerSyntaxTest extends AnyFunSuite with FunSuiteContract {
       "Syntax.Symbols", {
         ContractFuncs(
           normalizeAction = _.normalize,
-          normalizedEqualsAction = (v1, v2) => v1 === v2
+          normalizedEqualsAction = (v1, v2) => v1 |==| v2
         )
       }
     )

@@ -1,7 +1,7 @@
 package advxml.syntax
 
 import advxml.core.PredicateTests
-import advxml.test.FunSuiteContract
+import advxml.testUtils.FunSuiteContract
 import org.scalatest.funsuite.AnyFunSuite
 
 class PredicateSyntaxTest extends AnyFunSuite with FunSuiteContract {

@@ -2,6 +2,7 @@ package advxml.syntax
 
 import advxml.core.XmlTraverser
 import advxml.core.XmlTraverser._
+import advxml.core.transform.actions.XmlPredicate.XmlPredicate
 import cats.{Applicative, FlatMap}
 
 import scala.xml.NodeSeq
@@ -18,14 +19,23 @@ private[syntax] trait XmlTraverserSyntax {
   //######################################## FLOAT ########################################
   implicit class XmlTraverserCommonFloatOps(ns: NodeSeq) {
 
-    def atIndexF[F[_]: XmlTraverser](idx: Int): F[NodeSeq] =
-      XmlTraverser[F].atIndexF(ns, idx)
+    def childAtIndex[F[_]: XmlTraverser](idx: Int): F[NodeSeq] =
+      XmlTraverser[F].childTraverser.atIndex(ns, idx)
 
-    def headF[F[_]: XmlTraverser]: F[NodeSeq] =
-      XmlTraverser[F].headF(ns)
+    def headChild[F[_]: XmlTraverser]: F[NodeSeq] =
+      XmlTraverser[F].childTraverser.head(ns)
 
-    def lastF[F[_]: XmlTraverser]: F[NodeSeq] =
-      XmlTraverser[F].lastF(ns)
+    def lastChild[F[_]: XmlTraverser]: F[NodeSeq] =
+      XmlTraverser[F].childTraverser.last(ns)
+
+    def tailChild[F[_]: XmlTraverser]: F[NodeSeq] =
+      XmlTraverser[F].childTraverser.tail(ns)
+
+    def findChild[F[_]: XmlTraverser](p: XmlPredicate): F[NodeSeq] =
+      XmlTraverser[F].childTraverser.find(ns, p)
+
+    def filterChild[F[_]: XmlTraverser](p: XmlPredicate): F[NodeSeq] =
+      XmlTraverser[F].childTraverser.filter(ns, p)
   }
 
   implicit class XmlTraverserMandatoryFloatOpsForId(ns: NodeSeq) {
@@ -78,15 +88,23 @@ private[syntax] trait XmlTraverserSyntax {
 
   //######################################## FIXED ########################################
   implicit class XmlTraverserCommonFixedOps[F[_]: FlatMap: XmlTraverser](ns: F[NodeSeq]) {
+    def childAtIndex(idx: Int): F[NodeSeq] =
+      ns.flatMap(XmlTraverser[F].childTraverser.atIndex(_, idx))
 
-    def atIndex(idx: Int): F[NodeSeq] =
-      ns.flatMap(XmlTraverser[F].atIndexF(_, idx))
+    def headChild: F[NodeSeq] =
+      ns.flatMap(XmlTraverser[F].childTraverser.head)
 
-    def head: F[NodeSeq] =
-      ns.flatMap(XmlTraverser[F].headF)
+    def lastChild: F[NodeSeq] =
+      ns.flatMap(XmlTraverser[F].childTraverser.last)
 
-    def last: F[NodeSeq] =
-      ns.flatMap(XmlTraverser[F].lastF)
+    def tailChild: F[NodeSeq] =
+      ns.flatMap(XmlTraverser[F].childTraverser.tail)
+
+    def findChild(p: XmlPredicate): F[NodeSeq] =
+      ns.flatMap(XmlTraverser[F].childTraverser.find(_, p))
+
+    def filterChild(p: XmlPredicate): F[NodeSeq] =
+      ns.flatMap(XmlTraverser[F].childTraverser.filter(_, p))
   }
 
   implicit class XmlTraverserMandatoryFixedOps[F[_]: FlatMap: XmlMandatoryTraverser](fa: F[NodeSeq]) {

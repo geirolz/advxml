@@ -17,7 +17,7 @@ object XmlTraverser {
   @implicitNotFound(
     "Missing an implicit instance of XmlTraverser for ${F}. Please try to import advxml.instances.traverse._"
   )
-  trait XmlTraverser[F[_]] extends TraverserK[NodeSeq, NodeSeq, F] {
+  trait XmlTraverser[F[_]] {
 
     def immediateChildren(target: NodeSeq, q: String): F[NodeSeq]
 
@@ -28,6 +28,8 @@ object XmlTraverser {
     def text(ns: NodeSeq): F[String]
 
     def trimmedText(ns: NodeSeq): F[String]
+
+    def childTraverser: TraverserK[NodeSeq, NodeSeq, F]
   }
   @implicitNotFound(
     "Missing an implicit instance of XmlMandatoryTraverser for ${F}. Please try to import advxml.instances.traverse._"

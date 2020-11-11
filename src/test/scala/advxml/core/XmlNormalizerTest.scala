@@ -1,7 +1,7 @@
 package advxml.core
 
 import advxml.core.XmlNormalizerTest.ContractFuncs
-import advxml.test.{ContractTests, FunSuiteContract}
+import advxml.testUtils.{ContractTests, FunSuiteContract}
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.xml.{Comment, Group, NodeSeq}

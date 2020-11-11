@@ -4,7 +4,8 @@ import advxml.core.transform.actions.XmlPredicate.XmlPredicate
 import advxml.core.transform.actions.XmlZoom.{Filter, ImmediateDown}
 import advxml.core.transform.actions.XmlZoomTest.ContractFuncs
 import advxml.instances.transform.{>, label, root}
-import advxml.test.{ContractTests, FunSuiteContract}
+import advxml.testUtils.{ContractTests, FunSuiteContract}
+import org.scalactic.TypeCheckedTripleEquals.convertToCheckingEqualizer
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.xml.Elem
@@ -21,6 +22,8 @@ class XmlZoomTest extends AnyFunSuite with FunSuiteContract {
 }
 
 object XmlZoomTest {
+
+  import advxml.testUtils.ScalacticXmlEquality._
 
   case class ContractFuncs(
     immediateDownAction: (XmlZoom, String) => XmlZoom,
@@ -57,7 +60,6 @@ object XmlZoomTest {
     test("applyWithImmediateDownTest") {
 
       import advxml.instances.transform._
-      import advxml.syntax.normalize._
       import cats.instances.option._
 
       val doc: Elem = <Root>
@@ -66,8 +68,8 @@ object XmlZoomTest {
       </Root>
       val xmlZoom: XmlZoom = f.immediateDownAction(root, "N1")
       val result: Option[ZoomedNodeSeq] = xmlZoom(doc)
-      assert(result.get.nodeSeq(0) |==| <N1 T1="V1"/>)
-      assert(result.get.nodeSeq(1) |==| <N1 T2="V2"/>)
+      assert(result.get.nodeSeq(0) === <N1 T1="V1"/>)
+      assert(result.get.nodeSeq(1) === <N1 T2="V2"/>)
     }
 
     test("filterTest") {

@@ -1,6 +1,6 @@
-package advxml.test
+package advxml.testUtils
 
-import advxml.test.ContractTests.ContractTest
+import advxml.testUtils.ContractTests.ContractTest
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -22,7 +22,7 @@ object ContractTests {
     val testName: String,
     val mainDesc: String,
     val subDesc: String = "",
-    private[test] val testFun: () => Unit
+    private[testUtils] val testFun: () => Unit
   ) {
     val fullDesc: String = List(mainDesc, subDesc).filter(_.nonEmpty).mkString(".")
   }
@@ -63,11 +63,10 @@ trait FeatureSpecContract extends ContractTestsRunner with ContractTestsSyntax {
   override def runAll(cts: Seq[ContractTest]): Seq[Unit] = {
     cts
       .groupBy(_.fullDesc)
-      .map {
-        case (featureName, tests) =>
-          Feature(featureName) {
-            tests.map(_.run()).reduce((_, _) => ())
-          }
+      .map { case (featureName, tests) =>
+        Feature(featureName) {
+          tests.map(_.run()).reduce((_, _) => ())
+        }
       }
       .toSeq
   }

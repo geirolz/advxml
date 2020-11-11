@@ -1,12 +1,11 @@
-package advxml.test.generators
+package advxml.testUtils.generators
 
 import advxml.core.transform.actions.XmlZoom
 import org.scalacheck.Gen
 
 import scala.xml._
 
-/**
-  * Advxml
+/** Advxml
   * Created by geirolad on 12/07/2019.
   *
   * @author geirolad
@@ -25,13 +24,12 @@ object XmlGenerator {
   case class BasicXmlElem(name: String, attrs: Map[String, String], children: Seq[BasicXmlElem]) {
     def toElem: Elem = {
       val seed: MetaData = Null
-      val meta: MetaData = this.attrs.toList.foldLeft(seed) {
-        case (acc, (s1, s2)) =>
-          new UnprefixedAttribute(
-            key = s1,
-            value = s2,
-            next = acc
-          )
+      val meta: MetaData = this.attrs.toList.foldLeft(seed) { case (acc, (s1, s2)) =>
+        new UnprefixedAttribute(
+          key = s1,
+          value = s2,
+          next = acc
+        )
       }
 
       Elem(
@@ -71,10 +69,11 @@ object XmlGenerator {
 
         attrs <- for {
           hasAttrs <- Gen.frequency((config.probabilityToHaveAttrs, true), (100 - config.probabilityToHaveAttrs, false))
-          attrs <- if (hasAttrs)
-            attrsGenerator(maxSize = config.attrsMaxSize, nameMaxSize = config.attrsMaxNameSize)
-          else
-            Gen.const(Map.empty[String, String])
+          attrs <-
+            if (hasAttrs)
+              attrsGenerator(maxSize = config.attrsMaxSize, nameMaxSize = config.attrsMaxNameSize)
+            else
+              Gen.const(Map.empty[String, String])
         } yield attrs
 
         children <- for {
@@ -82,10 +81,11 @@ object XmlGenerator {
             (config.probabilityToHaveChild, true),
             (100 - config.probabilityToHaveChild, false)
           )
-          children <- if (level < config.childMaxSize && hasChildren)
-            Gen.lzy(Gen.resize(config.childMaxSize, Gen.nonEmptyListOf(rec(level + 1))))
-          else
-            Gen.const(List.empty)
+          children <-
+            if (level < config.childMaxSize && hasChildren)
+              Gen.lzy(Gen.resize(config.childMaxSize, Gen.nonEmptyListOf(rec(level + 1))))
+            else
+              Gen.const(List.empty)
         } yield children
 
       } yield BasicXmlElem(nodeName, attrs, children)

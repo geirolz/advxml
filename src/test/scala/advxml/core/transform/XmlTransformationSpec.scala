@@ -1,16 +1,15 @@
 package advxml.core.transform
 
 import advxml.core.transform.actions.XmlZoom
-import advxml.test.generators.XmlGenerator
-import advxml.test.generators.XmlGenerator.XmlGeneratorConfig
+import advxml.testUtils.generators.XmlGenerator
+import advxml.testUtils.generators.XmlGenerator.XmlGeneratorConfig
 import org.scalacheck.{Arbitrary, Properties}
 import org.scalacheck.Prop.forAll
 
 import scala.util.Try
 import scala.xml.{Elem, Node, NodeSeq}
 
-/**
-  * Advxml
+/** Advxml
   * Created by geirolad on 12/07/2019.
   *
   * @author geirolad

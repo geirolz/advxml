@@ -6,14 +6,14 @@ import scala.xml.{Elem, Node, Text}
 
 class XmlUtilsTest extends AnyFunSuite {
 
-  import advxml.syntax.normalize._
+  import advxml.testUtils.ScalacticXmlEquality._
 
   test("XmlUtils.nodeToElem") {
 
     val node: Node = <Node n="1"><Child n="2" />TEST</Node>
     val elem = XmlUtils.nodeToElem(node)
 
-    assert(elem |==| <Node n="1"><Child n="2" />TEST</Node>)
+    assert(elem === <Node n="1"><Child n="2" />TEST</Node>)
   }
 
   test("XmlUtils.flatMapChildren") {
@@ -27,8 +27,8 @@ class XmlUtilsTest extends AnyFunSuite {
     val result = XmlUtils.flatMapChildren(node, n => <c>{n.text}</c>)
 
     assert(
-      result |==|
-      <a>
+      result ===
+        <a>
         <c>1</c>
         <c>2</c>
         <c>3</c>

@@ -2,7 +2,7 @@ package advxml.syntax
 
 import advxml.core.XmlTraverserTest
 import advxml.core.XmlTraverserTest.ContractFuncs
-import advxml.test.FeatureSpecContract
+import advxml.testUtils.FeatureSpecContract
 import org.scalatest.featurespec.AnyFeatureSpec
 
 import scala.util.Try
@@ -24,9 +24,12 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec with FeatureSpecContract {
         attribute         = (doc, attrName) => doc.\@![Try](attrName),
         text              = _.![Try],
         trimmedText       = _.|!|[Try],
-        atIndex           = (doc, idx) => doc.atIndexF[Try](idx),
-        head              = _.headF[Try],
-        last              = _.lastF[Try]
+        atIndex           = (doc, idx) => doc.childAtIndex[Try](idx),
+        head              = _.headChild[Try],
+        last              = _.lastChild[Try],
+        tail              = _.tailChild[Try],
+        find              = (doc, p) => doc.findChild[Try](p),
+        filter            = (doc, p) => doc.filterChild[Try](p)
       )
     }
   )(XmlTraverserTest.TryExtractor).runAll()
@@ -41,9 +44,12 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec with FeatureSpecContract {
         attribute           = (doc, attrName) => doc.\@?[Option](attrName),
         text                = _.?[Option],
         trimmedText         = _.|?|[Option],
-        atIndex           = (doc, idx) => doc.atIndexF[Option](idx),
-        head              = _.headF[Option],
-        last              = _.lastF[Option]
+        atIndex           = (doc, idx) => doc.childAtIndex[Option](idx),
+        head              = _.headChild[Option],
+        last              = _.lastChild[Option],
+        tail              = _.tailChild[Option],
+        find              = (doc, p) => doc.findChild[Option](p),
+        filter            = (doc, p) => doc.filterChild[Option](p)
       )
     }
   )(XmlTraverserTest.OptionExtractor).runAll()
@@ -60,9 +66,12 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec with FeatureSpecContract {
         attribute           = (doc, attrName) => doc.\@!(attrName),
         text                = _.!,
         trimmedText         = _.|!|,
-        atIndex             = (doc, idx) => doc.atIndexF(idx),
-        head                = _.headF,
-        last                = _.lastF
+        atIndex             = (doc, idx) => doc.childAtIndex(idx),
+        head                = _.headChild,
+        last                = _.lastChild,
+        tail                = _.tailChild,
+        find                = (doc, p) => doc.findChild(p),
+        filter              = (doc, p) => doc.filterChild(p)
       )
     }
   )(XmlTraverserTest.TryExtractor).runAll()
@@ -78,9 +87,12 @@ class XmlTraverserSyntaxTest extends AnyFeatureSpec with FeatureSpecContract {
         attribute           = (doc, attrName) => doc.\@?(attrName),
         text                = _.?,
         trimmedText         = _.|?|,
-        atIndex             = (doc, idx) => doc.atIndexF(idx),
-        head                = _.headF,
-        last                = _.lastF
+        atIndex             = (doc, idx) => doc.childAtIndex(idx),
+        head                = _.headChild,
+        last                = _.lastChild,
+        tail                = _.tailChild,
+        find                = (doc, p) => doc.findChild(p),
+        filter              = (doc, p) => doc.filterChild(p)
       )
     }
   )(XmlTraverserTest.OptionExtractor).runAll()

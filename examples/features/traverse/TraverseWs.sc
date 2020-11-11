@@ -27,4 +27,7 @@ val order2Opt: Option[NodeSeq] = (document \? "Order" \? "OrderLines" \? "OrderL
     .map(_.filter(attrs(("Id", _ == "2"))))
 
 val order2OptUsingDynamic: Option[NodeSeq] = document.\?*.Order.\?*.OrderLines.\?*.OrderLine.get
-    .map(_.filter(attrs(("Id", _ == "2"))))
+    .map(_.filter(attrs(("Id", _ == "2")))).>>.atIndex(0)
+
+
+val order2OptUsingDynamic = document.\?*.Order.OrderLines.OrderLine.get.childT.filter(attrs(("Id", _ == "2")))

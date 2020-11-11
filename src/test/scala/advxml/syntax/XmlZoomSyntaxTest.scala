@@ -2,7 +2,7 @@ package advxml.syntax
 
 import advxml.core.transform.actions.XmlZoomTest
 import advxml.core.transform.actions.XmlZoomTest.ContractFuncs
-import advxml.test.FunSuiteContract
+import advxml.testUtils.FunSuiteContract
 import org.scalatest.funsuite.AnyFunSuite
 
 class XmlZoomSyntaxTest extends AnyFunSuite with FunSuiteContract {
