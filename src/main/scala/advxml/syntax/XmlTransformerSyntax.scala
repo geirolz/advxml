@@ -6,6 +6,7 @@ import advxml.core.transform.actions.{AttributeData, ComposableXmlModifier, Fina
 import advxml.core.transform.actions.XmlPredicate.XmlPredicate
 import advxml.core.validate.MonadEx
 
+import scala.language.dynamics
 import scala.xml.{NodeSeq, Text}
 
 /** Advxml
@@ -48,12 +49,6 @@ private[syntax] sealed trait ZoomSyntax {
 
     def \(nodeName: String): XmlZoom =
       z.immediateDown(nodeName)
-
-    def \+(that: XmlZoom): XmlZoom =
-      z.andThen(that)
-
-    def \++(that: List[XmlZoom]): XmlZoom =
-      z.andThenAll(that)
 
     def |(p: XmlPredicate): XmlZoom =
       z.filter(p)

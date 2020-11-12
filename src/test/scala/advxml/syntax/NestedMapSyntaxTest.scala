@@ -6,7 +6,6 @@ import scala.util.{Success, Try}
 
 class NestedMapSyntaxTest extends AnyFunSuite {
 
-  import advxml.syntax.nestedMap._
   import cats.instances.option._
   import cats.instances.try_._
 

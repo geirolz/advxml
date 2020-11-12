@@ -8,10 +8,19 @@ import cats.syntax.flatMap._
 
 import scala.xml._
 
-private[instances] trait AllXmlModifierInstances extends XmlModifierInstances with XmlModifierTypeClassesInstances
-
 private[instances] trait XmlModifierInstances {
 
+  //******************************************* TYPE CLASS INSTANCES ********************************************
+  implicit val composableXmlModifierMonoidInstance: Monoid[ComposableXmlModifier] = new Monoid[ComposableXmlModifier] {
+    override def empty: ComposableXmlModifier = advxml.instances.transform.NoAction
+    override def combine(x: ComposableXmlModifier, y: ComposableXmlModifier): ComposableXmlModifier =
+      new ComposableXmlModifier {
+        override def apply[F[_]: MonadEx](ns: NodeSeq): F[NodeSeq] =
+          x.apply[F](ns).flatMap(y.apply[F](_))
+      }
+  }
+
+  //******************************************* XML MODIFIER INSTANCES ********************************************
   /** No-Action modifiers, equals to `Replace` passing an identity function.
     */
   lazy val NoAction: ComposableXmlModifier = Replace(identity[NodeSeq])
@@ -113,25 +122,4 @@ private[instances] trait XmlModifierInstances {
     def unsupported[F[_]: MonadEx](modifier: XmlModifier, ns: NodeSeq): F[NodeSeq] =
       ExceptionF[F](s"Unsupported operation $modifier for type ${ns.getClass.getName}")
   }
-}
-
-private[instances] trait XmlModifierTypeClassesInstances {
-
-  sealed trait ComposableXmlModifierSemigroup extends Semigroup[ComposableXmlModifier] {
-    override def combine(x: ComposableXmlModifier, y: ComposableXmlModifier): ComposableXmlModifier =
-      new ComposableXmlModifier {
-        override def apply[F[_]: MonadEx](ns: NodeSeq): F[NodeSeq] =
-          x.apply[F](ns).flatMap(y.apply[F](_))
-      }
-  }
-
-  sealed trait ComposableXmlModifierMonoid extends Monoid[ComposableXmlModifier] with ComposableXmlModifierSemigroup {
-    override def empty: ComposableXmlModifier = advxml.instances.transform.NoAction
-  }
-
-  implicit val composableXmlModifierSemigroupInstance: Semigroup[ComposableXmlModifier] =
-    new ComposableXmlModifierSemigroup {}
-
-  implicit val composableXmlModifierMonoidInstance: Monoid[ComposableXmlModifier] =
-    new ComposableXmlModifierMonoid {}
 }

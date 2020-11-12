@@ -6,8 +6,6 @@ import org.scalatest.funsuite.AnyFunSuite
 
 class PredicateSyntaxTest extends AnyFunSuite with FunSuiteContract {
 
-  import advxml.syntax.predicate._
-
   PredicateTests
     .Contract(
       "Syntax", {

@@ -25,7 +25,7 @@ package object instances {
   object all        extends AllInstances
   object transform  extends XmlTransformerInstances {
     object predicates extends XmlPredicateInstances
-    object modifiers extends AllXmlModifierInstances
+    object modifiers extends XmlModifierInstances
   }
   object convert    extends ConvertersInstances
   object validate   extends ValidationInstances

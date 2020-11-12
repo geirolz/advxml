@@ -6,5 +6,3 @@ private[advxml] trait AllSyntax
     with XmlNormalizerSyntax
     with ConvertersSyntax
     with ValidationSyntax
-    with PredicateSyntax
-    with NestedMapSyntax

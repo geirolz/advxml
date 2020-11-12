@@ -1,6 +1,8 @@
 package advxml
 
 import advxml.core.validate.{EitherEx, ValidatedNelEx}
+import advxml.core.Predicate
+import cats.{Applicative, Monad}
 
 import scala.util.Try
 
@@ -26,6 +28,9 @@ import scala.util.Try
   * }}}
   */
 package object syntax {
+
+  import cats.implicits._
+
   // format: off
   object all          extends AllSyntax
   object transform    extends XmlTransformerSyntax
@@ -38,7 +43,54 @@ package object syntax {
     object either     extends XmlTraverserSyntaxSpecified[EitherEx, Option]
     object validated  extends XmlTraverserSyntaxSpecified[ValidatedNelEx, Option]
   }
-  object predicate    extends PredicateSyntax
-  object nestedMap    extends NestedMapSyntax
   // format: on
+
+  //************************************* NESTED MAP ****************************************
+  implicit class ApplicativeDeepMapOps[F[_]: Applicative, G[_]: Applicative, A](fg: F[G[A]]) {
+    def nestedMap[B](f: A => B): F[G[B]] = fg.map(_.map(f))
+  }
+
+  implicit class ApplicativeDeepFlatMapOps[F[_]: Applicative, G[_]: Monad, A](fg: F[G[A]]) {
+    def nestedFlatMap[B](f: A => G[B]): F[G[B]] = fg.map(_.flatMap(f))
+  }
+
+  //************************************* PREDICATE ****************************************
+  implicit class PredicateOps[T](p: T => Boolean) {
+
+    /** Combine with another predicate(`T => Boolean`) with `And` operator.
+      *
+      * @see [[Predicate]] object for further information.
+      * @param that Predicate to combine.
+      * @return Result of combination with this instance
+      *         with passed predicate instance using `And` operator.
+      */
+    def &&(that: T => Boolean): T => Boolean = p.and(that)
+
+    /** Combine with another predicate(`T => Boolean`) with `And` operator.
+      *
+      * @see [[Predicate]] object for further information.
+      * @param that Predicate to combine.
+      * @return Result of combination with this instance
+      *         with passed predicate instance using `And` operator.
+      */
+    def and(that: T => Boolean): T => Boolean = Predicate.and(p, that)
+
+    /** Combine with another predicate(`T => Boolean`) with `Or` operator.
+      *
+      * @see [[Predicate]] object for further information.
+      * @param that Predicate to combine.
+      * @return Result of combination with this instance
+      *         with passed predicate instance using `Or` operator.
+      */
+    def ||(that: T => Boolean): T => Boolean = p.or(that)
+
+    /** Combine with another predicate(`T => Boolean`) with `Or` operator.
+      *
+      * @see [[Predicate]] object for further information.
+      * @param that Predicate to combine.
+      * @return Result of combination with this instance
+      *         with passed predicate instance using `Or` operator.
+      */
+    def or(that: T => Boolean): T => Boolean = Predicate.or(p, that)
+  }
 }
