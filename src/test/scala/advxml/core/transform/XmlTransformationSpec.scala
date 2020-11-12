@@ -31,14 +31,13 @@ object XmlTransformationSpec extends Properties("XmlTransformationSpec") {
   )
 
   import advxml.implicits._
-  import cats.instances.option._
   import cats.instances.try_._
 
   property("Prepend") = forAll { (base: Elem, newElem: Elem) =>
     val zoom: XmlZoom = XmlGenerator.xmlZoomGenerator(base).sample.get
     val rule: ComposableXmlRule = zoom ==> Prepend(newElem)
     val result: Try[NodeSeq] = base.transform[Try](rule)
-    val targetUpdated: NodeSeq = result.toOption
+    val targetUpdated: NodeSeq = result
       .flatMap(zoom(_))
       .map(_.nodeSeq)
       .get
@@ -50,7 +49,7 @@ object XmlTransformationSpec extends Properties("XmlTransformationSpec") {
     val zoom: XmlZoom = XmlGenerator.xmlZoomGenerator(base).sample.get
     val rule: ComposableXmlRule = zoom ==> Append(newElem)
     val result: Try[NodeSeq] = base.transform[Try](rule)
-    val targetUpdated: NodeSeq = result.toOption
+    val targetUpdated: NodeSeq = result
       .flatMap(zoom(_))
       .map(_.nodeSeq)
       .get
@@ -63,14 +62,14 @@ object XmlTransformationSpec extends Properties("XmlTransformationSpec") {
     val rule: ComposableXmlRule = zoom ==> Replace(_ => newElem)
     val result: Try[NodeSeq] = base.transform[Try](rule)
 
-    result.toOption.flatMap(zoom(_)).isEmpty
+    result.flatMap(zoom(_)).isFailure
   }
 
   property("Remove") = forAll { base: Elem =>
     val zoom: XmlZoom = XmlGenerator.xmlZoomGenerator(base).sample.get
     val rule: FinalXmlRule = zoom ==> Remove
-    val result: Option[Node] = base.transform[Try](rule).get.headOption
+    val result: Try[Node] = Try(base.transform[Try](rule).get.head)
 
-    result.flatMap(zoom(_)).isEmpty
+    result.flatMap(zoom(_)).isFailure
   }
 }

@@ -11,8 +11,12 @@ class XmlZoomSyntaxTest extends AnyFunSuite with FunSuiteContract {
       subDesc = "Syntax", {
         import advxml.syntax.transform._
         ContractFuncs(
-          immediateDownAction = (z, n) => z \ n,
-          filterAction = (z, p) => z | p
+          immediateDown = (z, n) => z \ n,
+          filter = (z, p) => z | p,
+          find = (z, p) => z.find(p),
+          atIndex = (z, p) => z.atIndex(p),
+          head = _.head(),
+          last = _.last()
         )
       }
     )

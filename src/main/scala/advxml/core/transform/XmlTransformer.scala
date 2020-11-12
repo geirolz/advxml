@@ -1,7 +1,6 @@
 package advxml.core.transform
 
-import advxml.core.transform.actions.{XmlModifier, XmlZoom, ZoomedNodeSeq}
-import advxml.core.transform.exceptions.EmptyTargetException
+import advxml.core.transform.actions.{XmlModifier, XmlZoom}
 import advxml.core.utils.XmlUtils
 import advxml.core.validate.MonadEx
 import advxml.instances.transform._
@@ -22,10 +21,7 @@ object XmlTransformer {
       import cats.implicits._
 
       for {
-        target <- zoom[Option](root) match {
-          case Some(target_) => F.pure[ZoomedNodeSeq](target_)
-          case None          => F.raiseError[ZoomedNodeSeq](EmptyTargetException(root, zoom))
-        }
+        target <- zoom[F](root)
         targetNodeSeq = target.nodeSeq
         targetParents = target.parents
         updatedTarget <- modifier[F](targetNodeSeq)
