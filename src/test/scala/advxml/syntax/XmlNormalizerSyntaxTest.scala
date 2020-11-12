@@ -20,10 +20,12 @@ class XmlNormalizerSyntaxTest extends AnyFunSuite with FunSuiteContract {
   XmlNormalizerTest
     .Contract(
       "Syntax", {
+        // format: off
         ContractFuncs(
-          normalizeAction = _.normalize,
-          normalizedEqualsAction = (v1, v2) => v1.normalizedEquals(v2)
+          normalize         = _.normalize,
+          normalizedEquals  = (v1, v2) => v1.normalizedEquals(v2)
         )
+        // format: on
       }
     )
     .runAll()
@@ -31,10 +33,12 @@ class XmlNormalizerSyntaxTest extends AnyFunSuite with FunSuiteContract {
   XmlNormalizerTest
     .Contract(
       "Syntax.Symbols", {
+        // format: off
         ContractFuncs(
-          normalizeAction = _.normalize,
-          normalizedEqualsAction = (v1, v2) => v1 |==| v2
+          normalize         = _.normalize,
+          normalizedEquals  = (v1, v2) => v1 |==| v2
         )
+        // format: on
       }
     )
     .runAll()

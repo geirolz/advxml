@@ -32,16 +32,17 @@ package object syntax {
   import cats.implicits._
 
   // format: off
-  object all          extends AllSyntax
-  object transform    extends XmlTransformerSyntax
-  object convert      extends ConvertersSyntax
-  object normalize    extends XmlNormalizerSyntax
-  object validate     extends ValidationSyntax
-  object traverse     extends XmlTraverserSyntax{
-    object try_       extends XmlTraverserSyntaxSpecified[Try, Option]
-    object option     extends XmlTraverserSyntaxSpecified[Option, Option]
-    object either     extends XmlTraverserSyntaxSpecified[EitherEx, Option]
-    object validated  extends XmlTraverserSyntaxSpecified[ValidatedNelEx, Option]
+  object all              extends AllSyntax
+  object transform        extends XmlTransformerSyntax
+  object convert          extends ConvertersSyntax
+  object normalize        extends XmlNormalizerSyntax
+  object validate         extends ValidationSyntax
+  object javaConverters   extends JavaScalaConvertersSyntax
+  object traverse         extends XmlTraverserSyntax {
+    object try_             extends XmlTraverserSyntaxSpecified[Try, Option]
+    object option           extends XmlTraverserSyntaxSpecified[Option, Option]
+    object either           extends XmlTraverserSyntaxSpecified[EitherEx, Option]
+    object validated        extends XmlTraverserSyntaxSpecified[ValidatedNelEx, Option]
   }
   // format: on
 

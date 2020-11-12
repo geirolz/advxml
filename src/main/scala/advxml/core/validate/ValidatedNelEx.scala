@@ -1,6 +1,6 @@
 package advxml.core.validate
 
-import advxml.core.validate.exceptions.AggregatedException
+import advxml.core.exceptions.AggregatedException
 import cats.data.Validated.{Invalid, Valid}
 import cats.Alternative
 import cats.data.{NonEmptyList, Validated}

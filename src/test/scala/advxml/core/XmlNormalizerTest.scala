@@ -9,17 +9,19 @@ import scala.xml.{Comment, Group, NodeSeq}
 class XmlNormalizerTest extends AnyFunSuite with FunSuiteContract {
   XmlNormalizerTest
     .Contract(
+      // format: off
       f = ContractFuncs(
-        normalizeAction = XmlNormalizer.normalize,
-        normalizedEqualsAction = XmlNormalizer.normalizedEquals
+        normalize         = XmlNormalizer.normalize,
+        normalizedEquals  = XmlNormalizer.normalizedEquals
       )
+      // format: on
     )
     .runAll()
 }
 
 object XmlNormalizerTest {
 
-  case class ContractFuncs(normalizeAction: NodeSeq => NodeSeq, normalizedEqualsAction: (NodeSeq, NodeSeq) => Boolean)
+  case class ContractFuncs(normalize: NodeSeq => NodeSeq, normalizedEquals: (NodeSeq, NodeSeq) => Boolean)
 
   case class Contract(subDesc: String = "", f: ContractFuncs) extends ContractTests("XmlNormalizer", subDesc) {
 
@@ -52,12 +54,12 @@ object XmlNormalizerTest {
           <Car V1="5">TEXT</Car>
         </Cars>
 
-      assert(f.normalizeAction(v1) xml_sameElements XmlNormalizer.normalize(expected))
+      assert(f.normalize(v1) xml_sameElements XmlNormalizer.normalize(expected))
     }
 
     test("UnsupportedNormalize") {
       val data = Group(Comment("TEST"))
-      assert(f.normalizeAction(data) xml_sameElements data)
+      assert(f.normalize(data) xml_sameElements data)
     }
 
     test("Equality.Equals") {
@@ -85,7 +87,7 @@ object XmlNormalizerTest {
           <Car V1="3"></Car>
         </Cars>
 
-      assert(f.normalizedEqualsAction(v1, v2))
+      assert(f.normalizedEquals(v1, v2))
     }
 
     test("Equality.NotEquals") {
@@ -100,7 +102,7 @@ object XmlNormalizerTest {
           <Car V1="3" ></Car>
         </Cars>
 
-      assert(!f.normalizedEqualsAction(v1, v2))
+      assert(!f.normalizedEquals(v1, v2))
     }
   }
 }

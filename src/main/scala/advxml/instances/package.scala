@@ -1,5 +1,9 @@
 package advxml
 
+import advxml.core.exceptions.AggregatedException
+import cats.data.NonEmptyList
+import cats.kernel.Semigroup
+
 /*
  * In order to keep project clean keep in mind the following rules:
  * - Each object represent a feature
@@ -35,5 +39,8 @@ package object instances {
       object deep extends deep
     }
   }
+  
   // format: on
+  implicit lazy val aggregatedExceptionSemigroupInstance: Semigroup[Throwable] =
+    (x: Throwable, y: Throwable) => new AggregatedException(NonEmptyList.of(x, y))
 }

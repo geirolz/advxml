@@ -14,14 +14,16 @@ import scala.xml.{Elem, NodeSeq}
 class XmlZoomTest extends AnyFunSuite with FunSuiteContract {
   XmlZoomTest
     .Contract(
+      // format: off
       f = ContractFuncs(
-        immediateDown = (z, n) => z.immediateDown(n),
-        filter = (z, p) => z.filter(p),
-        find = (z, p) => z.find(p),
-        atIndex = (z, idx) => z.atIndex(idx),
-        head = _.head(),
-        last = _.last()
+        immediateDown   = (z, n) => z.immediateDown(n),
+        filter          = (z, p) => z.filter(p),
+        find            = (z, p) => z.find(p),
+        atIndex         = (z, idx) => z.atIndex(idx),
+        head            = _.head(),
+        last            = _.last()
       )
+      // format: on
     )
     .runAll()
 }

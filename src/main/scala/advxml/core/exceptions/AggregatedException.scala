@@ -1,4 +1,4 @@
-package advxml.core.validate.exceptions
+package advxml.core.exceptions
 
 import java.io.{OutputStreamWriter, PrintStream, PrintWriter}
 
@@ -9,7 +9,6 @@ import cats.data.NonEmptyList
   *
   * @author geirolad
   */
-//TODO: Common
 class AggregatedException(val exceptions: NonEmptyList[Throwable])
     extends RuntimeException(
       exceptions.toList

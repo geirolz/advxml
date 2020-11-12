@@ -1,11 +1,10 @@
 package advxml.core.validate.exeptions
 
-import advxml.core.validate.exceptions.AggregatedException
+import advxml.core.exceptions.AggregatedException
 import cats.data.NonEmptyList
 import org.scalatest.funsuite.AnyFunSuite
 
-/**
-  * Advxml
+/** Advxml
   * Created by geirolad on 29/07/2019.
   *
   * @author geirolad
