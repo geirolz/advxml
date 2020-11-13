@@ -1,4 +1,4 @@
-package advxml.core.convert
+package advxml.core
 
 import cats.Id
 import org.scalatest.funsuite.AnyFunSuite

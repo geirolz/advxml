@@ -1,8 +1,7 @@
 package advxml.syntax
 
 import advxml.core.validate.{EitherEx, EitherNelEx, MonadEx, MonadNelEx, ValidatedNelEx}
-import advxml.core.Predicate
-import advxml.core.convert.PureConverter
+import advxml.core.{Predicate, PureConverter}
 import advxml.core.transform.actions.{AttributeData, Key, KeyValuePredicate}
 import cats.{Alternative, Applicative, Monad}
 

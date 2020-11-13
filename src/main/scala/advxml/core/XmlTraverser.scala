@@ -1,7 +1,5 @@
 package advxml.core
 
-import advxml.core.utils.TraverserK
-
 import scala.annotation.implicitNotFound
 import scala.language.dynamics
 import scala.xml.NodeSeq

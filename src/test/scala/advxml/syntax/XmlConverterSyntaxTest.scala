@@ -1,8 +1,8 @@
 package advxml.syntax
 
-import advxml.core.convert.ValidatedConverter
-import advxml.core.convert.xml.{ModelToXml, XmlToModel}
+import advxml.core.{ModelToXml, XmlToModel}
 import advxml.core.validate.ValidatedNelEx
+import advxml.core.ValidatedConverter
 import cats.data.Validated.Valid
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -13,7 +13,7 @@ import scala.xml.Elem
   *
   * @author geirolad
   */
-//TODO: Check duplication into advxml.core.convert.xml.XmlConverterTest
+//TODO: Check duplication into advxml.core.xml.XmlConverterTest
 class XmlConverterSyntaxTest extends AnyFunSuite {
 
   import advxml.syntax.convert._

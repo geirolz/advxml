@@ -13,12 +13,12 @@ errors.
     
 #### Example(XML to Model)
 ```scala
-  import advxml.core.convert.ValidatedConverter
-  import advxml.core.convert.xml.{ModelToXml, XmlToModel}
+  import advxml.core.xml.{ModelToXml, XmlToModel}
   import advxml.core.validate.ValidatedNelEx
+  import advxml.core.ValidatedConverter
   import cats.data.Validated.Valid
-  import scala.xml.Elem
 
+  import scala.xml.Elem
   import advxml.syntax.convert._
   import advxml.syntax.traverse.validated._
   import cats.syntax.all._
@@ -44,12 +44,12 @@ errors.
 
 #### Example(Model to XML) 
 ```scala
-  import advxml.core.convert.ValidatedConverter
-  import advxml.core.convert.xml.{ModelToXml, XmlToModel}
+  import advxml.core.xml.{ModelToXml, XmlToModel}
   import advxml.core.validate.ValidatedNelEx
+  import advxml.core.ValidatedConverter
   import cats.data.Validated.Valid
-  import scala.xml.Elem
 
+  import scala.xml.Elem
   import advxml.syntax.convert._
   import advxml.syntax.traverse.validated._
   import cats.syntax.all._

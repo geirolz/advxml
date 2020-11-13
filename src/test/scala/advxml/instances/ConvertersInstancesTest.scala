@@ -1,6 +1,6 @@
 package advxml.instances
 
-import advxml.core.convert.Converter
+import advxml.core.Converter
 import cats.{Id, Monad}
 import org.scalatest.funsuite.AnyFunSuite
 

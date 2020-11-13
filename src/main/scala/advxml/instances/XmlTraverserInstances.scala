@@ -1,6 +1,6 @@
 package advxml.instances
 
-import advxml.core.XmlTraverser
+import advxml.core.{TraverserK, XmlPredicate, XmlTraverser}
 import advxml.core.validate.MonadEx
 import advxml.core.XmlTraverser._
 import advxml.core.XmlTraverser.exceptions.{
@@ -8,8 +8,7 @@ import advxml.core.XmlTraverser.exceptions.{
   XmlMissingNodeException,
   XmlMissingTextException
 }
-import advxml.core.XmlPredicate
-import advxml.core.utils.{OptErrorHandler, TraverserK}
+import advxml.core.utils.OptErrorHandler
 import advxml.core.utils.OptErrorHandler.OptErrorHandler
 import cats.{Alternative, Applicative, FlatMap}
 

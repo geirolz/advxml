@@ -1,7 +1,9 @@
 package advxml.syntax
 
-import advxml.core.convert.{PureConverter, _}
+import advxml.core
+import advxml.core._
 import advxml.core.validate.ValidatedNelEx
+import advxml.core.{Converter, PureConverter, ValidatedConverter}
 import cats.{Applicative, Id, Monad}
 import cats.implicits._
 
@@ -26,15 +28,15 @@ private[syntax] trait ConvertersSyntax {
     def asF[F[_], B](implicit F: Converter[F, A, B]): F[B] =
       Converter[F, A, B].run(a)
 
-    /** Convert [[A]] into [[B]] using implicit [[PureConverter]] if available
+    /** Convert [[A]] into [[B]] using implicit [[core.PureConverter]] if available
       * and if it conforms to required types [[A]] and [[B]].
       *
-      * @see [[PureConverter]] for further information.
+      * @see [[core.PureConverter]] for further information.
       */
     def asPure[B](implicit F: PureConverter[A, B]): B =
       PureConverter[A, B].run(a)
 
-    /** Convert [[A]] into [[B]] using implicit [[ValidatedConverter]] if available
+    /** Convert [[A]] into [[B]] using implicit [[core.ValidatedConverter]] if available
       * and if it conforms to required types [[A]] and [[B]].
       *
       * @see [[Converter]] for further information.

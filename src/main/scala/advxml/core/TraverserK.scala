@@ -1,4 +1,4 @@
-package advxml.core.utils
+package advxml.core
 
 /** This type describes a traversable behavior of a [[Iterable]] of type [[CI]]
   * that contains items of [[I]] safety in [[F]].
@@ -7,7 +7,6 @@ package advxml.core.utils
   * @tparam C [[Iterable]] of type [[I]].
   * @tparam F Higher-kind type for safe return values.
   */
-//TODO: Common
 trait TraverserK[I, C <: Iterable[I], F[_]] extends Any {
 
   /** Find the item at the specified index.

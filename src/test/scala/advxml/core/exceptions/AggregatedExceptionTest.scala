@@ -1,6 +1,5 @@
-package advxml.core.validate.exeptions
+package advxml.core.exceptions
 
-import advxml.core.exceptions.AggregatedException
 import cats.data.NonEmptyList
 import org.scalatest.funsuite.AnyFunSuite
 
