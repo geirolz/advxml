@@ -1,7 +1,7 @@
 package advxml.instances
 
 import advxml.core.transform.actions._
-import advxml.core.validate.MonadEx
+import advxml.core.MonadEx
 import advxml.core.Predicate
 import cats.Monoid
 import cats.syntax.flatMap._

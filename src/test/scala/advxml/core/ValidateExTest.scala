@@ -1,6 +1,6 @@
-package advxml.core.validate
+package advxml.core
 
-import advxml.core.validate.ValidateExTest.ContractFuncs
+import advxml.core.ValidateExTest.ContractFuncs
 import advxml.testUtils.{ContractTests, FunSuiteContract}
 import cats.data.{NonEmptyList, Validated}
 import cats.data.Validated.Valid

@@ -1,7 +1,6 @@
 package advxml.syntax
 
-import advxml.core.validate.ValidatedNelEx
-import advxml.core.{Converter, PureConverter, ValidatedConverter}
+import advxml.core.{Converter, PureConverter, ValidatedConverter, ValidatedNelEx}
 import cats.data.Validated.Valid
 import org.scalatest.funsuite.AnyFunSuite
 

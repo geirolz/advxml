@@ -2,7 +2,7 @@ package advxml.core.transform.actions
 
 import advxml.core.XmlPredicate
 import advxml.core.transform.actions.XmlZoom._
-import advxml.core.validate.MonadEx
+import advxml.core.MonadEx
 
 import scala.language.dynamics
 import scala.xml.NodeSeq

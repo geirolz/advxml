@@ -1,6 +1,6 @@
 package advxml
 
-import advxml.core.validate.{EitherEx, ValidatedNelEx}
+import advxml.core.{EitherEx, ValidatedNelEx}
 
 import scala.util.Try
 

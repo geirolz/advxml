@@ -14,8 +14,7 @@ errors.
 #### Example(XML to Model)
 ```scala
   import advxml.core.xml.{ModelToXml, XmlToModel}
-  import advxml.core.validate.ValidatedNelEx
-  import advxml.core.ValidatedConverter
+  
   import cats.data.Validated.Valid
 
   import scala.xml.Elem
@@ -45,8 +44,7 @@ errors.
 #### Example(Model to XML) 
 ```scala
   import advxml.core.xml.{ModelToXml, XmlToModel}
-  import advxml.core.validate.ValidatedNelEx
-  import advxml.core.ValidatedConverter
+  
   import cats.data.Validated.Valid
 
   import scala.xml.Elem

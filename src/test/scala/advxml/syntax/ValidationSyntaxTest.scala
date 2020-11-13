@@ -1,7 +1,7 @@
 package advxml.syntax
 
-import advxml.core.validate.{EitherEx, EitherNelEx, ValidateExTest}
-import advxml.core.validate.ValidateExTest.ContractFuncs
+import advxml.core.ValidateExTest.ContractFuncs
+import advxml.core.{EitherEx, EitherNelEx, ValidateExTest}
 import advxml.testUtils.FunSuiteContract
 import org.scalatest.funsuite.AnyFunSuite
 

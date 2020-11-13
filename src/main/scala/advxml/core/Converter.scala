@@ -1,6 +1,5 @@
 package advxml.core
 
-import advxml.core.validate.ValidatedNelEx
 import cats.{Applicative, Id}
 import cats.data.Kleisli
 
@@ -74,7 +73,7 @@ object XmlConverter {
     * @see [[ValidatedConverter]] for further information.
     * @tparam X Contravariant input xml model type
     * @tparam O Object output type
-    * @return [[advxml.core.validate.ValidatedNelEx]] instance that, if on success case contains `X` instance.
+    * @return [[ValidatedNelEx]] instance that, if on success case contains `X` instance.
     */
   def asModel[X <: NodeSeq: XmlToModel[*, O], O](xml: X): ValidatedNelEx[O] = ValidatedConverter[X, O].run(xml)
 
@@ -88,7 +87,7 @@ object XmlConverter {
     * @see [[ValidatedConverter]] for further information.
     * @tparam O Contravariant input model type
     * @tparam X Output xml type
-    * @return [[advxml.core.validate.ValidatedNelEx]] instance that, if on success case contains `O` instance.
+    * @return [[ValidatedNelEx]] instance that, if on success case contains `O` instance.
     */
   def asXml[O: ModelToXml[*, X], X <: NodeSeq](model: O): ValidatedNelEx[X] =
     ValidatedConverter[O, X].run(model)

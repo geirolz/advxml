@@ -1,6 +1,6 @@
 package advxml.core.transform.actions
 
-import advxml.core.validate.MonadEx
+import advxml.core.MonadEx
 
 import scala.xml.NodeSeq
 

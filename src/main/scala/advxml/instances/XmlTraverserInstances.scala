@@ -1,15 +1,12 @@
 package advxml.instances
 
-import advxml.core.{TraverserK, XmlPredicate, XmlTraverser}
-import advxml.core.validate.MonadEx
+import advxml.core.{MonadEx, OptErrorHandler, TraverserK, XmlPredicate, XmlTraverser}
 import advxml.core.XmlTraverser._
 import advxml.core.XmlTraverser.exceptions.{
   XmlMissingAttributeException,
   XmlMissingNodeException,
   XmlMissingTextException
 }
-import advxml.core.utils.OptErrorHandler
-import advxml.core.utils.OptErrorHandler.OptErrorHandler
 import cats.{Alternative, Applicative, FlatMap}
 
 import scala.xml.NodeSeq

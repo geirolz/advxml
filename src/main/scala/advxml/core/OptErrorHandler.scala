@@ -1,17 +1,8 @@
-package advxml.core.utils
+package advxml.core
 
-import advxml.core.validate.MonadEx
 import cats.{~>, Alternative}
 
-import scala.annotation.implicitNotFound
-
-//TODO: Common
 object OptErrorHandler {
-
-  @implicitNotFound(
-    "Cannot find an implicit value for OptErrorHandler of type ${F}. Please try to import advxml._"
-  )
-  type OptErrorHandler[F[_]] = Throwable => Option ~> F
 
   def apply[F[_]: OptErrorHandler](): OptErrorHandler[F] = implicitly[OptErrorHandler[F]]
 

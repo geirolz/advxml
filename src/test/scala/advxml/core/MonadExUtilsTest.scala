@@ -1,4 +1,4 @@
-package advxml.core.validate
+package advxml.core
 
 import org.scalatest.funsuite.AnyFunSuite
 

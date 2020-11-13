@@ -1,6 +1,5 @@
 package advxml.core
 
-import advxml.core.validate.ValidatedNelEx
 import cats.data.Validated.Valid
 import org.scalatest.funsuite.AnyFunSuite
 

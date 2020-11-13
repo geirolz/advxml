@@ -3,7 +3,7 @@ package advxml.syntax
 import advxml.core.transform._
 import advxml.core.transform.actions.{ComposableXmlModifier, FinalXmlModifier, XmlZoom}
 import advxml.core.XmlPredicate
-import advxml.core.validate.MonadEx
+import advxml.core.MonadEx
 import scala.xml.NodeSeq
 
 /** Advxml

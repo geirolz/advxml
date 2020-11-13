@@ -1,9 +1,10 @@
-package advxml.core.validate
+package advxml.core
 
 import advxml.core.exceptions.AggregatedException
-import cats.data.Validated.{Invalid, Valid}
+import advxml.core.{MonadEx, MonadNelEx}
 import cats.Alternative
 import cats.data.{NonEmptyList, Validated}
+import cats.data.Validated.{Invalid, Valid}
 
 import scala.util.Try
 

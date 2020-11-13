@@ -1,16 +1,24 @@
 package advxml
 
-import advxml.core.validate.ValidatedNelEx
-import cats.Id
-import cats.data.Kleisli
+import cats.{~>, Id, MonadError}
+import cats.data.{EitherNel, Kleisli, NonEmptyList, ValidatedNel}
 
 import scala.annotation.implicitNotFound
 import scala.xml.NodeSeq
 
 package object core {
+  type ValidatedNelEx[+T] = ValidatedNel[Throwable, T]
+  type ThrowableNel = NonEmptyList[Throwable]
+  type EitherEx[+T] = Either[Throwable, T]
+  type EitherNelEx[+T] = EitherNel[Throwable, T]
+  type MonadEx[F[_]] = MonadError[F, Throwable]
+  type MonadNelEx[F[_]] = MonadError[F, ThrowableNel]
+  type XmlPredicate = NodeSeq => Boolean
 
-  type Predicate[-A] = A => Boolean
-  type XmlPredicate = Predicate[NodeSeq]
+  @implicitNotFound(
+    "Cannot find an implicit value for OptErrorHandler of type ${F}. Please try to import advxml._"
+  )
+  type OptErrorHandler[F[_]] = Throwable => Option ~> F
 
   /** Represents a function `A => F[B]` to simplify method and class signatures.
     * This alias represent an error-handled converter to transform `A` into `B` safely.
@@ -36,7 +44,7 @@ package object core {
 
   /** Represents a function `A => ValidatedEx[B]` to simplify method and class signatures.
     * Converter to easily transform an object of type `A` to another object of type `B`.
-    * Because the conversion can fail the output is wrapped into cats [[advxml.core.validate.ValidatedNelEx]] in order to handle the errors.
+    * Because the conversion can fail the output is wrapped into cats [[ValidatedNelEx]] in order to handle the errors.
     *
     * @tparam A Contravariant input object type
     * @tparam B Output object type
@@ -48,7 +56,7 @@ package object core {
 
   /** Represents a function `O => ValidatedEx[NodeSeq]` to simplify method and class signatures.
     * This function transform a model of type `O` to standard scala-xml library `NodeSeq`, in this case `X`.
-    * Because the conversion can fail the output is wrapped into cats [[advxml.core.validate.ValidatedNelEx]] in order to handle the errors
+    * Because the conversion can fail the output is wrapped into cats [[ValidatedNelEx]] in order to handle the errors
     *
     * @see [[core.ValidatedConverter]] for further information.
     * @tparam O Contravariant input model type
@@ -59,7 +67,7 @@ package object core {
 
   /** Represents a function `NodeSeq => ValidatedEx[O]` to simplify method and class signatures.
     * This function transform xml model of type `X`, from standard scala-xml library, into a model of type `O`
-    * Because the conversion can fail the output is wrapped into cats [[advxml.core.validate.ValidatedNelEx]] in order to handle the errors
+    * Because the conversion can fail the output is wrapped into cats [[ValidatedNelEx]] in order to handle the errors
     *
     * @see [[core.ValidatedConverter]] for further information.
     * @tparam X Contravariant input xml model, type constraint ensures that `X` is a subtype of scala-xml `NodeSeq`

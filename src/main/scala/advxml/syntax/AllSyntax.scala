@@ -1,8 +1,8 @@
 package advxml.syntax
 
-import advxml.core.validate.{EitherEx, EitherNelEx, MonadEx, MonadNelEx, ValidatedNelEx}
-import advxml.core.{Predicate, PureConverter}
+import advxml.core.{EitherEx, EitherNelEx, Predicate, PureConverter, ValidatedNelEx}
 import advxml.core.transform.actions.{AttributeData, Key, KeyValuePredicate}
+import advxml.core.{MonadEx, MonadNelEx}
 import cats.{Alternative, Applicative, Monad}
 
 import scala.util.Try

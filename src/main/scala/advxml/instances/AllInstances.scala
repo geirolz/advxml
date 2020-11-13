@@ -1,10 +1,9 @@
 package advxml.instances
 import advxml.=:!=
-import advxml.core.PureConverter
+import advxml.core.{Converter, PureConverter, ThrowableNel}
 import advxml.core.exceptions.AggregatedException
 import advxml.core.utils.XmlUtils
-import advxml.core.validate.{MonadEx, ThrowableNel}
-import advxml.core.{Converter, PureConverter}
+import advxml.core.MonadEx
 import cats.data.Validated.{Invalid, Valid}
 import cats.kernel.Semigroup
 import cats.{Applicative, FlatMap, Id, MonadError}

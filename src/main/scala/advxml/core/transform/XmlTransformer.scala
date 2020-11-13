@@ -2,7 +2,7 @@ package advxml.core.transform
 
 import advxml.core.transform.actions.{XmlModifier, XmlZoom}
 import advxml.core.utils.XmlUtils
-import advxml.core.validate.MonadEx
+import advxml.core.MonadEx
 import advxml.instances.transform._
 import cats.kernel.Monoid
 import cats.syntax.all._
