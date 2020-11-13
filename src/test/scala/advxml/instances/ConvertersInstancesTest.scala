@@ -9,7 +9,6 @@ import scala.xml.Text
 
 class Common_ConvertersInstancesTest extends AnyFunSuite with ConvertersAssertsUtils {
 
-  import advxml.instances.convert._
   import cats.instances.try_._
 
   // format: off
@@ -19,9 +18,6 @@ class Common_ConvertersInstancesTest extends AnyFunSuite with ConvertersAssertsU
 }
 
 class ToText_ConvertersInstancesTest extends AnyFunSuite with ConvertersAssertsUtils {
-
-  import advxml.instances.convert._
-
   // format: off
   id_string_to_text      test("TEST"             , Text("TEST")  )
   id_bigInt_to_text      test(BigInt(1)          , Text("1")     )
@@ -38,7 +34,6 @@ class ToText_ConvertersInstancesTest extends AnyFunSuite with ConvertersAssertsU
 
 class FromText_ConvertersInstancesTest extends AnyFunSuite with ConvertersAssertsUtils {
 
-  import advxml.instances.convert._
   import cats.instances.try_._
 
   // format: off

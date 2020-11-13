@@ -8,8 +8,7 @@ import org.scalatest.funsuite.AnyFunSuite
 
 import scala.xml.Elem
 
-/**
-  * Advxml
+/** Advxml
   * Created by geirolad on 28/06/2019.
   *
   * @author geirolad
@@ -21,7 +20,7 @@ class XmlConverterSyntaxTest extends AnyFunSuite {
   import advxml.syntax.traverse.validated._
   import cats.syntax.all._
 
-  import advxml.instances.validate._
+  import advxml.instances._
   import advxml.instances.traverse._
   import cats.instances.option._
 

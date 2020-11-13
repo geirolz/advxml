@@ -10,7 +10,6 @@ import org.typelevel.discipline.scalatest.FunSuiteDiscipline
 
 class ValidationInstancesTest extends AnyFunSuite with FunSuiteDiscipline with Configuration {
 
-  import advxml.instances.validate._
   import cats.implicits._
   import cats.laws.discipline.arbitrary._
 

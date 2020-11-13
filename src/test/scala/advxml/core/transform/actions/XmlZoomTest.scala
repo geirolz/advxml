@@ -31,7 +31,7 @@ class XmlZoomTest extends AnyFunSuite with FunSuiteContract {
 object XmlZoomTest {
 
   import advxml.syntax._
-  import advxml.instances.convert._
+  import advxml.instances._
 
   case class ContractFuncs(
     immediateDown: (XmlZoom, String) => XmlZoom,

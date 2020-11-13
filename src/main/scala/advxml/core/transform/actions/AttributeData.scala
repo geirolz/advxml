@@ -2,7 +2,7 @@ package advxml.core.transform.actions
 
 import scala.xml.Text
 
-case class Key(value: String)
+case class Key(value: String) extends AnyVal
 
 sealed trait KeyValue[T] {
   val key: Key

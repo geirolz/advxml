@@ -7,7 +7,7 @@ import scala.xml.{Elem, NodeSeq}
 
 class XmlTransformerSyntaxTest extends AnyFunSuite {
 
-  import advxml.instances.convert._
+  import advxml.instances._
   import advxml.instances.transform._
   import advxml.syntax.transform._
   import advxml.testUtils.ScalacticXmlEquality._

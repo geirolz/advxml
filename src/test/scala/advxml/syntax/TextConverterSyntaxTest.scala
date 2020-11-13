@@ -4,15 +4,14 @@ import org.scalatest.funsuite.AnyFunSuite
 
 import scala.xml.Text
 
-/**
-  * Advxml
+/** Advxml
   * Created by geirolad on 03/07/2019.
   *
   * @author geirolad
   */
 class TextConverterSyntaxTest extends AnyFunSuite {
 
-  import advxml.instances.convert._
+  import advxml.instances._
   import advxml.syntax.convert._
   import cats.instances.option._
 

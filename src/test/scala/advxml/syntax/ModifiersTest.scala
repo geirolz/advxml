@@ -7,7 +7,7 @@ import scala.xml.{NodeSeq, Text}
 
 class ModifiersTest extends AnyWordSpec {
 
-  import advxml.instances.convert._
+  import advxml.instances._
   import advxml.instances.transform.modifiers._
   import cats.instances.try_._
 

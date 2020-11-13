@@ -1,9 +1,5 @@
 package advxml
 
-import advxml.core.exceptions.AggregatedException
-import cats.data.NonEmptyList
-import cats.kernel.Semigroup
-
 /*
  * In order to keep project clean keep in mind the following rules:
  * - Each object represent a feature
@@ -24,23 +20,19 @@ import cats.kernel.Semigroup
   *   import advxml.instances.transform._
   * }}}
   */
-package object instances {
+package object instances extends AllCommonInstances {
+
   // format: off
   object all        extends AllInstances
   object transform  extends XmlTransformerInstances {
     object predicates extends XmlPredicateInstances
     object modifiers extends XmlModifierInstances
   }
-  object convert    extends ConvertersInstances
-  object validate   extends ValidationInstances
   object traverse   extends AllXmlTraverserInstances {
     object dynamic extends DynamicXmlTraverserInstances{
       object immediate extends immediate
       object deep extends deep
     }
   }
-  
   // format: on
-  implicit lazy val semigroupInstanceForAggregatedException: Semigroup[Throwable] =
-    (x: Throwable, y: Throwable) => new AggregatedException(NonEmptyList.of(x, y))
 }
