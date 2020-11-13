@@ -1,9 +1,9 @@
 package advxml.instances
 
-import advxml.core.transform.actions.{AttributeData, ComposableXmlModifier, FinalXmlModifier, XmlModifier}
+import advxml.core.transform.actions._
 import advxml.core.validate.MonadEx
 import advxml.core.Predicate
-import cats.{Monoid, Semigroup}
+import cats.Monoid
 import cats.syntax.flatMap._
 
 import scala.xml._
@@ -71,7 +71,7 @@ private[instances] trait XmlModifierInstances {
           F.pure[NodeSeq](
             e.copy(
               attributes = (d +: ds).foldRight(e.attributes)((data, metadata) =>
-                new UnprefixedAttribute(data.key, data.value, metadata)
+                new UnprefixedAttribute(data.key.value, data.value, metadata)
               )
             )
           )
@@ -85,6 +85,7 @@ private[instances] trait XmlModifierInstances {
     * @param p Attribute predicate.
     * @param ps Attribute predicates.
     */
+  //TODO Align this with KeyValuePredicate ?
   case class RemoveAttrs(p: AttributeData => Boolean, ps: (AttributeData => Boolean)*) extends ComposableXmlModifier {
     override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] = {
       val filter = (p +: ps).reduce((p1, p2) => Predicate.or(p1, p2))
@@ -92,7 +93,7 @@ private[instances] trait XmlModifierInstances {
         case e: Elem =>
           val newAttrs = e.attributes.asAttrMap
             .filter { case (k, v) =>
-              filter(AttributeData(k, Text(v)))
+              filter(AttributeData(Key(k), Text(v)))
             }
             .keys
             .foldLeft(e.attributes)((attrs, key) => attrs.remove(key))

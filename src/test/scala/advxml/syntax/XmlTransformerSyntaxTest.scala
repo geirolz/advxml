@@ -91,7 +91,7 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
           </bar>
         </data>
             .transform(
-              (root \ "bar" \ "test" filter attrs("Id" -> (_ == "1")))
+              (root \ "bar" \ "test" filter attrs(k"Id" === "1"))
               ==> Append(<newNode value="x"/>)
             )
             .get
@@ -168,7 +168,7 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
           </OrderLines>
         </Order>
             .transform(
-              (root \ "OrderLines" \ "OrderLine" | attrs("PrimeLineNo" -> (_ == "1")))
+              (root \ "OrderLines" \ "OrderLine" | attrs(k"PrimeLineNo" === "1"))
               ==> Replace(_ => <OrderLine PrimeLineNo="3"/>)
             )
             .get
@@ -199,7 +199,7 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
           </OrderLines>
         </Order>
             .transform(
-              (root \ "OrderLines" \ "OrderLine" | attrs("PrimeLineNo" -> (_ == "2")))
+              (root \ "OrderLines" \ "OrderLine" | attrs(k"PrimeLineNo" === "2"))
               ==> Remove
             )
             .get
@@ -241,7 +241,7 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
           <OrderLines/>
         </Order>
             .transform(
-              root \ "OrderLines" ==> SetAttrs("A1" := "1", "A2" := "2", "A3" := "3")
+              root \ "OrderLines" ==> SetAttrs(k"A1" := "1", k"A2" := "2", k"A3" := "3")
             )
             .get
     )
@@ -251,7 +251,7 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
     assert(
       <Order A1="1" A2="2" A3="3"/> === <Order/>
         .transform(
-          root ==> SetAttrs("A1" := "1", "A2" := "2", "A3" := "3")
+          root ==> SetAttrs(k"A1" := "1", k"A2" := "2", k"A3" := "3")
         )
         .get
     )
@@ -271,7 +271,7 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
           </OrderLines>
         </Order>
             .transform(
-              root \ "OrderLines" ==> SetAttrs("T1" := "EDITED")
+              root \ "OrderLines" ==> SetAttrs(k"T1" := "EDITED")
             )
             .get
     )
@@ -291,7 +291,7 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
           </OrderLines>
         </Order>
             .transform(
-              root \ "OrderLines" ==> RemoveAttrs(_.key == "T1")
+              root \ "OrderLines" ==> RemoveAttrs(_.key == k"T1")
             )
             .get
     )

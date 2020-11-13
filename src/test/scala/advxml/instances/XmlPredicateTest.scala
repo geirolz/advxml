@@ -6,7 +6,9 @@ import scala.xml.{Elem, NodeSeq}
 
 class XmlPredicateTest extends AnyFunSuite {
 
+  import advxml.instances.convert._
   import advxml.instances.transform.predicates._
+  import advxml.syntax._
   import advxml.testUtils.ScalacticXmlEquality._
 
   test("Filter by text") {
@@ -47,8 +49,8 @@ class XmlPredicateTest extends AnyFunSuite {
       </Persons>
 
     val result: NodeSeq = data \ "Person" filter attrs(
-      "A" -> (_ == "3"),
-      "B" -> (_ == "C")
+      k"A" === "3",
+      k"B" === "C"
     )
 
     assert(result === <Person A="3" B="C">Simone</Person>)

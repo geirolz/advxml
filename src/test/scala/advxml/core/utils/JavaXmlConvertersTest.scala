@@ -4,7 +4,6 @@ import java.io.StringReader
 
 import advxml.core.utils.JavaXmlConverters.{JDocument, JNode}
 import advxml.core.utils.JavaXmlConvertersTest.ContractFuncs
-import advxml.testUtils.ContractTests.ContractTest
 import advxml.testUtils.{ContractTests, FunSuiteContract}
 import javax.xml.parsers.{DocumentBuilder, DocumentBuilderFactory}
 import org.scalatest.funsuite.AnyFunSuite

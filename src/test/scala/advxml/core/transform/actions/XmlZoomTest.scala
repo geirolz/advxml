@@ -30,6 +30,9 @@ class XmlZoomTest extends AnyFunSuite with FunSuiteContract {
 
 object XmlZoomTest {
 
+  import advxml.syntax._
+  import advxml.instances.convert._
+
   case class ContractFuncs(
     immediateDown: (XmlZoom, String) => XmlZoom,
     filter: (XmlZoom, XmlPredicate) => XmlZoom,
@@ -68,7 +71,7 @@ object XmlZoomTest {
           <bar id="1" />
         </foo>
 
-      val xmlZoom: XmlZoom = f.filter(root \ "bar", attrs("id" -> (_ == "1")))
+      val xmlZoom: XmlZoom = f.filter(root \ "bar", attrs(k"id" === "1"))
       val value: ZoomedNodeSeq = xmlZoom(xml).get
 
       assert(value.nodeSeq === NodeSeq.fromSeq(Seq(<bar id="1"/>, <bar id="1"/>)))
@@ -84,7 +87,7 @@ object XmlZoomTest {
           <bar id="1" />
         </foo>
 
-      val xmlZoom: XmlZoom = f.find(root \ "bar", attrs("id" -> (_ == "1")))
+      val xmlZoom: XmlZoom = f.find(root \ "bar", attrs(k"id" === "1"))
       val value: ZoomedNodeSeq = xmlZoom(xml).get
 
       assert(value.nodeSeq === <bar id="1"/>)

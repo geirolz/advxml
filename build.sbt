@@ -39,7 +39,7 @@ lazy val compilePlugins = Seq(
   addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3")
 )
 
-def scalacSettings(scalaVersion: String) =
+def scalacSettings(scalaVersion: String): Seq[String] =
   Seq(
     "-deprecation", // Emit warning and location for usages of deprecated APIs.
     "-encoding",

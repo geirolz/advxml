@@ -41,6 +41,6 @@ package object instances {
   }
   
   // format: on
-  implicit lazy val aggregatedExceptionSemigroupInstance: Semigroup[Throwable] =
+  implicit lazy val semigroupInstanceForAggregatedException: Semigroup[Throwable] =
     (x: Throwable, y: Throwable) => new AggregatedException(NonEmptyList.of(x, y))
 }

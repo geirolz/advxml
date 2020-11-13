@@ -9,7 +9,6 @@ class ModifiersTest extends AnyWordSpec {
 
   import advxml.instances.convert._
   import advxml.instances.transform.modifiers._
-  import advxml.syntax.transform._
   import cats.instances.try_._
 
   "Append node modifier" when {
@@ -91,9 +90,9 @@ class ModifiersTest extends AnyWordSpec {
         val xml = <Root/>
 
         val modifier = SetAttrs(
-          "T1" := "1",
-          "T2" := "2",
-          "T3" := "3"
+          k"T1" := "1",
+          k"T2" := "2",
+          k"T3" := "3"
         )
         val result: Try[NodeSeq] = modifier(xml)
 
@@ -109,9 +108,9 @@ class ModifiersTest extends AnyWordSpec {
         val xml = <Root/>
 
         val modifier = SetAttrs(
-          "T1" := 1,
-          "T2" := 2,
-          "T3" := 3
+          k"T1" := 1,
+          k"T2" := 2,
+          k"T3" := 3
         )
 
         val result: Try[NodeSeq] = modifier(xml)
@@ -127,9 +126,9 @@ class ModifiersTest extends AnyWordSpec {
         val xml = Text("TEST")
 
         val modifier = SetAttrs(
-          "T1" := "1",
-          "T2" := "2",
-          "T3" := "3"
+          k"T1" := "1",
+          k"T2" := "2",
+          k"T3" := "3"
         )
         val result = modifier(xml)
 
@@ -144,7 +143,7 @@ class ModifiersTest extends AnyWordSpec {
 
         val xml = <Root T1="1" T2="2" T3="3"/>
 
-        val modifier = RemoveAttrs(_.key == "T1", _.key == "T2", _.key == "T3")
+        val modifier = RemoveAttrs(_.key == k"T1", _.key == k"T2", _.key == k"T3")
         val result = modifier(xml)
 
         assert(result.map(_.exists(_ \@ "T1" == "1")) == Success(false))
@@ -157,7 +156,8 @@ class ModifiersTest extends AnyWordSpec {
       "Return a failure" in {
         val xml = Text("TEST")
 
-        val modifier = RemoveAttrs(_.key == "T1", _.key == "T2", _.key == "T3")
+        //TODO TO FIX THAT
+        val modifier = RemoveAttrs(_.key == k"T1", _.key == k"T2", _.key == k"T3")
         val result: Try[NodeSeq] = modifier(xml)
 
         assert(result.isFailure)

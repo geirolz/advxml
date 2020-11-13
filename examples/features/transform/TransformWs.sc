@@ -1,5 +1,6 @@
 import advxml.instances.transform._
 import advxml.syntax.transform._
+import advxml.syntax._
 import cats.instances.try_._
 
 import scala.util.Try
@@ -22,10 +23,10 @@ val document =
   </Orders>
 
 val result: Try[NodeSeq] = document.transform(
-    (
-      (root \ "Order" filter attrs(("Id", _ == "1")))
-      \ "OrderLines"
-      \ "OrderLine" filter attrs("Id" -> (_ == "2"))
-    ) ==> Append(<Node>new node!</Node>)
+    root.Order
+        .filter(attrs(k"Id" is "1"))
+        .OrderLines
+        .OrderLine
+        .filter(attrs(k"Id" === "2")) ==> Append(<Node>new node!</Node>)
   )
 

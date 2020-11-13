@@ -8,6 +8,8 @@ import scala.xml.{Document, Elem, Group, NodeSeq}
 class XmlPredicateInstancesTest extends AnyFunSuite {
 
   import advxml.instances.transform.predicates._
+  import advxml.syntax._
+  import advxml.instances.convert._
 
   test("Test 'always' predicate") {
     assert(alwaysTrue(<Node>TEST</Node>))
@@ -35,7 +37,7 @@ class XmlPredicateInstancesTest extends AnyFunSuite {
   }
 
   test("Test 'attrs' predicate") {
-    val p: XmlPredicate = attrs("A1" -> (_ == "TEST"))
+    val p: XmlPredicate = attrs(k"A1" === "TEST")
     val target: Elem = <Node A1="TEST"/>
     val result: Boolean = p(target)
     assert(result)

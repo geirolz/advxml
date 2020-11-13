@@ -11,6 +11,7 @@ class StressTest extends AnyFunSuite {
   import advxml.instances.convert._
   import advxml.instances.transform._
   import advxml.syntax.transform._
+  import advxml.syntax._
   import cats.instances.try_._
   import cats.syntax.monoid._
 
@@ -19,24 +20,24 @@ class StressTest extends AnyFunSuite {
     val elem = XML.loadFile(getClass.getResource("/transform/stressTest_1mb.xml").getPath)
 
     val zoomByAttrs1: XmlZoom = root | attrs(
-      "gdp_serv"   -> (_ == "55.2"),
-      "government" -> (_ == "republic"),
-      "inflation"  -> (_ == "28.3"),
-      "population" -> (_ == "10002541")
+      k"gdp_serv" === 55.2,
+      k"government" === "republic",
+      k"inflation" === "28.3",
+      k"population" === "10002541"
     )
 
     val zoomByAttrs2: XmlZoom = root | attrs(
-      "capital"  -> (_ == "f0_1533"),
-      "car_code" -> (_ == "H")
+      k"capital" === "f0_1533",
+      k"car_code" === "H"
     )
 
     val filterByChild: XmlZoom = root | hasImmediateChild(
       "province",
       attrs(
-        "population" -> (_ == "422500"),
-        "country"    -> (_ == "f0_251"),
-        "name"       -> (_ == "Fejer"),
-        "capital"    -> (_ == "f0_3117")
+        k"population" === "422500",
+        k"country" === "f0_251",
+        k"name" === "Fejer",
+        k"capital" === "f0_3117"
       )
     )
 
@@ -44,8 +45,8 @@ class StressTest extends AnyFunSuite {
 
     val result: Try[NodeSeq] = elem.transform[Try](
       z ==> SetAttrs(
-        "TEST"  := "1",
-        "TEST2" := "100"
+        k"TEST"  := 1,
+        k"TEST2" := 100
       )
     )
 

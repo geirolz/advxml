@@ -2,9 +2,12 @@ package advxml
 
 import advxml.core.validate.{EitherEx, ValidatedNelEx}
 import advxml.core.Predicate
+import advxml.core.convert.PureConverter
+import advxml.core.transform.actions.{AttributeData, Key, KeyValuePredicate}
 import cats.{Applicative, Monad}
 
 import scala.util.Try
+import scala.xml.Text
 
 /*
  * In order to keep project clean keep in mind the following rules:
@@ -45,6 +48,41 @@ package object syntax {
     object validated        extends XmlTraverserSyntaxSpecified[ValidatedNelEx, Option]
   }
   // format: on
+
+  //************************************* ATTRIBUTE PREDICATE ****************************************
+  implicit class KeyStringInterpolationOps(ctx: StringContext) {
+    def k(args: Any*): Key = Key(ctx.s(args: _*))
+  }
+
+  implicit class AttributeOps(key: Key) {
+
+    def :=[T](v: T)(implicit converter: PureConverter[T, Text]): AttributeData =
+      AttributeData(key, converter(v))
+
+    def ===[T](that: T)(implicit converter: PureConverter[T, String]): KeyValuePredicate[String] =
+      KeyValuePredicate(key, _ == converter(that))
+
+    def ->[T](valuePredicate: T => Boolean): KeyValuePredicate[T] =
+      KeyValuePredicate(key, valuePredicate)
+
+    //********* FOR NUMBERS *********
+    def <(that: Double)(implicit converter: PureConverter[String, Double]): KeyValuePredicate[String] =
+      buildPredicateForScalaNumber(that, _ < _)
+
+    def <=(that: Double)(implicit converter: PureConverter[String, Double]): KeyValuePredicate[String] =
+      buildPredicateForScalaNumber(that, _ <= _)
+
+    def >(that: Double)(implicit converter: PureConverter[String, Double]): KeyValuePredicate[String] =
+      buildPredicateForScalaNumber(that, _ > _)
+
+    def >=(that: Double)(implicit converter: PureConverter[String, Double]): KeyValuePredicate[String] =
+      buildPredicateForScalaNumber(that, _ >= _)
+
+    private def buildPredicateForScalaNumber(that: Double, p: (Double, Double) => Boolean)(implicit
+      converter: PureConverter[String, Double]
+    ): KeyValuePredicate[String] =
+      key -> (v => p(converter(v), that))
+  }
 
   //************************************* NESTED MAP ****************************************
   implicit class ApplicativeDeepMapOps[F[_]: Applicative, G[_]: Applicative, A](fg: F[G[A]]) {

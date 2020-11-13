@@ -1,10 +1,9 @@
 package advxml.instances
 
-import advxml.core.transform.actions.XmlZoom
-import cats.Monoid
-import advxml.core.transform.actions.XmlPredicate
+import advxml.core.transform.actions.{KeyValuePredicate, XmlPredicate, XmlZoom}
 import advxml.core.transform.actions.XmlPredicate.XmlPredicate
 import advxml.core.Predicate
+import cats.Monoid
 
 import scala.xml.{Node, NodeSeq}
 
@@ -38,18 +37,14 @@ private[instances] trait XmlPredicateInstances {
 
   /** Filter nodes by attributes.
     *
-    * @param value  Tuple2 where first value represent the attribute key and the second
-    *               value represent a predicate function on attribute's value.
-    * @param values N predicates for attributes.
+    * @param value [[KeyValuePredicate]] to filter attributes
+    * @param values N [[KeyValuePredicate]] to filter attributes
     * @return Predicate for nodes of type `Node`
     */
-  def attrs(value: (String, String => Boolean), values: (String, String => Boolean)*): XmlPredicate = {
+  def attrs(value: KeyValuePredicate[String], values: KeyValuePredicate[String]*): XmlPredicate =
     (value +: values)
-      .map { case (key, p) =>
-        XmlPredicate(ns => p(ns \@ key))
-      }
+      .map(p => XmlPredicate(ns => p.valuePredicate(ns \@ p.key.value)))
       .reduce(Predicate.and[NodeSeq])
-  }
 
   /** Create a [[XmlPredicate]] that can check if a NodeSeq contains a child with specified predicates
     * @param label Name of the child to find
