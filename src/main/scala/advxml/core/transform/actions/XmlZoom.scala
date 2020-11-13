@@ -1,6 +1,6 @@
 package advxml.core.transform.actions
 
-import advxml.core.transform.actions.XmlPredicate.XmlPredicate
+import advxml.core.XmlPredicate
 import advxml.core.transform.actions.XmlZoom._
 import advxml.core.validate.MonadEx
 

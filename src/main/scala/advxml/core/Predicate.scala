@@ -1,6 +1,5 @@
 package advxml.core
 
-//TODO: Common
 object Predicate {
 
   /** Combine two predicates(`T => Boolean`) with `And` operator.
@@ -20,4 +19,8 @@ object Predicate {
     * @return Result of combination of `p1` and `p2` using `Or` operator.
     */
   def or[T](p1: T => Boolean, p2: T => Boolean): T => Boolean = t => p1(t) || p2(t)
+}
+
+object XmlPredicate {
+  def apply(f: XmlPredicate): XmlPredicate = f
 }

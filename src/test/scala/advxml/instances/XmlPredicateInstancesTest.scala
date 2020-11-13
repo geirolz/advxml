@@ -1,6 +1,6 @@
 package advxml.instances
 
-import advxml.core.transform.actions.XmlPredicate.XmlPredicate
+import advxml.core.XmlPredicate
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.xml.{Document, Elem, Group, NodeSeq}

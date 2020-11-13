@@ -1,6 +1,6 @@
 package advxml.core.transform.actions
 
-import advxml.core.transform.actions.XmlPredicate.XmlPredicate
+import advxml.core.XmlPredicate
 import advxml.core.transform.actions.XmlZoom.ImmediateDown
 import advxml.core.transform.actions.XmlZoomTest.ContractFuncs
 import advxml.implicits.XmlZoomOps

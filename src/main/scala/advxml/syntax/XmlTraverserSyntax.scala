@@ -2,7 +2,7 @@ package advxml.syntax
 
 import advxml.core.XmlTraverser
 import advxml.core.XmlTraverser._
-import advxml.core.transform.actions.XmlPredicate.XmlPredicate
+import advxml.core.XmlPredicate
 import cats.{Applicative, FlatMap}
 
 import scala.xml.NodeSeq

@@ -8,7 +8,7 @@ import advxml.core.XmlTraverser.exceptions.{
   XmlMissingNodeException,
   XmlMissingTextException
 }
-import advxml.core.transform.actions.XmlPredicate.XmlPredicate
+import advxml.core.XmlPredicate
 import advxml.core.utils.{OptErrorHandler, TraverserK}
 import advxml.core.utils.OptErrorHandler.OptErrorHandler
 import cats.{Alternative, Applicative, FlatMap}

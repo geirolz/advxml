@@ -1,7 +1,7 @@
 package advxml.instances
 
-import advxml.core.transform.actions.{KeyValuePredicate, XmlPredicate, XmlZoom}
-import advxml.core.transform.actions.XmlPredicate.XmlPredicate
+import advxml.core.transform.actions.{KeyValuePredicate, XmlZoom}
+import advxml.core.XmlPredicate
 import advxml.core.Predicate
 import cats.Monoid
 
