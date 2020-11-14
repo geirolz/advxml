@@ -1,5 +1,6 @@
 package advxml.syntax
 
+import advxml.core.transform.exceptions.ZoomFailedException
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Try
@@ -15,17 +16,18 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
 
   test("Transform XML with empty target") {
 
-    val elem = <data>
-      <foo>
-        <test Id="1"/>
-      </foo>
-    </data>
+    val elem =
+      <data>
+        <foo>
+          <test Id="1"/>
+        </foo>
+      </data>
 
-    val xmlZoom = root \ "test" \ "unknown" \ "node"
+    val xmlZoom = root \ "foo" \ "test" \ "node"
     val result: Try[NodeSeq] = elem.transform(xmlZoom ==> Remove)
 
     assert(result.isFailure)
-//    assert(result.failed.get.isInstanceOf[EmptyTargetException])//TODO
+    assert(result.failed.get.isInstanceOf[ZoomFailedException])
   }
 
   test("Transform XML map nested element") {
@@ -98,27 +100,31 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
     )
   }
 
-  test("PrependNode") {
+  test("AppendNode in multiple place") {
     assert(
       <Order>
         <OrderLines>
-          <OrderLine PrimeLineNo="1"/>
+          <OrderLine PrimeLineNo="1">
+            <foo value="new"/>
+          </OrderLine>
+          <OrderLine PrimeLineNo="1" >
+            <foo value="new"/>
+          </OrderLine>
           <OrderLine PrimeLineNo="2"/>
-          <OrderLine PrimeLineNo="3"/>
-          <OrderLine PrimeLineNo="4"/>
         </OrderLines>
       </Order>
         ===
           <Order>
           <OrderLines>
-            <OrderLine PrimeLineNo="4"/>
+            <OrderLine PrimeLineNo="1"/>
+            <OrderLine PrimeLineNo="1"/>
+            <OrderLine PrimeLineNo="2"/>
           </OrderLines>
         </Order>
             .transform(
-              (root \ "OrderLines")
-              ==> Prepend(<OrderLine PrimeLineNo="3"/>)
-              ==> Prepend(<OrderLine PrimeLineNo="2"/>)
-              ==> Prepend(<OrderLine PrimeLineNo="1"/>)
+              root.OrderLines.OrderLine
+                .filter(attrs(k"PrimeLineNo" === "1"))
+              ==> Append(<foo value="new"/>)
             )
             .get
     )
@@ -145,6 +151,32 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
               ==> Append(<OrderLine PrimeLineNo="2"/>)
               ==> Append(<OrderLine PrimeLineNo="3"/>)
               ==> Append(<OrderLine PrimeLineNo="4"/>)
+            )
+            .get
+    )
+  }
+
+  test("PrependNode") {
+    assert(
+      <Order>
+        <OrderLines>
+          <OrderLine PrimeLineNo="1"/>
+          <OrderLine PrimeLineNo="2"/>
+          <OrderLine PrimeLineNo="3"/>
+          <OrderLine PrimeLineNo="4"/>
+        </OrderLines>
+      </Order>
+        ===
+          <Order>
+          <OrderLines>
+            <OrderLine PrimeLineNo="4"/>
+          </OrderLines>
+        </Order>
+            .transform(
+              (root \ "OrderLines")
+              ==> Prepend(<OrderLine PrimeLineNo="3"/>)
+              ==> Prepend(<OrderLine PrimeLineNo="2"/>)
+              ==> Prepend(<OrderLine PrimeLineNo="1"/>)
             )
             .get
     )

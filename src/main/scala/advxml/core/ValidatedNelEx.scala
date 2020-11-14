@@ -1,7 +1,6 @@
 package advxml.core
 
 import advxml.core.exceptions.AggregatedException
-import advxml.core.{MonadEx, MonadNelEx}
 import cats.Alternative
 import cats.data.{NonEmptyList, Validated}
 import cats.data.Validated.{Invalid, Valid}

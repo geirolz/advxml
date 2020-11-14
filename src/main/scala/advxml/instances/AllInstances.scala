@@ -1,5 +1,5 @@
 package advxml.instances
-import advxml.=:!=
+import advxml.core.=:!=
 import advxml.core.{Converter, PureConverter, ThrowableNel}
 import advxml.core.exceptions.AggregatedException
 import advxml.core.utils.XmlUtils
@@ -12,7 +12,10 @@ import cats.data.{NonEmptyList, Validated}
 import scala.util.Try
 import scala.xml.{Elem, Node, Text}
 
-private[advxml] trait AllInstances extends AllCommonInstances with XmlTransformerInstances with AllXmlTraverserInstances
+private[advxml] trait AllInstances
+    extends AllCommonInstances
+    with AllXmlTransformerInstances
+    with AllXmlTraverserInstances
 
 private[instances] trait AllCommonInstances
     extends ConverterInstances

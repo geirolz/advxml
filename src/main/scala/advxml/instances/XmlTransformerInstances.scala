@@ -1,13 +1,12 @@
 package advxml.instances
 
 import advxml.core.transform.actions.{KeyValuePredicate, XmlZoom}
-import advxml.core.XmlPredicate
-import advxml.core.Predicate
+import advxml.core._
 import cats.Monoid
 
 import scala.xml.{Node, NodeSeq}
 
-private[instances] trait XmlTransformerInstances
+private[instances] trait AllXmlTransformerInstances
     extends XmlModifierInstances
     with XmlPredicateInstances
     with XmlZoomInstances

@@ -24,7 +24,7 @@ package object instances extends AllCommonInstances {
 
   // format: off
   object all        extends AllInstances
-  object transform  extends XmlTransformerInstances {
+  object transform  extends AllXmlTransformerInstances {
     object predicates extends XmlPredicateInstances
     object modifiers extends XmlModifierInstances
   }

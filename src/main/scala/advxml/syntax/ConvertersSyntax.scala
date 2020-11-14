@@ -1,7 +1,6 @@
 package advxml.syntax
 
-import advxml.core
-import advxml.core.{Converter, PureConverter, ValidatedConverter, ValidatedNelEx}
+import advxml.core._
 import cats.{Applicative, Id, Monad}
 import cats.implicits._
 
