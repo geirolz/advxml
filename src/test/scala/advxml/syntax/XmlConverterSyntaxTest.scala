@@ -1,6 +1,6 @@
 package advxml.syntax
 
-import advxml.core.{ModelToXml, ValidatedConverter, ValidatedNelEx, XmlToModel}
+import advxml.core.data.{ModelToXml, ValidatedConverter, ValidatedNelEx, XmlToModel}
 import cats.data.Validated.Valid
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -14,13 +14,12 @@ import scala.xml.Elem
 //TODO: Check duplication into advxml.core.xml.XmlConverterTest
 class XmlConverterSyntaxTest extends AnyFunSuite {
 
-  import advxml.syntax.convert._
-  import advxml.syntax.traverse.validated._
-  import cats.syntax.all._
-
   import advxml.instances._
   import advxml.instances.traverse._
+  import advxml.syntax.convert._
+  import advxml.syntax.traverse.validated._
   import cats.instances.option._
+  import cats.syntax.all._
 
   test("XML to Model - Convert simple case class") {
 

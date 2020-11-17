@@ -1,8 +1,8 @@
 package advxml.instances
 
-import advxml.core.transform.actions._
-import advxml.core.MonadEx
-import advxml.core.Predicate
+import advxml.core.{data, MonadEx}
+import advxml.core.data.{AttributeData, Key, Predicate}
+import advxml.core.transform.{ComposableXmlModifier, FinalXmlModifier, XmlModifier}
 import cats.Monoid
 import cats.syntax.flatMap._
 
@@ -93,7 +93,7 @@ private[instances] trait XmlModifierInstances {
         case e: Elem =>
           val newAttrs = e.attributes.asAttrMap
             .filter { case (k, v) =>
-              filter(AttributeData(Key(k), Text(v)))
+              filter(data.AttributeData(Key(k), Text(v)))
             }
             .keys
             .foldLeft(e.attributes)((attrs, key) => attrs.remove(key))

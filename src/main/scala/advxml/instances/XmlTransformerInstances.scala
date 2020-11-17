@@ -1,7 +1,8 @@
 package advxml.instances
 
-import advxml.core.transform.actions.{KeyValuePredicate, XmlZoom}
-import advxml.core._
+import advxml.core.data._
+import advxml.core.data.Predicate
+import advxml.core.transform.XmlZoom
 import cats.Monoid
 
 import scala.xml.{Node, NodeSeq}
@@ -36,7 +37,7 @@ private[instances] trait XmlPredicateInstances {
 
   /** Filter nodes by attributes.
     *
-    * @param value [[KeyValuePredicate]] to filter attributes
+    * @param value  [[KeyValuePredicate]] to filter attributes
     * @param values N [[KeyValuePredicate]] to filter attributes
     * @return Predicate for nodes of type `Node`
     */
@@ -45,10 +46,11 @@ private[instances] trait XmlPredicateInstances {
       .map(p => XmlPredicate(ns => p.valuePredicate(ns \@ p.key.value)))
       .reduce(Predicate.and[NodeSeq])
 
-  /** Create a [[XmlPredicate]] that can check if a NodeSeq contains a child with specified predicates
-    * @param label Name of the child to find
+  /** Create a [[data.XmlPredicate]] that can check if a NodeSeq contains a child with specified predicates
+    *
+    * @param label     Name of the child to find
     * @param predicate Predicate to check child
-    * @return [[XmlPredicate]] that can check if a NodeSeq contains a child with specified predicates
+    * @return [[data.XmlPredicate]] that can check if a NodeSeq contains a child with specified predicates
     */
   def hasImmediateChild(label: String, predicate: XmlPredicate = alwaysTrue): XmlPredicate = { xml =>
     import advxml.instances.traverse._
@@ -58,9 +60,10 @@ private[instances] trait XmlPredicateInstances {
     (xml \? label).fold(false)(_.exists(predicate))
   }
 
-  /** Create an [[XmlPredicate]] that can check if two NodeSeq are strictly equals.
+  /** Create an [[data.XmlPredicate]] that can check if two NodeSeq are strictly equals.
+    *
     * @param ns to compare
-    * @return [[XmlPredicate]] that can check if two NodeSeq are strictly equals.
+    * @return [[data.XmlPredicate]] that can check if two NodeSeq are strictly equals.
     */
   def strictEqualsTo(ns: NodeSeq): XmlPredicate =
     that =>
@@ -84,6 +87,6 @@ private[instances] trait XmlZoomInstances {
 
   implicit val xmlZoomMonoid: Monoid[XmlZoom] = new Monoid[XmlZoom] {
     override def empty: XmlZoom = XmlZoom.empty
-    override def combine(x: XmlZoom, y: XmlZoom): XmlZoom = XmlZoom(x.zoomActions ++ y.zoomActions)
+    override def combine(x: XmlZoom, y: XmlZoom): XmlZoom = XmlZoom(x.actions ++ y.actions)
   }
 }

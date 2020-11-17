@@ -6,7 +6,7 @@ import org.scalatest.funsuite.AnyFunSuite
 import scala.util.Try
 import scala.xml.{Elem, NodeSeq}
 
-class XmlTransformerSyntaxTest extends AnyFunSuite {
+class XmlRuleSyntaxTest extends AnyFunSuite {
 
   import advxml.instances._
   import advxml.instances.transform._

@@ -1,6 +1,6 @@
 package advxml.syntax
 
-import advxml.core.PredicateTests
+import advxml.core.data.PredicateTests
 import advxml.testUtils.FunSuiteContract
 import org.scalatest.funsuite.AnyFunSuite
 

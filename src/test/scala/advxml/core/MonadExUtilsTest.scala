@@ -1,5 +1,6 @@
 package advxml.core
 
+import advxml.core.data.ValidatedNelEx
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Try

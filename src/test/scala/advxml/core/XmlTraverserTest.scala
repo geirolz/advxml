@@ -1,6 +1,7 @@
 package advxml.core
 
 import advxml.core.XmlTraverserTest.ContractFuncs
+import advxml.core.data.XmlPredicate
 import advxml.testUtils.{ContractTests, FeatureSpecContract}
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.Assertions.convertToEqualizer

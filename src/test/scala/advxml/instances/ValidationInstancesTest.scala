@@ -1,7 +1,7 @@
 package advxml.instances
 
 import advxml.core.exceptions.AggregatedException
-import advxml.core.{ThrowableNel, ValidatedNelEx}
+import advxml.core.data.{ThrowableNel, ValidatedNelEx}
 import cats.Eq
 import cats.data.NonEmptyList
 import org.scalatest.funsuite.AnyFunSuite

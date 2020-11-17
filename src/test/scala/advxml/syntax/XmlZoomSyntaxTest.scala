@@ -1,7 +1,8 @@
 package advxml.syntax
 
-import advxml.core.transform.actions.{XmlZoomTest, ZoomedNodeSeq}
+import advxml.core.transform.actions.XmlZoomTest
 import advxml.core.transform.actions.XmlZoomTest.ContractFuncs
+import advxml.core.transform.ZoomResult
 import advxml.implicits.root
 import advxml.testUtils.FunSuiteContract
 import org.scalatest.funsuite.AnyFunSuite
@@ -41,7 +42,7 @@ class XmlZoomSyntaxTest extends AnyFunSuite with FunSuiteContract {
         </bar>
       </foo>
 
-    val result: Try[ZoomedNodeSeq] = root.bar.test.apply(doc)
+    val result: Try[ZoomResult] = root.bar.test.apply(doc)
 
     assert(result.get.nodeSeq.size == 2)
     assert(result.get.nodeSeq(0) === <test v="1" />)
@@ -60,7 +61,7 @@ class XmlZoomSyntaxTest extends AnyFunSuite with FunSuiteContract {
         </bar>
       </foo>
 
-    val result: Try[ZoomedNodeSeq] = root.bar.test(1).apply(doc)
+    val result: Try[ZoomResult] = root.bar.test(1).apply(doc)
 
     assert(result.get.nodeSeq.size == 1)
     assert(result.get.nodeSeq(0) === <test v="2" />)

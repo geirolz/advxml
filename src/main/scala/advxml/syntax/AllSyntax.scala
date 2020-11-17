@@ -1,8 +1,7 @@
 package advxml.syntax
 
-import advxml.core.{EitherEx, EitherNelEx, Predicate, PureConverter, ValidatedNelEx}
-import advxml.core.transform.actions.{AttributeData, Key, KeyValuePredicate}
-import advxml.core.{MonadEx, MonadNelEx}
+import advxml.core.{data, MonadEx, MonadNelEx}
+import advxml.core.data._
 import cats.{Alternative, Applicative, Monad}
 
 import scala.util.Try
@@ -31,7 +30,7 @@ private[syntax] trait AttributeSyntax {
   implicit class AttributeOps(key: Key) {
 
     def :=[T](v: T)(implicit converter: PureConverter[T, Text]): AttributeData =
-      AttributeData(key, converter(v))
+      data.AttributeData(key, converter(v))
 
     def ===[T](that: T)(implicit converter: PureConverter[T, String]): KeyValuePredicate[String] =
       KeyValuePredicate(key, _ == converter(that))

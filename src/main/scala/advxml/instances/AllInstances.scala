@@ -1,13 +1,13 @@
 package advxml.instances
-import advxml.core.=:!=
-import advxml.core.{Converter, PureConverter, ThrowableNel}
+
 import advxml.core.exceptions.AggregatedException
 import advxml.core.utils.XmlUtils
-import advxml.core.MonadEx
-import cats.data.Validated.{Invalid, Valid}
-import cats.kernel.Semigroup
+import advxml.core.{=:!=, MonadEx}
+import advxml.core.data.{Converter, PureConverter, ThrowableNel}
 import cats.{Applicative, FlatMap, Id, MonadError}
 import cats.data.{NonEmptyList, Validated}
+import cats.data.Validated.{Invalid, Valid}
+import cats.kernel.Semigroup
 
 import scala.util.Try
 import scala.xml.{Elem, Node, Text}

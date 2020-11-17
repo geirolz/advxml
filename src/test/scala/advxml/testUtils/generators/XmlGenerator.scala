@@ -1,6 +1,6 @@
 package advxml.testUtils.generators
 
-import advxml.core.transform.actions.XmlZoom
+import advxml.core.transform.XmlZoom
 import org.scalacheck.Gen
 
 import scala.xml._
@@ -48,7 +48,7 @@ object XmlGenerator {
     def rec(current: Node, zoomPath: Gen[XmlZoom]): Gen[XmlZoom] =
       for {
         goAhead          <- Gen.frequency[Boolean]((80, true), (20, false))
-        isCurrentlyEmpty <- zoomPath.map(_.zoomActions.isEmpty)
+        isCurrentlyEmpty <- zoomPath.map(_.actions.isEmpty)
         zoomStep <- {
           if (goAhead || isCurrentlyEmpty)
             Gen

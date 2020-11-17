@@ -16,11 +16,11 @@ object XmlPatch {
 
   type NodeSeqPatchMap = Map[Option[NodeSeq], Option[NodeSeq]]
 
-  private[transform] def id(original: NodeSeq): XmlPatch = const(original, original)
+  def id(original: NodeSeq): XmlPatch = const(original, original)
 
-  private[transform] def const(original: NodeSeq, updated: NodeSeq): XmlPatch =
+  def const(original: NodeSeq, updated: NodeSeq): XmlPatch =
     apply(original, Function.const(updated))
 
-  private[transform] def apply(original: NodeSeq, f: NodeSeq => NodeSeq): XmlPatch =
+  def apply(original: NodeSeq, f: NodeSeq => NodeSeq): XmlPatch =
     new XmlPatch(original, f(original))
 }

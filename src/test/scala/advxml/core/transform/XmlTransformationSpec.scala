@@ -1,6 +1,5 @@
 package advxml.core.transform
 
-import advxml.core.transform.actions.XmlZoom
 import advxml.testUtils.generators.XmlGenerator
 import advxml.testUtils.generators.XmlGenerator.XmlGeneratorConfig
 import org.scalacheck.{Arbitrary, Properties}

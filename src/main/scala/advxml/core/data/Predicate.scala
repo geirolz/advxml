@@ -1,4 +1,4 @@
-package advxml.core
+package advxml.core.data
 
 object Predicate {
 

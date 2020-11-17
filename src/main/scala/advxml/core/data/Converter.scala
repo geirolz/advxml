@@ -1,4 +1,4 @@
-package advxml.core
+package advxml.core.data
 
 import cats.{Applicative, Id}
 import cats.data.Kleisli
