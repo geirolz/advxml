@@ -1,109 +1,214 @@
 package advxml.core.transform
 
-import advxml.core.MonadEx
-import advxml.core.data.XmlPredicate
-import advxml.core.transform.XmlZoom._
-import advxml.core.transform.exceptions.ZoomFailedException
+import advxml.core.{MonadEx, OptErrorHandler}
+import advxml.core.data.{error, Converter, StringTo, XmlPredicate}
+import advxml.core.transform.XmlZoom.{ZoomAction, _}
+import cats.{Applicative, FlatMap, Monad}
 
 import scala.language.dynamics
 import scala.xml.NodeSeq
 
-sealed trait ZoomResult {
+//###################### NODES ######################
+private[advxml] sealed trait XmlZoomNodeBase extends Dynamic {
+
+  type Type
+
+  val actions: List[ZoomAction]
+
+  def add(action: ZoomAction, actions: ZoomAction*): Type =
+    addAll((action +: actions).toList)
+
+  def addAll(action: List[ZoomAction]): Type
+
+  def bind(ns: NodeSeq): XmlZoomBinded
+
+  def unbind(): XmlZoom
+
+  //######################## ACTIONS ################################
+  def immediateDown(nodeName: String): Type =
+    this.add(ImmediateDown(nodeName))
+
+  def filter(p: XmlPredicate): Type =
+    this.add(Filter(p))
+
+  def find(p: XmlPredicate): Type =
+    this.add(Find(p))
+
+  def atIndex(idx: Int): Type =
+    this.add(AtIndex(idx))
+
+  def head(): Type =
+    this.add(Head)
+
+  def last(): Type =
+    this.add(Last)
+
+  //######################## DYNAMIC ################################
+  def applyDynamic(nodeName: String)(idx: Int): Type =
+    this.addAll(List(ImmediateDown(nodeName), AtIndex(idx)))
+
+  def selectDynamic(nodeName: String): Type =
+    this.add(ImmediateDown(nodeName))
+}
+
+sealed trait XmlZoom extends XmlZoomNodeBase {
+
+  override type Type = XmlZoom
+
+  def raw[F[_]](document: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
+    MonadEx[F].map(run(document))(_.nodeSeq)
+
+  def run[F[_]](document: NodeSeq)(implicit F: MonadEx[F]): F[XmlZoomResult]
+}
+
+sealed trait XmlZoomBinded extends XmlZoomNodeBase {
+
+  override type Type = XmlZoomBinded
+
+  val document: NodeSeq
+
+  def raw[F[_]](implicit F: MonadEx[F]): F[NodeSeq] =
+    MonadEx[F].map(run)(_.nodeSeq)
+
+  def run[F[_]](implicit F: MonadEx[F]): F[XmlZoomResult]
+}
+
+sealed trait XmlZoomResult {
   val nodeSeq: NodeSeq
   val parents: List[NodeSeq]
 }
 
-case class XmlZoom private (actions: List[ZoomAction]) extends Dynamic {
-  $thisZoom =>
+/** [[XmlZoom]] is a powerful system that allow to "zoom" inside a [[NodeSeq]] and select one or more elements keeping
+  * all step list and return a monadic value to handle possible errors.
+  *
+  * <h4>HOW TO USE</h4>
+  * [[XmlZoom]] is based on three types:
+  * - [[XmlZoom]] a.k.a XmlZoomUnbinded
+  * - [[XmlZoomBinded]]
+  * - [[XmlZoomResult]]
+  *
+  * <b>XmlZoom</b>
+  * Is the representation of unbind zoom instance. It contains only the list of the actions to run on a [[NodeSeq]].
+  *
+  * <b>XmlZoomBinded</b>
+  * Is the representation of binded zoom instance. Binded because it contains both [[ZoomAction]] and [[NodeSeq]] target.
+  *
+  * <b>XmlZoomResult</b>
+  * Is the result of the [[XmlZoom]], that contains selected [[NodeSeq]] and his parents.
+  */
+object XmlZoom {
 
-  def immediateDown(nodeName: String): XmlZoom =
-    XmlZoom(actions :+ ImmediateDown(nodeName))
+  //########################### INIT ###############################
+  /** Empty [[XmlZoom]] instance, without any [[ZoomAction]]
+    */
+  lazy val empty: XmlZoom = Impls.Unbinded(Nil)
 
-  def filter(p: XmlPredicate): XmlZoom =
-    XmlZoom(actions :+ Filter(p))
+  /** Just an alias for [[XmlZoom]], to use when you are building and XmlZoom that starts from the root.
+    */
+  lazy val root: XmlZoom = empty
 
-  def find(p: XmlPredicate): XmlZoom =
-    XmlZoom(actions :+ Find(p))
+  /** Just a binded alias for [[XmlZoom]], to use when you are building and XmlZoom that starts from the root.
+    */
+  def root(document: NodeSeq): XmlZoomBinded = root.bind(document)
 
-  def atIndex(idx: Int): XmlZoom =
-    XmlZoom(actions :+ AtIndex(idx))
+  /** Just an alias for Root, to use when you are building and XmlZoom that not starts from the root for the document.
+    * It's exists just to clarify the code.
+    * If your [[XmlZoom]] starts for the root of the document please use [[root]]
+    */
+  lazy val $ : XmlZoom = empty
 
-  def head(): XmlZoom =
-    XmlZoom(actions :+ Head)
+  /** Just a binded alias for root, to use when you are building and XmlZoom that not starts from the root for the document.
+    * It's exists just to clarify the code.
+    * If your [[XmlZoom]] starts for the root of the document please use [[root]]
+    */
+  def $(document: NodeSeq): XmlZoomBinded = $.bind(document)
 
-  def last(): XmlZoom =
-    XmlZoom(actions :+ Last)
+  //########################### IMPLS ###############################
+  private object Impls {
 
-  def applyDynamic[T](nodeName: String)(idx: Int): XmlZoom =
-    immediateDown(nodeName).atIndex(idx)
+    case class Unbinded(actions: List[ZoomAction]) extends XmlZoom {
+      $thisZoom =>
 
-  def selectDynamic(nodeName: String): XmlZoom =
-    immediateDown(nodeName)
+      override def addAll(that: List[ZoomAction]): Type = copy(actions = actions ++ that)
 
-  def apply[F[_]](wholeDocument: NodeSeq)(implicit F: MonadEx[F]): F[ZoomResult] = {
+      override def bind(ns: NodeSeq): XmlZoomBinded = Binded(ns, actions)
 
-    case class ZoomResultImpl(nodeSeq: NodeSeq, parents: List[NodeSeq]) extends ZoomResult
+      override def unbind(): XmlZoom = this
 
-    @scala.annotation.tailrec
-    def rec(current: ZoomResult, zActions: List[ZoomAction], logPath: String): F[ZoomResult] = {
-      zActions.headOption match {
-        case None => F.pure(current)
-        case Some(action) =>
-          val newParents = action match {
-            case ImmediateDown(_) => current.parents :+ current.nodeSeq
-            case _                => current.parents
+      def run[F[_]](document: NodeSeq)(implicit F: MonadEx[F]): F[XmlZoomResult] =
+        bind(document).run[F]
+    }
+
+    case class Binded(document: NodeSeq, actions: List[ZoomAction]) extends XmlZoomBinded {
+      $thisZoom =>
+
+      override def addAll(that: List[ZoomAction]): Type = copy(actions = actions ++ that)
+
+      override def bind(that: NodeSeq): Type = copy(document = that)
+
+      override def unbind(): XmlZoom = Unbinded(actions)
+
+      def run[F[_]](implicit F: MonadEx[F]): F[XmlZoomResult] = {
+
+        @scala.annotation.tailrec
+        def rec(current: XmlZoomResult, zActions: List[ZoomAction], logPath: String): F[XmlZoomResult] = {
+          zActions.headOption match {
+            case None => F.pure(current)
+            case Some(action) =>
+              val newParents = action match {
+                case ImmediateDown(_) => current.parents :+ current.nodeSeq
+                case _                => current.parents
+              }
+
+              action(current.nodeSeq) match {
+                case Some(value) => rec(Impls.Result(value, newParents), zActions.tail, logPath + action.symbol)
+                case None        => F.raiseError(error.ZoomFailedException($thisZoom, action, logPath))
+              }
           }
+        }
 
-          action(current.nodeSeq) match {
-            case Some(value) => rec(ZoomResultImpl(value, newParents), zActions.tail, logPath + action.symbol)
-            case None        => F.raiseError(ZoomFailedException(wholeDocument, $thisZoom, action, logPath))
-          }
+        rec(Impls.Result(document, Nil), this.actions, "root")
       }
     }
 
-    rec(ZoomResultImpl(wholeDocument, Nil), this.actions, "root")
-  }
-}
-
-object XmlZoom {
-
-  lazy val empty: XmlZoom = XmlZoom(Nil)
-  lazy val root: XmlZoom = empty
-
-  val checkEmpty: NodeSeq => Option[NodeSeq] = {
-    case x if x.isEmpty => None
-    case x              => Some(x)
+    case class Result(nodeSeq: NodeSeq, parents: List[NodeSeq]) extends XmlZoomResult
   }
 
+  //########################### NODES ACTIONS ###############################
   sealed trait ZoomAction {
     def apply(ns: NodeSeq): Option[NodeSeq]
 
     val symbol: String
+
+    def +(that: ZoomAction): XmlZoom = ++(List(that))
+
+    def ++(that: List[ZoomAction]): XmlZoom = Impls.Unbinded(this +: that)
+
+    protected val checkEmpty: NodeSeq => Option[NodeSeq] = {
+      case x if x.isEmpty => None
+      case x              => Some(x)
+    }
   }
 
   sealed trait FilterZoomAction extends ZoomAction
 
   final case class ImmediateDown(value: String) extends ZoomAction {
     def apply(ns: NodeSeq): Option[NodeSeq] = checkEmpty(ns \ value)
-
     val symbol: String = s"/$value"
   }
 
   final case class Filter(p: XmlPredicate) extends FilterZoomAction {
     def apply(ns: NodeSeq): Option[NodeSeq] = checkEmpty(ns.filter(p))
-
     val symbol: String = s"| $p"
   }
 
   final case class Find(p: XmlPredicate) extends FilterZoomAction {
     def apply(ns: NodeSeq): Option[NodeSeq] = ns.find(p)
-
     val symbol: String = s"find($p)"
   }
 
   final case class AtIndex(idx: Int) extends FilterZoomAction {
     def apply(ns: NodeSeq): Option[NodeSeq] = ns.lift(idx)
-
     val symbol: String = s"($idx)"
   }
 
@@ -117,5 +222,36 @@ object XmlZoom {
     def apply(ns: NodeSeq): Option[NodeSeq] = ns.lastOption
 
     val symbol: String = s"last()"
+  }
+
+}
+
+object XmlContentZoom {
+
+  import cats.implicits._
+
+  //************************************ ATTRIBUTE *************************************
+  def attr[F[_]: Monad: OptErrorHandler, T: StringTo[F, *]](ns: NodeSeq, key: String): F[T] =
+    attr(Applicative[F].pure(ns), key)
+
+  def attr[F[_]: FlatMap: OptErrorHandler, T: StringTo[F, *]](ns: F[NodeSeq], key: String): F[T] =
+    ns.map(_ \@ key).flatMap(check[F, T](_, new RuntimeException(s"Missing/Empty $key attribute.")))
+
+  //*************************************** TEXT  **************************************
+  def text[F[_]: Monad: OptErrorHandler, T: StringTo[F, *]](ns: NodeSeq): F[T] =
+    text(Applicative[F].pure(ns))
+
+  def text[F[_]: FlatMap: OptErrorHandler, T: StringTo[F, *]](ns: F[NodeSeq]): F[T] =
+    ns.map(_.text).flatMap(check[F, T](_, new RuntimeException(s"Missing/Empty text.")))
+
+  private def check[F[_]: FlatMap: OptErrorHandler, T](value: String, error: => Throwable)(implicit
+    c: Converter[F, String, T]
+  ): F[T] = {
+    OptErrorHandler(error)(
+      value match {
+        case "" => None
+        case x  => Some(x)
+      }
+    ).flatMap(c.apply)
   }
 }

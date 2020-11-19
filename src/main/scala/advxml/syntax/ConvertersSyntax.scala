@@ -15,7 +15,7 @@ private[syntax] trait ConvertersSyntax {
     def flatMapAs[B](implicit s: Converter[F, A, B]): F[B] = fa.flatMap(Converter[F, A, B].run(_))
   }
 
-  implicit class AnyConvertersOps[A](a: A) {
+  implicit class AnyConverterOps[A](a: A) {
 
     /** Convert [[A]] into [[B]] using implicit [[Converter]] if available
       * and if it conforms to required types [[F]], [[A]] and [[B]].
@@ -25,15 +25,15 @@ private[syntax] trait ConvertersSyntax {
     def asF[F[_], B](implicit F: Converter[F, A, B]): F[B] =
       Converter[F, A, B].run(a)
 
-    /** Convert [[A]] into [[B]] using implicit [[core.PureConverter]] if available
+    /** Convert [[A]] into [[B]] using implicit [[PureConverter]] if available
       * and if it conforms to required types [[A]] and [[B]].
       *
-      * @see [[core.PureConverter]] for further information.
+      * @see [[PureConverter]] for further information.
       */
     def asPure[B](implicit F: PureConverter[A, B]): B =
       PureConverter[A, B].run(a)
 
-    /** Convert [[A]] into [[B]] using implicit [[core.ValidatedConverter]] if available
+    /** Convert [[A]] into [[B]] using implicit [[ValidatedConverter]] if available
       * and if it conforms to required types [[A]] and [[B]].
       *
       * @see [[Converter]] for further information.
@@ -42,17 +42,17 @@ private[syntax] trait ConvertersSyntax {
       ValidatedConverter[A, B].run(a)
 
     //************************************** ALIASES **************************************
-    /** Alias to [[AnyConvertersOps.asF]]
+    /** Alias to [[AnyConverterOps.asF]]
       */
     def as[F[_], B](implicit F: Converter[F, A, B]): F[B] =
       asF[F, B]
 
-    /** Alias to [[AnyConvertersOps.asPure]]
+    /** Alias to [[AnyConverterOps.asPure]]
       */
     def as[B](implicit F: PureConverter[A, B], i1: DummyImplicit): B =
       asPure[B]
 
-    /** Alias to [[AnyConvertersOps.asValidated]]
+    /** Alias to [[AnyConverterOps.asValidated]]
       */
     def as[B](implicit F: ValidatedConverter[A, B], i1: DummyImplicit, i2: DummyImplicit): ValidatedNelEx[B] =
       asValidated[B]

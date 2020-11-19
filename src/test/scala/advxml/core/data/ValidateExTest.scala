@@ -10,6 +10,7 @@ import scala.util.{Failure, Success, Try}
 
 class ValidateExTest extends AnyFunSuite with FunSuiteContract {
 
+  import advxml.instances._
   import cats.instances.either._
   import cats.instances.option._
   import cats.instances.try_._
@@ -17,13 +18,12 @@ class ValidateExTest extends AnyFunSuite with FunSuiteContract {
   // format: off
   ValidateExTest.Contract(
     f = ContractFuncs(
-      toTry           = ValidatedNelEx.transformE[Try, String](_),
+      toTry           = ValidatedNelEx.transform[Try, String](_),
       fromTry         = ValidatedNelEx.fromTry,
-      toEitherEx      = ValidatedNelEx.transformE[EitherEx, String](_),
+      toEitherEx      = ValidatedNelEx.transform[EitherEx, String](_),
       fromEitherEx    = ValidatedNelEx.fromEither,
-      toEitherNelEx   = ValidatedNelEx.transformNE[EitherNelEx, String](_),
       fromEitherNelEx = ValidatedNelEx.fromEitherNel,
-      toOption        = ValidatedNelEx.transformA[Option, String](_),
+      toOption        = ValidatedNelEx.transform[Option, String](_),
       fromOption      = (optionValue, ex) => ValidatedNelEx.fromOption(optionValue, ex)
     )
   ).runAll()
@@ -37,7 +37,6 @@ object ValidateExTest {
     fromTry: Try[String] => ValidatedNelEx[String],
     toEitherEx: ValidatedNelEx[String] => EitherEx[String],
     fromEitherEx: EitherEx[String] => ValidatedNelEx[String],
-    toEitherNelEx: ValidatedNelEx[String] => EitherNelEx[String],
     fromEitherNelEx: EitherNelEx[String] => ValidatedNelEx[String],
     toOption: ValidatedNelEx[String] => Option[String],
     fromOption: (Option[String], Throwable) => ValidatedNelEx[String]
@@ -85,21 +84,6 @@ object ValidateExTest {
     test("Invalid.toEitherEx") {
       val validatedExValue: ValidatedNelEx[String] = Validated.Invalid(TEST_EXCEPTION_NEL)
       val result: EitherEx[String] = f.toEitherEx(validatedExValue)
-
-      assert(result.isLeft)
-    }
-
-    test("Valid.toEitherNelEx") {
-      val value = "TEST"
-      val validatedExValue: ValidatedNelEx[String] = Validated.Valid(value)
-      val result: EitherNelEx[String] = f.toEitherNelEx(validatedExValue)
-
-      assert(result == Right(value))
-    }
-
-    test("Invalid.toEitherNelEx") {
-      val validatedExValue: ValidatedNelEx[String] = Validated.Invalid(TEST_EXCEPTION_NEL)
-      val result: EitherNelEx[String] = f.toEitherNelEx(validatedExValue)
 
       assert(result.isLeft)
     }

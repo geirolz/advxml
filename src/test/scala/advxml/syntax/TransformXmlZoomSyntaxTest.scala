@@ -2,28 +2,29 @@ package advxml.syntax
 
 import advxml.core.transform.actions.XmlZoomTest
 import advxml.core.transform.actions.XmlZoomTest.ContractFuncs
-import advxml.core.transform.ZoomResult
-import advxml.implicits.root
+import advxml.core.transform.XmlZoom.root
+import advxml.core.transform.XmlZoomResult
 import advxml.testUtils.FunSuiteContract
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Try
 import scala.xml.Elem
 
-class XmlZoomSyntaxTest extends AnyFunSuite with FunSuiteContract {
+class TransformXmlZoomSyntaxTest extends AnyFunSuite with FunSuiteContract {
+
+  import advxml.syntax.transform._
 
   XmlZoomTest
     .Contract(
       subDesc = "Syntax", {
         // format: off
-        import advxml.syntax.transform._
         ContractFuncs(
-          immediateDown  = (z, n) => z \ n,
-          filter         = (z, p) => z | p,
-          find           = (z, p) => z.find(p),
-          atIndex        = (z, p) => z.atIndex(p),
-          head           = _.head(),
-          last           = _.last()
+          immediateDown = (z, n) => z / n,
+          filter = (z, p) => z | p,
+          find = (z, p) => z.find(p),
+          atIndex = (z, p) => z.atIndex(p),
+          head = _.head(),
+          last = _.last()
         )
         // format: off
       }
@@ -42,10 +43,10 @@ class XmlZoomSyntaxTest extends AnyFunSuite with FunSuiteContract {
         </bar>
       </foo>
 
-    val result: Try[ZoomResult] = root.bar.test.apply(doc)
+    val result: Try[XmlZoomResult] = root.bar.test.run(doc)
 
     assert(result.get.nodeSeq.size == 2)
-    assert(result.get.nodeSeq(0) === <test v="1" />)
+    assert(result.get.nodeSeq.head === <test v="1" />)
     assert(result.get.nodeSeq(1) === <test v="2" />)
   }
 
@@ -61,9 +62,9 @@ class XmlZoomSyntaxTest extends AnyFunSuite with FunSuiteContract {
         </bar>
       </foo>
 
-    val result: Try[ZoomResult] = root.bar.test(1).apply(doc)
+    val result: Try[XmlZoomResult] = root.bar.test(1).run(doc)
 
     assert(result.get.nodeSeq.size == 1)
-    assert(result.get.nodeSeq(0) === <test v="2" />)
+    assert(result.get.nodeSeq.head === <test v="2" />)
   }
 }

@@ -6,7 +6,7 @@ import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.{Success, Try}
 
-class ConvertersSyntaxTest extends AnyFunSuite {
+class ConverterSyntaxTest extends AnyFunSuite {
 
   import advxml.syntax.convert._
   import cats.instances.option._

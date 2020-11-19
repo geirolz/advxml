@@ -9,10 +9,10 @@ import scala.xml.Text
   *
   * @author geirolad
   */
-class TextConverterSyntaxTest extends AnyFunSuite {
+class ConvertTextConverterSyntaxTest extends AnyFunSuite {
 
-  import advxml.instances._
   import advxml.syntax.convert._
+  import advxml.instances.convert._
   import cats.instances.option._
 
   test("String to Text") {

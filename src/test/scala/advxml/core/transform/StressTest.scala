@@ -1,5 +1,6 @@
 package advxml.core.transform
 
+import advxml.core.transform.XmlZoom.root
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Try
@@ -7,7 +8,7 @@ import scala.xml.{NodeSeq, XML}
 
 class StressTest extends AnyFunSuite {
 
-  import advxml.instances._
+  import advxml.instances.convert._
   import advxml.instances.transform._
   import advxml.syntax.transform._
   import advxml.syntax._
@@ -40,7 +41,7 @@ class StressTest extends AnyFunSuite {
       )
     )
 
-    val z: XmlZoom = root \ "country" |+| zoomByAttrs1 |+| zoomByAttrs2 |+| filterByChild
+    val z: XmlZoom = root / "country" |+| zoomByAttrs1 |+| zoomByAttrs2 |+| filterByChild
 
     val result: Try[NodeSeq] = elem.transform[Try](
       z ==> SetAttrs(
@@ -50,7 +51,7 @@ class StressTest extends AnyFunSuite {
     )
 
     assert(result.isSuccess)
-    assert(z[Try](result.get).get.nodeSeq \@ "TEST" == "1")
-    assert(z[Try](result.get).get.nodeSeq \@ "TEST2" == "100")
+    assert(z.run[Try](result.get).get.nodeSeq \@ "TEST" == "1")
+    assert(z.run[Try](result.get).get.nodeSeq \@ "TEST2" == "100")
   }
 }

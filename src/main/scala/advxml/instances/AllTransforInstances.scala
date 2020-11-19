@@ -1,18 +1,28 @@
 package advxml.instances
 
-import advxml.core.{data, MonadEx}
-import advxml.core.data.{AttributeData, Key, Predicate}
-import advxml.core.transform.{ComposableXmlModifier, FinalXmlModifier, XmlModifier}
+import advxml.core.data.{Predicate, _}
+import advxml.core.transform.{ComposableXmlModifier, FinalXmlModifier, XmlModifier, XmlZoom}
+import advxml.core.transform.XmlZoom.root
+import advxml.core.MonadEx
 import cats.Monoid
-import cats.syntax.flatMap._
 
-import scala.xml._
+import scala.util.Try
+import scala.xml.{Elem, Group, Node, NodeSeq, Text, UnprefixedAttribute}
+
+private[instances] trait AllTransforInstances
+    extends XmlModifierInstances
+    with XmlPredicateInstances
+    with XmlZoomInstances
 
 private[instances] trait XmlModifierInstances {
 
   //******************************************* TYPE CLASS INSTANCES ********************************************
   implicit val composableXmlModifierMonoidInstance: Monoid[ComposableXmlModifier] = new Monoid[ComposableXmlModifier] {
+
+    import cats.syntax.flatMap._
+
     override def empty: ComposableXmlModifier = advxml.instances.transform.NoAction
+
     override def combine(x: ComposableXmlModifier, y: ComposableXmlModifier): ComposableXmlModifier =
       new ComposableXmlModifier {
         override def apply[F[_]: MonadEx](ns: NodeSeq): F[NodeSeq] =
@@ -85,7 +95,6 @@ private[instances] trait XmlModifierInstances {
     * @param p Attribute predicate.
     * @param ps Attribute predicates.
     */
-  //TODO Align this with KeyValuePredicate ?
   case class RemoveAttrs(p: AttributeData => Boolean, ps: (AttributeData => Boolean)*) extends ComposableXmlModifier {
     override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] = {
       val filter = (p +: ps).reduce((p1, p2) => Predicate.or(p1, p2))
@@ -93,7 +102,7 @@ private[instances] trait XmlModifierInstances {
         case e: Elem =>
           val newAttrs = e.attributes.asAttrMap
             .filter { case (k, v) =>
-              filter(data.AttributeData(Key(k), Text(v)))
+              filter(AttributeData(Key(k), Text(v)))
             }
             .keys
             .foldLeft(e.attributes)((attrs, key) => attrs.remove(key))
@@ -122,5 +131,73 @@ private[instances] trait XmlModifierInstances {
 
     def unsupported[F[_]: MonadEx](modifier: XmlModifier, ns: NodeSeq): F[NodeSeq] =
       ExceptionF[F](s"Unsupported operation $modifier for type ${ns.getClass.getName}")
+  }
+
+}
+
+private[instances] trait XmlPredicateInstances {
+
+  /** Always true predicate.
+    */
+  lazy val alwaysTrue: XmlPredicate = _ => true
+
+  /** Filter nodes by text property.
+    *
+    * @param p Text predicate
+    * @return
+    */
+  def text(p: String => Boolean): XmlPredicate = e => p(e.text)
+
+  /** Filter nodes by label property.
+    *
+    * @param p Label predicate
+    * @return Predicate for nodes of type [[Node]]
+    */
+  def label(p: String => Boolean): XmlPredicate = {
+    case n: Node => p(n.label)
+    case _       => false
+  }
+
+  /** Filter nodes by attributes.
+    *
+    * @param value  [[KeyValuePredicate]] to filter attributes
+    * @param values N [[KeyValuePredicate]] to filter attributes
+    * @return Predicate for nodes of type `Node`
+    */
+  def attrs(value: KeyValuePredicate[String], values: KeyValuePredicate[String]*): XmlPredicate =
+    (value +: values)
+      .map(p => XmlPredicate(ns => p.valuePredicate(ns \@ p.key.value)))
+      .reduce(Predicate.and[NodeSeq])
+
+  /** Create a [[XmlPredicate]] that can check if a NodeSeq contains a child with specified predicates
+    *
+    * @param label     Name of the child to find
+    * @param predicate Predicate to check child
+    * @return [[XmlPredicate]] that can check if a NodeSeq contains a child with specified predicates
+    */
+  def hasImmediateChild(label: String, predicate: XmlPredicate = alwaysTrue): XmlPredicate = { xml =>
+    import cats.instances.try_._
+    root(xml).immediateDown(label).run[Try].fold(_ => false, _.nodeSeq.exists(predicate))
+  }
+
+  /** Create an [[XmlPredicate]] that can check if two NodeSeq are strictly equals.
+    *
+    * @param ns to compare
+    * @return [[XmlPredicate]] that can check if two NodeSeq are strictly equals.
+    */
+  def strictEqualsTo(ns: NodeSeq): XmlPredicate =
+    that =>
+      (ns, that) match {
+        case (e1: Node, e2: Node)         => e1 strict_== e2
+        case (ns1: NodeSeq, ns2: NodeSeq) => ns1 strict_== ns2
+      }
+}
+
+private[instances] trait XmlZoomInstances {
+
+  implicit val xmlZoomMonoid: Monoid[XmlZoom] = new Monoid[XmlZoom] {
+    override def empty: XmlZoom = XmlZoom.empty
+
+    override def combine(x: XmlZoom, y: XmlZoom): XmlZoom = x.addAll(y.actions)
   }
 }

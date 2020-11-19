@@ -1,17 +1,20 @@
 package advxml.syntax
 
-import advxml.core.transform.exceptions.ZoomFailedException
+import advxml.core.data.error.ZoomFailedException
+import advxml.core.transform.XmlZoom.{$, root}
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Try
 import scala.xml.{Elem, NodeSeq}
 
-class XmlRuleSyntaxTest extends AnyFunSuite {
+class TransformXmlRuleSyntaxTest extends AnyFunSuite {
 
-  import advxml.instances._
   import advxml.instances.transform._
+  import advxml.instances.convert._
   import advxml.syntax.transform._
+  import advxml.syntax.convert._
   import advxml.testUtils.ScalacticXmlEquality._
+
   import cats.instances.try_._
 
   test("Transform XML with empty target") {
@@ -23,7 +26,7 @@ class XmlRuleSyntaxTest extends AnyFunSuite {
         </foo>
       </data>
 
-    val xmlZoom = root \ "foo" \ "test" \ "node"
+    val xmlZoom = root.foo.test.node
     val result: Try[NodeSeq] = elem.transform(xmlZoom ==> Remove)
 
     assert(result.isFailure)
@@ -31,9 +34,6 @@ class XmlRuleSyntaxTest extends AnyFunSuite {
   }
 
   test("Transform XML map nested element") {
-    import advxml.implicits._
-    import cats.instances.try_._
-
     val pets =
       <Pet>
         <Cat a="TEST">
@@ -48,12 +48,12 @@ class XmlRuleSyntaxTest extends AnyFunSuite {
 
     val result: NodeSeq = pets
       .transform(
-        (> \ "Cat") ==> Replace(oldCatNode => {
+        $.Cat ==> Replace(oldCatNode => {
           oldCatNode.head
             .asPure[Elem]
             .copy(child = oldCatNode \ "Kitty" map (k => <c>
-            {k.text}
-          </c>))
+              {k.text}
+            </c>))
         })
       )
       .get
@@ -93,7 +93,7 @@ class XmlRuleSyntaxTest extends AnyFunSuite {
           </bar>
         </data>
             .transform(
-              (root \ "bar" \ "test" filter attrs(k"Id" === "1"))
+              (root.bar.test | attrs(k"Id" === "1"))
               ==> Append(<newNode value="x"/>)
             )
             .get
@@ -147,7 +147,7 @@ class XmlRuleSyntaxTest extends AnyFunSuite {
           </OrderLines>
         </Order>
             .transform(
-              (root \ "OrderLines")
+              root.OrderLines
               ==> Append(<OrderLine PrimeLineNo="2"/>)
               ==> Append(<OrderLine PrimeLineNo="3"/>)
               ==> Append(<OrderLine PrimeLineNo="4"/>)
@@ -173,7 +173,7 @@ class XmlRuleSyntaxTest extends AnyFunSuite {
           </OrderLines>
         </Order>
             .transform(
-              (root \ "OrderLines")
+              root.OrderLines
               ==> Prepend(<OrderLine PrimeLineNo="3"/>)
               ==> Prepend(<OrderLine PrimeLineNo="2"/>)
               ==> Prepend(<OrderLine PrimeLineNo="1"/>)
@@ -200,7 +200,7 @@ class XmlRuleSyntaxTest extends AnyFunSuite {
           </OrderLines>
         </Order>
             .transform(
-              (root \ "OrderLines" \ "OrderLine" | attrs(k"PrimeLineNo" === "1"))
+              (root.OrderLines.OrderLine | attrs(k"PrimeLineNo" === "1"))
               ==> Replace(_ => <OrderLine PrimeLineNo="3"/>)
             )
             .get
@@ -210,7 +210,7 @@ class XmlRuleSyntaxTest extends AnyFunSuite {
   test("Replace With same node") {
     val xml = <A><B>1</B></A>
     val result: Try[NodeSeq] = xml.transform(
-      (root \ "B") ==> Replace(_ => <B>1</B>)
+      (root / "B") ==> Replace(_ => <B>1</B>)
     )
 
     assert(result.get === <A><B>1</B></A>)
@@ -231,7 +231,7 @@ class XmlRuleSyntaxTest extends AnyFunSuite {
           </OrderLines>
         </Order>
             .transform(
-              (root \ "OrderLines" \ "OrderLine" | attrs(k"PrimeLineNo" === "2"))
+              (root.OrderLines.OrderLine | attrs(k"PrimeLineNo" === "2"))
               ==> Remove
             )
             .get
@@ -273,7 +273,7 @@ class XmlRuleSyntaxTest extends AnyFunSuite {
           <OrderLines/>
         </Order>
             .transform(
-              root \ "OrderLines" ==> SetAttrs(k"A1" := "1", k"A2" := "2", k"A3" := "3")
+              root.OrderLines ==> SetAttrs(k"A1" := "1", k"A2" := "2", k"A3" := "3")
             )
             .get
     )
@@ -303,7 +303,7 @@ class XmlRuleSyntaxTest extends AnyFunSuite {
           </OrderLines>
         </Order>
             .transform(
-              root \ "OrderLines" ==> SetAttrs(k"T1" := "EDITED")
+              root.OrderLines ==> SetAttrs(k"T1" := "EDITED")
             )
             .get
     )
@@ -323,7 +323,7 @@ class XmlRuleSyntaxTest extends AnyFunSuite {
           </OrderLines>
         </Order>
             .transform(
-              root \ "OrderLines" ==> RemoveAttrs(_.key == k"T1")
+              root.OrderLines ==> RemoveAttrs(_.key == k"T1")
             )
             .get
     )

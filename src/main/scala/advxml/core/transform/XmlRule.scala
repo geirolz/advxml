@@ -39,7 +39,7 @@ object XmlRule {
 
     def buildRewriteRule(root: NodeSeq, zoom: XmlZoom, modifier: XmlModifier): F[NodeSeq] = {
       for {
-        target <- zoom[F](root)
+        target <- zoom.run(root)
         targetNodeSeq = target.nodeSeq
         targetParents = target.parents
         updatedTarget <- modifier[F](targetNodeSeq)
@@ -73,7 +73,11 @@ object XmlRule {
   }
 
   //#################################### BUILD #########################################
-  def apply(zoom: XmlZoom, modifier1: ComposableXmlModifier, modifiers: ComposableXmlModifier*): ComposableXmlRule =
+  def apply(
+    zoom: XmlZoom,
+    modifier1: ComposableXmlModifier,
+    modifiers: ComposableXmlModifier*
+  ): ComposableXmlRule =
     Impls.Composable(zoom, (modifier1 +: modifiers).toList)
 
   def apply(zoom: XmlZoom, modifiers: List[ComposableXmlModifier]): ComposableXmlRule =

@@ -47,7 +47,7 @@ object Converter {
   def apply[F[_], A, B](implicit F: Converter[F, A, B]): Converter[F, A, B] = F
 }
 
-private[core] sealed abstract class FixedWrapperConverter[F[_]: Applicative, C[A, B] <: Converter[F, A, B]] {
+private[core] sealed abstract class FixedWrapperConverter[F[_]: Applicative, C[-A, B] <: Converter[F, A, B]] {
 
   type Wrapper[_] = F[_]
 
@@ -66,29 +66,27 @@ object ValidatedConverter extends FixedWrapperConverter[ValidatedNelEx, Validate
 
 object XmlConverter {
 
-  /** Syntactic sugar to convert a `O` instance into `X` using an implicit [[ModelToXml]] instance.
-    * This method catch a [[XmlToModel]] instance in the scope that conforms with types `X``O` and then invoke
+  /** Syntactic sugar to convert a [[NodeSeq]] instance into `O` using an implicit [[ToXml]] instance.
+    * This method catch a [[XmlTo]] instance in the scope that conforms with types `O` and then invoke
     * in it the method `apply` passing `xml`.
     *
     * @see [[ValidatedConverter]] for further information.
-    * @tparam X Contravariant input xml model type
     * @tparam O Object output type
-    * @return [[ValidatedNelEx]] instance that, if on success case contains `X` instance.
+    * @return [[ValidatedNelEx]] instance that, if on success case contains `I` instance.
     */
-  def asModel[X <: NodeSeq: XmlToModel[*, O], O](xml: X): ValidatedNelEx[O] = ValidatedConverter[X, O].run(xml)
+  def asModel[I <: NodeSeq: XmlTo[*, O], O](xml: I): ValidatedNelEx[O] = ValidatedConverter[I, O].run(xml)
 
-  /** Syntactic sugar to convert a `X` instance into `O` using an implicit [[XmlToModel]] instance.
+  /** Syntactic sugar to convert a `O` instance into [[NodeSeq]] using an implicit [[XmlTo]] instance.
     *
-    * This method catch a [[ModelToXml]] instance in the scope that conforms with types `O``X` and then invoke
+    * This method catch a [[ToXml]] instance in the scope that conforms with types `I` and then invoke
     * in it the method `apply` passing `model`.
     *
-    * See [[ModelToXml]] for further information.
+    * See [[ToXml]] for further information.
     *
     * @see [[ValidatedConverter]] for further information.
-    * @tparam O Contravariant input model type
-    * @tparam X Output xml type
+    * @tparam I Contravariant input model type
     * @return [[ValidatedNelEx]] instance that, if on success case contains `O` instance.
     */
-  def asXml[O: ModelToXml[*, X], X <: NodeSeq](model: O): ValidatedNelEx[X] =
-    ValidatedConverter[O, X].run(model)
+  def asXml[I: ToXml[*, O], O <: NodeSeq](model: I): ValidatedNelEx[O] =
+    ValidatedConverter[I, O].run(model)
 }

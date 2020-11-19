@@ -13,9 +13,7 @@ import scala.xml.NodeSeq
   *
   * @author geirolad
   */
-class XmlNormalizerSyntaxTest extends AnyFunSuite with FunSuiteContract {
-
-  import advxml.syntax.normalize._
+class NormalizerSyntaxTest extends AnyFunSuite with FunSuiteContract {
 
   XmlNormalizerTest
     .Contract(

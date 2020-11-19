@@ -4,8 +4,9 @@ import org.scalatest.funsuite.AnyFunSuite
 
 import scala.xml.{Elem, NodeSeq}
 
-class XmlPredicateTest extends AnyFunSuite {
+class TransformXmlPredicateTest extends AnyFunSuite {
 
+  import advxml.instances.convert._
   import advxml.instances.transform.predicates._
   import advxml.syntax._
   import advxml.testUtils.ScalacticXmlEquality._

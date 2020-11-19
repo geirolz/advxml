@@ -1,14 +1,16 @@
 package advxml.syntax
 
+import advxml.core.data.{EitherEx, ValidateExTest}
 import advxml.core.data.ValidateExTest.ContractFuncs
-import advxml.core.data.{EitherEx, EitherNelEx}
-import advxml.core.data.ValidateExTest
 import advxml.testUtils.FunSuiteContract
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Try
 
-class ValidationSyntaxTest extends AnyFunSuite with FunSuiteContract {
+class ValidatedSyntaxTest extends AnyFunSuite with FunSuiteContract {
+
+  import advxml.instances._
+  import advxml.syntax.validated._
 
   // format: off
   ValidateExTest.Contract(
@@ -19,13 +21,12 @@ class ValidationSyntaxTest extends AnyFunSuite with FunSuiteContract {
       import cats.instances.try_._
       
       ContractFuncs(
-        toTry           = _.transformE[Try],
+        toTry           = _.transform[Try],
         fromTry         = _.toValidatedEx,
-        toEitherEx      = _.transformE[EitherEx],
+        toEitherEx      = _.transform[EitherEx],
         fromEitherEx    = _.toValidatedEx,
-        toEitherNelEx   = _.transformNE[EitherNelEx],
         fromEitherNelEx = _.toValidatedEx,
-        toOption        = _.transformA[Option],
+        toOption        = _.transform[Option],
         fromOption      = (optionValue, ex) => optionValue.toValidatedEx(ex)
       )
     }

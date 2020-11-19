@@ -13,7 +13,7 @@ errors.
     
 #### Example(XML to Model)
 ```scala
-  import advxml.core.xml.{ModelToXml, XmlToModel}
+  import advxml.core.xml.{ToXml, FromXml}
   
   import cats.data.Validated.Valid
 
@@ -26,7 +26,7 @@ errors.
 
   case class Person(name: String, surname: String, age: Option[Int])
 
-  implicit val converter: XmlToModel[Elem, Person] = ValidatedConverter.of(x => {
+  implicit val converter: ToXml[Elem, Person] = ValidatedConverter.of(x => {
     (
       x \@! "Name",
       x \@! "Surname",
@@ -43,7 +43,7 @@ errors.
 
 #### Example(Model to XML) 
 ```scala
-  import advxml.core.xml.{ModelToXml, XmlToModel}
+  import advxml.core.xml.{ToXml, FromXml}
   
   import cats.data.Validated.Valid
 
@@ -56,7 +56,7 @@ errors.
 
   case class Person(name: String, surname: String, age: Option[Int])
 
-  implicit val converter: ModelToXml[Person, Elem] = ValidatedConverter.of(
+  implicit val converter: ToXml[Person, Elem] = ValidatedConverter.of(
     x =>
       Valid(
         <Person Name={x.name} Surname={x.surname} Age={x.age.map(_.toString).getOrElse("")}/>

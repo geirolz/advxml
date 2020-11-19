@@ -1,26 +1,49 @@
 package advxml.syntax
 
-import advxml.core.{data, MonadEx, MonadNelEx}
+import advxml.core.data
 import advxml.core.data._
-import cats.{Alternative, Applicative, Monad}
+import cats.{Applicative, Monad}
 
-import scala.util.Try
+import advxml.core.XmlNormalizer
+
+import scala.xml.NodeSeq
+
 import scala.xml.Text
 
 private[advxml] trait AllSyntax
     extends AllCommonSyntax
-    with XmlTransformerSyntax
-    with XmlTraverserSyntax
-    with XmlNormalizerSyntax
+    with AllTransformSyntax
     with ConvertersSyntax
+    with ValidatedSyntax
+    with NormalizerSyntax
+    with JavaScalaConvertersSyntax
 
 private[advxml] trait AllCommonSyntax
-    extends AttributeSyntax
-    with ValidationSyntax
-    with NestedMapSyntax
+    extends NormalizerSyntax
+    with AttributeSyntax
     with PredicateSyntax
+    with NestedMapSyntax
 
-//********************************* ATTRIBUTE PREDICATE **********************************
+//************************************ NORMALIZE ****************************************
+private[syntax] trait NormalizerSyntax {
+
+  implicit class NodeSeqNormalizationAndEqualityOps(ns: NodeSeq) {
+
+    def normalize: NodeSeq =
+      XmlNormalizer.normalize(ns)
+
+    def normalizedEquals(ns2: NodeSeq): Boolean =
+      XmlNormalizer.normalizedEquals(ns, ns2)
+
+    def |==|(ns2: NodeSeq): Boolean =
+      XmlNormalizer.normalizedEquals(ns, ns2)
+
+    def |!=|(ns2: NodeSeq): Boolean =
+      !XmlNormalizer.normalizedEquals(ns, ns2)
+  }
+}
+
+//******************************* ATTRIBUTE PREDICATE ***********************************
 private[syntax] trait AttributeSyntax {
 
   implicit class KeyStringInterpolationOps(ctx: StringContext) {
@@ -58,53 +81,7 @@ private[syntax] trait AttributeSyntax {
   }
 }
 
-//************************************ VALIDATION ****************************************
-private[syntax] trait ValidationSyntax {
-
-  implicit class ValidatedExTryOps[A](t: Try[A]) {
-    def toValidatedEx: ValidatedNelEx[A] = ValidatedNelEx.fromTry(t)
-  }
-
-  implicit class ValidatedExEitherOps[A](e: EitherEx[A]) {
-    def toValidatedEx: ValidatedNelEx[A] = ValidatedNelEx.fromEither(e)
-  }
-
-  implicit class ValidatedExEitherNelOps[A](e: EitherNelEx[A]) {
-    def toValidatedEx: ValidatedNelEx[A] = ValidatedNelEx.fromEitherNel(e)
-  }
-
-  implicit class ValidatedExOptionOps[A](e: Option[A]) {
-    def toValidatedEx(ifNone: => Throwable): ValidatedNelEx[A] = ValidatedNelEx.fromOption(e, ifNone)
-  }
-
-  implicit class ValidatedExOps[A](validated: ValidatedNelEx[A]) {
-
-    def transformE[F[_]](implicit F: MonadEx[F]): F[A] =
-      ValidatedNelEx.transformE[F, A](validated)(F)
-
-    def transformNE[F[_]](implicit F: MonadNelEx[F]): F[A] =
-      ValidatedNelEx.transformNE[F, A](validated)(F)
-
-    def transformA[F[_]](implicit F: Alternative[F]): F[A] =
-      ValidatedNelEx.transformA[F, A](validated)(F)
-  }
-}
-
-//************************************ NESTED MAP ****************************************
-private[syntax] trait NestedMapSyntax {
-
-  import cats.implicits._
-
-  implicit class ApplicativeDeepMapOps[F[_]: Applicative, G[_]: Applicative, A](fg: F[G[A]]) {
-    def nestedMap[B](f: A => B): F[G[B]] = fg.map(_.map(f))
-  }
-
-  implicit class ApplicativeDeepFlatMapOps[F[_]: Applicative, G[_]: Monad, A](fg: F[G[A]]) {
-    def nestedFlatMap[B](f: A => G[B]): F[G[B]] = fg.map(_.flatMap(f))
-  }
-}
-
-//************************************* PREDICATE ****************************************
+//************************************ PREDICATE ****************************************
 private[syntax] trait PredicateSyntax {
   implicit class PredicateOps[T](p: T => Boolean) {
 
@@ -143,5 +120,19 @@ private[syntax] trait PredicateSyntax {
       *         with passed predicate instance using `Or` operator.
       */
     def or(that: T => Boolean): T => Boolean = Predicate.or(p, that)
+  }
+}
+
+//************************************ NESTED MAP ***************************************
+private[syntax] trait NestedMapSyntax {
+
+  import cats.implicits._
+
+  implicit class ApplicativeDeepMapOps[F[_]: Applicative, G[_]: Applicative, A](fg: F[G[A]]) {
+    def nestedMap[B](f: A => B): F[G[B]] = fg.map(_.map(f))
+  }
+
+  implicit class ApplicativeDeepFlatMapOps[F[_]: Applicative, G[_]: Monad, A](fg: F[G[A]]) {
+    def nestedFlatMap[B](f: A => G[B]): F[G[B]] = fg.map(_.flatMap(f))
   }
 }

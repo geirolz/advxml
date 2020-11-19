@@ -5,9 +5,10 @@ import org.scalatest.funsuite.AnyFunSuite
 
 import scala.xml.{Document, Elem, Group, NodeSeq}
 
-class XmlPredicateInstancesTest extends AnyFunSuite {
+class TransformPredicateInstancesTest extends AnyFunSuite {
 
   import advxml.instances.transform.predicates._
+  import advxml.instances.convert._
   import advxml.syntax._
 
   test("Test 'always' predicate") {

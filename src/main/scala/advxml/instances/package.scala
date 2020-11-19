@@ -24,15 +24,12 @@ package object instances extends AllCommonInstances {
 
   // format: off
   object all        extends AllInstances
-  object transform  extends AllXmlTransformerInstances {
+  //******************** FEATURES ********************
+  object transform  extends AllTransforInstances {
     object predicates extends XmlPredicateInstances
-    object modifiers extends XmlModifierInstances
+    object modifiers  extends XmlModifierInstances
   }
-  object traverse   extends AllXmlTraverserInstances {
-    object dynamic extends DynamicXmlTraverserInstances{
-      object immediate extends immediate
-      object deep extends deep
-    }
-  }
+  object convert    extends ConverterInstances
+  object validated  extends ValidatedInstances
   // format: on
 }

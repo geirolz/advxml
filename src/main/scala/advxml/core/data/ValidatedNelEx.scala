@@ -1,9 +1,9 @@
 package advxml.core.data
 
-import advxml.core.{MonadEx, MonadNelEx}
-import advxml.core.exceptions.AggregatedException
+import advxml.core.data.error.AggregatedException
+import advxml.core.OptErrorHandler
 import cats.data.Validated.{Invalid, Valid}
-import cats.Alternative
+import cats.Monad
 import cats.data.{NonEmptyList, Validated}
 
 import scala.util.Try
@@ -22,24 +22,12 @@ object ValidatedNelEx {
   def fromOption[A](o: Option[A], ifNone: => Throwable): ValidatedNelEx[A] =
     Validated.fromOption(o, NonEmptyList.one(ifNone))
 
-  def transformE[F[_], A](validated: ValidatedNelEx[A])(implicit F: MonadEx[F]): F[A] = {
-    validated match {
-      case Valid(value) => F.pure(value)
-      case Invalid(exs) => F.raiseError(new AggregatedException(exs))
-    }
-  }
-
-  def transformNE[F[_], A](validated: ValidatedNelEx[A])(implicit F: MonadNelEx[F]): F[A] = {
-    validated match {
-      case Valid(value) => F.pure(value)
-      case Invalid(exs) => F.raiseError(exs)
-    }
-  }
-
-  def transformA[F[_], A](validated: ValidatedNelEx[A])(implicit F: Alternative[F]): F[A] = {
-    validated match {
-      case Valid(a)   => F.pure(a)
-      case Invalid(_) => F.empty
+  def transform[F[_]: Monad: OptErrorHandler, A](validated: ValidatedNelEx[A]): F[A] = {
+    OptErrorHandler(new AggregatedException(validated.toEither.left.get)) {
+      validated match {
+        case Valid(value) => Some(value)
+        case Invalid(_)   => None
+      }
     }
   }
 }

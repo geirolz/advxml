@@ -41,6 +41,7 @@ lazy val compilePlugins = Seq(
 
 def scalacSettings(scalaVersion: String): Seq[String] =
   Seq(
+//    "-Xlog-implicits",
     "-deprecation", // Emit warning and location for usages of deprecated APIs.
     "-encoding",
     "utf-8", // Specify character encoding used by source files.

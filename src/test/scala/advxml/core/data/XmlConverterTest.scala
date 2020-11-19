@@ -11,7 +11,7 @@ class XmlConverterTest extends AnyFunSuite {
 
     case class Person(name: String, surname: String)
 
-    implicit val convert: XmlToModel[Elem, Person] =
+    implicit val convert: Elem XmlTo Person =
       ValidatedConverter.of(xml => Valid(Person(xml \@ "Name", xml \@ "Surname")))
 
     val xml = <Person Name="Mario" Surname="Bianchi"/>
@@ -25,7 +25,7 @@ class XmlConverterTest extends AnyFunSuite {
 
     case class Person(name: String, surname: String)
 
-    implicit val convert: ModelToXml[Person, Elem] =
+    implicit val convert: Person ToXml Elem =
       ValidatedConverter.of(model => Valid(<Person Name={model.name} Surname={model.surname} />))
 
     val model = Person("Mario", "Bianchi")

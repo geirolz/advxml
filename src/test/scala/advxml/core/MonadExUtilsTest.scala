@@ -7,15 +7,15 @@ import scala.util.Try
 
 class MonadExUtilsTest extends AnyFunSuite {
 
-  test("Test get implicit MonadEx instance using apply method") {
+  test("implicit MonadEx.apply[Try]") {
     import cats.instances.try_._
     val monadExInstance = MonadEx[Try]
     assert(monadExInstance != null)
   }
 
-  test("Test get implicit MonadNelEx instance using apply method") {
-    import advxml.instances._
-    val monadNelExInstance = MonadNelEx[ValidatedNelEx]
+  test("implicit MonadEx.apply[ValidatedNelEx]") {
+    import advxml.instances.validated._
+    val monadNelExInstance = MonadEx[ValidatedNelEx]
     assert(monadNelExInstance != null)
   }
 }

@@ -1,13 +1,14 @@
 package advxml.core
 
 import cats.Id
-import cats.data.{EitherNel, Kleisli, NonEmptyList, ValidatedNel}
+import cats.data._
 
 import scala.annotation.implicitNotFound
 import scala.xml.NodeSeq
 
 package object data {
   type ValidatedNelEx[+T] = ValidatedNel[Throwable, T]
+  type ValidatedEx[+T] = Validated[Throwable, T]
   type EitherEx[+T] = Either[Throwable, T]
   type EitherNelEx[+T] = EitherNel[Throwable, T]
   type ThrowableNel = NonEmptyList[Throwable]
@@ -52,20 +53,25 @@ package object data {
     * Because the conversion can fail the output is wrapped into cats [[ValidatedNelEx]] in order to handle the errors
     *
     * @see [[ValidatedConverter]] for further information.
-    * @tparam O Contravariant input model type
-    * @tparam X Output xml type, type constraint ensures that `X` is a subtype of scala-xml `NodeSeq`
+    * @tparam I Contravariant input model type
+    * @tparam O Output xml type, type constraint ensures that `X` is a subtype of scala-xml `NodeSeq`
     */
-  @implicitNotFound("Missing ModelToXml to transform ${O} into ValidatedEx[${X}]")
-  type ModelToXml[-O, X <: NodeSeq] = ValidatedConverter[O, X]
+  @implicitNotFound("Missing ToXml to transform ${I} into ValidatedEx[NodeSeq]")
+  type ToXml[-I, O <: NodeSeq] = ValidatedConverter[I, O]
 
   /** Represents a function `NodeSeq => ValidatedEx[O]` to simplify method and class signatures.
     * This function transform xml model of type `X`, from standard scala-xml library, into a model of type `O`
     * Because the conversion can fail the output is wrapped into cats [[ValidatedNelEx]] in order to handle the errors
     *
     * @see [[ValidatedConverter]] for further information.
-    * @tparam X Contravariant input xml model, type constraint ensures that `X` is a subtype of scala-xml `NodeSeq`
     * @tparam O Output model type
     */
-  @implicitNotFound("Missing XmlToModel to transform ${X} into ValidatedEx[${O}]")
-  type XmlToModel[-X <: NodeSeq, O] = ValidatedConverter[X, O]
+  @implicitNotFound("Missing XmlTo to transform NodeSeq into ValidatedEx[${O}]")
+  type XmlTo[-I <: NodeSeq, O] = ValidatedConverter[I, O]
+
+  @implicitNotFound("Missing FromString to transform String into F[${T}]")
+  type StringTo[F[_], T] = Converter[F, String, T]
+
+  @implicitNotFound("Missing ToString to transform ${T} into F[String]")
+  type ToString[F[_], -T] = Converter[F, T, String]
 }

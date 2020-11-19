@@ -1,4 +1,4 @@
-package advxml.core.exceptions
+package advxml.core.data.error
 
 import java.io.{OutputStreamWriter, PrintStream, PrintWriter}
 
