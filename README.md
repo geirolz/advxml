@@ -41,7 +41,6 @@ The idea behind this library is offer a fluent syntax to edit and read xml.
 
 *Features:*
 - [Transform](docs/Transform.md) Allows to edit the XML document/element.
-- [Traverse](docs/Traverse.md) Allows to read node/attributes mandatory or optional
 - [Convert](docs/Convert.md) Allows to convert Model to XML and vice versa(not automatically yet)
 - [Normalize](docs/Normalize.md) Allows to remove white spaces and collapse empty nodes in a XML document
 
