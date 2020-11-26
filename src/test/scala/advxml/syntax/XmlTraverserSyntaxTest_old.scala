@@ -13,9 +13,6 @@ import scala.xml.NodeSeq
   * @author geirolad
   */
 class XmlTraverserSyntaxTest_old extends AnyFeatureSpec {
-
-  import cats.instances.option._
-  import cats.instances.try_._
   import advxml.syntax.traverse.try_._
 
   Feature("XmlTraverseFixed: Read Attributes") {

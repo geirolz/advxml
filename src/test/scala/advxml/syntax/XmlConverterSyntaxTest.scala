@@ -20,7 +20,6 @@ class XmlConverterSyntaxTest extends AnyFunSuite {
   import advxml.instances.validate._
   import advxml.syntax.convert._
   import advxml.syntax.traverse.validated._
-  import cats.instances.option._
   import cats.syntax.all._
 
   test("XML to Model - Convert simple case class") {

@@ -12,7 +12,6 @@ class XmlTransformerSyntaxTest extends AnyFunSuite {
   import advxml.instances.transform._
   import advxml.syntax.normalize._
   import advxml.syntax.transform._
-  import cats.instances.try_._
 
   test("Transform XML with empty target") {
 

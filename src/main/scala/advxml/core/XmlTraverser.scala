@@ -66,8 +66,6 @@ object XmlTraverser {
 
   def optional[F[_]](implicit F: Alternative[F]): XmlTraverser[F] = new XmlTraverser[F] {
 
-    import cats.instances.try_._
-
     override def immediateChildren(ns: NodeSeq, q: String): F[NodeSeq] =
       toAlternative(mandatory[Try].immediateChildren(ns, q))
 

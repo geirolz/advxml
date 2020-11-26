@@ -1,7 +1,7 @@
 package advxml.syntax
 
 import cats.{Applicative, Monad}
-import cats.implicits._
+import cats.syntax.all._
 
 private[syntax] trait NestedMapSyntax {
   implicit class ApplicativeDeepMapOps[F[_]: Applicative, G[_]: Applicative, A](fg: F[G[A]]) {

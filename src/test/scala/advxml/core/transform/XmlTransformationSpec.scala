@@ -32,8 +32,6 @@ object XmlTransformationSpec extends Properties("XmlTransformationSpec") {
   )
 
   import advxml.implicits._
-  import cats.instances.option._
-  import cats.instances.try_._
 
   property("Prepend") = forAll { (base: Elem, newElem: Elem) =>
     val zoom: XmlZoom = XmlGenerator.xmlZoomGenerator(base).sample.get

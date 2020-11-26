@@ -18,7 +18,7 @@ object XmlTransformer {
 
     def buildRewriteRule(modifier: XmlModifier): (XmlZoom, NodeSeq) => F[NodeSeq] = (zoom, root) => {
 
-      import cats.implicits._
+      import cats.syntax.all._
 
       for {
         target <- zoom[Option](root) match {

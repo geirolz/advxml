@@ -10,10 +10,6 @@ import scala.util.{Failure, Success, Try}
 
 class ValidateExTest extends AnyFunSuite with FunSuiteContract {
 
-  import cats.instances.either._
-  import cats.instances.option._
-  import cats.instances.try_._
-
   // format: off
   ValidateExTest.Contract(
     f = ContractFuncs(

@@ -101,7 +101,7 @@ private[instances] trait XmlModifierInstances {
   }
 
   private def collapse[F[_]: MonadEx](seq: Seq[F[NodeSeq]]): F[NodeSeq] = {
-    import cats.implicits._
+    import cats.syntax.all._
     seq.toList.sequence.map(_.reduce(_ ++ _))
   }
 

@@ -58,7 +58,6 @@ object XmlZoomTest {
 
       import advxml.instances.transform._
       import advxml.syntax.normalize._
-      import cats.instances.option._
 
       val doc: Elem = <Root>
         <N1 T1="V1"/>

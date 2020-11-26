@@ -14,7 +14,6 @@ class TextConverterSyntaxTest extends AnyFunSuite {
 
   import advxml.instances.convert._
   import advxml.syntax.convert._
-  import cats.instances.option._
 
   test("String to Text") {
 

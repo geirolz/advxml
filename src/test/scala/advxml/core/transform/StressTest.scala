@@ -11,8 +11,6 @@ class StressTest extends AnyFunSuite {
   import advxml.instances.convert._
   import advxml.instances.transform._
   import advxml.syntax.transform._
-  import cats.instances.option._
-  import cats.instances.try_._
 
   test("Xml manipulation stress test -Large file: 1MB") {
 

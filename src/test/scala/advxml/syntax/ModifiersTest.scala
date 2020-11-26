@@ -10,7 +10,6 @@ class ModifiersTest extends AnyWordSpec {
   import advxml.instances.convert._
   import advxml.instances.transform.modifiers._
   import advxml.syntax.transform._
-  import cats.instances.try_._
 
   "Append node modifier" when {
     "Applied with right data" should {

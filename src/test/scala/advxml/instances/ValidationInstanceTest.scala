@@ -11,7 +11,6 @@ import org.typelevel.discipline.scalatest.FunSuiteDiscipline
 class ValidationInstanceTest extends AnyFunSuite with FunSuiteDiscipline with Configuration {
 
   import advxml.instances.validate._
-  import cats.implicits._
   import cats.laws.discipline.arbitrary._
 
   implicit val eqThrowable: Eq[Throwable] = Eq.allEqual
