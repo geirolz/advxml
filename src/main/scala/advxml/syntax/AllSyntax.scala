@@ -1,14 +1,10 @@
 package advxml.syntax
 
-import advxml.core.data
+import advxml.core.{data, XmlNormalizer}
 import advxml.core.data._
-import cats.{Applicative, Monad}
+import cats.{Applicative, Eq, Monad, PartialOrder}
 
-import advxml.core.XmlNormalizer
-
-import scala.xml.NodeSeq
-
-import scala.xml.Text
+import scala.xml.{NodeSeq, Text}
 
 private[advxml] trait AllSyntax
     extends AllCommonSyntax
@@ -55,29 +51,34 @@ private[syntax] trait AttributeSyntax {
     def :=[T](v: T)(implicit converter: PureConverter[T, Text]): AttributeData =
       data.AttributeData(key, converter(v))
 
-    def ===[T](that: T)(implicit converter: PureConverter[T, String]): KeyValuePredicate[String] =
-      KeyValuePredicate(key, _ == converter(that))
+    //********* KeyValuePredicate *********
+    import cats.syntax.order._
 
     def ->[T](valuePredicate: T => Boolean): KeyValuePredicate[T] =
       KeyValuePredicate(key, valuePredicate)
 
-    //********* FOR NUMBERS *********
-    def <(that: Double)(implicit converter: PureConverter[String, Double]): KeyValuePredicate[String] =
-      buildPredicateForScalaNumber(that, _ < _)
+    def ===[T: Eq](that: T)(implicit converter: PureConverter[String, T]): KeyValuePredicate[String] =
+      buildPredicate[T](_ === that)
 
-    def <=(that: Double)(implicit converter: PureConverter[String, Double]): KeyValuePredicate[String] =
-      buildPredicateForScalaNumber(that, _ <= _)
+    def =!=[T: Eq](that: T)(implicit converter: PureConverter[String, T]): KeyValuePredicate[String] =
+      buildPredicate[T](_ =!= that)
 
-    def >(that: Double)(implicit converter: PureConverter[String, Double]): KeyValuePredicate[String] =
-      buildPredicateForScalaNumber(that, _ > _)
+    def <[T: PartialOrder](that: T)(implicit converter: PureConverter[String, T]): KeyValuePredicate[String] =
+      buildPredicate[T](_ < that)
 
-    def >=(that: Double)(implicit converter: PureConverter[String, Double]): KeyValuePredicate[String] =
-      buildPredicateForScalaNumber(that, _ >= _)
+    def <=[T: PartialOrder](that: T)(implicit converter: PureConverter[String, T]): KeyValuePredicate[String] =
+      buildPredicate[T](_ <= that)
 
-    private def buildPredicateForScalaNumber(that: Double, p: (Double, Double) => Boolean)(implicit
-      converter: PureConverter[String, Double]
+    def >[T: PartialOrder](that: T)(implicit converter: PureConverter[String, T]): KeyValuePredicate[String] =
+      buildPredicate[T](_ > that)
+
+    def >=[T: PartialOrder](that: T)(implicit converter: PureConverter[String, T]): KeyValuePredicate[String] =
+      buildPredicate[T](_ >= that)
+
+    private def buildPredicate[T](valuePredicate: T => Boolean)(implicit
+      converter: PureConverter[String, T]
     ): KeyValuePredicate[String] =
-      key -> (v => p(converter(v), that))
+      KeyValuePredicate(key, v => valuePredicate(converter(v)))
   }
 }
 
