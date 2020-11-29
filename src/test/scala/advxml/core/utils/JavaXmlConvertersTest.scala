@@ -23,7 +23,8 @@ class JavaXmlConvertersTest extends AnyFunSuite with FunSuiteContract {
       f = ContractFuncs(
         asJava          = JavaXmlConverters.FromScala.asJava,
         asJavaWithNode  = JavaXmlConverters.FromScala.asJava,
-        asScala         = JavaXmlConverters.FromJava.asScala,
+        jNodeAsScala    = JavaXmlConverters.FromJava.asScala,
+        jDocAsScala     = JavaXmlConverters.FromJava.asScala,
         toPrettyString  = JavaXmlConverters.FromJava.toPrettyString(_)
       )
       // format: on
@@ -36,7 +37,8 @@ object JavaXmlConvertersTest {
   case class ContractFuncs(
     asJava: Elem => JDocument,
     asJavaWithNode: (Node, JDocument) => JNode,
-    asScala: JNode => Node,
+    jNodeAsScala: JNode => Node,
+    jDocAsScala: JDocument => Node,
     toPrettyString: JNode => String
   )
 
@@ -55,14 +57,14 @@ object JavaXmlConvertersTest {
 
     test("Convert Java w3c Node to Scala xml Node") {
       val jDocument: JNode = buildJavaDoc(xmlStr)
-      val scalaNode = f.asScala(jDocument)
+      val scalaNode = f.jNodeAsScala(jDocument)
 
       assert(scalaNode == xml)
     }
 
-    test("Convert Java w3c document to Scala xml Node") {
+    test("Convert Java w3c Document to Scala xml Node") {
       val jDocument: JDocument = buildJavaDoc(xmlStr)
-      val scalaNode = f.asScala(jDocument)
+      val scalaNode = f.jDocAsScala(jDocument)
 
       assert(scalaNode == xml)
     }

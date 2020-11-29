@@ -1,8 +1,8 @@
 package advxml.syntax
 
-import advxml.core.transform._
-import advxml.core.{MonadEx, OptErrorHandler}
+import advxml.core.{ExHandler, MonadEx}
 import advxml.core.data.{StringTo, XmlPredicate}
+import advxml.core.transform._
 import cats.Monad
 
 import scala.xml.NodeSeq
@@ -63,50 +63,50 @@ private[syntax] sealed trait ZoomSyntax {
 
   implicit class XmlZoomOps(zoom: XmlZoom) {
 
-    def /@[F[_]: MonadEx: OptErrorHandler](key: String): NodeSeq => F[String] =
+    def /@[F[_]: Monad: ExHandler](key: String): NodeSeq => F[String] =
       ns => XmlContentZoom.attrM[F, String](zoom.raw[F](ns), key)
 
-    def textM[F[_]: MonadEx: OptErrorHandler](implicit dummyImplicit: DummyImplicit): NodeSeq => F[String] =
+    def textM[F[_]: Monad: ExHandler](implicit dummyImplicit: DummyImplicit): NodeSeq => F[String] =
       ns => XmlContentZoom.textM[F, String](zoom.raw[F](ns))
 
-    def /@[F[_]: MonadEx: OptErrorHandler, T: StringTo[F, *]](key: String): NodeSeq => F[T] =
+    def /@[F[_]: Monad: ExHandler, T: StringTo[F, *]](key: String): NodeSeq => F[T] =
       ns => XmlContentZoom.attrM[F, T](zoom.raw[F](ns), key)
 
-    def textM[F[_]: MonadEx: OptErrorHandler, T: StringTo[F, *]]: NodeSeq => F[T] =
+    def textM[F[_]: Monad: ExHandler, T: StringTo[F, *]]: NodeSeq => F[T] =
       ns => XmlContentZoom.textM[F, T](zoom.raw[F](ns))
   }
 
   implicit class XmlZoomBindedOps(zoom: XmlZoomBinded) {
 
-    def /@[F[_]: MonadEx: OptErrorHandler](key: String): F[String] =
+    def /@[F[_]: Monad: ExHandler](key: String): F[String] =
       XmlContentZoom.attrM[F, String](zoom.raw[F], key)
 
-    def textM[F[_]: MonadEx: OptErrorHandler]: F[String] =
+    def textM[F[_]: Monad: ExHandler]: F[String] =
       XmlContentZoom.textM[F, String](zoom.raw[F])
 
-    def /@[F[_]: MonadEx: OptErrorHandler, T: StringTo[F, *]](key: String): F[T] =
+    def /@[F[_]: Monad: ExHandler, T: StringTo[F, *]](key: String): F[T] =
       XmlContentZoom.attrM[F, T](zoom.raw[F], key)
 
-    def textM[F[_]: MonadEx: OptErrorHandler, T: StringTo[F, *]]: F[T] =
+    def textM[F[_]: Monad: ExHandler, T: StringTo[F, *]]: F[T] =
       XmlContentZoom.textM[F, T](zoom.raw[F])
   }
 
   implicit class XmlContentZoomOpsForId(ns: NodeSeq) {
 
-    def /@[F[_]: Monad: OptErrorHandler](key: String): F[String] =
+    def /@[F[_]: Monad: ExHandler](key: String): F[String] =
       XmlContentZoom.attr[F, String](ns, key)
 
-    def textM[F[_]: Monad: OptErrorHandler]: F[String] =
+    def textM[F[_]: Monad: ExHandler]: F[String] =
       XmlContentZoom.text[F, String](ns)
 
-    def /@[F[_]: Monad: OptErrorHandler, T: StringTo[F, *]](key: String): F[T] =
+    def /@[F[_]: Monad: ExHandler, T: StringTo[F, *]](key: String): F[T] =
       XmlContentZoom.attr[F, T](ns, key)
 
-    def textM[F[_]: Monad: OptErrorHandler, T: StringTo[F, *]]: F[T] =
+    def textM[F[_]: Monad: ExHandler, T: StringTo[F, *]]: F[T] =
       XmlContentZoom.text[F, T](ns)
   }
 
-  implicit class XmlContentZoomOpsForMonad[F[_]: Monad: OptErrorHandler](ns: F[NodeSeq]) {
+  implicit class XmlContentZoomOpsForMonad[F[_]: Monad: ExHandler](ns: F[NodeSeq]) {
 
     def /@(key: String): F[String] =
       XmlContentZoom.attrM[F, String](ns, key)

@@ -1,7 +1,7 @@
 package advxml.core.data
 
 import advxml.core.data.error.AggregatedException
-import advxml.core.OptErrorHandler
+import advxml.core.{ErrorHandler, ExHandler}
 import cats.data.Validated.{Invalid, Valid}
 import cats.Monad
 import cats.data.{NonEmptyList, Validated}
@@ -22,12 +22,6 @@ object ValidatedNelEx {
   def fromOption[A](o: Option[A], ifNone: => Throwable): ValidatedNelEx[A] =
     Validated.fromOption(o, NonEmptyList.one(ifNone))
 
-  def transform[F[_]: Monad: OptErrorHandler, A](validated: ValidatedNelEx[A]): F[A] = {
-    OptErrorHandler(new AggregatedException(validated.toEither.left.get)) {
-      validated match {
-        case Valid(value) => Some(value)
-        case Invalid(_)   => None
-      }
-    }
-  }
+  def transform[F[_]: Monad: ExHandler, A](validated: ValidatedNelEx[A]): F[A] =
+    ErrorHandler.fromValidated[F, Throwable, A](validated.leftMap(new AggregatedException(_)))
 }

@@ -1,7 +1,7 @@
 package advxml.syntax
 
 import advxml.core.data._
-import advxml.core.OptErrorHandler
+import advxml.core.ExHandler
 import cats.Monad
 
 import scala.util.Try
@@ -25,7 +25,7 @@ private[syntax] trait ValidatedSyntax {
   }
 
   implicit class ValidatedExOps[A](validated: ValidatedNelEx[A]) {
-    def transform[F[_]: Monad: OptErrorHandler]: F[A] =
+    def transform[F[_]: Monad: ExHandler]: F[A] =
       ValidatedNelEx.transform[F, A](validated)
   }
 }

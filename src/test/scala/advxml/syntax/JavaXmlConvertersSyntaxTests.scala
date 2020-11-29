@@ -15,7 +15,8 @@ class JavaXmlConvertersSyntaxTests extends AnyFunSuite with FunSuiteContract {
       f = ContractFuncs(
         asJava          = _.asJava,
         asJavaWithNode  =  (node, document) => node.asJava(document),
-        asScala         = _.asScala,
+        jNodeAsScala    = _.asScala,
+        jDocAsScala     = _.asScala,
         toPrettyString  = _.toPrettyString()
       )
     )

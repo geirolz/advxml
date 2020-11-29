@@ -1,11 +1,12 @@
 package advxml.core.transform
 
-import advxml.core.{MonadEx, OptErrorHandler}
+import advxml.core.{ErrorHandler, ExHandler}
 import advxml.core.data.{error, Converter, StringTo, XmlPredicate}
 import advxml.core.transform.XmlZoom.{ZoomAction, _}
 import cats.{Applicative, FlatMap, Monad}
 
 import scala.language.dynamics
+import scala.util.{Failure, Success, Try}
 import scala.xml.NodeSeq
 
 //###################### NODES ######################
@@ -55,10 +56,10 @@ sealed trait XmlZoom extends XmlZoomNodeBase {
 
   override type Type = XmlZoom
 
-  def raw[F[_]](document: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
-    MonadEx[F].map(run(document))(_.nodeSeq)
+  def raw[F[_]: Monad: ExHandler](document: NodeSeq): F[NodeSeq] =
+    Monad[F].map(run(document))(_.nodeSeq)
 
-  def run[F[_]](document: NodeSeq)(implicit F: MonadEx[F]): F[XmlZoomResult]
+  def run[F[_]: Monad: ExHandler](document: NodeSeq): F[XmlZoomResult]
 }
 
 sealed trait XmlZoomBinded extends XmlZoomNodeBase {
@@ -67,10 +68,10 @@ sealed trait XmlZoomBinded extends XmlZoomNodeBase {
 
   val document: NodeSeq
 
-  def raw[F[_]](implicit F: MonadEx[F]): F[NodeSeq] =
-    MonadEx[F].map(run)(_.nodeSeq)
+  def raw[F[_]: Monad: ExHandler]: F[NodeSeq] =
+    Monad[F].map(run)(_.nodeSeq)
 
-  def run[F[_]](implicit F: MonadEx[F]): F[XmlZoomResult]
+  def run[F[_]: Monad: ExHandler]: F[XmlZoomResult]
 }
 
 sealed trait XmlZoomResult {
@@ -135,7 +136,7 @@ object XmlZoom {
 
       override def unbind(): XmlZoom = this
 
-      def run[F[_]](document: NodeSeq)(implicit F: MonadEx[F]): F[XmlZoomResult] =
+      def run[F[_]: Monad: ExHandler](document: NodeSeq): F[XmlZoomResult] =
         bind(document).run[F]
     }
 
@@ -148,12 +149,12 @@ object XmlZoom {
 
       override def unbind(): XmlZoom = Unbinded(actions)
 
-      def run[F[_]](implicit F: MonadEx[F]): F[XmlZoomResult] = {
+      def run[F[_]: Monad: ExHandler]: F[XmlZoomResult] = {
 
         @scala.annotation.tailrec
-        def rec(current: XmlZoomResult, zActions: List[ZoomAction], logPath: String): F[XmlZoomResult] = {
+        def rec(current: XmlZoomResult, zActions: List[ZoomAction], logPath: String): Try[XmlZoomResult] = {
           zActions.headOption match {
-            case None => F.pure(current)
+            case None => Success(current)
             case Some(action) =>
               val newParents = action match {
                 case ImmediateDown(_) => current.parents :+ current.nodeSeq
@@ -162,12 +163,12 @@ object XmlZoom {
 
               action(current.nodeSeq) match {
                 case Some(value) => rec(Impls.Result(value, newParents), zActions.tail, logPath + action.symbol)
-                case None        => F.raiseError(error.ZoomFailedException($thisZoom, action, logPath))
+                case None        => Failure(error.ZoomFailedException($thisZoom, action, logPath))
               }
           }
         }
 
-        rec(Impls.Result(document, Nil), this.actions, "root")
+        ErrorHandler.fromTry(rec(Impls.Result(document, Nil), this.actions, "root"))
       }
     }
 
@@ -231,27 +232,29 @@ object XmlContentZoom {
   import cats.implicits._
 
   //************************************ ATTRIBUTE *************************************
-  def attr[F[_]: Monad: OptErrorHandler, T: StringTo[F, *]](ns: NodeSeq, key: String): F[T] =
+  def attr[F[_]: Monad: ExHandler, T: StringTo[F, *]](ns: NodeSeq, key: String): F[T] =
     attrM(Applicative[F].pure(ns), key)
 
-  def attrM[F[_]: FlatMap: OptErrorHandler, T: StringTo[F, *]](ns: F[NodeSeq], key: String): F[T] =
+  def attrM[F[_]: FlatMap: ExHandler, T: StringTo[F, *]](ns: F[NodeSeq], key: String): F[T] =
     ns.map(_ \@ key).flatMap(check[F, T](_, new RuntimeException(s"Missing/Empty $key attribute.")))
 
   //*************************************** TEXT  **************************************
-  def text[F[_]: Monad: OptErrorHandler, T: StringTo[F, *]](ns: NodeSeq): F[T] =
+  def text[F[_]: Monad: ExHandler, T: StringTo[F, *]](ns: NodeSeq): F[T] =
     textM(Applicative[F].pure(ns))
 
-  def textM[F[_]: FlatMap: OptErrorHandler, T: StringTo[F, *]](ns: F[NodeSeq]): F[T] =
+  def textM[F[_]: FlatMap: ExHandler, T: StringTo[F, *]](ns: F[NodeSeq]): F[T] =
     ns.map(_.text).flatMap(check[F, T](_, new RuntimeException(s"Missing/Empty text.")))
 
-  private def check[F[_]: FlatMap: OptErrorHandler, T](value: String, error: => Throwable)(implicit
+  private def check[F[_]: FlatMap: ExHandler, T](value: String, error: => Throwable)(implicit
     c: Converter[F, String, T]
   ): F[T] = {
-    OptErrorHandler(error)(
-      value match {
-        case "" => None
-        case x  => Some(x)
-      }
-    ).flatMap(c.apply)
+    ErrorHandler
+      .fromOption(error)(
+        value match {
+          case "" => None
+          case x  => Some(x)
+        }
+      )
+      .flatMap(c.apply)
   }
 }
