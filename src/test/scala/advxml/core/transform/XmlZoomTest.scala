@@ -52,7 +52,7 @@ object XmlZoomTest {
 
     test("BindedXmlZoom to UnbindedXmlZoom") {
       val doc: Elem = <Root></Root>
-      val xmlZoom: XmlZoomBinded = $(doc).unbind().bind(doc)
+      val xmlZoom: XmlZoomBinded = $(doc).unbind().unbind().bind(doc).bind(doc)
       assert(xmlZoom.document === doc)
     }
 

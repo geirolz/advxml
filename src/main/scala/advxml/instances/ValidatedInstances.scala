@@ -8,20 +8,20 @@ import cats.data.Validated.{Invalid, Valid}
 
 private[instances] trait ValidatedInstances {
 
-  implicit private val throwable_to_ThrowableNel: Throwable => ThrowableNel = {
+  val throwableToThrowableNel: Throwable => ThrowableNel = {
     case ex: AggregatedException => ex.exceptions
     case ex                      => NonEmptyList.one(ex)
   }
 
-  implicit private val throwableNel_to_Throwable: ThrowableNel => Throwable = new AggregatedException(_)
+  val throwableNelToThrowable: ThrowableNel => Throwable = new AggregatedException(_)
 
   implicit val advxmlValidatedNelExMonadErrorInstanceWithThrowable: MonadError[ValidatedNelEx, Throwable] =
-    validatedMonadErrorInstance[ThrowableNel, Throwable]
+    validatedMonadErrorInstance[ThrowableNel, Throwable](throwableToThrowableNel, throwableNelToThrowable)
 
   implicit val advxmlValidatedExMonadErrorInstanceWithThrowableNel: MonadError[ValidatedEx, ThrowableNel] =
-    validatedMonadErrorInstance[Throwable, ThrowableNel]
+    validatedMonadErrorInstance[Throwable, ThrowableNel](throwableNelToThrowable, throwableToThrowableNel)
 
-  private def validatedMonadErrorInstance[E1, E2](implicit
+  private def validatedMonadErrorInstance[E1, E2](
     toE1: E2 => E1,
     toE2: E1 => E2
   ): MonadError[Validated[E1, *], E2] =
