@@ -28,12 +28,17 @@ object XmlRule {
   import advxml.instances.transform.composableXmlModifierMonoidInstance
   import cats.syntax.all._
 
-  def transform[F[_]](root: NodeSeq, rules: Seq[XmlRule])(implicit
+  def transform[F[_]](root: NodeSeq, rule: XmlRule, rules: XmlRule*)(implicit
+    F: MonadEx[F]
+  ): F[NodeSeq] =
+    transform(root, List(rule) ++ rules)
+
+  def transform[F[_]](root: NodeSeq, rules: List[XmlRule])(implicit
     F: MonadEx[F]
   ): F[NodeSeq] =
     rules.foldLeft(F.pure(root))((actDoc, rule) => actDoc.flatMap(doc => transform(doc, rule)))
 
-  def transform[F[_]](root: NodeSeq, rule: XmlRule)(implicit
+  private def transform[F[_]](root: NodeSeq, rule: XmlRule)(implicit
     F: MonadEx[F]
   ): F[NodeSeq] = {
 

@@ -232,16 +232,16 @@ object XmlContentZoom {
 
   //************************************ ATTRIBUTE *************************************
   def attr[F[_]: Monad: OptErrorHandler, T: StringTo[F, *]](ns: NodeSeq, key: String): F[T] =
-    attr(Applicative[F].pure(ns), key)
+    attrM(Applicative[F].pure(ns), key)
 
-  def attr[F[_]: FlatMap: OptErrorHandler, T: StringTo[F, *]](ns: F[NodeSeq], key: String): F[T] =
+  def attrM[F[_]: FlatMap: OptErrorHandler, T: StringTo[F, *]](ns: F[NodeSeq], key: String): F[T] =
     ns.map(_ \@ key).flatMap(check[F, T](_, new RuntimeException(s"Missing/Empty $key attribute.")))
 
   //*************************************** TEXT  **************************************
   def text[F[_]: Monad: OptErrorHandler, T: StringTo[F, *]](ns: NodeSeq): F[T] =
-    text(Applicative[F].pure(ns))
+    textM(Applicative[F].pure(ns))
 
-  def text[F[_]: FlatMap: OptErrorHandler, T: StringTo[F, *]](ns: F[NodeSeq]): F[T] =
+  def textM[F[_]: FlatMap: OptErrorHandler, T: StringTo[F, *]](ns: F[NodeSeq]): F[T] =
     ns.map(_.text).flatMap(check[F, T](_, new RuntimeException(s"Missing/Empty text.")))
 
   private def check[F[_]: FlatMap: OptErrorHandler, T](value: String, error: => Throwable)(implicit

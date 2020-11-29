@@ -1,9 +1,8 @@
 package advxml.syntax
 
-import advxml.core.transform.actions.XmlZoomTest
-import advxml.core.transform.actions.XmlZoomTest.ContractFuncs
+import advxml.core.transform.{XmlZoomResult, XmlZoomTest}
 import advxml.core.transform.XmlZoom.root
-import advxml.core.transform.XmlZoomResult
+import advxml.core.transform.XmlZoomTest.ContractFuncs
 import advxml.testUtils.FunSuiteContract
 import org.scalatest.funsuite.AnyFunSuite
 
