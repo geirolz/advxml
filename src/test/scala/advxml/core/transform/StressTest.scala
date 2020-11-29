@@ -20,9 +20,9 @@ class StressTest extends AnyFunSuite {
     val elem = XML.loadFile(getClass.getResource("/transform/stressTest_1mb.xml").getPath)
 
     val zoomByAttrs1: XmlZoom = root | attrs(
-      k"gdp_serv" === 55.2,
+      k"gdp_serv" === 55.20,
       k"government" === "republic",
-      k"inflation" === "28.3",
+      k"inflation" === 28.3,
       k"population" === "10002541"
     )
 
@@ -50,7 +50,6 @@ class StressTest extends AnyFunSuite {
       )
     )
 
-    assert(result.isSuccess)
     assert(z.run[Try](result.get).get.nodeSeq \@ "TEST" == "1")
     assert(z.run[Try](result.get).get.nodeSeq \@ "TEST2" == "100")
   }

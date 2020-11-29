@@ -12,4 +12,7 @@ package object core {
     "Cannot find an implicit value for OptErrorHandler of type ${F}. Please try to import advxml._"
   )
   type OptErrorHandler[F[_]] = Eval[Throwable] => Option ~> F
+
+  //TypeInequalities
+  type =:!=[A, B] = TypeInequalities.=:!=[A, B]
 }

@@ -166,7 +166,7 @@ private[instances] trait XmlPredicateInstances {
     */
   def attrs(value: KeyValuePredicate[String], values: KeyValuePredicate[String]*): XmlPredicate =
     (value +: values)
-      .map(p => XmlPredicate(ns => p.valuePredicate(ns \@ p.key.value)))
+      .map(p => XmlPredicate(ns => p(ns \@ p.key.value)))
       .reduce(Predicate.and[NodeSeq])
 
   /** Create a [[XmlPredicate]] that can check if a NodeSeq contains a child with specified predicates

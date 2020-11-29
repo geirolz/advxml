@@ -1,8 +1,8 @@
 package advxml.instances
 
+import advxml.core.{=:!=, OptErrorHandler}
 import advxml.core.data._
 import advxml.core.utils.XmlUtils
-import advxml.core.OptErrorHandler
 import cats.{Applicative, FlatMap, Id, Monad}
 
 import scala.util.Try
@@ -10,13 +10,17 @@ import scala.xml.{Elem, Node, Text}
 
 private[instances] trait ConverterInstances {
 
-  implicit def identityConverter[F[_]: Applicative, A]: Converter[F, A, A] =
+  implicit def identityConverter[F[_]: Applicative, A, B: A =:= *]: Converter[F, A, A] =
     Converter.id[F, A]
 
-  implicit def convStringToAsConvTextTo[F[_]: FlatMap, T](implicit c: StringTo[F, T]): Converter[F, Text, T] =
+  implicit def convStringToAsConvTextTo[F[_]: FlatMap, T: * =:!= Text](implicit
+    c: StringTo[F, T]
+  ): Converter[F, Text, T] =
     c.local(_.text)
 
-  implicit def convToStringAsToText[F[_]: FlatMap, T](implicit c: ToString[F, T]): Converter[F, T, Text] =
+  implicit def convToStringAsToText[F[_]: FlatMap, T: * =:!= Text](implicit
+    c: ToString[F, T]
+  ): Converter[F, T, Text] =
     c.map(Text(_))
 
   implicit def node_to_elem: PureConverter[Node, Elem] =

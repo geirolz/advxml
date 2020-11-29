@@ -9,8 +9,13 @@ trait KeyValue[T] {
   val value: T
 }
 
-case class KeyValuePredicate[T](key: Key, valuePredicate: T => Boolean) {
+case class KeyValuePredicate[T](key: Key, private val valuePredicate: T => Boolean) {
+
+  def apply(t: T): Boolean = valuePredicate(t)
+
   lazy val negate: KeyValuePredicate[T] = copy(valuePredicate = t => !valuePredicate(t))
+
+  override def toString: String = s"$key has value $valuePredicate"
 }
 
 //###########################################################################

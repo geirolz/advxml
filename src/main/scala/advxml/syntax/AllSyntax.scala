@@ -2,8 +2,9 @@ package advxml.syntax
 
 import advxml.core.{data, XmlNormalizer}
 import advxml.core.data._
-import cats.{Applicative, Eq, Monad, PartialOrder}
+import cats.{Applicative, Eq, Id, Monad, PartialOrder}
 
+import scala.util.Try
 import scala.xml.{NodeSeq, Text}
 
 private[advxml] trait AllSyntax
@@ -57,28 +58,34 @@ private[syntax] trait AttributeSyntax {
     def ->[T](valuePredicate: T => Boolean): KeyValuePredicate[T] =
       KeyValuePredicate(key, valuePredicate)
 
-    def ===[T: Eq](that: T)(implicit converter: PureConverter[String, T]): KeyValuePredicate[String] =
-      buildPredicate[T](_ === that)
+    def ===[T: Eq](that: T)(implicit converter: StringTo[Id, T]): KeyValuePredicate[String] =
+      buildPredicate[T](_ === _, that, "===")
 
-    def =!=[T: Eq](that: T)(implicit converter: PureConverter[String, T]): KeyValuePredicate[String] =
-      buildPredicate[T](_ =!= that)
+    def =!=[T: Eq](that: T)(implicit converter: StringTo[Id, T]): KeyValuePredicate[String] =
+      buildPredicate[T](_ =!= _, that, "=!=")
 
-    def <[T: PartialOrder](that: T)(implicit converter: PureConverter[String, T]): KeyValuePredicate[String] =
-      buildPredicate[T](_ < that)
+    def <[T: PartialOrder](that: T)(implicit converter: StringTo[Id, T]): KeyValuePredicate[String] =
+      buildPredicate[T](_ < _, that, "<")
 
-    def <=[T: PartialOrder](that: T)(implicit converter: PureConverter[String, T]): KeyValuePredicate[String] =
-      buildPredicate[T](_ <= that)
+    def <=[T: PartialOrder](that: T)(implicit converter: StringTo[Id, T]): KeyValuePredicate[String] =
+      buildPredicate[T](_ <= _, that, "<=")
 
-    def >[T: PartialOrder](that: T)(implicit converter: PureConverter[String, T]): KeyValuePredicate[String] =
-      buildPredicate[T](_ > that)
+    def >[T: PartialOrder](that: T)(implicit converter: StringTo[Id, T]): KeyValuePredicate[String] =
+      buildPredicate[T](_ > _, that, ">")
 
-    def >=[T: PartialOrder](that: T)(implicit converter: PureConverter[String, T]): KeyValuePredicate[String] =
-      buildPredicate[T](_ >= that)
+    def >=[T: PartialOrder](that: T)(implicit converter: StringTo[Id, T]): KeyValuePredicate[String] =
+      buildPredicate[T](_ >= _, that, ">=")
 
-    private def buildPredicate[T](valuePredicate: T => Boolean)(implicit
-      converter: PureConverter[String, T]
+    private def buildPredicate[T](p: (T, T) => Boolean, that: T, symbol: String)(implicit
+      c: StringTo[Id, T]
     ): KeyValuePredicate[String] =
-      KeyValuePredicate(key, v => valuePredicate(converter(v)))
+      KeyValuePredicate(
+        key,
+        new (String => Boolean) {
+          override def apply(v: String): Boolean = Try(p(c(v), that)).getOrElse(false)
+          override def toString(): String = s"$symbol [$that]"
+        }
+      )
   }
 }
 
