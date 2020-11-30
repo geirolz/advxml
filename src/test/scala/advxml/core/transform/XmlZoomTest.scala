@@ -26,6 +26,16 @@ class XmlZoomTest extends AnyFunSuite with FunSuiteContract {
       // format: on
     )
     .runAll()
+
+  test("Append + ZoomAction") {
+    val zoom: XmlZoom = ImmediateDown("N1") + ImmediateDown("N2")
+    assert(zoom.actions == List(ImmediateDown("N1"), ImmediateDown("N2")))
+  }
+
+  test("Append + List[ZoomAction]") {
+    val zoom: XmlZoom = ImmediateDown("N1") ++ List(ImmediateDown("N2"), ImmediateDown("N3"))
+    assert(zoom.actions == List(ImmediateDown("N1"), ImmediateDown("N2"), ImmediateDown("N3")))
+  }
 }
 
 object XmlZoomTest {

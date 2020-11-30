@@ -1,25 +1,17 @@
 package advxml.instances
 
 import advxml.core.data._
-import advxml.core.data.error.AggregatedException
 import cats.MonadError
-import cats.data.{NonEmptyList, Validated}
+import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 
 private[instances] trait ValidatedInstances {
 
-  val throwableToThrowableNel: Throwable => ThrowableNel = {
-    case ex: AggregatedException => ex.exceptions
-    case ex                      => NonEmptyList.one(ex)
-  }
-
-  val throwableNelToThrowable: ThrowableNel => Throwable = new AggregatedException(_)
-
   implicit val advxmlValidatedNelExMonadErrorInstanceWithThrowable: MonadError[ValidatedNelEx, Throwable] =
-    validatedMonadErrorInstance[ThrowableNel, Throwable](throwableToThrowableNel, throwableNelToThrowable)
+    validatedMonadErrorInstance[ThrowableNel, Throwable](ThrowableNel.fromThrowable, ThrowableNel.toThrowable)
 
   implicit val advxmlValidatedExMonadErrorInstanceWithThrowableNel: MonadError[ValidatedEx, ThrowableNel] =
-    validatedMonadErrorInstance[Throwable, ThrowableNel](throwableNelToThrowable, throwableToThrowableNel)
+    validatedMonadErrorInstance[Throwable, ThrowableNel](ThrowableNel.toThrowable, ThrowableNel.fromThrowable)
 
   private def validatedMonadErrorInstance[E1, E2](
     toE1: E2 => E1,

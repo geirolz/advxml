@@ -3,7 +3,6 @@ package advxml.syntax
 import advxml.core.data.{ToXml, ValidatedConverter, ValidatedNelEx, XmlTo}
 import cats.data.Validated.Valid
 import org.scalatest.funsuite.AnyFunSuite
-
 import scala.xml.Elem
 
 /** Advxml
@@ -14,10 +13,8 @@ import scala.xml.Elem
 //TODO: Check duplication into advxml.core.xml.XmlConverterTest
 class ConverterFullSyntaxTest extends AnyFunSuite {
 
-  import advxml.instances._
   import advxml.instances.convert._
   import advxml.instances.validated._
-
   import advxml.syntax.convert._
   import advxml.syntax.transform._
   import cats.syntax.all._

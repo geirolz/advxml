@@ -9,7 +9,6 @@ import scala.util.Try
 
 class ValidatedSyntaxTest extends AnyFunSuite with FunSuiteContract {
 
-  import advxml.instances._
   import advxml.syntax.validated._
 
   // format: off

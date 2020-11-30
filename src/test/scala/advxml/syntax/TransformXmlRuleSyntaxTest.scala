@@ -17,6 +17,68 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
 
   import cats.instances.try_._
 
+  test("Transform method on NodeSeq with varargs") {
+
+    val ns: Elem = <Order></Order>
+    val rule1 = root ==> Append(<OrderLine PrimeLineNo="1"/>)
+    val rule2 = root ==> Append(<OrderLine PrimeLineNo="2"/>)
+    val result: NodeSeq = ns.transform(rule1, rule2).get
+
+    assert(
+      <Order>
+          <OrderLine PrimeLineNo="1"/>
+          <OrderLine PrimeLineNo="2"/>
+      </Order> === result
+    )
+  }
+
+  test("Transform method on NodeSeq with List[XmlRule]") {
+
+    val ns: Elem = <Order></Order>
+    val rules = List(
+      root ==> Append(<OrderLine PrimeLineNo="1"/>),
+      root ==> Append(<OrderLine PrimeLineNo="2"/>)
+    )
+    val result: NodeSeq = ns.transform(rules).get
+
+    assert(
+      <Order>
+        <OrderLine PrimeLineNo="1"/>
+        <OrderLine PrimeLineNo="2"/>
+      </Order> === result
+    )
+  }
+
+  test("Transform method on XmlRule") {
+
+    val ns: Elem = <Order></Order>
+    val rule = root ==> Append(<OrderLine PrimeLineNo="1"/>)
+    val result: NodeSeq = rule.transform(ns).get
+
+    assert(
+      <Order>
+        <OrderLine PrimeLineNo="1"/>
+      </Order> === result
+    )
+  }
+
+  test("Transform method on List[XmlRule]") {
+
+    val ns: Elem = <Order></Order>
+    val rules = List(
+      root ==> Append(<OrderLine PrimeLineNo="1"/>),
+      root ==> Append(<OrderLine PrimeLineNo="2"/>)
+    )
+    val result: NodeSeq = rules.transform(ns).get
+
+    assert(
+      <Order>
+        <OrderLine PrimeLineNo="1"/>
+        <OrderLine PrimeLineNo="2"/>
+      </Order> === result
+    )
+  }
+
   test("Transform XML with empty target") {
 
     val elem =

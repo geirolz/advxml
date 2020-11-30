@@ -19,4 +19,6 @@ case class KeyValuePredicate[T](key: Key, private val valuePredicate: T => Boole
 }
 
 //###########################################################################
-case class AttributeData(key: Key, value: Text) extends KeyValue[Text]
+case class AttributeData(key: Key, value: Text) extends KeyValue[Text] {
+  override def toString: String = s"""$key = "${value.text}""""
+}
