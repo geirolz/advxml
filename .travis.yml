@@ -7,7 +7,7 @@ jdk:
   - openjdk10
 scala:
   - 2.12.8
-  - 2.13.0
+  - 2.13.4
 
 stages:
   - name: format
@@ -24,7 +24,7 @@ jobs:
 
     - stage: test
       env: TEST="compile"
-      script: sbt ++$TRAVIS_SCALA_VERSION clean compile test
+      script: sbt ++$TRAVIS_SCALA_VERSION clean test
 
     - stage: coverage
       env: TEST="coverage"
