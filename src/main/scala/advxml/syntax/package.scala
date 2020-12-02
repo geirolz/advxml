@@ -1,9 +1,5 @@
 package advxml
 
-import advxml.core.validate.{EitherEx, ValidatedNelEx}
-
-import scala.util.Try
-
 /*
  * In order to keep project clean keep in mind the following rules:
  * - Each feature can provide a trait that contains ONLY the syntax, NO public object or explicit public class.
@@ -25,20 +21,14 @@ import scala.util.Try
   *   import advxml.implicits.transform._
   * }}}
   */
-package object syntax {
+package object syntax extends AllCommonSyntax {
   // format: off
-  object all          extends AllSyntax
-  object transform    extends XmlTransformerSyntax
-  object convert      extends ConvertersSyntax
-  object normalize    extends XmlNormalizerSyntax
-  object validate     extends ValidationSyntax
-  object traverse     extends XmlTraverserSyntax{
-    object try_       extends XmlTraverserSyntaxSpecified[Try, Option]
-    object option     extends XmlTraverserSyntaxSpecified[Option, Option]
-    object either     extends XmlTraverserSyntaxSpecified[EitherEx, Option]
-    object validated  extends XmlTraverserSyntaxSpecified[ValidatedNelEx, Option]
-  }
-  object predicate    extends PredicateSyntax
-  object nestedMap    extends NestedMapSyntax
+  object all              extends AllSyntax
+  
+  //******************** FEATURES ********************
+  object transform        extends AllTransformSyntax
+  object convert          extends ConvertersSyntax
+  object validated        extends ValidatedSyntax
+  object javaConverters   extends JavaScalaConvertersSyntax
   // format: on
 }

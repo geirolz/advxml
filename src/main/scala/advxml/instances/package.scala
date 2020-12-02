@@ -20,14 +20,16 @@ package advxml
   *   import advxml.instances.transform._
   * }}}
   */
-package object instances {
+package object instances extends AllCommonInstances {
+
   // format: off
   object all        extends AllInstances
-  object transform  extends XmlTransformerInstances {
+  //******************** FEATURES ********************
+  object transform  extends AllTransforInstances {
     object predicates extends XmlPredicateInstances
-    object modifiers extends AllXmlModifierInstances
+    object modifiers  extends XmlModifierInstances
   }
-  object convert    extends ConvertersInstances
-  object validate   extends ValidationInstance
+  object convert    extends ConverterInstances
+  object validated  extends ValidatedInstances
   // format: on
 }

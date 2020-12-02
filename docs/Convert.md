@@ -13,12 +13,11 @@ errors.
     
 #### Example(XML to Model)
 ```scala
-  import advxml.core.convert.ValidatedConverter
-  import advxml.core.convert.xml.{ModelToXml, XmlToModel}
-  import advxml.core.validate.ValidatedNelEx
+  import advxml.core.xml.{ToXml, FromXml}
+  
   import cats.data.Validated.Valid
-  import scala.xml.Elem
 
+  import scala.xml.Elem
   import advxml.syntax.convert._
   import advxml.syntax.traverse.validated._
   import cats.syntax.all._
@@ -27,7 +26,7 @@ errors.
 
   case class Person(name: String, surname: String, age: Option[Int])
 
-  implicit val converter: XmlToModel[Elem, Person] = ValidatedConverter.of(x => {
+  implicit val converter: ToXml[Elem, Person] = ValidatedConverter.of(x => {
     (
       x \@! "Name",
       x \@! "Surname",
@@ -36,7 +35,7 @@ errors.
   })
 
   val xml = <Person Name="Matteo" Surname="Bianchi"/>
-  val res: ValidatedNelEx[Person] = xml.as[Person]
+  val res: ValidatedNelEx[Person] = xml.asValidated[Person]
 
   assert(res.map(_.name) == Valid("Matteo"))
   assert(res.map(_.surname) == Valid("Bianchi"))
@@ -44,12 +43,11 @@ errors.
 
 #### Example(Model to XML) 
 ```scala
-  import advxml.core.convert.ValidatedConverter
-  import advxml.core.convert.xml.{ModelToXml, XmlToModel}
-  import advxml.core.validate.ValidatedNelEx
+  import advxml.core.xml.{ToXml, FromXml}
+  
   import cats.data.Validated.Valid
-  import scala.xml.Elem
 
+  import scala.xml.Elem
   import advxml.syntax.convert._
   import advxml.syntax.traverse.validated._
   import cats.syntax.all._
@@ -58,7 +56,7 @@ errors.
 
   case class Person(name: String, surname: String, age: Option[Int])
 
-  implicit val converter: ModelToXml[Person, Elem] = ValidatedConverter.of(
+  implicit val converter: ToXml[Person, Elem] = ValidatedConverter.of(
     x =>
       Valid(
         <Person Name={x.name} Surname={x.surname} Age={x.age.map(_.toString).getOrElse("")}/>
