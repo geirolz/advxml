@@ -28,6 +28,9 @@ lazy val settings = Seq(
     "-Ywarn-unused:imports",
     "-Xfatal-warnings"
   ),
+  //coverage
+  coverageEnabled in (Test, compile)    := true,
+  coverageEnabled in (Compile, compile) := false,
   //dependencies
   resolvers ++= Resolvers.all,
   libraryDependencies ++= Dependencies.all

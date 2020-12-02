@@ -24,6 +24,36 @@ class KeyValueTest extends AnyFunSuite {
     assert(data.toString == s"""Key(K) = "Text"""")
   }
 
+  test("AttributeData.fromMap") {
+    val data: List[AttributeData] = AttributeData.fromMap(
+      Map(
+        "T1" -> "1",
+        "T2" -> "2",
+        "T3" -> "3"
+      )
+    )
+
+    assert(
+      data == List(
+        AttributeData(Key("T1"), Text("1")),
+        AttributeData(Key("T2"), Text("2")),
+        AttributeData(Key("T3"), Text("3"))
+      )
+    )
+  }
+
+  test("AttributeData.fromElem") {
+    val data: List[AttributeData] = AttributeData.fromElem(<foo T1="1" T2="2" T3="3"/>)
+
+    assert(
+      data == List(
+        AttributeData(Key("T1"), Text("1")),
+        AttributeData(Key("T2"), Text("2")),
+        AttributeData(Key("T3"), Text("3"))
+      )
+    )
+  }
+
   test("KeyValuePredicate.toString") {
     val p = KeyValuePredicate(
       k"K",
