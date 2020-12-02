@@ -4,10 +4,12 @@ import advxml.core.data.{Predicate, _}
 import advxml.core.transform.{ComposableXmlModifier, FinalXmlModifier, XmlModifier, XmlZoom}
 import advxml.core.transform.XmlZoom.root
 import advxml.core.MonadEx
+import advxml.core.data.Predicate.alwaysTrue
 import cats.Monoid
+import cats.data.NonEmptyList
 
 import scala.util.Try
-import scala.xml.{Elem, Group, Node, NodeSeq, Text, UnprefixedAttribute}
+import scala.xml._
 
 private[instances] trait AllTransforInstances
     extends XmlModifierInstances
@@ -71,16 +73,15 @@ private[instances] trait XmlModifierInstances {
   /** Append attributes to current node.
     *
     * Supported only for `Node` elements, in other case will fail.
-    * @param d Attribute data.
     * @param ds Attributes data.
     */
-  case class SetAttrs(d: AttributeData, ds: AttributeData*) extends ComposableXmlModifier {
+  case class SetAttrs(ds: NonEmptyList[AttributeData]) extends ComposableXmlModifier {
     override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
       collapse[F](ns.map {
         case e: Elem =>
           F.pure[NodeSeq](
             e.copy(
-              attributes = (d +: ds).foldRight(e.attributes)((data, metadata) =>
+              attributes = ds.toList.foldRight(e.attributes)((data, metadata) =>
                 new UnprefixedAttribute(data.key.value, data.value, metadata)
               )
             )
@@ -88,29 +89,47 @@ private[instances] trait XmlModifierInstances {
         case o => ExceptionF.unsupported[F](this, o)
       })
   }
+  object SetAttrs {
+
+    /** Create an Append attributes action with specified data.
+      *
+      * Supported only for `Node` elements, in other case will fail.
+      * @param d Attribute data.
+      * @param ds Attributes data.
+      */
+    def apply(d: AttributeData, ds: AttributeData*): SetAttrs = SetAttrs(NonEmptyList.of(d, ds: _*))
+  }
 
   /** Remove attributes.
     *
     * Supported only for `Node` elements, in other case will fail.
-    * @param p Attribute predicate.
     * @param ps Attribute predicates.
     */
-  case class RemoveAttrs(p: AttributeData => Boolean, ps: (AttributeData => Boolean)*) extends ComposableXmlModifier {
+  case class RemoveAttrs(ps: NonEmptyList[AttributeData => Boolean]) extends ComposableXmlModifier {
     override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] = {
-      val filter = (p +: ps).reduce((p1, p2) => Predicate.or(p1, p2))
+      val attrsToRemoveP = ps.reduce[AttributeData => Boolean]((p1, p2) => Predicate.or(p1, p2))
       collapse[F](ns.map {
         case e: Elem =>
-          val newAttrs = e.attributes.asAttrMap
-            .filter { case (k, v) =>
-              filter(AttributeData(Key(k), Text(v)))
-            }
-            .keys
-            .foldLeft(e.attributes)((attrs, key) => attrs.remove(key))
+          val newAttrs = AttributeData
+            .fromElem(e)
+            .filter(attrsToRemoveP)
+            .map(_.key)
+            .foldLeft(e.attributes)((attrs, key) => attrs.remove(key.value))
 
           F.pure[NodeSeq](e.copy(attributes = newAttrs))
         case o => ExceptionF.unsupported[F](this, o)
       })
     }
+  }
+  object RemoveAttrs {
+
+    /** Create a Remove attributes action with specified filters.
+      * @param p Attribute predicate.
+      * @param ps Attribute predicates.
+      */
+    def apply(p: AttributeData => Boolean, ps: (AttributeData => Boolean)*): RemoveAttrs = RemoveAttrs(
+      NonEmptyList.of(p, ps: _*)
+    )
   }
 
   /** Remove selected nodes.
@@ -137,9 +156,7 @@ private[instances] trait XmlModifierInstances {
 
 private[instances] trait XmlPredicateInstances {
 
-  /** Always true predicate.
-    */
-  lazy val alwaysTrue: XmlPredicate = _ => true
+  import cats.instances.try_._
 
   /** Filter nodes by text property.
     *
@@ -158,6 +175,23 @@ private[instances] trait XmlPredicateInstances {
     case _       => false
   }
 
+  /** Check if node has all attributes.
+    *
+    * @param key  [[Key]] to check
+    * @param keys N [[Key]] list to check
+    * @return Predicate for nodes of type `Node`
+    */
+  def hasAttrs(key: Key, keys: Key*): XmlPredicate =
+    hasAttrs(NonEmptyList.of(key, keys: _*))
+
+  /** Check if node has all attributes.
+    *
+    * @param keys [[Key]] list to check
+    * @return Predicate for nodes of type `Node`
+    */
+  def hasAttrs(keys: NonEmptyList[Key]): XmlPredicate =
+    attrs(keys.map(k => KeyValuePredicate[String](k, _.nonEmpty)))
+
   /** Filter nodes by attributes.
     *
     * @param value  [[KeyValuePredicate]] to filter attributes
@@ -165,7 +199,15 @@ private[instances] trait XmlPredicateInstances {
     * @return Predicate for nodes of type `Node`
     */
   def attrs(value: KeyValuePredicate[String], values: KeyValuePredicate[String]*): XmlPredicate =
-    (value +: values)
+    this.attrs(NonEmptyList.of(value, values: _*))
+
+  /** Filter nodes by attributes.
+    *
+    * @param values N [[KeyValuePredicate]] to filter attributes
+    * @return Predicate for nodes of type `Node`
+    */
+  def attrs(values: NonEmptyList[KeyValuePredicate[String]]): XmlPredicate =
+    values
       .map(p => XmlPredicate(ns => p(ns \@ p.key.value)))
       .reduce(Predicate.and[NodeSeq])
 
@@ -175,10 +217,11 @@ private[instances] trait XmlPredicateInstances {
     * @param predicate Predicate to check child
     * @return [[XmlPredicate]] that can check if a NodeSeq contains a child with specified predicates
     */
-  def hasImmediateChild(label: String, predicate: XmlPredicate = alwaysTrue): XmlPredicate = { xml =>
-    import cats.instances.try_._
-    root(xml).immediateDown(label).run[Try].fold(_ => false, _.nodeSeq.exists(predicate))
-  }
+  def hasImmediateChild(label: String, predicate: XmlPredicate = alwaysTrue): XmlPredicate =
+    root(_)
+      .immediateDown(label)
+      .raw[Try]
+      .fold(_ => false, _.exists(predicate))
 
   /** Create an [[XmlPredicate]] that can check if two NodeSeq are strictly equals.
     *

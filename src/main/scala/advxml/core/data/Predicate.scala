@@ -1,6 +1,16 @@
 package advxml.core.data
 
+import cats.⊤
+
 object Predicate {
+
+  /** Always true predicate.
+    */
+  lazy val alwaysTrue: ⊤ => Boolean = _ => true
+
+  /** Always false predicate.
+    */
+  lazy val alwaysFalse: ⊤ => Boolean = _ => false
 
   /** Combine two predicates(`T => Boolean`) with `And` operator.
     *

@@ -1,5 +1,6 @@
 package advxml.testUtils.generators
 
+import advxml.core.data.{AttributeData, Key}
 import advxml.core.transform.XmlZoom
 import org.scalacheck.Gen
 
@@ -12,22 +13,13 @@ import scala.xml._
   */
 object XmlGenerator {
 
-  case class XmlGeneratorConfig(
-    nameMaxSize: Int = 10,
-    childMaxSize: Int = 5,
-    attrsMaxSize: Int = 50,
-    attrsMaxNameSize: Int = 5,
-    probabilityToHaveAttrs: Int = 80,
-    probabilityToHaveChild: Int = 70
-  )
-
-  case class BasicXmlElem(name: String, attrs: Map[String, String], children: Seq[BasicXmlElem]) {
+  case class BasicXmlElem(name: String, attrs: List[AttributeData], children: Seq[BasicXmlElem]) {
     def toElem: Elem = {
       val seed: MetaData = Null
-      val meta: MetaData = this.attrs.toList.foldLeft(seed) { case (acc, (s1, s2)) =>
+      val meta: MetaData = this.attrs.foldLeft(seed) { case (acc, data) =>
         new UnprefixedAttribute(
-          key = s1,
-          value = s2,
+          key = data.key.value,
+          value = data.value.data,
           next = acc
         )
       }
@@ -43,14 +35,37 @@ object XmlGenerator {
     }
   }
 
-  def xmlZoomGenerator(wholeDocument: Node): Gen[XmlZoom] = {
+  case class XmlElemGeneratorConfig(
+    nameMaxSize: Int = 10,
+    childMaxSize: Int = 5,
+    attrsMaxSize: Int = 50,
+    attrsMaxNameSize: Int = 5,
+    probabilityToHaveAttrs: Int = 80,
+    probabilityToHaveChild: Int = 70
+  )
+
+  def genAttrsData(maxSize: Int, nameMaxSize: Int): Gen[List[AttributeData]] = {
+    for {
+      n <- Gen.choose(1, atLeastOne(maxSize))
+      kvGen = for {
+        key   <- genStr(nameMaxSize).map(Key)
+        value <- genStr(nameMaxSize).map(Text(_))
+      } yield AttributeData(key, value)
+      map <- Gen.listOfN(n, kvGen)
+    } yield map
+  }
+
+  def genZoom(wholeDocument: Node, probabilityToGoAhead: Int = 80): Gen[XmlZoom] = {
 
     def rec(current: Node, zoomPath: Gen[XmlZoom]): Gen[XmlZoom] =
       for {
-        goAhead          <- Gen.frequency[Boolean]((80, true), (20, false))
+        goAhead <- {
+          val falseFrequency = 100 - probabilityToGoAhead
+          Gen.frequency[Boolean]((probabilityToGoAhead, true), (falseFrequency, false))
+        }
         isCurrentlyEmpty <- zoomPath.map(_.actions.isEmpty)
         zoomStep <- {
-          if (goAhead || isCurrentlyEmpty)
+          if (current.child.nonEmpty && (goAhead || isCurrentlyEmpty))
             Gen
               .oneOf(current.child)
               .flatMap(selectedNode => zoomPath.map(_.immediateDown(selectedNode.label)))
@@ -62,7 +77,7 @@ object XmlGenerator {
     rec(wholeDocument, XmlZoom.root)
   }
 
-  def xmlElemGenerator()(implicit config: XmlGeneratorConfig = XmlGeneratorConfig()): Gen[BasicXmlElem] = {
+  def genElem(config: XmlElemGeneratorConfig = XmlElemGeneratorConfig()): Gen[BasicXmlElem] = {
     def rec(level: Int): Gen[BasicXmlElem] = {
       for {
         nodeName <- genStr(config.nameMaxSize)
@@ -71,9 +86,9 @@ object XmlGenerator {
           hasAttrs <- Gen.frequency((config.probabilityToHaveAttrs, true), (100 - config.probabilityToHaveAttrs, false))
           attrs <-
             if (hasAttrs)
-              attrsGenerator(maxSize = config.attrsMaxSize, nameMaxSize = config.attrsMaxNameSize)
+              genAttrsData(maxSize = config.attrsMaxSize, nameMaxSize = config.attrsMaxNameSize)
             else
-              Gen.const(Map.empty[String, String])
+              Gen.const(List.empty[AttributeData])
         } yield attrs
 
         children <- for {
@@ -94,16 +109,7 @@ object XmlGenerator {
     rec(0)
   }
 
-  private def genStr(size: Int): Gen[String] = Gen.listOfN(size, Gen.alphaChar).map(_.mkString)
+  private def genStr(size: Int): Gen[String] = Gen.listOfN(atLeastOne(size), Gen.alphaChar).map(_.mkString)
 
-  private def attrsGenerator(maxSize: Int, nameMaxSize: Int): Gen[Map[String, String]] = {
-    for {
-      n <- Gen.choose(1, maxSize)
-      kvGen = for {
-        key   <- genStr(nameMaxSize)
-        value <- genStr(nameMaxSize)
-      } yield (key, value)
-      map <- Gen.mapOfN(n, kvGen)
-    } yield map
-  }
+  private val atLeastOne: Int => Int = v => if (v < 1) 1 else v
 }

@@ -1,5 +1,6 @@
 package advxml.core.data
 
+import advxml.core.data.Predicate.{alwaysFalse, alwaysTrue}
 import advxml.testUtils.{ContractTests, FunSuiteContract}
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -12,6 +13,18 @@ class PredicateTests extends AnyFunSuite with FunSuiteContract {
       )
     )
     .runAll()
+
+  test("Test 'alwaysTrue' predicate") {
+    assert(alwaysTrue(10))
+    assert(alwaysTrue("10"))
+    assert(alwaysTrue(null))
+  }
+
+  test("Test 'alwaysFalse' predicate") {
+    assert(!alwaysFalse(10))
+    assert(!alwaysFalse("10"))
+    assert(!alwaysFalse(null))
+  }
 }
 
 object PredicateTests {

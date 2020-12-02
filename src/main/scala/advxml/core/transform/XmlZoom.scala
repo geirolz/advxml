@@ -100,9 +100,16 @@ sealed trait XmlZoomResult {
 object XmlZoom {
 
   //########################### INIT ###############################
-  /** Empty [[XmlZoom]] instance, without any [[ZoomAction]]
+  /** Create a new unbinded [[XmlZoom]] with specified actions.
+    *
+    * @param actions actions list for the zooming action
+    * @return new instance of unbinded [[XmlZoom]]
     */
-  lazy val empty: XmlZoom = Impls.Unbinded(Nil)
+  def apply(actions: List[ZoomAction]): XmlZoom = Impls.Unbinded(actions)
+
+  /** Empty unbinded [[XmlZoom]] instance, without any [[ZoomAction]]
+    */
+  lazy val empty: XmlZoom = apply(Nil)
 
   /** Just an alias for [[XmlZoom]], to use when you are building and XmlZoom that starts from the root.
     */
