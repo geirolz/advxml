@@ -22,7 +22,7 @@ private[syntax] trait ConvertersSyntax {
       *
       * @see [[Converter]] for further information.
       */
-    def asF[F[_], B](implicit F: Converter[F, A, B]): F[B] =
+    def as[F[_], B](implicit F: Converter[F, A, B]): F[B] =
       Converter[F, A, B].run(a)
 
     /** Convert [[A]] into [[B]] using implicit [[PureConverter]] if available
@@ -30,7 +30,7 @@ private[syntax] trait ConvertersSyntax {
       *
       * @see [[PureConverter]] for further information.
       */
-    def asPure[B](implicit F: PureConverter[A, B]): B =
+    def as[B](implicit F: PureConverter[A, B], i1: DummyImplicit): B =
       PureConverter[A, B].run(a)
 
     /** Convert [[A]] into [[B]] using implicit [[ValidatedConverter]] if available
@@ -40,21 +40,5 @@ private[syntax] trait ConvertersSyntax {
       */
     def asValidated[B](implicit F: ValidatedConverter[A, B]): ValidatedNelEx[B] =
       ValidatedConverter[A, B].run(a)
-
-    //************************************** ALIASES **************************************
-    /** Alias to [[AnyConverterOps.asF]]
-      */
-    def as[F[_], B](implicit F: Converter[F, A, B]): F[B] =
-      asF[F, B]
-
-    /** Alias to [[AnyConverterOps.asPure]]
-      */
-    def as[B](implicit F: PureConverter[A, B], i1: DummyImplicit): B =
-      asPure[B]
-
-    /** Alias to [[AnyConverterOps.asValidated]]
-      */
-    def as[B](implicit F: ValidatedConverter[A, B], i1: DummyImplicit, i2: DummyImplicit): ValidatedNelEx[B] =
-      asValidated[B]
   }
 }

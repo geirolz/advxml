@@ -35,7 +35,7 @@ errors.
   })
 
   val xml = <Person Name="Matteo" Surname="Bianchi"/>
-  val res: ValidatedNelEx[Person] = xml.as[Person]
+  val res: ValidatedNelEx[Person] = xml.asValidated[Person]
 
   assert(res.map(_.name) == Valid("Matteo"))
   assert(res.map(_.surname) == Valid("Bianchi"))

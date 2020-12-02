@@ -112,7 +112,7 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
       .transform(
         $.Cat ==> Replace(oldCatNode => {
           oldCatNode.head
-            .asPure[Elem]
+            .as[Elem]
             .copy(child = oldCatNode \ "Kitty" map (k => <c>
               {k.text}
             </c>))

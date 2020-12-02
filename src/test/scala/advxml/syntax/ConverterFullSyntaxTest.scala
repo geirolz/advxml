@@ -31,7 +31,7 @@ class ConverterFullSyntaxTest extends AnyFunSuite {
     })
 
     val xml = <Person Name="Matteo" Surname="Bianchi" Age="24"/>
-    val res: ValidatedNelEx[Person] = xml.as[Person]
+    val res: ValidatedNelEx[Person] = xml.asValidated[Person]
 
     assert(res.map(_.name) == Valid("Matteo"))
     assert(res.map(_.surname) == Valid("Bianchi"))
@@ -49,7 +49,7 @@ class ConverterFullSyntaxTest extends AnyFunSuite {
     )
 
     val p = Person("Matteo", "Bianchi", Some(23))
-    val res: ValidatedNelEx[Elem] = p.as[Elem]
+    val res: ValidatedNelEx[Elem] = p.asValidated[Elem]
 
     assert(res == Valid(<Person Name="Matteo" Surname="Bianchi" Age="23"/>))
   }

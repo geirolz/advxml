@@ -67,7 +67,7 @@ class ConverterSyntaxTest extends AnyFunSuite {
       ValidatedConverter.of(str => Valid(str.toInt))
 
     val value: String = "1"
-    val result: ValidatedNelEx[Int] = value.as[Int]
+    val result: ValidatedNelEx[Int] = value.asValidated[Int]
 
     assert(result.toOption.get == 1)
   }
