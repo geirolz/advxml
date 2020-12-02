@@ -2,7 +2,11 @@ package advxml.core.data
 
 import scala.xml.Text
 
-case class Key(value: String) extends AnyVal
+//TODO: Scala3 - Opaque Type candidate
+case class Key(value: String) extends AnyVal {
+  def ==(that: String): Boolean = value == that
+  def !=(that: String): Boolean = ! ==(that)
+}
 
 trait KeyValue[T] {
   val key: Key

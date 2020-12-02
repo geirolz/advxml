@@ -7,6 +7,18 @@ import scala.xml.Text
 
 class KeyValueTest extends AnyFunSuite {
 
+  test("Key.==") {
+    val key = k"KEY1"
+    assert(key == "KEY1")
+    assert(!(key == "KEY2"))
+  }
+
+  test("Key equals") {
+    val key = k"KEY1"
+    assert(key != "KEY2")
+    assert(key == "KEY1")
+  }
+
   test("AttributeData.toString") {
     val data = AttributeData(k"K", Text("Text"))
     assert(data.toString == s"""Key(K) = "Text"""")

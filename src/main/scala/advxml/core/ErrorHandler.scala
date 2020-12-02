@@ -21,7 +21,7 @@ object ErrorHandler extends OptErrorHandlerInstances {
     fromOption(fa.failed.get)(fa.toOption)
 
   def fromEither[F[_], E, A](fa: Either[E, A])(implicit eh: ErrorHandler[F, E]): F[A] =
-    fromOption(fa.left.get)(fa.toOption)
+    fromOption(fa.swap.getOrElse(throw new RuntimeException("Missing Error")))(fa.toOption)
 
   def fromValidated[F[_], E, A](fa: Validated[E, A])(implicit eh: ErrorHandler[F, E]): F[A] =
     fromEither(fa.toEither)

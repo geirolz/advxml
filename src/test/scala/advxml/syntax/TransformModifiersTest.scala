@@ -156,8 +156,7 @@ class TransformModifiersTest extends AnyWordSpec {
       "Return a failure" in {
         val xml = Text("TEST")
 
-        //TODO TO FIX THAT
-        val modifier = RemoveAttrs(_.key == k"T1", _.key == k"T2", _.key == k"T3")
+        val modifier = RemoveAttrs(_.key == "T1", _.key == "T2", _.key == "T3")
         val result: Try[NodeSeq] = modifier(xml)
 
         assert(result.isFailure)

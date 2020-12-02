@@ -10,7 +10,6 @@ import scala.xml.Elem
   *
   * @author geirolad
   */
-//TODO: Check duplication into advxml.core.xml.XmlConverterTest
 class ConverterFullSyntaxTest extends AnyFunSuite {
 
   import advxml.instances.convert._
