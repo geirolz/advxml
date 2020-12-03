@@ -7,7 +7,7 @@ import advxml.testUtils.FunSuiteContract
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Try
-import scala.xml.Elem
+import scala.xml.{Elem, NodeSeq}
 
 class TransformXmlZoomSyntaxTest extends AnyFunSuite with FunSuiteContract {
 
@@ -42,11 +42,11 @@ class TransformXmlZoomSyntaxTest extends AnyFunSuite with FunSuiteContract {
         </bar>
       </foo>
 
-    val result: Try[XmlZoomResult] = root.bar.test.run(doc)
+    val result: Try[NodeSeq] = root.bar.test.run(doc)
 
-    assert(result.get.nodeSeq.size == 2)
-    assert(result.get.nodeSeq.head === <test v="1" />)
-    assert(result.get.nodeSeq(1) === <test v="2" />)
+    assert(result.get.size == 2)
+    assert(result.get.head === <test v="1" />)
+    assert(result.get.apply(1) === <test v="2" />)
   }
 
   test("[XmlZoom.Syntax] - applyDynamic") {
@@ -61,9 +61,9 @@ class TransformXmlZoomSyntaxTest extends AnyFunSuite with FunSuiteContract {
         </bar>
       </foo>
 
-    val result: Try[XmlZoomResult] = root.bar.test(1).run(doc)
+    val result: Try[NodeSeq] = root.bar.test(1).run(doc)
 
-    assert(result.get.nodeSeq.size == 1)
-    assert(result.get.nodeSeq.head === <test v="2" />)
+    assert(result.get.size == 1)
+    assert(result.get.head === <test v="2" />)
   }
 }

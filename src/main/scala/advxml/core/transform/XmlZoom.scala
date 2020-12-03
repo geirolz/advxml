@@ -56,10 +56,11 @@ sealed trait XmlZoom extends XmlZoomNodeBase {
 
   override type Type = XmlZoom
 
-  def raw[F[_]: Monad: ExHandler](document: NodeSeq): F[NodeSeq] =
-    Monad[F].map(run(document))(_.nodeSeq)
+  final def run[F[_]: Monad: ExHandler](document: NodeSeq): F[NodeSeq] =
+    bind(document).run
 
-  def run[F[_]: Monad: ExHandler](document: NodeSeq): F[XmlZoomResult]
+  final def detailed[F[_]: Monad: ExHandler](document: NodeSeq): F[XmlZoomResult] =
+    bind(document).detailed
 }
 
 sealed trait XmlZoomBinded extends XmlZoomNodeBase {
@@ -68,10 +69,10 @@ sealed trait XmlZoomBinded extends XmlZoomNodeBase {
 
   val document: NodeSeq
 
-  def raw[F[_]: Monad: ExHandler]: F[NodeSeq] =
-    Monad[F].map(run)(_.nodeSeq)
+  final def run[F[_]: Monad: ExHandler]: F[NodeSeq] =
+    Monad[F].map(detailed)(_.nodeSeq)
 
-  def run[F[_]: Monad: ExHandler]: F[XmlZoomResult]
+  def detailed[F[_]: Monad: ExHandler]: F[XmlZoomResult]
 }
 
 sealed trait XmlZoomResult {
@@ -115,15 +116,15 @@ object XmlZoom {
     */
   lazy val root: XmlZoom = empty
 
-  /** Just a binded alias for [[XmlZoom]], to use when you are building and XmlZoom that starts from the root.
-    */
-  def root(document: NodeSeq): XmlZoomBinded = root.bind(document)
-
   /** Just an alias for Root, to use when you are building and XmlZoom that not starts from the root for the document.
     * It's exists just to clarify the code.
     * If your [[XmlZoom]] starts for the root of the document please use [[root]]
     */
   lazy val $ : XmlZoom = empty
+
+  /** Just a binded alias for [[XmlZoom]], to use when you are building and XmlZoom that starts from the root.
+    */
+  def root(document: NodeSeq): XmlZoomBinded = root.bind(document)
 
   /** Just a binded alias for root, to use when you are building and XmlZoom that not starts from the root for the document.
     * It's exists just to clarify the code.
@@ -142,9 +143,6 @@ object XmlZoom {
       override def bind(ns: NodeSeq): XmlZoomBinded = Binded(ns, actions)
 
       override def unbind(): XmlZoom = this
-
-      def run[F[_]: Monad: ExHandler](document: NodeSeq): F[XmlZoomResult] =
-        bind(document).run[F]
     }
 
     case class Binded(document: NodeSeq, actions: List[ZoomAction]) extends XmlZoomBinded {
@@ -156,7 +154,7 @@ object XmlZoom {
 
       override def unbind(): XmlZoom = Unbinded(actions)
 
-      def run[F[_]: Monad: ExHandler]: F[XmlZoomResult] = {
+      def detailed[F[_]: Monad: ExHandler]: F[XmlZoomResult] = {
 
         @scala.annotation.tailrec
         def rec(current: XmlZoomResult, zActions: List[ZoomAction], logPath: String): Try[XmlZoomResult] = {

@@ -44,7 +44,7 @@ object XmlRule {
 
     def buildRewriteRule(root: NodeSeq, zoom: XmlZoom, modifier: XmlModifier): F[NodeSeq] = {
       for {
-        target <- zoom.run(root)
+        target <- zoom.detailed(root)
         targetNodeSeq = target.nodeSeq
         targetParents = target.parents
         updatedTarget <- modifier[F](targetNodeSeq)

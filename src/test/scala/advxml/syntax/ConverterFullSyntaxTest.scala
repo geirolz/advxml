@@ -1,8 +1,10 @@
 package advxml.syntax
 
 import advxml.core.data.{ToXml, ValidatedConverter, ValidatedNelEx, XmlTo}
+import advxml.core.transform.XmlZoom.$
 import cats.data.Validated.Valid
 import org.scalatest.funsuite.AnyFunSuite
+
 import scala.xml.Elem
 
 /** Advxml
@@ -12,45 +14,80 @@ import scala.xml.Elem
   */
 class ConverterFullSyntaxTest extends AnyFunSuite {
 
-  import advxml.instances.convert._
-  import advxml.instances.validated._
-  import advxml.syntax.convert._
-  import advxml.syntax.transform._
+  import advxml.implicits._
+  import advxml.testUtils.ScalacticXmlEquality._
   import cats.syntax.all._
+
+  case class Car(brand: String, model: String)
+  case class Person(name: String, surname: String, age: Option[Int], note: String, cars: Seq[Car])
 
   test("XML to Model - Convert simple case class") {
 
-    case class Person(name: String, surname: String, age: Option[Int])
-
-    implicit val converter: Elem XmlTo Person = ValidatedConverter.of(x => {
+    implicit val converter: Elem XmlTo Person = ValidatedConverter.of(person => {
       (
-        x./@[ValidatedNelEx]("Name"),
-        x./@[ValidatedNelEx]("Surname"),
-        x./@[Option, Int]("Age").valid
+        person./@[ValidatedNelEx]("Name"),
+        person./@[ValidatedNelEx]("Surname"),
+        person./@[Option, Int]("Age").valid,
+        $(person).Note.textM[ValidatedNelEx],
+        $(person).Cars.Car.run[ValidatedNelEx].flatMap { cars =>
+          cars
+            .map(car => {
+              (
+                car./@[ValidatedNelEx]("Brand"),
+                car./@[ValidatedNelEx]("Model")
+              ).mapN(Car)
+            })
+            .sequence
+        }
       ).mapN(Person)
     })
 
-    val xml = <Person Name="Matteo" Surname="Bianchi" Age="24"/>
+    val xml =
+      <Person Name="Matteo" Surname="Bianchi" Age="24">
+        <Note>NOTE</Note>
+        <Cars>
+          <Car Brand="Ferrari" Model="LaFerrari"/>
+          <Car Brand="Fiat" Model="500"/>
+        </Cars>
+      </Person>
+
     val res: ValidatedNelEx[Person] = xml.asValidated[Person]
 
     assert(res.map(_.name) == Valid("Matteo"))
     assert(res.map(_.surname) == Valid("Bianchi"))
     assert(res.map(_.age) == Valid(Some(24)))
+    assert(res.map(_.note) == Valid("NOTE"))
+    assert(res.map(_.cars) == Valid(Seq(Car("Ferrari", "LaFerrari"), Car("Fiat", "500"))))
   }
 
   test("Model to XML - Convert simple case class") {
 
-    case class Person(name: String, surname: String, age: Option[Int])
-
-    implicit val converter: Person ToXml Elem = ValidatedConverter.of(x =>
+    implicit val converter: Person ToXml Elem = ValidatedConverter.of(person =>
       Valid(
-        <Person Name={x.name} Surname={x.surname} Age={x.age.map(_.toString).getOrElse("")}/>
+        <Person Name={person.name} Surname={person.surname} Age={person.age.map(_.toString).getOrElse("")}>
+        <Note>{person.note}</Note>
+        <Cars>
+          {
+          person.cars.map(car => {
+            <Car Brand={car.brand} Model={car.model}/>
+          })
+        }
+        </Cars>
+        </Person>
       )
     )
 
-    val p = Person("Matteo", "Bianchi", Some(23))
-    val res: ValidatedNelEx[Elem] = p.asValidated[Elem]
+    val p = Person("Matteo", "Bianchi", Some(23), "Matteo note", Seq(Car("Fiat", "500")))
+    val res: Elem = p.asValidated[Elem].toOption.get
 
-    assert(res == Valid(<Person Name="Matteo" Surname="Bianchi" Age="23"/>))
+    assert(
+      res ===
+        <Person Name="Matteo" Surname="Bianchi" Age="23">
+        <Note>Matteo note</Note> 
+        <Cars>
+          <Car Brand="Fiat" Model="500"/>
+        </Cars>
+      </Person>
+    )
   }
 }
