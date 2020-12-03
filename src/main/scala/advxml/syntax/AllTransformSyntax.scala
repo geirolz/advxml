@@ -64,31 +64,31 @@ private[syntax] sealed trait ZoomSyntax {
   implicit class XmlZoomOps(zoom: XmlZoom) {
 
     def /@[F[_]: Monad: ExHandler](key: String): NodeSeq => F[String] =
-      ns => XmlContentZoom.attrM[F, String](zoom.raw[F](ns), key)
+      ns => XmlContentZoom.attrM[F, String](zoom.run[F](ns), key)
 
     def textM[F[_]: Monad: ExHandler](implicit dummyImplicit: DummyImplicit): NodeSeq => F[String] =
-      ns => XmlContentZoom.textM[F, String](zoom.raw[F](ns))
+      ns => XmlContentZoom.textM[F, String](zoom.run[F](ns))
 
     def /@[F[_]: Monad: ExHandler, T: StringTo[F, *]](key: String): NodeSeq => F[T] =
-      ns => XmlContentZoom.attrM[F, T](zoom.raw[F](ns), key)
+      ns => XmlContentZoom.attrM[F, T](zoom.run[F](ns), key)
 
     def textM[F[_]: Monad: ExHandler, T: StringTo[F, *]]: NodeSeq => F[T] =
-      ns => XmlContentZoom.textM[F, T](zoom.raw[F](ns))
+      ns => XmlContentZoom.textM[F, T](zoom.run[F](ns))
   }
 
   implicit class XmlZoomBindedOps(zoom: XmlZoomBinded) {
 
     def /@[F[_]: Monad: ExHandler](key: String): F[String] =
-      XmlContentZoom.attrM[F, String](zoom.raw[F], key)
+      XmlContentZoom.attrM[F, String](zoom.run[F], key)
 
     def textM[F[_]: Monad: ExHandler]: F[String] =
-      XmlContentZoom.textM[F, String](zoom.raw[F])
+      XmlContentZoom.textM[F, String](zoom.run[F])
 
     def /@[F[_]: Monad: ExHandler, T: StringTo[F, *]](key: String): F[T] =
-      XmlContentZoom.attrM[F, T](zoom.raw[F], key)
+      XmlContentZoom.attrM[F, T](zoom.run[F], key)
 
     def textM[F[_]: Monad: ExHandler, T: StringTo[F, *]]: F[T] =
-      XmlContentZoom.textM[F, T](zoom.raw[F])
+      XmlContentZoom.textM[F, T](zoom.run[F])
   }
 
   implicit class XmlContentZoomOpsForId(ns: NodeSeq) {

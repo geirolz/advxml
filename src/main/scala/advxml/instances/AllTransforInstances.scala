@@ -220,7 +220,7 @@ private[instances] trait XmlPredicateInstances {
   def hasImmediateChild(label: String, predicate: XmlPredicate = alwaysTrue): XmlPredicate =
     root(_)
       .immediateDown(label)
-      .raw[Try]
+      .run[Try]
       .fold(_ => false, _.exists(predicate))
 
   /** Create an [[XmlPredicate]] that can check if two NodeSeq are strictly equals.

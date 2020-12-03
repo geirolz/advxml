@@ -47,7 +47,7 @@ object XmlTransformationSpec extends Properties("XmlTransformationSpec") {
     val zoom: XmlZoom = XmlGenerator.genZoom(base).sample.get
     val rule: ComposableXmlRule = zoom ==> Prepend(newElem)
     val result: NodeSeq = base.transform[Try](rule).get
-    val targetUpdated: NodeSeq = zoom.raw[Try](result).get
+    val targetUpdated: NodeSeq = zoom.run[Try](result).get
 
     (targetUpdated \ newElem.label).exists(_ === newElem)
   }
@@ -56,7 +56,7 @@ object XmlTransformationSpec extends Properties("XmlTransformationSpec") {
     val zoom: XmlZoom = XmlGenerator.genZoom(base).sample.get
     val rule: ComposableXmlRule = zoom ==> Append(newElem)
     val result: NodeSeq = base.transform[Try](rule).get
-    val targetUpdated: NodeSeq = zoom.raw[Try](result).get
+    val targetUpdated: NodeSeq = zoom.run[Try](result).get
 
     (targetUpdated \ newElem.label).exists(_ === newElem)
   }
@@ -69,7 +69,7 @@ object XmlTransformationSpec extends Properties("XmlTransformationSpec") {
     (zoom match {
       case x if x == root => root
       case x              => XmlZoom(x.actions.dropRight(1)).immediateDown(newElem.label)
-    }).raw[Try](result.get).get === newElem
+    }).run[Try](result.get).get === newElem
   }
 
   property("Remove") = forAll(elemArbitrary.arbitrary.filter(_.child.nonEmpty)) { base: Elem =>
@@ -82,7 +82,7 @@ object XmlTransformationSpec extends Properties("XmlTransformationSpec") {
     val rule: FinalXmlRule = zoom ==> Remove
     val result: NodeSeq = base.transform[Try](rule).get
 
-    zoom.raw[Option](result).isEmpty
+    zoom.run[Option](result).isEmpty
   }
 
   property("SetAttrs") = forAll { (base: Elem, attrsData: NonEmptyList[AttributeData]) =>

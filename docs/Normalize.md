@@ -18,7 +18,7 @@ methods onto `NodeSeq` instance.
 #### Example with syntax
 ```scala
     import scala.xml.{Elem, NodeSeq}
-    import advxml.syntax.normalize._
+    import advxml.syntax._
 
     val elem: Elem = <bar><foo></foo></bar>
     val result:NodeSeq = elem.normalize
