@@ -76,7 +76,7 @@ private[syntax] sealed trait ZoomSyntax {
       ns => XmlContentZoom.textM[F, T](zoom.run[F](ns))
   }
 
-  implicit class XmlZoomBindedOps(zoom: XmlZoomBinded) {
+  implicit class BindedXmlZoomOps(zoom: BindedXmlZoom) {
 
     def /@[F[_]: Monad: ExHandler](key: String): F[String] =
       XmlContentZoom.attrM[F, String](zoom.run[F], key)

@@ -21,7 +21,7 @@ private[advxml] sealed trait XmlZoomNodeBase extends Dynamic {
 
   def addAll(action: List[ZoomAction]): Type
 
-  def bind(ns: NodeSeq): XmlZoomBinded
+  def bind(ns: NodeSeq): BindedXmlZoom
 
   def unbind(): XmlZoom
 
@@ -63,9 +63,9 @@ sealed trait XmlZoom extends XmlZoomNodeBase {
     bind(document).detailed
 }
 
-sealed trait XmlZoomBinded extends XmlZoomNodeBase {
+sealed trait BindedXmlZoom extends XmlZoomNodeBase {
 
-  override type Type = XmlZoomBinded
+  override type Type = BindedXmlZoom
 
   val document: NodeSeq
 
@@ -86,13 +86,13 @@ sealed trait XmlZoomResult {
   * <h4>HOW TO USE</h4>
   * [[XmlZoom]] is based on three types:
   * - [[XmlZoom]] a.k.a XmlZoomUnbinded
-  * - [[XmlZoomBinded]]
+  * - [[BindedXmlZoom]]
   * - [[XmlZoomResult]]
   *
   * <b>XmlZoom</b>
   * Is the representation of unbind zoom instance. It contains only the list of the actions to run on a [[NodeSeq]].
   *
-  * <b>XmlZoomBinded</b>
+  * <b>BindedXmlZoom</b>
   * Is the representation of binded zoom instance. Binded because it contains both [[ZoomAction]] and [[NodeSeq]] target.
   *
   * <b>XmlZoomResult</b>
@@ -124,13 +124,13 @@ object XmlZoom {
 
   /** Just a binded alias for [[XmlZoom]], to use when you are building and XmlZoom that starts from the root.
     */
-  def root(document: NodeSeq): XmlZoomBinded = root.bind(document)
+  def root(document: NodeSeq): BindedXmlZoom = root.bind(document)
 
   /** Just a binded alias for root, to use when you are building and XmlZoom that not starts from the root for the document.
     * It's exists just to clarify the code.
     * If your [[XmlZoom]] starts for the root of the document please use [[root]]
     */
-  def $(document: NodeSeq): XmlZoomBinded = $.bind(document)
+  def $(document: NodeSeq): BindedXmlZoom = $.bind(document)
 
   //########################### IMPLS ###############################
   private object Impls {
@@ -140,12 +140,12 @@ object XmlZoom {
 
       override def addAll(that: List[ZoomAction]): Type = copy(actions = actions ++ that)
 
-      override def bind(ns: NodeSeq): XmlZoomBinded = Binded(ns, actions)
+      override def bind(ns: NodeSeq): BindedXmlZoom = Binded(ns, actions)
 
       override def unbind(): XmlZoom = this
     }
 
-    case class Binded(document: NodeSeq, actions: List[ZoomAction]) extends XmlZoomBinded {
+    case class Binded(document: NodeSeq, actions: List[ZoomAction]) extends BindedXmlZoom {
       $thisZoom =>
 
       override def addAll(that: List[ZoomAction]): Type = copy(actions = actions ++ that)

@@ -11,18 +11,18 @@ returns an output value wrapped in `F[_]`.
 ---
 ### How to build
 
-Zoom has two types, we can have `XmlZoom`(unbinded) or `XmlZoomBinded`.
+Zoom has two types, we can have `XmlZoom`(unbinded) or `BindedXmlZoom`.
 The differences between _Unbinded_ and _Binded_ is that Unbinded doesn't know the target
 but contains only the list of action to do, while _Binded_ contains both actions and target.
 
-It is possible to convert an `XmlZoom`(Unbinded) to `XmlZoomBinded` and vice-versa using
+It is possible to convert an `XmlZoom`(Unbinded) to `BindedXmlZoom` and vice-versa using
 `bind` and `unbind` idempotent methods.
 
 ```scala
-import advxml.core.transform.{XmlZoom, XmlZoomBinded}
+import advxml.core.transform.{XmlZoom, BindedXmlZoom}
 
 val zoom : XmlZoom = ??? //unbinded
-val binded : XmlZoomBinded = zoom.bind(<foo />) //binded
+val binded : BindedXmlZoom = zoom.bind(<foo />) //binded
 val unbinded : XmlZoom = zoom.unbind() //unbinded again
 ```
 
@@ -32,7 +32,7 @@ val unbinded : XmlZoom = zoom.unbind() //unbinded again
 - `root` = Alias to `empty`, no zooming actions means the pointer is on the root.
 - `$` = Alias to `empty`, useful when to define a new zoom that doesn't start from the root.
 
-###### XmlZoomBinded
+###### BindedXmlZoom
 - `root(NodeSeq)` = The binded version on unbinded `root`
 - `$(NodeSeq)` = The binded version on unbinded `$`
 
@@ -43,14 +43,14 @@ Once created we can append actions using the following methods:
 ### How to run
 To run a zoom you need to have a "target", a `NodeSeq` instance.
 So if you have an unbinded `XmlZoom` conceptually you have to pass a `NodeSeq` instance as target
-when you invoke the zoom, while `XmlZoomBinded` already has this information so is not necessary specify the zoom target.
+when you invoke the zoom, while `BindedXmlZoom` already has this information so is not necessary specify the zoom target.
 
 To run a zoom we can use two method, `run` and `detailed`.
 - `run` return a `F[NodeSeq]` as result of the zooming action.
 - `detailed` return a `F[XmlZoomResult]` as result of the zooming action that contains also the path information step by step.
 
 ```scala
-import advxml.core.transform.{XmlZoom, XmlZoomBinded, XmlZoomResult}
+import advxml.core.transform.{XmlZoom, BindedXmlZoom, XmlZoomResult}
 import scala.util.Try
 import scala.xml.NodeSeq
 import advxml.implicits._
@@ -60,15 +60,16 @@ val unbinded : XmlZoom = ???
 val unbindedRun : Try[NodeSeq] = unbinded.run[Try](<foo/>)
 val unbindedDetailed : Try[XmlZoomResult] = unbinded.detailed[Try](<foo/>)
 
-//XmlZoomBinded
-val binded : XmlZoomBinded = unbinded.bind(<foo/>)
+//BindedXmlZoom
+val binded : BindedXmlZoom = unbinded.bind(<foo/>)
 val bindedRun : Try[NodeSeq] = binded.run[Try]
 val bindedsDetailed : Try[XmlZoomResult] = binded.detailed[Try]
 ```
 
 ---
 ### Attributes and Text
-W.I.P
+Advxml provides also an `XmlContetZoom` to read attributes as text from an NodeSeq instance.
+`XmlContetZoom` syntax is added to `NodeSeq`, `F[NodeSeq]` and `XmlZoom` using implicit class.
 
 #### Example
 ```scala

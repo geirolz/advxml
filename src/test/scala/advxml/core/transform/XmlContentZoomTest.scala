@@ -78,12 +78,12 @@ object XmlContentZoomTest {
     attrFromNs: (NodeSeq, String) => F[String],
     attrFromM: (F[NodeSeq], String) => F[String],
     attrFromUnbindedZoom: (XmlZoom, NodeSeq, String) => F[String],
-    attrFromBindedZoom: (XmlZoomBinded, String) => F[String],
+    attrFromBindedZoom: (BindedXmlZoom, String) => F[String],
     //text
     textFromNs: NodeSeq => F[String],
     textFromM: F[NodeSeq] => F[String],
     textFromUnbindedZoom: (XmlZoom, NodeSeq) => F[String],
-    textFromBindedZoom: XmlZoomBinded => F[String]
+    textFromBindedZoom: BindedXmlZoom => F[String]
   )
 
   case class Contract[F[_]](subDesc: String, f: ContractFuncs[F])(ex: Extractor[F])
@@ -110,8 +110,8 @@ object XmlContentZoomTest {
       assert(ex.isFailure(f.attrFromUnbindedZoom(root, elem, "rar")))
     }
 
-    test("attribute from XmlZoomBinded") {
-      val elem: XmlZoomBinded = root(<foo value="1"></foo>)
+    test("attribute from BindedXmlZoom") {
+      val elem: BindedXmlZoom = root(<foo value="1"></foo>)
 
       assert(ex.extract(f.attrFromBindedZoom(elem, "value")) == "1")
       assert(ex.isFailure(f.attrFromBindedZoom(elem, "rar")))
@@ -141,9 +141,9 @@ object XmlContentZoomTest {
       assert(ex.isFailure(f.textFromUnbindedZoom(root, elemWithoutText)))
     }
 
-    test("text from XmlZoomBinded") {
-      val elemWithText: XmlZoomBinded = root(<foo>TEST</foo>)
-      val elemWithoutText: XmlZoomBinded = root(<foo></foo>)
+    test("text from BindedXmlZoom") {
+      val elemWithText: BindedXmlZoom = root(<foo>TEST</foo>)
+      val elemWithoutText: BindedXmlZoom = root(<foo></foo>)
 
       assert(ex.extract(f.textFromBindedZoom(elemWithText)) == "TEST")
       assert(ex.isFailure(f.textFromBindedZoom(elemWithoutText)))
