@@ -5,8 +5,6 @@ import advxml.syntax.KeyValueSyntaxTest.ContractFuncs
 import advxml.testUtils.{ContractTests, FunSuiteContract}
 import org.scalatest.funsuite.AnyFunSuite
 
-import scala.xml.Text
-
 class KeyValueSyntaxTest extends AnyFunSuite with FunSuiteContract {
 
   import advxml.instances.convert._
@@ -32,7 +30,7 @@ class KeyValueSyntaxTest extends AnyFunSuite with FunSuiteContract {
 object KeyValueSyntaxTest {
 
   case class ContractFuncs(
-    data: (Key, Text) => AttributeData,
+    data: (Key, String) => AttributeData,
     withPredicate: (Key, String => Boolean) => KeyValuePredicate[String],
     equals: (Key, Double) => KeyValuePredicate[String],
     notEquals: (Key, Double) => KeyValuePredicate[String],
@@ -47,7 +45,7 @@ object KeyValueSyntaxTest {
     private val key: Key = Key("key")
 
     test("data") {
-      val text = Text("TEST")
+      val text: String = "TEST"
       val attrData: AttributeData = f.data(key, text)
 
       assert(attrData.key == key)

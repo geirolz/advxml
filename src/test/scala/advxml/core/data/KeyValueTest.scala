@@ -3,8 +3,6 @@ package advxml.core.data
 import advxml.syntax.KeyStringInterpolationOps
 import org.scalatest.funsuite.AnyFunSuite
 
-import scala.xml.Text
-
 class KeyValueTest extends AnyFunSuite {
 
   test("Key.==") {
@@ -20,7 +18,7 @@ class KeyValueTest extends AnyFunSuite {
   }
 
   test("AttributeData.toString") {
-    val data = AttributeData(k"K", Text("Text"))
+    val data = AttributeData(k"K", "Text")
     assert(data.toString == s"""Key(K) = "Text"""")
   }
 
@@ -35,9 +33,9 @@ class KeyValueTest extends AnyFunSuite {
 
     assert(
       data == List(
-        AttributeData(Key("T1"), Text("1")),
-        AttributeData(Key("T2"), Text("2")),
-        AttributeData(Key("T3"), Text("3"))
+        AttributeData(Key("T1"), "1"),
+        AttributeData(Key("T2"), "2"),
+        AttributeData(Key("T3"), "3")
       )
     )
   }
@@ -47,9 +45,9 @@ class KeyValueTest extends AnyFunSuite {
 
     assert(
       data == List(
-        AttributeData(Key("T1"), Text("1")),
-        AttributeData(Key("T2"), Text("2")),
-        AttributeData(Key("T3"), Text("3"))
+        AttributeData(Key("T1"), "1"),
+        AttributeData(Key("T2"), "2"),
+        AttributeData(Key("T3"), "3")
       )
     )
   }

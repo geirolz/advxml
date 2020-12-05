@@ -1,19 +1,19 @@
 # XmlZoom
-This feature allow users read/obtain node(s) or attributes.
+This feature allows users read/obtain nodes or attributes.
 
-You can see zoom as a function that traverse the xml and select one or more elements.
+We can see zoom as a function that traverse the xml and select one or more elements.
 This feature core is written with tagless final and all methods
 returns an output value wrapped in `F[_]`.
 
 - [How to build](#how-to-build)
 - [How to run](#how-to-run)
-- [XmlContentZoom](#attributes-and-text)
+- [Attributes and text](#attributes-and-text)
 ---
 ### How to build
 
 Zoom has two types, we can have `XmlZoom`(unbinded) or `BindedXmlZoom`.
-The differences between _Unbinded_ and _Binded_ is that Unbinded doesn't know the target
-but contains only the list of action to do, while _Binded_ contains both actions and target.
+The differences between _Unbinded_ and _Binded_ is that _Unbinded_ doesn't know the target
+and contains only the list of action to do, while _Binded_ contains both actions and target.
 
 It is possible to convert an `XmlZoom`(Unbinded) to `BindedXmlZoom` and vice-versa using
 `bind` and `unbind` idempotent methods.
@@ -45,7 +45,7 @@ Once created we can append actions using the following methods:
 - `atIndex(Int)` = Get the node at specified index.
 
 `XmlZoom` and `BindedXmlZoom` both extends `Dynamic` so you can use dot notation instead of `immediateChild`
-thanks to `selectDynamic`. You can even combine `immediateChild` and `atIndex` using `applyDynamic`
+thanks to `selectDynamic`. We can even combine `immediateChild` and `atIndex` using `applyDynamic`
 ```scala
 import advxml.core.transform.XmlZoom
 import advxml.instances.transform._
@@ -61,9 +61,9 @@ val applyDynamicZoom : XmlZoom = root.foo.bar.test(1)
 
 ---
 ### How to run
-To run a zoom you need to have a "target", a `NodeSeq` instance.
-So if you have an unbinded `XmlZoom` conceptually you have to pass a `NodeSeq` instance as target
-when you invoke the zoom, while `BindedXmlZoom` already has this information so is not necessary specify the zoom target.
+To run a zoom we need to have a "target", a `NodeSeq` instance.
+So if we have an unbinded `XmlZoom` conceptually we have to pass a `NodeSeq` instance as target when we invoke the zoom, 
+while `BindedXmlZoom` already has this information so is not necessary specify the zoom target when you need to run it.
 
 To run a zoom we can use two method, `run` and `detailed`.
 - `run` return a `F[NodeSeq]` as result of the zooming action.
@@ -88,10 +88,10 @@ val bindedsDetailed : Try[XmlZoomResult] = binded.detailed[Try]
 
 ---
 ### Attributes and Text
-Advxml provides also an `XmlContetZoom` to read attributes and text from an NodeSeq instance.
+Advxml also provides an `XmlContetZoom` to read attributes and text from a NodeSeq instance.
 `XmlContetZoom` syntax is added to `NodeSeq`, `F[NodeSeq]`, `XmlZoom` and `BindedXmlZoom` using implicit class.
 
-You can use `/@` to get an attribute or `textM` to get the node text.
+We can use `/@` to get an attribute value or `textM` to get the node text.
 ```scala
 import advxml.core.transform.XmlZoom.root
 import advxml.core.transform.{BindedXmlZoom, XmlZoom}
@@ -106,6 +106,7 @@ val zoom: XmlZoom = XmlZoom.root
 val bindedZoom: BindedXmlZoom = XmlZoom.root(<foo T1='1'>TEXT</foo>)
 
 val docAttr: Try[String] = doc./@[Try]("T1")//Success("1")
+val docMissingAttr: Try[String] = doc./@[Try]("MISSING")//Failure(MissingXmlAttribute)
 val docText: Try[String] = doc.textM[Try] //Success("TEXT")
 
 val zoomAttr: Try[String] = zoom./@[Try]("T1").apply(<foo T1='1'>TEXT</foo>)//Success("1")
@@ -115,7 +116,7 @@ val bindedZoomAttr: Try[String] = bindedZoom./@[Try]("T1")//Success("1")
 val bindedZoomText: Try[String] = bindedZoom.textM[Try]//Success("TEXT")
 ```
 
-This feature combined to converter feature allows you to convert attributes data from `String` to another type.
+This feature combined to converter feature allows we to convert attributes data from `String` to another type.
 
 Keep in mind to use `flatMapAs` for an exception-safe conversion.
 

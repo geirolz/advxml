@@ -2,7 +2,6 @@ package advxml.instances
 
 import advxml.core.data._
 import cats.MonadError
-import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 
 private[instances] trait ValidatedInstances {
