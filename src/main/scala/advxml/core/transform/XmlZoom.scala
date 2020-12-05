@@ -1,7 +1,7 @@
 package advxml.core.transform
 
 import advxml.core.{ErrorHandler, ExHandler}
-import advxml.core.data.{error, Converter, StringTo, XmlPredicate}
+import advxml.core.data.{error, XmlPredicate}
 import advxml.core.transform.XmlZoom.{ZoomAction, _}
 import cats.{Applicative, FlatMap, Monad}
 
@@ -21,7 +21,7 @@ private[advxml] sealed trait XmlZoomNodeBase extends Dynamic {
 
   def addAll(action: List[ZoomAction]): Type
 
-  def bind(ns: NodeSeq): XmlZoomBinded
+  def bind(ns: NodeSeq): BindedXmlZoom
 
   def unbind(): XmlZoom
 
@@ -63,9 +63,9 @@ sealed trait XmlZoom extends XmlZoomNodeBase {
     bind(document).detailed
 }
 
-sealed trait XmlZoomBinded extends XmlZoomNodeBase {
+sealed trait BindedXmlZoom extends XmlZoomNodeBase {
 
-  override type Type = XmlZoomBinded
+  override type Type = BindedXmlZoom
 
   val document: NodeSeq
 
@@ -86,13 +86,13 @@ sealed trait XmlZoomResult {
   * <h4>HOW TO USE</h4>
   * [[XmlZoom]] is based on three types:
   * - [[XmlZoom]] a.k.a XmlZoomUnbinded
-  * - [[XmlZoomBinded]]
+  * - [[BindedXmlZoom]]
   * - [[XmlZoomResult]]
   *
   * <b>XmlZoom</b>
   * Is the representation of unbind zoom instance. It contains only the list of the actions to run on a [[NodeSeq]].
   *
-  * <b>XmlZoomBinded</b>
+  * <b>BindedXmlZoom</b>
   * Is the representation of binded zoom instance. Binded because it contains both [[ZoomAction]] and [[NodeSeq]] target.
   *
   * <b>XmlZoomResult</b>
@@ -100,37 +100,36 @@ sealed trait XmlZoomResult {
   */
 object XmlZoom {
 
-  //########################### INIT ###############################
+  /** Just an alias for [[XmlZoom]], to use when you are building and XmlZoom that starts from the root.
+    */
+  lazy val root: XmlZoom = XmlZoom.empty
+
+  /** Just an alias for Root, to use when you are building and XmlZoom that not starts from the root for the document.
+    * It's exists just to clarify the code.
+    * If your [[XmlZoom]] starts for the root of the document please use [[root]]
+    */
+  lazy val $ : XmlZoom = XmlZoom.empty
+
+  /** Just a binded alias for [[XmlZoom]], to use when you are building and XmlZoom that starts from the root.
+    */
+  def root(document: NodeSeq): BindedXmlZoom = root.bind(document)
+
+  /** Just a binded alias for root, to use when you are building and XmlZoom that not starts from the root for the document.
+    * It's exists just to clarify the code.
+    * If your [[XmlZoom]] starts for the root of the document please use [[root]]
+    */
+  def $(document: NodeSeq): BindedXmlZoom = $.bind(document)
+
+  /** Empty unbinded [[XmlZoom]] instance, without any ZoomAction
+    */
+  lazy val empty: XmlZoom = XmlZoom(Nil)
+
   /** Create a new unbinded [[XmlZoom]] with specified actions.
     *
     * @param actions actions list for the zooming action
     * @return new instance of unbinded [[XmlZoom]]
     */
   def apply(actions: List[ZoomAction]): XmlZoom = Impls.Unbinded(actions)
-
-  /** Empty unbinded [[XmlZoom]] instance, without any [[ZoomAction]]
-    */
-  lazy val empty: XmlZoom = apply(Nil)
-
-  /** Just an alias for [[XmlZoom]], to use when you are building and XmlZoom that starts from the root.
-    */
-  lazy val root: XmlZoom = empty
-
-  /** Just an alias for Root, to use when you are building and XmlZoom that not starts from the root for the document.
-    * It's exists just to clarify the code.
-    * If your [[XmlZoom]] starts for the root of the document please use [[root]]
-    */
-  lazy val $ : XmlZoom = empty
-
-  /** Just a binded alias for [[XmlZoom]], to use when you are building and XmlZoom that starts from the root.
-    */
-  def root(document: NodeSeq): XmlZoomBinded = root.bind(document)
-
-  /** Just a binded alias for root, to use when you are building and XmlZoom that not starts from the root for the document.
-    * It's exists just to clarify the code.
-    * If your [[XmlZoom]] starts for the root of the document please use [[root]]
-    */
-  def $(document: NodeSeq): XmlZoomBinded = $.bind(document)
 
   //########################### IMPLS ###############################
   private object Impls {
@@ -140,12 +139,12 @@ object XmlZoom {
 
       override def addAll(that: List[ZoomAction]): Type = copy(actions = actions ++ that)
 
-      override def bind(ns: NodeSeq): XmlZoomBinded = Binded(ns, actions)
+      override def bind(ns: NodeSeq): BindedXmlZoom = Binded(ns, actions)
 
       override def unbind(): XmlZoom = this
     }
 
-    case class Binded(document: NodeSeq, actions: List[ZoomAction]) extends XmlZoomBinded {
+    case class Binded(document: NodeSeq, actions: List[ZoomAction]) extends BindedXmlZoom {
       $thisZoom =>
 
       override def addAll(that: List[ZoomAction]): Type = copy(actions = actions ++ that)
@@ -229,7 +228,6 @@ object XmlZoom {
 
     val symbol: String = s"last()"
   }
-
 }
 
 object XmlContentZoom {
@@ -237,22 +235,20 @@ object XmlContentZoom {
   import cats.implicits._
 
   //************************************ ATTRIBUTE *************************************
-  def attr[F[_]: Monad: ExHandler, T: StringTo[F, *]](ns: NodeSeq, key: String): F[T] =
+  def attr[F[_]: Monad: ExHandler](ns: NodeSeq, key: String): F[String] =
     attrM(Applicative[F].pure(ns), key)
 
-  def attrM[F[_]: FlatMap: ExHandler, T: StringTo[F, *]](ns: F[NodeSeq], key: String): F[T] =
-    ns.map(_ \@ key).flatMap(check[F, T](_, new RuntimeException(s"Missing/Empty $key attribute.")))
+  def attrM[F[_]: FlatMap: ExHandler](ns: F[NodeSeq], key: String): F[String] =
+    ns.map(_ \@ key).flatMap(check[F](_, new RuntimeException(s"Missing/Empty $key attribute.")))
 
   //*************************************** TEXT  **************************************
-  def text[F[_]: Monad: ExHandler, T: StringTo[F, *]](ns: NodeSeq): F[T] =
+  def text[F[_]: Monad: ExHandler](ns: NodeSeq): F[String] =
     textM(Applicative[F].pure(ns))
 
-  def textM[F[_]: FlatMap: ExHandler, T: StringTo[F, *]](ns: F[NodeSeq]): F[T] =
-    ns.map(_.text).flatMap(check[F, T](_, new RuntimeException(s"Missing/Empty text.")))
+  def textM[F[_]: FlatMap: ExHandler](ns: F[NodeSeq]): F[String] =
+    ns.map(_.text).flatMap(check[F](_, new RuntimeException(s"Missing/Empty text.")))
 
-  private def check[F[_]: FlatMap: ExHandler, T](value: String, error: => Throwable)(implicit
-    c: Converter[F, String, T]
-  ): F[T] = {
+  private def check[F[_]: FlatMap: ExHandler](value: String, error: => Throwable): F[String] = {
     ErrorHandler
       .fromOption(error)(
         value match {
@@ -260,6 +256,5 @@ object XmlContentZoom {
           case x  => Some(x)
         }
       )
-      .flatMap(c.apply)
   }
 }

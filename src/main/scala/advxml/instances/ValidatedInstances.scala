@@ -8,35 +8,26 @@ import cats.data.Validated.{Invalid, Valid}
 private[instances] trait ValidatedInstances {
 
   implicit val advxmlValidatedNelExMonadErrorInstanceWithThrowable: MonadError[ValidatedNelEx, Throwable] =
-    validatedMonadErrorInstance[ThrowableNel, Throwable](ThrowableNel.fromThrowable, ThrowableNel.toThrowable)
+    new MonadError[ValidatedNelEx, Throwable] {
 
-  implicit val advxmlValidatedExMonadErrorInstanceWithThrowableNel: MonadError[ValidatedEx, ThrowableNel] =
-    validatedMonadErrorInstance[Throwable, ThrowableNel](ThrowableNel.toThrowable, ThrowableNel.fromThrowable)
+      def raiseError[A](e: Throwable): ValidatedNelEx[A] = Invalid(ThrowableNel.fromThrowable(e))
 
-  private def validatedMonadErrorInstance[E1, E2](
-    toE1: E2 => E1,
-    toE2: E1 => E2
-  ): MonadError[Validated[E1, *], E2] =
-    new MonadError[Validated[E1, *], E2] {
+      def pure[A](x: A): ValidatedNelEx[A] = Valid(x)
 
-      def raiseError[A](e: E2): Validated[E1, A] = Invalid(toE1(e))
-
-      def pure[A](x: A): Validated[E1, A] = Valid(x)
-
-      def handleErrorWith[A](fa: Validated[E1, A])(f: E2 => Validated[E1, A]): Validated[E1, A] =
+      def handleErrorWith[A](fa: ValidatedNelEx[A])(f: Throwable => ValidatedNelEx[A]): ValidatedNelEx[A] =
         fa match {
           case Valid(_)   => fa
-          case Invalid(e) => f(toE2(e))
+          case Invalid(e) => f(ThrowableNel.toThrowable(e))
         }
 
-      def flatMap[A, B](fa: Validated[E1, A])(f: A => Validated[E1, B]): Validated[E1, B] =
+      def flatMap[A, B](fa: ValidatedNelEx[A])(f: A => ValidatedNelEx[B]): ValidatedNelEx[B] =
         fa match {
           case Valid(a)       => f(a)
           case i @ Invalid(_) => i
         }
 
       @scala.annotation.tailrec
-      def tailRecM[A, B](a: A)(f: A => Validated[E1, Either[A, B]]): Validated[E1, B] =
+      def tailRecM[A, B](a: A)(f: A => ValidatedNelEx[Either[A, B]]): ValidatedNelEx[B] =
         f(a) match {
           case Valid(eitherAb) =>
             eitherAb match {

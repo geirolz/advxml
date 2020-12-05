@@ -2,7 +2,6 @@ package advxml.core.transform
 
 import advxml.core.data.{AttributeData, KeyValuePredicate}
 import advxml.core.data.Predicate.alwaysTrue
-import advxml.core.transform.XmlZoom.root
 import advxml.testUtils.generators.XmlGenerator
 import advxml.testUtils.generators.XmlGenerator.XmlElemGeneratorConfig
 import cats.data.NonEmptyList

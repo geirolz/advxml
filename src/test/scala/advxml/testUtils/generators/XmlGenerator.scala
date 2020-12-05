@@ -2,6 +2,7 @@ package advxml.testUtils.generators
 
 import advxml.core.data.{AttributeData, Key}
 import advxml.core.transform.XmlZoom
+import advxml.implicits.root
 import org.scalacheck.Gen
 
 import scala.xml._
@@ -74,7 +75,7 @@ object XmlGenerator {
         }
       } yield zoomStep
 
-    rec(wholeDocument, XmlZoom.root)
+    rec(wholeDocument, root)
   }
 
   def genElem(config: XmlElemGeneratorConfig = XmlElemGeneratorConfig()): Gen[BasicXmlElem] = {

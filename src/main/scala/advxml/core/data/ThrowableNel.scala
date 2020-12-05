@@ -5,7 +5,7 @@ import cats.data.NonEmptyList
 
 object ThrowableNel {
 
-  def toThrowable(tnel: ThrowableNel): Throwable = new AggregatedException(tnel)
+  def toThrowable(tnel: ThrowableNel): Throwable = AggregatedException(tnel)
 
   def fromThrowable(tnel: Throwable): ThrowableNel = tnel match {
     case ex: AggregatedException => ex.exceptions

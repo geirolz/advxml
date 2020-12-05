@@ -32,7 +32,6 @@ Each example is written with fluent syntax using implicits but commented you can
 import scala.xml.Elem
 import scala.xml.NodeSeq
 import scala.util.Try
-import advxml.core.transform.XmlZoom.root
 
 //import MonadError instance for Try
 import cats.instances.try_._
@@ -73,7 +72,6 @@ a selected node you can combine actions calling again `withModifier` method.
 import advxml.implicits._
 import scala.xml._
 import scala.util._
-import advxml.core.transform.XmlZoom.root
 
 //import MonadError instance for Try
 import cats.instances.try_._
@@ -113,7 +111,6 @@ If you need to edit the document root you can use `root` as zoom action.
 import advxml.implicits._
 import scala.xml._
 import scala.util._
-import advxml.core.transform.XmlZoom.root
 
 //import MonadError instance for Try
 import cats.instances.try_._

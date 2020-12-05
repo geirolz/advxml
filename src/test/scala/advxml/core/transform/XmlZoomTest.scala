@@ -1,7 +1,7 @@
 package advxml.core.transform
 
 import advxml.core.data.XmlPredicate
-import advxml.core.transform.XmlZoom.{$, root, ImmediateDown}
+import advxml.core.transform.XmlZoom.ImmediateDown
 import advxml.core.transform.XmlZoomTest.ContractFuncs
 import advxml.testUtils.{ContractTests, FunSuiteContract}
 import org.scalactic.TypeCheckedTripleEquals.convertToCheckingEqualizer
@@ -62,19 +62,19 @@ object XmlZoomTest {
 
     test("BindedXmlZoom to UnbindedXmlZoom") {
       val doc: Elem = <Root></Root>
-      val xmlZoom: XmlZoomBinded = $(doc).unbind().unbind().bind(doc).bind(doc)
+      val xmlZoom: BindedXmlZoom = $(doc).unbind().unbind().bind(doc).bind(doc)
       assert(xmlZoom.document === doc)
     }
 
     test("BindedXmlZoom $") {
       val doc: Elem = <Root><N1 T1="V1"/></Root>
-      val xmlZoom: XmlZoomBinded = $(doc)
+      val xmlZoom: BindedXmlZoom = $(doc)
       assert(xmlZoom.document === doc)
     }
 
     test("BindedXmlZoom root") {
       val doc: Elem = <Root><N1 T1="V1"/></Root>
-      val xmlZoom: XmlZoomBinded = root(doc)
+      val xmlZoom: BindedXmlZoom = root(doc)
       assert(xmlZoom.document === doc)
     }
 
