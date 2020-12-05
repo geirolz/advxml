@@ -1,8 +1,7 @@
 package advxml.instances
 
 import advxml.core.data.{Predicate, _}
-import advxml.core.transform.{ComposableXmlModifier, FinalXmlModifier, XmlModifier, XmlZoom}
-import advxml.core.transform.XmlZoom.root
+import advxml.core.transform.{BindedXmlZoom, ComposableXmlModifier, FinalXmlModifier, XmlModifier, XmlZoom}
 import advxml.core.MonadEx
 import advxml.core.data.Predicate.alwaysTrue
 import cats.Monoid
@@ -218,7 +217,8 @@ private[instances] trait XmlPredicateInstances {
     * @return [[XmlPredicate]] that can check if a NodeSeq contains a child with specified predicates
     */
   def hasImmediateChild(label: String, predicate: XmlPredicate = alwaysTrue): XmlPredicate =
-    root(_)
+    XmlZoom
+      .root(_)
       .immediateDown(label)
       .run[Try]
       .fold(_ => false, _.exists(predicate))
@@ -238,9 +238,16 @@ private[instances] trait XmlPredicateInstances {
 
 private[instances] trait XmlZoomInstances {
 
+  lazy val root: XmlZoom = XmlZoom.root
+
+  lazy val $ : XmlZoom = XmlZoom.$
+
+  def root(document: NodeSeq): BindedXmlZoom = XmlZoom.root(document)
+
+  def $(document: NodeSeq): BindedXmlZoom = XmlZoom.$(document)
+
   implicit val xmlZoomMonoid: Monoid[XmlZoom] = new Monoid[XmlZoom] {
     override def empty: XmlZoom = XmlZoom.empty
-
     override def combine(x: XmlZoom, y: XmlZoom): XmlZoom = x.addAll(y.actions)
   }
 }

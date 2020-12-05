@@ -1,7 +1,7 @@
 package advxml.core.transform
 
 import advxml.core.data.XmlPredicate
-import advxml.core.transform.XmlZoom.{$, root, ImmediateDown}
+import advxml.core.transform.XmlZoom.ImmediateDown
 import advxml.core.transform.XmlZoomTest.ContractFuncs
 import advxml.testUtils.{ContractTests, FunSuiteContract}
 import org.scalactic.TypeCheckedTripleEquals.convertToCheckingEqualizer

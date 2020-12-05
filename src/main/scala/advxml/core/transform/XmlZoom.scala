@@ -100,27 +100,15 @@ sealed trait XmlZoomResult {
   */
 object XmlZoom {
 
-  //########################### INIT ###############################
-  /** Create a new unbinded [[XmlZoom]] with specified actions.
-    *
-    * @param actions actions list for the zooming action
-    * @return new instance of unbinded [[XmlZoom]]
-    */
-  def apply(actions: List[ZoomAction]): XmlZoom = Impls.Unbinded(actions)
-
-  /** Empty unbinded [[XmlZoom]] instance, without any [[ZoomAction]]
-    */
-  lazy val empty: XmlZoom = apply(Nil)
-
   /** Just an alias for [[XmlZoom]], to use when you are building and XmlZoom that starts from the root.
     */
-  lazy val root: XmlZoom = empty
+  lazy val root: XmlZoom = XmlZoom.empty
 
   /** Just an alias for Root, to use when you are building and XmlZoom that not starts from the root for the document.
     * It's exists just to clarify the code.
     * If your [[XmlZoom]] starts for the root of the document please use [[root]]
     */
-  lazy val $ : XmlZoom = empty
+  lazy val $ : XmlZoom = XmlZoom.empty
 
   /** Just a binded alias for [[XmlZoom]], to use when you are building and XmlZoom that starts from the root.
     */
@@ -131,6 +119,17 @@ object XmlZoom {
     * If your [[XmlZoom]] starts for the root of the document please use [[root]]
     */
   def $(document: NodeSeq): BindedXmlZoom = $.bind(document)
+
+  /** Empty unbinded [[XmlZoom]] instance, without any ZoomAction
+    */
+  lazy val empty: XmlZoom = XmlZoom(Nil)
+
+  /** Create a new unbinded [[XmlZoom]] with specified actions.
+    *
+    * @param actions actions list for the zooming action
+    * @return new instance of unbinded [[XmlZoom]]
+    */
+  def apply(actions: List[ZoomAction]): XmlZoom = Impls.Unbinded(actions)
 
   //########################### IMPLS ###############################
   private object Impls {

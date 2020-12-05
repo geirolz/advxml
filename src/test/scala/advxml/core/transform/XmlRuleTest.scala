@@ -1,6 +1,5 @@
 package advxml.core.transform
 
-import advxml.core.transform.XmlZoom.root
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Try

@@ -1,7 +1,6 @@
 package advxml.syntax
 
 import advxml.core.data.error.ZoomFailedException
-import advxml.core.transform.XmlZoom.{$, root}
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Try

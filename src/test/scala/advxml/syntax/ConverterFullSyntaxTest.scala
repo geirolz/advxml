@@ -1,7 +1,6 @@
 package advxml.syntax
 
 import advxml.core.data.{ToXml, ValidatedConverter, ValidatedNelEx, XmlTo}
-import advxml.core.transform.XmlZoom.$
 import cats.data.Validated.Valid
 import org.scalatest.funsuite.AnyFunSuite
 

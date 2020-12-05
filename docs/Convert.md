@@ -85,7 +85,6 @@ case class Person(name: String,
 ```scala
 import scala.xml.Elem
 import advxml.implicits._
-import advxml.core.transform.XmlZoom.$
 import advxml.core.data.{ToXml, ValidatedConverter, ValidatedNelEx, XmlTo}
 import cats.data.Validated.Valid
 import cats.syntax.all._
@@ -125,7 +124,6 @@ val res: ValidatedNelEx[Person] = xml.asValidated[Person]
 ```scala
 import scala.xml.Elem
 import advxml.implicits._
-import advxml.core.transform.XmlZoom.$
 import advxml.core.data.{ToXml, ValidatedConverter, ValidatedNelEx, XmlTo}
 import cats.data.Validated.Valid
 import cats.syntax.all._
