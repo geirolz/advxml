@@ -9,7 +9,7 @@ import cats.data.NonEmptyList
   *
   * @author geirolad
   */
-class AggregatedException(val exceptions: NonEmptyList[Throwable])
+case class AggregatedException(exceptions: NonEmptyList[Throwable])
     extends RuntimeException(
       exceptions.toList
         .map(_.getMessage)
