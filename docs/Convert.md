@@ -34,7 +34,7 @@ Once defined and imported in our scope let's see how to use it.
 ```scala
 import scala.util.Try
 import advxml.core.data.ValidatedNelEx
-import advxml.implicits._
+import advxml.syntax.convert._
 import MyConverters._
 
 val str : String = "10"
@@ -49,9 +49,40 @@ val resId : Int = str.as[Int]
 val resValidated : ValidatedNelEx[Int] = str.asValidated[Int] 
 ```
 
+Moreover, you can convert wrapped value using `mapAs` as following if an `Applicative` of the effect `F[_]` 
+is available in the scope. 
 
+```scala
+import scala.util.Try
+import cats.instances.try_._
+import advxml.syntax.convert._
+import advxml.instances.convert._
 
-Always for simplify the code advxml defines some other type alias derived from what we have just saw.
+val optStr : Option[String] = Some("1")
+val optInt: Option[Int] = optStr.mapAs[Int]
+val optTryInt: Option[Try[Int]] = optStr.mapAs[Try, Int]
+```
+
+You can even use `flatMapAs` if a `Monad` of `F[_]` is available
+```scala
+import scala.util.{Success, Try}
+import cats.instances.try_._
+import advxml.syntax.convert._
+import advxml.instances.convert._
+
+val tryStr : Try[String] = Success("1")
+val tryInt: Try[Int] = tryStr.flatMapAs[Int]
+```
+
+Multiple converters for standard types are already defined by advxml and you just need to import them with 
+```scala
+import advxml.instances.convert._
+```
+
+Keep in mind that also provided `PureConverter` from String to Int, Long, BigDecimal, etc...these ARE NOT exception safe, 
+so is recommended the use of `flatMapAs` in these cases.
+
+For simplify the code advxml also defines some other type alias derived from what we have just saw.
 
 #### XmlConverter
 XmlConverter is based on the most generic converters ecosystem and allows to
@@ -91,16 +122,16 @@ import cats.syntax.all._
 
 implicit val converter: Elem XmlTo Person = ValidatedConverter.of(person => {
   (
-    person./@[ValidatedNelEx]("Name"),
-    person./@[ValidatedNelEx]("Surname"),
-    person./@[Option, Int]("Age").valid,
-    $(person).note.textM[ValidatedNelEx],
-    $(person).cars.car.run[ValidatedNelEx].flatMap { cars =>
+    person /@ "Name",
+    person /@ "Surname",
+    person./@[Option]("Age").flatMapAs[Int].valid,
+    $(person).Note.textM,
+    $(person).Cars.Car.run.flatMap { cars =>
       cars
         .map(car => {
           (
-            car./@[ValidatedNelEx]("brand"),
-            car./@[ValidatedNelEx]("model")
+            car /@ "Brand",
+            car /@ "Model"
             ).mapN(Car)
         })
         .sequence

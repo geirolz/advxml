@@ -1,7 +1,7 @@
 package advxml.syntax
 
 import advxml.core.{ExHandler, MonadEx}
-import advxml.core.data.{StringTo, XmlPredicate}
+import advxml.core.data.XmlPredicate
 import advxml.core.transform._
 import cats.Monad
 
@@ -52,8 +52,6 @@ private[syntax] sealed trait RuleSyntax {
 
 private[syntax] sealed trait ZoomSyntax {
 
-  import advxml.instances.convert.identityConverter
-
   implicit class XmlZoomNodeBaseOps[Z <: XmlZoomNodeBase](zoom: Z) {
 
     def /(nodeName: String): Z#Type = zoom.immediateDown(nodeName)
@@ -64,60 +62,36 @@ private[syntax] sealed trait ZoomSyntax {
   implicit class XmlZoomOps(zoom: XmlZoom) {
 
     def /@[F[_]: Monad: ExHandler](key: String): NodeSeq => F[String] =
-      ns => XmlContentZoom.attrM[F, String](zoom.run[F](ns), key)
+      ns => XmlContentZoom.attrM[F](zoom.run[F](ns), key)
 
     def textM[F[_]: Monad: ExHandler](implicit dummyImplicit: DummyImplicit): NodeSeq => F[String] =
-      ns => XmlContentZoom.textM[F, String](zoom.run[F](ns))
-
-    def /@[F[_]: Monad: ExHandler, T: StringTo[F, *]](key: String): NodeSeq => F[T] =
-      ns => XmlContentZoom.attrM[F, T](zoom.run[F](ns), key)
-
-    def textM[F[_]: Monad: ExHandler, T: StringTo[F, *]]: NodeSeq => F[T] =
-      ns => XmlContentZoom.textM[F, T](zoom.run[F](ns))
+      ns => XmlContentZoom.textM[F](zoom.run[F](ns))
   }
 
   implicit class BindedXmlZoomOps(zoom: BindedXmlZoom) {
 
     def /@[F[_]: Monad: ExHandler](key: String): F[String] =
-      XmlContentZoom.attrM[F, String](zoom.run[F], key)
+      XmlContentZoom.attrM[F](zoom.run[F], key)
 
     def textM[F[_]: Monad: ExHandler]: F[String] =
-      XmlContentZoom.textM[F, String](zoom.run[F])
-
-    def /@[F[_]: Monad: ExHandler, T: StringTo[F, *]](key: String): F[T] =
-      XmlContentZoom.attrM[F, T](zoom.run[F], key)
-
-    def textM[F[_]: Monad: ExHandler, T: StringTo[F, *]]: F[T] =
-      XmlContentZoom.textM[F, T](zoom.run[F])
+      XmlContentZoom.textM[F](zoom.run[F])
   }
 
   implicit class XmlContentZoomOpsForId(ns: NodeSeq) {
 
     def /@[F[_]: Monad: ExHandler](key: String): F[String] =
-      XmlContentZoom.attr[F, String](ns, key)
+      XmlContentZoom.attr[F](ns, key)
 
     def textM[F[_]: Monad: ExHandler]: F[String] =
-      XmlContentZoom.text[F, String](ns)
-
-    def /@[F[_]: Monad: ExHandler, T: StringTo[F, *]](key: String): F[T] =
-      XmlContentZoom.attr[F, T](ns, key)
-
-    def textM[F[_]: Monad: ExHandler, T: StringTo[F, *]]: F[T] =
-      XmlContentZoom.text[F, T](ns)
+      XmlContentZoom.text[F](ns)
   }
 
   implicit class XmlContentZoomOpsForMonad[F[_]: Monad: ExHandler](ns: F[NodeSeq]) {
 
     def /@(key: String): F[String] =
-      XmlContentZoom.attrM[F, String](ns, key)
+      XmlContentZoom.attrM[F](ns, key)
 
     def textM: F[String] =
-      XmlContentZoom.textM[F, String](ns)
-
-    def /@[T: StringTo[F, *]](key: String): F[T] =
-      XmlContentZoom.attrM[F, T](ns, key)
-
-    def textM[T: StringTo[F, *]]: F[T] =
-      XmlContentZoom.textM[F, T](ns)
+      XmlContentZoom.textM[F](ns)
   }
 }

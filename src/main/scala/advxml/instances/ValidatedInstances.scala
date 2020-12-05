@@ -10,9 +10,6 @@ private[instances] trait ValidatedInstances {
   implicit val advxmlValidatedNelExMonadErrorInstanceWithThrowable: MonadError[ValidatedNelEx, Throwable] =
     validatedMonadErrorInstance[ThrowableNel, Throwable](ThrowableNel.fromThrowable, ThrowableNel.toThrowable)
 
-  implicit val advxmlValidatedExMonadErrorInstanceWithThrowableNel: MonadError[ValidatedEx, ThrowableNel] =
-    validatedMonadErrorInstance[Throwable, ThrowableNel](ThrowableNel.toThrowable, ThrowableNel.fromThrowable)
-
   private def validatedMonadErrorInstance[E1, E2](
     toE1: E2 => E1,
     toE2: E1 => E2

@@ -37,7 +37,27 @@ val unbinded : XmlZoom = zoom.unbind() //unbinded again
 - `$(NodeSeq)` = The binded version on unbinded `$`
 
 Once created we can append actions using the following methods:
+- `immediateChild(String)` = Find the first node with specified name, syntax alias is `/`(slash).
+- `filter(XmlPredicate)` = Filters nodes that match the specified predicate, syntax alias is `|`.
+- `find(XmlPredicate)` = Find the first node that match the specified predicate.
+- `head` = Get the first node.
+- `last` = Get the last node.
+- `atIndex(Int)` = Get the node at specified index.
 
+`XmlZoom` and `BindedXmlZoom` both extends `Dynamic` so you can use dot notation instead of `immediateChild`
+thanks to `selectDynamic`. You can even combine `immediateChild` and `atIndex` using `applyDynamic`
+```scala
+import advxml.core.transform.XmlZoom
+import advxml.instances.transform._
+
+//this equals to root.immediateDown("foo").immediateDown("bar").immediateDown("text")
+//this equals to root / "foo" / "bar" / "text"
+val selectDynamicZoom : XmlZoom = root.foo.bar.test
+
+//this equals to root.immediateDown("foo").immediateDown("bar").immediateDown("text").atIndex(1)
+//this equals to root / "foo" / "bar" / "text" atIndex(1)
+val applyDynamicZoom : XmlZoom = root.foo.bar.test(1)
+```
 
 ---
 ### How to run
@@ -68,10 +88,54 @@ val bindedsDetailed : Try[XmlZoomResult] = binded.detailed[Try]
 
 ---
 ### Attributes and Text
-Advxml provides also an `XmlContetZoom` to read attributes as text from an NodeSeq instance.
-`XmlContetZoom` syntax is added to `NodeSeq`, `F[NodeSeq]` and `XmlZoom` using implicit class.
+Advxml provides also an `XmlContetZoom` to read attributes and text from an NodeSeq instance.
+`XmlContetZoom` syntax is added to `NodeSeq`, `F[NodeSeq]`, `XmlZoom` and `BindedXmlZoom` using implicit class.
 
-#### Example
+You can use `/@` to get an attribute or `textM` to get the node text.
+```scala
+import advxml.core.transform.XmlZoom.root
+import advxml.core.transform.{BindedXmlZoom, XmlZoom}
+import advxml.syntax.transform._
+import cats.instances.try_._
+
+import scala.util.Try
+import scala.xml.Elem
+
+val doc: Elem = <foo T1='1'>TEXT</foo>
+val zoom: XmlZoom = XmlZoom.root
+val bindedZoom: BindedXmlZoom = XmlZoom.root(<foo T1='1'>TEXT</foo>)
+
+val docAttr: Try[String] = doc./@[Try]("T1")//Success("1")
+val docText: Try[String] = doc.textM[Try] //Success("TEXT")
+
+val zoomAttr: Try[String] = zoom./@[Try]("T1").apply(<foo T1='1'>TEXT</foo>)//Success("1")
+val zoomText: Try[String] = zoom.textM[Try].apply(<foo T1='1'>TEXT</foo>)//Success("TEXT")
+
+val bindedZoomAttr: Try[String] = bindedZoom./@[Try]("T1")//Success("1")
+val bindedZoomText: Try[String] = bindedZoom.textM[Try]//Success("TEXT")
+```
+
+This feature combined to converter feature allows you to convert attributes data from `String` to another type.
+
+Keep in mind to use `flatMapAs` for an exception-safe conversion.
+
+```scala
+import advxml.core.transform.XmlZoom.root
+import advxml.core.transform.{BindedXmlZoom, XmlZoom}
+import advxml.syntax.convert._
+import advxml.syntax.transform._
+import advxml.instances.convert._
+import cats.instances.try_._
+
+import scala.util.Try
+import scala.xml.Elem
+val doc: Elem = <foo T1='1'>100</foo>
+val docAttr: Try[Int] = doc./@[Try]("T1").flatMapAs[Int]//Success(1)
+val docText: Try[Int] = doc.textM.flatMapAs[Int] //Success(100)
+```
+
+
+#### Full Example
 ```scala
 import advxml.core.transform.XmlZoom.{$, root}
 import advxml.implicits._

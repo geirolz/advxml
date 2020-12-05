@@ -1,7 +1,7 @@
 package advxml.core.transform
 
 import advxml.core.{ErrorHandler, ExHandler}
-import advxml.core.data.{error, Converter, StringTo, XmlPredicate}
+import advxml.core.data.{error, XmlPredicate}
 import advxml.core.transform.XmlZoom.{ZoomAction, _}
 import cats.{Applicative, FlatMap, Monad}
 
@@ -228,7 +228,6 @@ object XmlZoom {
 
     val symbol: String = s"last()"
   }
-
 }
 
 object XmlContentZoom {
@@ -236,22 +235,20 @@ object XmlContentZoom {
   import cats.implicits._
 
   //************************************ ATTRIBUTE *************************************
-  def attr[F[_]: Monad: ExHandler, T: StringTo[F, *]](ns: NodeSeq, key: String): F[T] =
+  def attr[F[_]: Monad: ExHandler](ns: NodeSeq, key: String): F[String] =
     attrM(Applicative[F].pure(ns), key)
 
-  def attrM[F[_]: FlatMap: ExHandler, T: StringTo[F, *]](ns: F[NodeSeq], key: String): F[T] =
-    ns.map(_ \@ key).flatMap(check[F, T](_, new RuntimeException(s"Missing/Empty $key attribute.")))
+  def attrM[F[_]: FlatMap: ExHandler](ns: F[NodeSeq], key: String): F[String] =
+    ns.map(_ \@ key).flatMap(check[F](_, new RuntimeException(s"Missing/Empty $key attribute.")))
 
   //*************************************** TEXT  **************************************
-  def text[F[_]: Monad: ExHandler, T: StringTo[F, *]](ns: NodeSeq): F[T] =
+  def text[F[_]: Monad: ExHandler](ns: NodeSeq): F[String] =
     textM(Applicative[F].pure(ns))
 
-  def textM[F[_]: FlatMap: ExHandler, T: StringTo[F, *]](ns: F[NodeSeq]): F[T] =
-    ns.map(_.text).flatMap(check[F, T](_, new RuntimeException(s"Missing/Empty text.")))
+  def textM[F[_]: FlatMap: ExHandler](ns: F[NodeSeq]): F[String] =
+    ns.map(_.text).flatMap(check[F](_, new RuntimeException(s"Missing/Empty text.")))
 
-  private def check[F[_]: FlatMap: ExHandler, T](value: String, error: => Throwable)(implicit
-    c: Converter[F, String, T]
-  ): F[T] = {
+  private def check[F[_]: FlatMap: ExHandler](value: String, error: => Throwable): F[String] = {
     ErrorHandler
       .fromOption(error)(
         value match {
@@ -259,6 +256,5 @@ object XmlContentZoom {
           case x  => Some(x)
         }
       )
-      .flatMap(c.apply)
   }
 }

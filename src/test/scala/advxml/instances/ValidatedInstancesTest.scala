@@ -1,6 +1,6 @@
 package advxml.instances
 
-import advxml.core.data.{ThrowableNel, ValidatedEx, ValidatedNelEx}
+import advxml.core.data.ValidatedNelEx
 import cats.Eq
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.prop.Configuration
@@ -19,12 +19,5 @@ class ValidatedInstancesTest extends AnyFunSuite with FunSuiteDiscipline with Co
     cats.laws.discipline
       .MonadErrorTests[ValidatedNelEx, Throwable]
       .monad[Int, Int, Int]
-  )
-
-  checkAll(
-    "MonadErrorTests[ValidatedEx, ThrowableNel]",
-    cats.laws.discipline
-      .MonadErrorTests[ValidatedEx, ThrowableNel]
-      .monadError[Int, Int, Int]
   )
 }

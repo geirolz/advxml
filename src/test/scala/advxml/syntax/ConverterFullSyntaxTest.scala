@@ -24,16 +24,16 @@ class ConverterFullSyntaxTest extends AnyFunSuite {
 
     implicit val converter: Elem XmlTo Person = ValidatedConverter.of(person => {
       (
-        person./@[ValidatedNelEx]("Name"),
-        person./@[ValidatedNelEx]("Surname"),
-        person./@[Option, Int]("Age").valid,
-        $(person).Note.textM[ValidatedNelEx],
-        $(person).Cars.Car.run[ValidatedNelEx].flatMap { cars =>
+        person /@ "Name",
+        person /@ "Surname",
+        person./@[Option]("Age").flatMapAs[Int].valid,
+        $(person).Note.textM,
+        $(person).Cars.Car.run.flatMap { cars =>
           cars
             .map(car => {
               (
-                car./@[ValidatedNelEx]("Brand"),
-                car./@[ValidatedNelEx]("Model")
+                car /@ "Brand",
+                car /@ "Model"
               ).mapN(Car)
             })
             .sequence

@@ -10,23 +10,21 @@ import scala.xml.{Elem, NodeSeq}
 
 class XmlContentZoomTest extends AnyFeatureSpec with FeatureSpecContract {
 
-  import advxml.instances.convert._
-
   // format: off
   XmlContentZoomTest.Contract[Try](
     "Mandatory",
     {
       ContractFuncs(
         //attr
-        attrFromNs            = XmlContentZoom.attr[Try, String],
-        attrFromM             = XmlContentZoom.attrM[Try, String],
-        attrFromUnbindedZoom  = (zoom, ns, key) => XmlContentZoom.attr[Try, String](zoom.run[Try](ns).get, key),
-        attrFromBindedZoom    = (zoom, key) => XmlContentZoom.attr[Try, String](zoom.run[Try].get, key),
+        attrFromNs            = XmlContentZoom.attr[Try],
+        attrFromM             = XmlContentZoom.attrM[Try],
+        attrFromUnbindedZoom  = (zoom, ns, key) => XmlContentZoom.attr[Try](zoom.run[Try](ns).get, key),
+        attrFromBindedZoom    = (zoom, key) => XmlContentZoom.attr[Try](zoom.run[Try].get, key),
         //text
-        textFromNs            = XmlContentZoom.text[Try, String],
-        textFromM             = XmlContentZoom.textM[Try, String],
-        textFromUnbindedZoom  = (zoom, ns) => XmlContentZoom.text[Try, String](zoom.run[Try](ns).get),
-        textFromBindedZoom    = zoom => XmlContentZoom.text[Try, String](zoom.run[Try].get),
+        textFromNs            = XmlContentZoom.text[Try],
+        textFromM             = XmlContentZoom.textM[Try],
+        textFromUnbindedZoom  = (zoom, ns) => XmlContentZoom.text[Try](zoom.run[Try](ns).get),
+        textFromBindedZoom    = zoom => XmlContentZoom.text[Try](zoom.run[Try].get),
       )
     }
   )(XmlContentZoomTest.TryExtractor).runAll()
@@ -38,15 +36,15 @@ class XmlContentZoomTest extends AnyFeatureSpec with FeatureSpecContract {
     {
       ContractFuncs(
         //attr
-        attrFromNs            = XmlContentZoom.attr[Option, String],
-        attrFromM             = XmlContentZoom.attrM[Option, String],
-        attrFromUnbindedZoom  = (zoom, ns, key) => XmlContentZoom.attr[Option, String](zoom.run[Option](ns).get, key),
-        attrFromBindedZoom    = (zoom, key) => XmlContentZoom.attr[Option, String](zoom.run[Option].get, key),
+        attrFromNs            = XmlContentZoom.attr[Option],
+        attrFromM             = XmlContentZoom.attrM[Option],
+        attrFromUnbindedZoom  = (zoom, ns, key) => XmlContentZoom.attr[Option](zoom.run[Option](ns).get, key),
+        attrFromBindedZoom    = (zoom, key) => XmlContentZoom.attr[Option](zoom.run[Option].get, key),
         //text
-        textFromNs            = XmlContentZoom.text[Option, String],
-        textFromM             = XmlContentZoom.textM[Option, String],
-        textFromUnbindedZoom  = (zoom, ns) => XmlContentZoom.text[Option, String](zoom.run[Option](ns).get),
-        textFromBindedZoom    = zoom => XmlContentZoom.text[Option, String](zoom.run[Option].get),
+        textFromNs            = XmlContentZoom.text[Option],
+        textFromM             = XmlContentZoom.textM[Option],
+        textFromUnbindedZoom  = (zoom, ns) => XmlContentZoom.text[Option](zoom.run[Option](ns).get),
+        textFromBindedZoom    = zoom => XmlContentZoom.text[Option](zoom.run[Option].get),
       )
     }
   )(XmlContentZoomTest.OptionExtractor).runAll()
