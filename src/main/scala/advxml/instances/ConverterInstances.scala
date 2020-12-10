@@ -1,9 +1,9 @@
 package advxml.instances
 
-import advxml.core.{=:!=, ErrorHandler, ExHandler}
+import advxml.core.{=:!=, MonadExOrPlus}
 import advxml.core.data._
 import advxml.core.utils.XmlUtils
-import cats.{Applicative, Functor, Id, Monad}
+import cats.{Applicative, Functor, Id}
 
 import scala.util.Try
 import scala.xml.{Elem, Node, Text}
@@ -27,22 +27,22 @@ private[instances] trait ConverterInstances
   implicit val id_str_to_double     : StringTo[Id, Double     ] = liftPure[Try, String, Double].map(_.get)
 
   //MONAD ERROR
-  implicit def monad_str_to_bigInt    [F[_] : Monad : ExHandler]: StringTo[F, BigInt    ] = fromString(BigInt(_))
-  implicit def monad_str_to_bigDecimal[F[_] : Monad : ExHandler]: StringTo[F, BigDecimal] = fromString(BigDecimal(_))
-  implicit def monad_str_to_byte      [F[_] : Monad : ExHandler]: StringTo[F, Byte      ] = fromString(_.toByte)
-  implicit def monad_str_to_char      [F[_] : Monad : ExHandler]: StringTo[F, Char      ] = fromString(_.toCharArray.apply(0))
-  implicit def monad_str_to_short     [F[_] : Monad : ExHandler]: StringTo[F, Short     ] = fromString(_.toShort)
-  implicit def monad_str_to_int       [F[_] : Monad : ExHandler]: StringTo[F, Int       ] = fromString(_.toInt)
-  implicit def monad_str_to_long      [F[_] : Monad : ExHandler]: StringTo[F, Long      ] = fromString(_.toLong)
-  implicit def monad_str_to_float     [F[_] : Monad : ExHandler]: StringTo[F, Float     ] = fromString(_.toFloat)
-  implicit def monad_str_to_double    [F[_] : Monad : ExHandler]: StringTo[F, Double    ] = fromString(_.toDouble)
+  implicit def monad_str_to_bigInt    [F[_] : MonadExOrPlus]: StringTo[F, BigInt    ] = fromString(BigInt(_))
+  implicit def monad_str_to_bigDecimal[F[_] : MonadExOrPlus]: StringTo[F, BigDecimal] = fromString(BigDecimal(_))
+  implicit def monad_str_to_byte      [F[_] : MonadExOrPlus]: StringTo[F, Byte      ] = fromString(_.toByte)
+  implicit def monad_str_to_char      [F[_] : MonadExOrPlus]: StringTo[F, Char      ] = fromString(_.toCharArray.apply(0))
+  implicit def monad_str_to_short     [F[_] : MonadExOrPlus]: StringTo[F, Short     ] = fromString(_.toShort)
+  implicit def monad_str_to_int       [F[_] : MonadExOrPlus]: StringTo[F, Int       ] = fromString(_.toInt)
+  implicit def monad_str_to_long      [F[_] : MonadExOrPlus]: StringTo[F, Long      ] = fromString(_.toLong)
+  implicit def monad_str_to_float     [F[_] : MonadExOrPlus]: StringTo[F, Float     ] = fromString(_.toFloat)
+  implicit def monad_str_to_double    [F[_] : MonadExOrPlus]: StringTo[F, Double    ] = fromString(_.toDouble)
   // format: on
 
   private def liftPure[F[_], A, B](implicit c: Converter[F, A, B]): PureConverter[A, F[B]] =
     PureConverter.of(a => c.lift[Id].apply(a))
 
-  private def fromString[F[_]: Monad: ExHandler, O](f: String => O): StringTo[F, O] =
-    Converter.of(s => ErrorHandler.fromTry(Try(f(s))))
+  private def fromString[F[_]: MonadExOrPlus, O](f: String => O): StringTo[F, O] =
+    Converter.of(s => MonadExOrPlus.fromTry(Try(f(s))))
 }
 
 private sealed trait ConverterLowPriorityImplicitsLessGeneric {

@@ -1,9 +1,8 @@
 package advxml.core.transform
-
-import advxml.core.{ErrorHandler, ExHandler}
 import advxml.core.data.{error, XmlPredicate}
 import advxml.core.transform.XmlZoom.{ZoomAction, _}
-import cats.{Applicative, FlatMap, Monad}
+import advxml.core.MonadExOrPlus
+import cats.{Applicative, Functor}
 
 import scala.language.dynamics
 import scala.util.{Failure, Success, Try}
@@ -56,10 +55,10 @@ sealed trait XmlZoom extends XmlZoomNodeBase {
 
   override type Type = XmlZoom
 
-  final def run[F[_]: Monad: ExHandler](document: NodeSeq): F[NodeSeq] =
+  final def run[F[_]: MonadExOrPlus](document: NodeSeq): F[NodeSeq] =
     bind(document).run
 
-  final def detailed[F[_]: Monad: ExHandler](document: NodeSeq): F[XmlZoomResult] =
+  final def detailed[F[_]: MonadExOrPlus](document: NodeSeq): F[XmlZoomResult] =
     bind(document).detailed
 }
 
@@ -69,10 +68,10 @@ sealed trait BindedXmlZoom extends XmlZoomNodeBase {
 
   val document: NodeSeq
 
-  final def run[F[_]: Monad: ExHandler]: F[NodeSeq] =
-    Monad[F].map(detailed)(_.nodeSeq)
+  final def run[F[_]: MonadExOrPlus]: F[NodeSeq] =
+    Functor[F].map(detailed)(_.nodeSeq)
 
-  def detailed[F[_]: Monad: ExHandler]: F[XmlZoomResult]
+  def detailed[F[_]: MonadExOrPlus]: F[XmlZoomResult]
 }
 
 sealed trait XmlZoomResult {
@@ -153,7 +152,7 @@ object XmlZoom {
 
       override def unbind(): XmlZoom = Unbinded(actions)
 
-      def detailed[F[_]: Monad: ExHandler]: F[XmlZoomResult] = {
+      def detailed[F[_]: MonadExOrPlus]: F[XmlZoomResult] = {
 
         @scala.annotation.tailrec
         def rec(current: XmlZoomResult, zActions: List[ZoomAction], logPath: String): Try[XmlZoomResult] = {
@@ -172,7 +171,7 @@ object XmlZoom {
           }
         }
 
-        ErrorHandler.fromTry(rec(Impls.Result(document, Nil), this.actions, "root"))
+        MonadExOrPlus.fromTry(rec(Impls.Result(document, Nil), this.actions, "root"))
       }
     }
 
@@ -235,26 +234,24 @@ object XmlContentZoom {
   import cats.implicits._
 
   //************************************ ATTRIBUTE *************************************
-  def attr[F[_]: Monad: ExHandler](ns: NodeSeq, key: String): F[String] =
+  def attr[F[_]: MonadExOrPlus](ns: NodeSeq, key: String): F[String] =
     attrM(Applicative[F].pure(ns), key)
 
-  def attrM[F[_]: FlatMap: ExHandler](ns: F[NodeSeq], key: String): F[String] =
+  def attrM[F[_]: MonadExOrPlus](ns: F[NodeSeq], key: String): F[String] =
     ns.map(_ \@ key).flatMap(check[F](_, new RuntimeException(s"Missing/Empty $key attribute.")))
 
   //*************************************** TEXT  **************************************
-  def text[F[_]: Monad: ExHandler](ns: NodeSeq): F[String] =
+  def text[F[_]: MonadExOrPlus](ns: NodeSeq): F[String] =
     textM(Applicative[F].pure(ns))
 
-  def textM[F[_]: FlatMap: ExHandler](ns: F[NodeSeq]): F[String] =
+  def textM[F[_]: MonadExOrPlus](ns: F[NodeSeq]): F[String] =
     ns.map(_.text).flatMap(check[F](_, new RuntimeException(s"Missing/Empty text.")))
 
-  private def check[F[_]: FlatMap: ExHandler](value: String, error: => Throwable): F[String] = {
-    ErrorHandler
-      .fromOption(error)(
-        value match {
-          case "" => None
-          case x  => Some(x)
-        }
-      )
-  }
+  private def check[F[_]: MonadExOrPlus](value: String, error: => Throwable): F[String] =
+    MonadExOrPlus.fromOption(error)(
+      value match {
+        case "" => None
+        case x  => Some(x)
+      }
+    )
 }
