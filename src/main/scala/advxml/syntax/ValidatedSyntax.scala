@@ -1,7 +1,7 @@
 package advxml.syntax
 
 import advxml.core.data._
-import advxml.core.MonadExOrPlus
+import advxml.core.MonadExOrEu
 import scala.util.Try
 
 private[syntax] trait ValidatedSyntax {
@@ -23,7 +23,7 @@ private[syntax] trait ValidatedSyntax {
   }
 
   implicit class ValidatedExOps[A](validated: ValidatedNelEx[A]) {
-    def transform[F[_]: MonadExOrPlus]: F[A] =
+    def transform[F[_]: MonadExOrEu]: F[A] =
       ValidatedNelEx.transform[F, A](validated)
   }
 }
