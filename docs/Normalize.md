@@ -1,7 +1,7 @@
 # Normalize
 Normalization feature allows to collapse empty nodes and trim texts.
 
-You can use directly `XmlNormalizer` or importing `advxml.syntax.normalize._` you can have normalization 
+We can use directly `XmlNormalizer` or importing `advxml.syntax.normalize._` you can have normalization 
 methods onto `NodeSeq` instance.
  
 #### Example

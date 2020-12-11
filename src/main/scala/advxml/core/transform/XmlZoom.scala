@@ -1,12 +1,10 @@
 package advxml.core.transform
-
-import advxml.core.{ErrorHandler, ExHandler}
 import advxml.core.data.{error, XmlPredicate}
 import advxml.core.transform.XmlZoom.{ZoomAction, _}
-import cats.{Applicative, FlatMap, Monad}
+import advxml.core.MonadExOrEu
+import cats.{Applicative, Functor}
 
 import scala.language.dynamics
-import scala.util.{Failure, Success, Try}
 import scala.xml.NodeSeq
 
 //###################### NODES ######################
@@ -56,10 +54,10 @@ sealed trait XmlZoom extends XmlZoomNodeBase {
 
   override type Type = XmlZoom
 
-  final def run[F[_]: Monad: ExHandler](document: NodeSeq): F[NodeSeq] =
+  final def run[F[_]: MonadExOrEu](document: NodeSeq): F[NodeSeq] =
     bind(document).run
 
-  final def detailed[F[_]: Monad: ExHandler](document: NodeSeq): F[XmlZoomResult] =
+  final def detailed[F[_]: MonadExOrEu](document: NodeSeq): F[XmlZoomResult] =
     bind(document).detailed
 }
 
@@ -69,10 +67,10 @@ sealed trait BindedXmlZoom extends XmlZoomNodeBase {
 
   val document: NodeSeq
 
-  final def run[F[_]: Monad: ExHandler]: F[NodeSeq] =
-    Monad[F].map(detailed)(_.nodeSeq)
+  final def run[F[_]: MonadExOrEu]: F[NodeSeq] =
+    Functor[F].map(detailed)(_.nodeSeq)
 
-  def detailed[F[_]: Monad: ExHandler]: F[XmlZoomResult]
+  def detailed[F[_]: MonadExOrEu]: F[XmlZoomResult]
 }
 
 sealed trait XmlZoomResult {
@@ -153,12 +151,12 @@ object XmlZoom {
 
       override def unbind(): XmlZoom = Unbinded(actions)
 
-      def detailed[F[_]: Monad: ExHandler]: F[XmlZoomResult] = {
+      def detailed[F[_]](implicit F: MonadExOrEu[F]): F[XmlZoomResult] = {
 
         @scala.annotation.tailrec
-        def rec(current: XmlZoomResult, zActions: List[ZoomAction], logPath: String): Try[XmlZoomResult] = {
+        def rec(current: XmlZoomResult, zActions: List[ZoomAction], logPath: String): F[XmlZoomResult] = {
           zActions.headOption match {
-            case None => Success(current)
+            case None => F.pure(current)
             case Some(action) =>
               val newParents = action match {
                 case ImmediateDown(_) => current.parents :+ current.nodeSeq
@@ -167,12 +165,12 @@ object XmlZoom {
 
               action(current.nodeSeq) match {
                 case Some(value) => rec(Impls.Result(value, newParents), zActions.tail, logPath + action.symbol)
-                case None        => Failure(error.ZoomFailedException($thisZoom, action, logPath))
+                case None        => F.raiseErrorOrEmpty(error.ZoomFailedException($thisZoom, action, logPath))
               }
           }
         }
 
-        ErrorHandler.fromTry(rec(Impls.Result(document, Nil), this.actions, "root"))
+        rec(Impls.Result(document, Nil), this.actions, "root")
       }
     }
 
@@ -235,26 +233,23 @@ object XmlContentZoom {
   import cats.implicits._
 
   //************************************ ATTRIBUTE *************************************
-  def attr[F[_]: Monad: ExHandler](ns: NodeSeq, key: String): F[String] =
+  def attr[F[_]: MonadExOrEu](ns: NodeSeq, key: String): F[String] =
     attrM(Applicative[F].pure(ns), key)
 
-  def attrM[F[_]: FlatMap: ExHandler](ns: F[NodeSeq], key: String): F[String] =
-    ns.map(_ \@ key).flatMap(check[F](_, new RuntimeException(s"Missing/Empty $key attribute.")))
+  def attrM[F[_]: MonadExOrEu](ns: F[NodeSeq], key: String): F[String] =
+    ns.map(_ \@ key).flatMap(check[F](_, s"Missing/Empty $key attribute."))
 
   //*************************************** TEXT  **************************************
-  def text[F[_]: Monad: ExHandler](ns: NodeSeq): F[String] =
+  def text[F[_]: MonadExOrEu](ns: NodeSeq): F[String] =
     textM(Applicative[F].pure(ns))
 
-  def textM[F[_]: FlatMap: ExHandler](ns: F[NodeSeq]): F[String] =
-    ns.map(_.text).flatMap(check[F](_, new RuntimeException(s"Missing/Empty text.")))
+  def textM[F[_]: MonadExOrEu](ns: F[NodeSeq]): F[String] =
+    ns.map(_.text).flatMap(check[F](_, s"Missing/Empty text."))
 
-  private def check[F[_]: FlatMap: ExHandler](value: String, error: => Throwable): F[String] = {
-    ErrorHandler
-      .fromOption(error)(
-        value match {
-          case "" => None
-          case x  => Some(x)
-        }
-      )
-  }
+  private def check[F[_]](value: String, errorMsg: => String)(implicit F: MonadExOrEu[F]): F[String] =
+    value match {
+      case "" => F.raiseErrorOrEmpty(new RuntimeException(errorMsg))
+      case x  => F.pure(x)
+    }
+
 }

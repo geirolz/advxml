@@ -1,10 +1,10 @@
 # Transform
-The syntax to edit xml is very intuitive, first of all you need to define a **Modification Rule**
+The syntax to edit xml is very intuitive, first of all we need to define a **Modification Rule**
 and then pass it as argument to `transform` method provided via extensions methods in `NodeSeq` class.
 `transform` method will return the XML edited wrapped in `F[_]`.
 
 A modification rule is composed by:
-- `XmlZoom`: A case class with the the aim to zoom inside document and select the node to edit.
+- `XmlZoom`: A case class with the aim to zoom inside document and select the node to edit.
 - `XmlModifier`: A function that apply a transformation over selected node.
 
 Note: Integrated with `AdvXml` there are implicits in order to add a more fluent syntax for rule creation.
@@ -20,9 +20,9 @@ Each example is written with fluent syntax using implicits but commented you can
 
 #### Syntax
 - **root** is the default XmlZoom that is empty so select the document root node, delegated to `XmlZoom.empty`
-- **>** equals to `root` and `XmlZoom.empty` but with different name, you should use it when your zoom will not start from
-  the root so using `root` variable can create confusion. This is very util when you have a huge `XmlZoom` expression and
-  you what to split in into smaller `XmlZoom` and then recompose the entire zoom using `\+` or `andThen`.
+- **$** equals to `root` and `XmlZoom.empty` but with different name, you should use it when your zoom will not start from
+  the root so using `root` variable can create confusion. This is very useful when you have a huge `XmlZoom` expression and
+  you what to split in into smaller `XmlZoom`. Advxml provides the monoid implementation of `XmlZoom` to use `<+>` to combine them.
 - **==>** is an alias to `withModifier` method.
 
 #### Example
@@ -64,7 +64,7 @@ val result: Try[NodeSeq] = doc.transform[Try](rule)
 ```
 
 ## Multiple modifiers
-If you need apply more that one modification on
+If we need apply more that one modification on
 a selected node you can combine actions calling again `withModifier` method.
 
 #### Example
@@ -103,17 +103,18 @@ val result: Try[NodeSeq] = doc.transform[Try](rule)
 ```
 
 ## Root transformation
-If you need to edit the document root you can use `root` as zoom action.
+If we need to edit the document root we can use `root` as zoom action.
 `root` value is provided by `advxml.instances.transform._`
 
 *Example*
 ```scala
-import advxml.implicits._
 import scala.xml._
 import scala.util._
 
 //import MonadError instance for Try
 import cats.instances.try_._
+
+import advxml.implicits._
 
 val doc: Elem = <Root/>
 val result: Try[NodeSeq] = doc.transform[Try](root => SetAttrs("Attr1" := "TEST"))

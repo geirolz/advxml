@@ -20,7 +20,7 @@ object XmlGenerator {
       val meta: MetaData = this.attrs.foldLeft(seed) { case (acc, data) =>
         new UnprefixedAttribute(
           key = data.key.value,
-          value = data.value.data,
+          value = data.value,
           next = acc
         )
       }
@@ -50,7 +50,7 @@ object XmlGenerator {
       n <- Gen.choose(1, atLeastOne(maxSize))
       kvGen = for {
         key   <- genStr(nameMaxSize).map(Key)
-        value <- genStr(nameMaxSize).map(Text(_))
+        value <- genStr(nameMaxSize)
       } yield AttributeData(key, value)
       map <- Gen.listOfN(n, kvGen)
     } yield map

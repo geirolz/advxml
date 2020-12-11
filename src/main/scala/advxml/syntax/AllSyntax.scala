@@ -1,11 +1,11 @@
 package advxml.syntax
 
-import advxml.core.{data, XmlNormalizer}
+import advxml.core.XmlNormalizer
 import advxml.core.data._
 import cats.{Applicative, Eq, Id, Monad, PartialOrder}
 
 import scala.util.Try
-import scala.xml.{NodeSeq, Text}
+import scala.xml.NodeSeq
 
 private[advxml] trait AllSyntax
     extends AllCommonSyntax
@@ -49,8 +49,8 @@ private[syntax] trait AttributeSyntax {
 
   implicit class AttributeOps(key: Key) {
 
-    def :=[T](v: T)(implicit converter: PureConverter[T, Text]): AttributeData =
-      data.AttributeData(key, converter(v))
+    def :=[T](v: T)(implicit converter: ToString[Id, T]): AttributeData =
+      AttributeData(key, converter(v))
 
     //********* KeyValuePredicate *********
     import cats.syntax.order._

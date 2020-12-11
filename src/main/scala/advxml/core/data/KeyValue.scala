@@ -1,6 +1,6 @@
 package advxml.core.data
 
-import scala.xml.{Elem, Text}
+import scala.xml.Elem
 
 //TODO: Scala3 - Opaque Type candidate
 case class Key(value: String) extends AnyVal {
@@ -23,13 +23,13 @@ case class KeyValuePredicate[T](key: Key, private val valuePredicate: T => Boole
 }
 
 //###########################################################################
-case class AttributeData(key: Key, value: Text) extends KeyValue[Text] {
-  override def toString: String = s"""$key = "${value.text}""""
+case class AttributeData(key: Key, value: String) extends KeyValue[String] {
+  override def toString: String = s"""$key = "$value""""
 }
 object AttributeData {
 
   def fromMap(m: Map[String, String]): List[AttributeData] =
-    m.map { case (k, v) => AttributeData(Key(k), Text(v)) }.toList
+    m.map { case (k, v) => AttributeData(Key(k), v) }.toList
 
   def fromElem(e: Elem): List[AttributeData] =
     fromMap(e.attributes.asAttrMap)

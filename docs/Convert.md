@@ -1,8 +1,8 @@
 ## Convert <a name="Convert"></a>
-Convert ecosystem is based on a simple Kleisli instance defined implicitly in the scope
+Convert "ecosystem" is based on a simple Kleisli instance defined implicitly in the scope
 and applied on an instance using the syntax that advxml offers.
 
-In order to simplify the code advxml defines the following type aliases
+In order to simplify the code advxml defines the following types aliases
 ```scala
 type Converter[F[_], -A, B] = Kleisli[F, A, B]
 type PureConverter[-A, B] = Converter[Id, A, B]
@@ -49,7 +49,7 @@ val resId : Int = str.as[Int]
 val resValidated : ValidatedNelEx[Int] = str.asValidated[Int] 
 ```
 
-Moreover, you can convert wrapped value using `mapAs` as following if an `Applicative` of the effect `F[_]` 
+Moreover, we can convert wrapped value using `mapAs` as following if an `Applicative` of the effect `F[_]` 
 is available in the scope. 
 
 ```scala
@@ -63,7 +63,7 @@ val optInt: Option[Int] = optStr.mapAs[Int]
 val optTryInt: Option[Try[Int]] = optStr.mapAs[Try, Int]
 ```
 
-You can even use `flatMapAs` if a `Monad` of `F[_]` is available
+We can even use `flatMapAs` if a `Monad` of `F[_]` is available
 ```scala
 import scala.util.{Success, Try}
 import cats.instances.try_._
@@ -79,13 +79,13 @@ Multiple converters for standard types are already defined by advxml and you jus
 import advxml.instances.convert._
 ```
 
-Keep in mind that also provided `PureConverter` from String to Int, Long, BigDecimal, etc...these ARE NOT exception safe, 
+Keep in mind that the provided `PureConverter` instances from String to Int, Long, BigDecimal, etc...these *ARE NOT* exception safe, 
 so is recommended the use of `flatMapAs` in these cases.
 
 For simplify the code advxml also defines some other type alias derived from what we have just saw.
 
 #### XmlConverter
-XmlConverter is based on the most generic converters ecosystem and allows to
+XmlConverter is based on the most generic converters "ecosystem" and allows us to
 transform a case class to xml and vice-versa just defining a `XmlTo` or `ToXml` instance.
 To define our `XmlTo` we can use advxml `XmlZoom` and `XmlContentZoom` syntax.
 
@@ -94,10 +94,10 @@ type XmlTo[-I <: NodeSeq, O] = ValidatedConverter[I, O]
 type ToXml[-I, O <: NodeSeq] = ValidatedConverter[I, O]
 ```
 
-Once defined your instance import it in your scope and use method `asValidated` to apply the
+Once defined our instances, we need to import it in out scope and use `asValidated` method to apply the
 converter on the selected instance.
 
-Conversion are not automatic and you need to manual map XML and Model.
+Conversion are not automatic and we need to manual map XML and Model.
 
 In the following example if some attribute or node is missing whole conversion will fail reporting ALL
 errors.
