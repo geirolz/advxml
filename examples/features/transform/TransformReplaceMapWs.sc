@@ -1,32 +1,26 @@
+import advxml.implicits._
+import cats.instances.try_._
 
-object Test {
+import scala.util.Try
+import scala.xml.Elem
 
-  import advxml.implicits._
-  import cats.instances.try_._
+val pets =
+  <Pet>
+    <Cat a="TEST">
+      <Kitty>small</Kitty>
+      <Kitty>big</Kitty>
+      <Kitty>large</Kitty>
+    </Cat>
+    <Dog>
+      <Kitty>large</Kitty>
+    </Dog>
+  </Pet>
 
-  import scala.xml.{Elem, NodeSeq}
-
-  val pets =
-    <Pet>
-      <Cat a="TEST">
-        <Kitty>small</Kitty>
-        <Kitty>big</Kitty>
-        <Kitty>large</Kitty>
-      </Cat>
-      <Dog>
-        <Kitty>large</Kitty>
-      </Dog>
-    </Pet>
-
-  val result: NodeSeq = pets
-    .transform(
-      (> \ "Cat") ==> Replace(oldCatNode => {
-        oldCatNode.head.asPure[Elem].copy(child = oldCatNode \ "Kitty" map (k => <c>
-          {k.text}
-        </c>))
-      })
-    )
-    .get
-}
-
-Test.result
+val result = pets
+  .transform[Try](
+    $.Cat ==> Replace(oldCatNode => {
+      oldCatNode.head.as[Elem].copy(child = oldCatNode \ "Kitty" map (
+        k => <c>{k.text}</c>)
+      )
+    })
+  ).get
