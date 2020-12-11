@@ -22,7 +22,7 @@ package object data {
     * @tparam A Contravariant input object type
     * @tparam B Output object type
     */
-  @implicitNotFound("Missing implicit PureConverter instance for ${F}, used to covert ${A} to ${B} in ${F}")
+  @implicitNotFound("""Missing implicit PureConverter instance for ${F}, used to covert ${A} to ${B} in ${F}""")
   type Converter[F[_], -A, B] = Kleisli[F, A, B]
 
   /** Represents a function `A => B` to simplify method and class signatures.
@@ -33,7 +33,7 @@ package object data {
     * @tparam A Contravariant input object type
     * @tparam B Output object type
     */
-  @implicitNotFound("Missing implicit PureConverter instance, used to covert ${A} to ${B}")
+  @implicitNotFound("""Missing implicit PureConverter instance, used to covert ${A} to ${B}""")
   type PureConverter[-A, B] = Converter[Id, A, B]
 
   /** Represents a function `A => ValidatedEx[B]` to simplify method and class signatures.
@@ -44,7 +44,7 @@ package object data {
     * @tparam B Output object type
     */
   @implicitNotFound(
-    "Missing implicit ValidatedConverter instance for ValidatedNelEx, used to covert ${A} to ${B} in ValidatedNelEx"
+    """Missing implicit ValidatedConverter instance for ValidatedNelEx, used to covert ${A} to ${B} in ValidatedNelEx"""
   )
   type ValidatedConverter[-A, B] = Converter[ValidatedNelEx, A, B]
 
@@ -56,7 +56,7 @@ package object data {
     * @tparam I Contravariant input model type
     * @tparam O Output xml type, type constraint ensures that `X` is a subtype of scala-xml `NodeSeq`
     */
-  @implicitNotFound("Missing ToXml to transform ${I} into ValidatedEx[NodeSeq]")
+  @implicitNotFound("""Missing ToXml to transform ${I} into ValidatedEx[NodeSeq]""")
   type ToXml[-I, O <: NodeSeq] = ValidatedConverter[I, O]
 
   /** Represents a function `NodeSeq => ValidatedEx[O]` to simplify method and class signatures.
@@ -66,12 +66,12 @@ package object data {
     * @see [[ValidatedConverter]] for further information.
     * @tparam O Output model type
     */
-  @implicitNotFound("Missing XmlTo to transform NodeSeq into ValidatedEx[${O}]")
+  @implicitNotFound("""Missing XmlTo to transform NodeSeq into ValidatedEx[${O}]""")
   type XmlTo[-I <: NodeSeq, O] = ValidatedConverter[I, O]
 
-  @implicitNotFound("Missing FromString to transform String into F[${T}]")
+  @implicitNotFound("""Missing FromString to transform String into F[${T}]""")
   type StringTo[F[_], T] = Converter[F, String, T]
 
-  @implicitNotFound("Missing ToString to transform ${T} into F[String]")
+  @implicitNotFound("""Missing ToString to transform ${T} into F[String]""")
   type ToString[F[_], -T] = Converter[F, T, String]
 }

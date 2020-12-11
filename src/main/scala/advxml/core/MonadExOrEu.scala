@@ -3,8 +3,14 @@ package advxml.core
 import advxml.core.data.{EitherEx, ValidatedEx}
 import cats.Monad
 
+import scala.annotation.{implicitAmbiguous, implicitNotFound}
 import scala.util.Try
 
+@implicitAmbiguous(
+  """Multiple instances of MonadError[${F}, Throwable] or MonadError[${F}, Unit] in the scope," +
+  ", try to set {F} type explicitly."""
+)
+@implicitNotFound("""Missing MonadError[${F}, Throwable] or MonadError[${F}, Unit] in the scope.""")
 sealed trait MonadExOrEu[F[_]] extends Monad[F] {
 
   protected val value: Monad[F]
@@ -48,10 +54,6 @@ object MonadExOrEu extends MonadExOrAltInstances {
 }
 
 private[core] sealed trait MonadExOrAltInstances {
-
-  implicit def monadExCaseAsMonadEx[F[_]](implicit M: MonadExCase[F]): MonadEx[F] = M.value
-
-  implicit def monadEuCaseAsMonadEu[F[_]](implicit M: MonadEuCase[F]): MonadEu[F] = M.value
 
   implicit def monadExAsMonadExOrEu[F[_]](implicit M: MonadEx[F]): MonadExOrEu[F] = MonadExCase(M)
 
