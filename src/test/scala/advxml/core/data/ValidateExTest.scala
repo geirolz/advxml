@@ -10,6 +10,8 @@ import scala.util.{Failure, Success, Try}
 
 class ValidateExTest extends AnyFunSuite with FunSuiteContract {
 
+  import advxml.syntax.all._
+  import advxml.instances.convert._
   import cats.instances.either._
   import cats.instances.option._
   import cats.instances.try_._
@@ -17,12 +19,16 @@ class ValidateExTest extends AnyFunSuite with FunSuiteContract {
   // format: off
   ValidateExTest.Contract(
     f = ContractFuncs(
-      toTry           = ValidatedNelEx.transform[Try, String](_),
+      toTry           = _.to[Try],
       fromTry         = ValidatedNelEx.fromTry,
-      toEitherEx      = ValidatedNelEx.transform[EitherEx, String](_),
+      //===========
+      toEitherEx      = _.to[EitherEx],
       fromEitherEx    = ValidatedNelEx.fromEither,
+      //===========
+      toEitherNelEx   = _.to[EitherNelEx],
       fromEitherNelEx = ValidatedNelEx.fromEitherNel,
-      toOption        = ValidatedNelEx.transform[Option, String](_),
+      //===========
+      toOption        = _.to[Option],
       fromOption      = (optionValue, ex) => ValidatedNelEx.fromOption(optionValue, ex)
     )
   ).runAll()
@@ -34,9 +40,13 @@ object ValidateExTest {
   case class ContractFuncs(
     toTry: ValidatedNelEx[String] => Try[String],
     fromTry: Try[String] => ValidatedNelEx[String],
+    //===========
     toEitherEx: ValidatedNelEx[String] => EitherEx[String],
     fromEitherEx: EitherEx[String] => ValidatedNelEx[String],
+    //===========
+    toEitherNelEx: ValidatedNelEx[String] => EitherNelEx[String],
     fromEitherNelEx: EitherNelEx[String] => ValidatedNelEx[String],
+    //===========
     toOption: ValidatedNelEx[String] => Option[String],
     fromOption: (Option[String], Throwable) => ValidatedNelEx[String]
   )
@@ -56,7 +66,7 @@ object ValidateExTest {
     private def assertValid[T](v: ValidatedNelEx[T], expectedValue: => T): Unit =
       assert(v == Valid(expectedValue))
 
-    //############################ TO ###########################
+    //============================== TO ==============================
     test("Valid.toTry") {
       val value = "TEST"
       val validatedExValue: ValidatedNelEx[String] = Validated.Valid(value)
@@ -102,7 +112,7 @@ object ValidateExTest {
       assert(result.isEmpty)
     }
 
-    //########################### FROM ##########################
+    //============================== FROM ==============================
     test("Try.Success.toValidatedEx") {
       val value = "TEST"
       val tryValue: Try[String] = Success(value)

@@ -19,23 +19,23 @@ for attributes.
 Advxml provides a fluent syntax to define an `AttributeData` instance.
 
 ```scala
-import advxml.core.data.{Key, AttributeData}
+import advxml.core.data.{Key, Value, AttributeData}
 import advxml.syntax._
 
-val data : AttributeData = AttributeData(Key("key"), "value")
+val data : AttributeData = AttributeData(Key("key"), Value("value"))
 val dataWithSyntax : AttributeData = k"key" := "value"
 ```
 
 ### Key-Value predicate
-`KeyValuePredicate` is a case class to bind a `Key` and a predicate function `T => Boolean` related to value.
+`KeyValuePredicate` is a case class to bind a `Key` and a predicate function `Value => Boolean` related to value.
 We can create it directly or using fluent syntax.
 
 ```scala
 import advxml.core.data._
 import advxml.syntax._
 
-val p : KeyValuePredicate[String] = KeyValuePredicate(Key("key"), _ == "value")
-val pWithSyntax : KeyValuePredicate[String] = k"key" -> (_ == "value")
+val p : KeyValuePredicate = KeyValuePredicate(Key("key"), _.unboxed == "value")
+val pWithSyntax : KeyValuePredicate = k"key" -> (_.unboxed == "value")
 ```
 
 Moreover, advxml provides multiple syntax method to easily create a `KeyValuePredicate` for the most common predicates.
@@ -47,11 +47,11 @@ Please, keep in mind that these conversions *ARE NOT SAFE* and this code will th
 import advxml.core.data._
 import advxml.syntax._
 
-val eq : KeyValuePredicate[String] = k"key" === 1
-val neq : KeyValuePredicate[String] = k"key" =!= 1
+val eq : KeyValuePredicate = k"key" === 1
+val neq : KeyValuePredicate = k"key" =!= 1
 
-val le : KeyValuePredicate[String] = k"key" < 1
-val leEq : KeyValuePredicate[String] = k"key" <= 1
-val gt : KeyValuePredicate[String] = k"key" > 1
-val gtEq : KeyValuePredicate[String] = k"key" >= 1
+val le : KeyValuePredicate = k"key" < 1
+val leEq : KeyValuePredicate = k"key" <= 1
+val gt : KeyValuePredicate = k"key" > 1
+val gtEq : KeyValuePredicate = k"key" >= 1
 ```

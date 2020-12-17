@@ -1,68 +1,131 @@
 package advxml.instances
 
-import advxml.core.{=:!=, MonadExOrEu}
+import advxml.core.{=:!=, AppExOrEu}
 import advxml.core.data._
+import advxml.core.transform.XmlContentZoomRunner
 import advxml.core.utils.XmlUtils
-import cats.{Applicative, Functor, Id}
+import cats.{~>, Applicative, FlatMap}
+import cats.data.Validated
 
 import scala.util.Try
 import scala.xml.{Elem, Node, Text}
 
 private[instances] trait ConverterInstances
-    extends ConverterLowPriorityImplicitsLessGeneric
-    with ConverterLowPriorityImplicitsMostGeneric {
+    extends ConverterLowerPriorityImplicits1
+    with ConverterLowerPriorityImplicits2
+    with ConverterNaturalTransformationInstances {
 
-  implicit val nodeToElemConverter: PureConverter[Node, Elem] =
-    PureConverter.of(XmlUtils.nodeToElem)
+  implicit def identityConverter[A]: Converter[A, A] = Converter.id[A]
+
+  implicit def identityConverterApplicative[F[_]: Applicative, A]: Converter[A, F[A]] = Converter.idF[F, A]
+}
+
+private sealed trait ConverterLowerPriorityImplicits1 {
+
+  import cats.syntax.all._
+
+  implicit def deriveTextToF_fromValueToF[F[_], T: * =:!= Text](implicit
+    c: Value As F[T]
+  ): Text As F[T] =
+    c.local(t => Value(t.data))
+
+  implicit def deriveTAsText_fromTAsValue[T: * =:!= Text](implicit
+    c: T As Value
+  ): T As Text =
+    c.map(v => Text(v.unboxed))
+
+  implicit def deriveTAsText_fromTAsValidatedValue[F[_]: AppExOrEu, T: * =:!= Text](implicit
+    c: T As ValidatedValue
+  ): T As F[Text] =
+    c.map(v => v.extract[F].map(Text(_)))
+}
+
+private sealed trait ConverterLowerPriorityImplicits2 {
+
+  import cats.syntax.flatMap._
+  import cats.syntax.functor._
+
+  implicit val nodeToElemConverter: Node As Elem =
+    Converter.of(XmlUtils.nodeToElem)
+
+  implicit val convertStringToValue: String As Value =
+    Converter.of(Value(_))
+
+  //avoid Value subclass
+  implicit def convertValueToString[T: * =:= Value]: T As String =
+    Converter.of(a => a.unboxed)
+
+  implicit val converterThrowableNelToThrowableEx: ThrowableNel As Throwable =
+    Converter.of(ThrowableNel.toThrowable)
+
+  implicit val converterThrowableToThrowableNel: Throwable As ThrowableNel =
+    Converter.of(ThrowableNel.fromThrowable)
+
+  implicit def converterFlatMapAs[F[_]: FlatMap, A, B](implicit c: Converter[A, F[B]]): Converter[F[A], F[B]] =
+    Converter.of(fa => fa.flatMap(a => c.run(a)))
+
+  implicit def converterAndThenAs[E, A, B](implicit
+    c: Converter[A, Validated[E, B]]
+  ): Converter[Validated[E, A], Validated[E, B]] =
+    Converter.of(fa => fa.andThen(a => c.run(a)))
+
+  implicit def converterXmlContentZoomRunnerForValidated[A](implicit
+    c: Converter[ValidatedNelEx[String], ValidatedNelEx[A]]
+  ): Converter[XmlContentZoomRunner, ValidatedNelEx[A]] =
+    Converter.of(r => c.run(r.extractAsValidated))
+
+  implicit def converterXmlContentZoomRunnerForAppExOrEu[F[_]: AppExOrEu: FlatMap, A](implicit
+    c: Converter[F[String], F[A]]
+  ): Converter[XmlContentZoomRunner, F[A]] =
+    Converter.of(r => c.run(r.extract[F]))
 
   // format: off
-  implicit val id_str_to_bigInt     : StringTo[Id, BigInt     ] = liftPure[Try, String, BigInt].map(_.get)
-  implicit val id_str_to_bigDecimal : StringTo[Id, BigDecimal ] = liftPure[Try, String, BigDecimal].map(_.get)
-  implicit val id_str_to_byte       : StringTo[Id, Byte       ] = liftPure[Try, String, Byte].map(_.get)
-  implicit val id_str_to_char       : StringTo[Id, Char       ] = liftPure[Try, String, Char].map(_.get)
-  implicit val id_str_to_short      : StringTo[Id, Short      ] = liftPure[Try, String, Short].map(_.get)
-  implicit val id_str_to_int        : StringTo[Id, Int        ] = liftPure[Try, String, Int].map(_.get)
-  implicit val id_str_to_long       : StringTo[Id, Long       ] = liftPure[Try, String, Long].map(_.get)
-  implicit val id_str_to_float      : StringTo[Id, Float      ] = liftPure[Try, String, Float].map(_.get)
-  implicit val id_str_to_double     : StringTo[Id, Double     ] = liftPure[Try, String, Double].map(_.get)
+  implicit val convertBigIntToValue     : BigInt     As Value = toValue
+  implicit val convertBigDecimalToValue : BigDecimal As Value = toValue
+  implicit val convertNyteToValue       : Byte       As Value = toValue
+  implicit val convertCharToValue       : Char       As Value = toValue
+  implicit val convertShortToValue      : Short      As Value = toValue
+  implicit val convertIntToValue        : Int        As Value = toValue
+  implicit val convertLongToValue       : Long       As Value = toValue
+  implicit val convertFloatToValue      : Float      As Value = toValue
+  implicit val convertDoubleToValue     : Double     As Value = toValue
 
-  //MONAD ERROR
-  implicit def monad_str_to_bigInt    [F[_] : MonadExOrEu]: StringTo[F, BigInt    ] = fromString(BigInt(_))
-  implicit def monad_str_to_bigDecimal[F[_] : MonadExOrEu]: StringTo[F, BigDecimal] = fromString(BigDecimal(_))
-  implicit def monad_str_to_byte      [F[_] : MonadExOrEu]: StringTo[F, Byte      ] = fromString(_.toByte)
-  implicit def monad_str_to_char      [F[_] : MonadExOrEu]: StringTo[F, Char      ] = fromString(_.toCharArray.apply(0))
-  implicit def monad_str_to_short     [F[_] : MonadExOrEu]: StringTo[F, Short     ] = fromString(_.toShort)
-  implicit def monad_str_to_int       [F[_] : MonadExOrEu]: StringTo[F, Int       ] = fromString(_.toInt)
-  implicit def monad_str_to_long      [F[_] : MonadExOrEu]: StringTo[F, Long      ] = fromString(_.toLong)
-  implicit def monad_str_to_float     [F[_] : MonadExOrEu]: StringTo[F, Float     ] = fromString(_.toFloat)
-  implicit def monad_str_to_double    [F[_] : MonadExOrEu]: StringTo[F, Double    ] = fromString(_.toDouble)
+  implicit def convertValueToFString    [F[_] : AppExOrEu] : Value As F[String    ] = fromValue(a => a)
+  implicit def convertValueToFBigInt    [F[_] : AppExOrEu] : Value As F[BigInt    ] = fromValue(BigInt(_))
+  implicit def convertValueToFBigDecimal[F[_] : AppExOrEu] : Value As F[BigDecimal] = fromValue(BigDecimal(_))
+  implicit def convertValueToFNyte      [F[_] : AppExOrEu] : Value As F[Byte      ] = fromValue(_.toByte)
+  implicit def convertValueToFChar      [F[_] : AppExOrEu] : Value As F[Char      ] = fromValue(_.toCharArray.apply(0))
+  implicit def convertValueToFShort     [F[_] : AppExOrEu] : Value As F[Short     ] = fromValue(_.toShort)
+  implicit def convertValueToFInt       [F[_] : AppExOrEu] : Value As F[Int       ] = fromValue(_.toInt)
+  implicit def convertValueToFLong      [F[_] : AppExOrEu] : Value As F[Long      ] = fromValue(_.toLong)
+  implicit def convertValueToFFloat     [F[_] : AppExOrEu] : Value As F[Float     ] = fromValue(_.toFloat)
+  implicit def convertValueToFDouble    [F[_] : AppExOrEu] : Value As F[Double    ] = fromValue(_.toDouble)
   // format: on
 
-  private def liftPure[F[_], A, B](implicit c: Converter[F, A, B]): PureConverter[A, F[B]] =
-    PureConverter.of(a => c.lift[Id].apply(a))
+  private def toValue[T]: Converter[T, Value] = Converter.of[T, Value](t => Value(t.toString))
 
-  private def fromString[F[_]: MonadExOrEu, O](f: String => O): StringTo[F, O] =
-    Converter.of(s => MonadExOrEu.fromTry(Try(f(s))))
+  private def fromValue[F[_]: AppExOrEu, O](f: String => O): Converter[Value, F[O]] =
+    Converter.of {
+      case value: ValidatedValue => value.extract[F].map(f)
+      case value: Value          => AppExOrEu.fromTry(Try(f(value.unboxed)))
+    }
 }
 
-private sealed trait ConverterLowPriorityImplicitsLessGeneric {
+private sealed trait ConverterNaturalTransformationInstances {
 
-  implicit def toStringConverter[F[_]: Applicative, T: * =:!= String]: ToString[F, T] =
-    Converter.of(a => Applicative[F].pure(a.toString))
+  //APP EX
+  implicit def appExOrEuTryNatTransformationInstance[G[_]: AppExOrEu]: Try ~> G =
+    λ[Try ~> G](AppExOrEu.fromTry(_))
 
-  implicit def convStringToAsConvTextTo[F[_], T: * =:!= Text](implicit
-    c: Converter[F, String, T]
-  ): Converter[F, Text, T] =
-    c.local(_.text)
+  implicit def appExOrEuEitherExNatTransformationInstance[G[_]: AppExOrEu]: EitherEx ~> G =
+    λ[EitherEx ~> G](AppExOrEu.fromEitherEx(_))
 
-  implicit def convToStringAsToText[F[_]: Functor, T: * =:!= Text](implicit
-    c: Converter[F, T, String]
-  ): Converter[F, T, Text] =
-    c.map(Text(_))
-}
+  implicit def appExOrEuEitherNelExNatTransformationInstance[G[_]: AppExOrEu]: EitherNelEx ~> G =
+    λ[EitherNelEx ~> G](AppExOrEu.fromEitherNelEx(_))
 
-private sealed trait ConverterLowPriorityImplicitsMostGeneric {
+  implicit def appExOrEuValidatedExNatTransformationInstance[G[_]: AppExOrEu]: ValidatedEx ~> G =
+    λ[ValidatedEx ~> G](AppExOrEu.fromValidatedEx(_))
 
-  implicit def identityConverter[F[_]: Applicative, A, B: A =:= *]: Converter[F, A, A] =
-    Converter.id[F, A]
+  implicit def appExOrEuValidatedNelExNatTransformationInstance[G[_]: AppExOrEu]: ValidatedNelEx ~> G =
+    λ[ValidatedNelEx ~> G](AppExOrEu.fromValidatedNelEx(_))
 }

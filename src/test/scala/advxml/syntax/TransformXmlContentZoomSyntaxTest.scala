@@ -16,19 +16,21 @@ class TransformXmlContentZoomSyntaxTest extends AnyFunSuite with FunSuiteContrac
   XmlContentZoomTest.Contract[Try](
     "Syntax.WithString",
     {
-      ContractFuncs(
+      ContractFuncs[Try](
+        //label
+        label                 = ns => ns.label,
+        labelFromBindedZoom   = zoom => zoom.label.extract[Try],
+        labelFromZoom         = (zoom, ns) => zoom.label(ns).extract[Try],
         //attr
-        attrFromNs            = _./@[Try](_),
-        attrFromM             = _./@(_),
-        attrFromUnbindedZoom  = (zoom, ns, key) => zoom./@[Try](key).apply(ns),
-        attrFromBindedZoom    = _./@[Try](_),
-        //text
-        textFromNs            = _.textM[Try],
-        textFromM             = _.textM,
-        textFromUnbindedZoom  = (zoom, ns) => zoom.textM[Try].apply(ns),
-        textFromBindedZoom    = _.textM[Try]
+        attr                  = (ns, key) => ns.attr(key),
+        attrFromBindedZoom    = (zoom, key) => zoom.attr(key).extract[Try],
+        attrFromZoom          = (zoom, ns, key) => zoom.attr(ns, key).extract[Try],
+        //content
+        content               = ns => ns.content,
+        contentFromBindedZoom = zoom => zoom.content.extract[Try],
+        contentFromZoom       = (zoom, ns) => zoom.content(ns).extract[Try]
       )
     }
-  )(XmlContentZoomTest.TryExtractor).runAll()
+  ).runAll()
   // format: on
 }

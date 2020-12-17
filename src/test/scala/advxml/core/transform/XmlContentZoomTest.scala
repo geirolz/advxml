@@ -1,150 +1,123 @@
 package advxml.core.transform
 
+import advxml.core.data.{ValidatedValue, Value}
 import advxml.core.transform.XmlContentZoomTest.ContractFuncs
 import advxml.core.transform.XmlZoom.root
-import advxml.testUtils.{ContractTests, FeatureSpecContract}
+import advxml.core.AppExOrEu
+import advxml.testUtils.{ContractTests, Fallible, FeatureSpecContract}
 import org.scalatest.featurespec.AnyFeatureSpec
 
-import scala.util.{Success, Try}
+import scala.util.Try
 import scala.xml.{Elem, NodeSeq}
 
 class XmlContentZoomTest extends AnyFeatureSpec with FeatureSpecContract {
 
-  // format: off
-  XmlContentZoomTest.Contract[Try](
-    "Mandatory",
-    {
-      ContractFuncs(
-        //attr
-        attrFromNs            = XmlContentZoom.attr[Try],
-        attrFromM             = XmlContentZoom.attrM[Try],
-        attrFromUnbindedZoom  = (zoom, ns, key) => XmlContentZoom.attr[Try](zoom.run[Try](ns).get, key),
-        attrFromBindedZoom    = (zoom, key) => XmlContentZoom.attr[Try](zoom.run[Try].get, key),
-        //text
-        textFromNs            = XmlContentZoom.text[Try],
-        textFromM             = XmlContentZoom.textM[Try],
-        textFromUnbindedZoom  = (zoom, ns) => XmlContentZoom.text[Try](zoom.run[Try](ns).get),
-        textFromBindedZoom    = zoom => XmlContentZoom.text[Try](zoom.run[Try].get),
-      )
-    }
-  )(XmlContentZoomTest.TryExtractor).runAll()
-  // format: on
+  import cats.instances.try_._
 
   // format: off
-  XmlContentZoomTest.Contract[Option](
-    "Optional",
+  XmlContentZoomTest.Contract[Try](
+    "Core",
     {
-      ContractFuncs(
+      ContractFuncs[Try](
+        //label
+        label                  = ns => XmlContentZoom.label(ns),
+        labelFromBindedZoom    = zoom => XmlContentZoom.labelFromBindedZoom(zoom).extract[Try],
+        labelFromZoom          = (zoom, ns) => XmlContentZoom.labelFromZoom(zoom, ns).extract[Try],
         //attr
-        attrFromNs            = XmlContentZoom.attr[Option],
-        attrFromM             = XmlContentZoom.attrM[Option],
-        attrFromUnbindedZoom  = (zoom, ns, key) => XmlContentZoom.attr[Option](zoom.run[Option](ns).get, key),
-        attrFromBindedZoom    = (zoom, key) => XmlContentZoom.attr[Option](zoom.run[Option].get, key),
-        //text
-        textFromNs            = XmlContentZoom.text[Option],
-        textFromM             = XmlContentZoom.textM[Option],
-        textFromUnbindedZoom  = (zoom, ns) => XmlContentZoom.text[Option](zoom.run[Option](ns).get),
-        textFromBindedZoom    = zoom => XmlContentZoom.text[Option](zoom.run[Option].get),
+        attr                  = (ns, key) => XmlContentZoom.attr(ns, key),
+        attrFromBindedZoom    = (zoom, key) => XmlContentZoom.attrFromBindedZoom(zoom, key).extract[Try],
+        attrFromZoom          = (zoom, ns, key) => XmlContentZoom.attrFromZoom(zoom, ns, key).extract[Try],
+        //content
+        content               = ns => XmlContentZoom.content(ns),
+        contentFromBindedZoom = zoom => XmlContentZoom.contentFromBindedZoom(zoom).extract[Try],
+        contentFromZoom       = (zoom, ns) => XmlContentZoom.contentFromZoom(zoom, ns).extract[Try]
       )
     }
-  )(XmlContentZoomTest.OptionExtractor).runAll()
+  ).runAll()
   // format: on
 }
 
 object XmlContentZoomTest {
 
-  trait Extractor[F[_]] {
-    def pure[T](t: T): F[T]
-    def extract[T](fa: F[T]): T
-    def isFailure[T](fa: F[T]): Boolean
-  }
-
-  case object TryExtractor extends Extractor[Try] {
-    override def pure[T](t: T): Try[T] = Success(t)
-    override def extract[T](fa: Try[T]): T = fa.get
-    override def isFailure[T](fa: Try[T]): Boolean = fa.isFailure
-  }
-
-  case object OptionExtractor extends Extractor[Option] {
-    override def pure[T](t: T): Option[T] = Some(t)
-    override def extract[T](fa: Option[T]): T = fa.get
-    override def isFailure[T](fa: Option[T]): Boolean = fa.isEmpty
-  }
-
   case class ContractFuncs[F[_]](
     //attr
-    attrFromNs: (NodeSeq, String) => F[String],
-    attrFromM: (F[NodeSeq], String) => F[String],
-    attrFromUnbindedZoom: (XmlZoom, NodeSeq, String) => F[String],
+    label: NodeSeq => Value,
+    labelFromBindedZoom: BindedXmlZoom => F[String],
+    labelFromZoom: (XmlZoom, NodeSeq) => F[String],
+    //attr
+    attr: (NodeSeq, String) => ValidatedValue,
     attrFromBindedZoom: (BindedXmlZoom, String) => F[String],
+    attrFromZoom: (XmlZoom, NodeSeq, String) => F[String],
     //text
-    textFromNs: NodeSeq => F[String],
-    textFromM: F[NodeSeq] => F[String],
-    textFromUnbindedZoom: (XmlZoom, NodeSeq) => F[String],
-    textFromBindedZoom: BindedXmlZoom => F[String]
+    content: NodeSeq => ValidatedValue,
+    contentFromBindedZoom: BindedXmlZoom => F[String],
+    contentFromZoom: (XmlZoom, NodeSeq) => F[String]
   )
 
-  case class Contract[F[_]](subDesc: String, f: ContractFuncs[F])(ex: Extractor[F])
+  case class Contract[F[_]: AppExOrEu: Fallible](subDesc: String, f: ContractFuncs[F])
       extends ContractTests("XmlContentZoom", subDesc) {
 
+    import Fallible._
+
+    //============================= LABEL =============================
+    test("label from NodeSeq") {
+      val elem: Elem = <foo value="1"></foo>
+      assert(f.label(elem).unboxed == "foo")
+    }
+
+    test("label from BindedXmlZoom") {
+      val elem: BindedXmlZoom = root(<foo value="1"></foo>)
+      assert(f.labelFromBindedZoom(elem).extract == "foo")
+    }
+
+    test("label from (Unbinded)XmlZoom") {
+      val elem: NodeSeq = <foo value="1"></foo>
+      assert(f.labelFromZoom(root, elem).extract == "foo")
+    }
+
+    //============================= ATTR =============================
     test("attribute from NodeSeq") {
       val elem: Elem = <foo value="1"></foo>
-
-      assert(ex.extract(f.attrFromNs(elem, "value")) == "1")
-      assert(ex.isFailure(f.attrFromNs(elem, "rar")))
-    }
-
-    test("attribute from F[NodeSeq]") {
-      val elem: F[NodeSeq] = ex.pure(<foo value="1"></foo>)
-
-      assert(ex.extract(f.attrFromM(elem, "value")) == "1")
-      assert(ex.isFailure(f.attrFromM(elem, "rar")))
-    }
-
-    test("attribute from (Unbinded)XmlZoom") {
-      val elem: NodeSeq = <foo value="1"></foo>
-
-      assert(ex.extract(f.attrFromUnbindedZoom(root, elem, "value")) == "1")
-      assert(ex.isFailure(f.attrFromUnbindedZoom(root, elem, "rar")))
+      assert(f.attr(elem, "value").extract[F].extract == "1")
     }
 
     test("attribute from BindedXmlZoom") {
       val elem: BindedXmlZoom = root(<foo value="1"></foo>)
 
-      assert(ex.extract(f.attrFromBindedZoom(elem, "value")) == "1")
-      assert(ex.isFailure(f.attrFromBindedZoom(elem, "rar")))
+      assert(f.attrFromBindedZoom(elem, "value").extract == "1")
+      assert(f.attrFromBindedZoom(elem, "rar").isFailure)
     }
 
-    test("text from NodeSeq") {
-      val elemWithText: Elem = <foo>TEST</foo>
-      val elemWithoutText = <foo></foo>
+    test("attribute from (Unbinded)XmlZoom") {
+      val elem: NodeSeq = <foo value="1"></foo>
 
-      assert(ex.extract(f.textFromNs(elemWithText)) == "TEST")
-      assert(ex.isFailure(f.textFromNs(elemWithoutText)))
+      assert(f.attrFromZoom(root, elem, "value").extract == "1")
+      assert(f.attrFromZoom(root, elem, "rar").isFailure)
     }
 
-    test("text from F[NodeSeq]") {
-      val elemWithText: F[NodeSeq] = ex.pure(<foo>TEST</foo>)
-      val elemWithoutText: F[NodeSeq] = ex.pure(<foo></foo>)
+    //============================ CONTENT ============================
+    test("content from NodeSeq") {
+      val elemWithContent: Elem = <foo>TEST</foo>
+      val elemWithoutContent = <foo></foo>
 
-      assert(ex.extract(f.textFromM(elemWithText)) == "TEST")
-      assert(ex.isFailure(f.textFromM(elemWithoutText)))
+      assert(f.content(elemWithContent).extract[F].extract == "TEST")
+      assert(f.content(elemWithoutContent).extract[F].isFailure)
     }
 
-    test("text from (Unbinded)XmlZoom") {
-      val elemWithText: Elem = <foo>TEST</foo>
-      val elemWithoutText = <foo></foo>
+    test("content from BindedXmlZoom") {
+      val elemWithContent: BindedXmlZoom = root(<foo>TEST</foo>)
+      val elemWithoutContent: BindedXmlZoom = root(<foo></foo>)
 
-      assert(ex.extract(f.textFromUnbindedZoom(root, elemWithText)) == "TEST")
-      assert(ex.isFailure(f.textFromUnbindedZoom(root, elemWithoutText)))
+      assert(f.contentFromBindedZoom(elemWithContent).extract == "TEST")
+      assert(f.contentFromBindedZoom(elemWithoutContent).isFailure)
     }
 
-    test("text from BindedXmlZoom") {
-      val elemWithText: BindedXmlZoom = root(<foo>TEST</foo>)
-      val elemWithoutText: BindedXmlZoom = root(<foo></foo>)
+    test("content from (Unbinded)XmlZoom") {
+      val elemWithContent: Elem = <foo>TEST</foo>
+      val elemWithoutContent = <foo></foo>
 
-      assert(ex.extract(f.textFromBindedZoom(elemWithText)) == "TEST")
-      assert(ex.isFailure(f.textFromBindedZoom(elemWithoutText)))
+      assert(f.contentFromZoom(root, elemWithContent).extract == "TEST")
+      assert(f.contentFromZoom(root, elemWithoutContent).isFailure)
     }
   }
 }

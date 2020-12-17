@@ -1,6 +1,6 @@
 package advxml.syntax
 
-import advxml.core.data.{AttributeData, Key, KeyValuePredicate}
+import advxml.core.data.{AttributeData, Key, KeyValuePredicate, Value}
 import advxml.syntax.KeyValueSyntaxTest.ContractFuncs
 import advxml.testUtils.{ContractTests, FunSuiteContract}
 import org.scalatest.funsuite.AnyFunSuite
@@ -30,14 +30,14 @@ class KeyValueSyntaxTest extends AnyFunSuite with FunSuiteContract {
 object KeyValueSyntaxTest {
 
   case class ContractFuncs(
-    data: (Key, String) => AttributeData,
-    withPredicate: (Key, String => Boolean) => KeyValuePredicate[String],
-    equals: (Key, Double) => KeyValuePredicate[String],
-    notEquals: (Key, Double) => KeyValuePredicate[String],
-    lessThen: (Key, Double) => KeyValuePredicate[String],
-    lessEqThen: (Key, Double) => KeyValuePredicate[String],
-    greaterThen: (Key, Double) => KeyValuePredicate[String],
-    greaterEqThen: (Key, Double) => KeyValuePredicate[String]
+    data: (Key, Value) => AttributeData,
+    withPredicate: (Key, Value => Boolean) => KeyValuePredicate,
+    equals: (Key, Double) => KeyValuePredicate,
+    notEquals: (Key, Double) => KeyValuePredicate,
+    lessThen: (Key, Double) => KeyValuePredicate,
+    lessEqThen: (Key, Double) => KeyValuePredicate,
+    greaterThen: (Key, Double) => KeyValuePredicate,
+    greaterEqThen: (Key, Double) => KeyValuePredicate
   )
 
   case class Contract(subDesc: String = "", f: ContractFuncs) extends ContractTests("KeyValue", subDesc) {
@@ -45,65 +45,65 @@ object KeyValueSyntaxTest {
     private val key: Key = Key("key")
 
     test("data") {
-      val text: String = "TEST"
-      val attrData: AttributeData = f.data(key, text)
+      val value: Value = Value("TEST")
+      val attrData: AttributeData = f.data(key, value)
 
       assert(attrData.key == key)
-      assert(attrData.value == text)
+      assert(attrData.value == value)
     }
 
     test("filter") {
-      val p: KeyValuePredicate[String] = f.withPredicate(key, _ == "1")
+      val p: KeyValuePredicate = f.withPredicate(key, _ == Value("1"))
 
-      assert(p("1"))
-      assert(!p("2"))
+      assert(p(Value("1")))
+      assert(!p(Value("2")))
     }
 
     test("equals") {
-      val p: KeyValuePredicate[String] = f.equals(key, 1d)
+      val p: KeyValuePredicate = f.equals(key, 1d)
 
-      assert(p("1"))
-      assert(!p("0.5"))
-      assert(!p("2"))
+      assert(p(Value("1")))
+      assert(!p(Value("0.5")))
+      assert(!p(Value("2")))
     }
 
     test("notEquals") {
-      val p: KeyValuePredicate[String] = f.notEquals(key, 1d)
+      val p: KeyValuePredicate = f.notEquals(key, 1d)
 
-      assert(p("2"))
-      assert(!p("1"))
+      assert(p(Value("2")))
+      assert(!p(Value("1")))
     }
 
     test("lessThen") {
-      val p: KeyValuePredicate[String] = f.lessThen(key, 1d)
+      val p: KeyValuePredicate = f.lessThen(key, 1d)
 
-      assert(p("0.5"))
-      assert(!p("1"))
-      assert(!p("2"))
+      assert(p(Value("0.5")))
+      assert(!p(Value("1")))
+      assert(!p(Value("2")))
     }
 
     test("lessEqThen") {
-      val p: KeyValuePredicate[String] = f.lessEqThen(key, 1d)
+      val p: KeyValuePredicate = f.lessEqThen(key, 1d)
 
-      assert(p("0.5"))
-      assert(p("1"))
-      assert(!p("2"))
+      assert(p(Value("0.5")))
+      assert(p(Value("1")))
+      assert(!p(Value("2")))
     }
 
     test("greaterThen") {
-      val p: KeyValuePredicate[String] = f.greaterThen(key, 1d)
+      val p: KeyValuePredicate = f.greaterThen(key, 1d)
 
-      assert(p("2"))
-      assert(!p("1"))
-      assert(!p("0.5"))
+      assert(p(Value("2")))
+      assert(!p(Value("1")))
+      assert(!p(Value("0.5")))
     }
 
     test("greaterEqThen") {
-      val p: KeyValuePredicate[String] = f.greaterEqThen(key, 1d)
+      val p: KeyValuePredicate = f.greaterEqThen(key, 1d)
 
-      assert(p("2"))
-      assert(p("1"))
-      assert(!p("0.5"))
+      assert(p(Value("2")))
+      assert(p(Value("1")))
+      assert(!p(Value("0.5")))
     }
   }
 }

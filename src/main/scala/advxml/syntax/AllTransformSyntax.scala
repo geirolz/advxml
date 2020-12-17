@@ -1,7 +1,7 @@
 package advxml.syntax
 
-import advxml.core.{MonadEx, MonadExOrEu}
-import advxml.core.data.XmlPredicate
+import advxml.core.MonadEx
+import advxml.core.data._
 import advxml.core.transform._
 
 import scala.xml.NodeSeq
@@ -53,44 +53,44 @@ private[syntax] sealed trait ZoomSyntax {
 
   implicit class XmlZoomNodeBaseOps[Z <: XmlZoomNodeBase](zoom: Z) {
 
-    def /(nodeName: String): Z#Type = zoom.immediateDown(nodeName)
+    def /(nodeName: String): Z#Type = zoom.down(nodeName)
 
     def |(p: XmlPredicate): Z#Type = zoom.filter(p)
   }
 
-  implicit class XmlZoomOps(zoom: XmlZoom) {
+  implicit class XmlContentZoomSyntaxForId(ns: NodeSeq) {
 
-    def /@[F[_]: MonadExOrEu](key: String): NodeSeq => F[String] =
-      ns => XmlContentZoom.attrM[F](zoom.run[F](ns), key)
+    def label: Value =
+      XmlContentZoom.label(ns)
 
-    def textM[F[_]: MonadExOrEu](implicit dummyImplicit: DummyImplicit): NodeSeq => F[String] =
-      ns => XmlContentZoom.textM[F](zoom.run[F](ns))
+    def attr(key: String): ValidatedValue =
+      XmlContentZoom.attr(ns, key)
+
+    def content: ValidatedValue =
+      XmlContentZoom.content(ns)
   }
 
-  implicit class BindedXmlZoomOps(zoom: BindedXmlZoom) {
+  implicit class XmlContentZoomSyntaxForBindedXmlZoom(zoom: BindedXmlZoom) {
 
-    def /@[F[_]: MonadExOrEu](key: String): F[String] =
-      XmlContentZoom.attrM[F](zoom.run[F], key)
+    def label: XmlContentZoomRunner =
+      XmlContentZoom.labelFromBindedZoom(zoom)
 
-    def textM[F[_]: MonadExOrEu]: F[String] =
-      XmlContentZoom.textM[F](zoom.run[F])
+    def attr(key: String): XmlContentZoomRunner =
+      XmlContentZoom.attrFromBindedZoom(zoom, key)
+
+    def content: XmlContentZoomRunner =
+      XmlContentZoom.contentFromBindedZoom(zoom)
   }
 
-  implicit class XmlContentZoomOpsForId(ns: NodeSeq) {
+  implicit class XmlContentZoomSyntaxForXmlZoom(zoom: XmlZoom) {
 
-    def /@[F[_]: MonadExOrEu](key: String): F[String] =
-      XmlContentZoom.attr[F](ns, key)
+    def label(ns: NodeSeq): XmlContentZoomRunner =
+      XmlContentZoom.labelFromZoom(zoom, ns)
 
-    def textM[F[_]: MonadExOrEu]: F[String] =
-      XmlContentZoom.text[F](ns)
-  }
+    def attr(ns: NodeSeq, key: String): XmlContentZoomRunner =
+      XmlContentZoom.attrFromZoom(zoom, ns, key)
 
-  implicit class XmlContentZoomOpsForMonad[F[_]: MonadExOrEu](ns: F[NodeSeq]) {
-
-    def /@(key: String): F[String] =
-      XmlContentZoom.attrM[F](ns, key)
-
-    def textM: F[String] =
-      XmlContentZoom.textM[F](ns)
+    def content(ns: NodeSeq): XmlContentZoomRunner =
+      XmlContentZoom.contentFromZoom(zoom, ns)
   }
 }

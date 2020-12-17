@@ -2,7 +2,7 @@ package advxml.syntax
 
 import advxml.core.XmlNormalizer
 import advxml.core.data._
-import cats.{Applicative, Eq, Id, Monad, PartialOrder}
+import cats.{Applicative, Eq, Monad, PartialOrder}
 
 import scala.util.Try
 import scala.xml.NodeSeq
@@ -11,7 +11,6 @@ private[advxml] trait AllSyntax
     extends AllCommonSyntax
     with AllTransformSyntax
     with ConvertersSyntax
-    with ValidatedSyntax
     with NormalizerSyntax
     with JavaScalaConvertersSyntax
 
@@ -21,7 +20,7 @@ private[advxml] trait AllCommonSyntax
     with PredicateSyntax
     with NestedMapSyntax
 
-//************************************ NORMALIZE ****************************************
+//============================== NORMALIZE ==============================
 private[syntax] trait NormalizerSyntax {
 
   implicit class NodeSeqNormalizationAndEqualityOps(ns: NodeSeq) {
@@ -40,56 +39,57 @@ private[syntax] trait NormalizerSyntax {
   }
 }
 
-//******************************* ATTRIBUTE PREDICATE ***********************************
+//============================== ATTRIBUTE PREDICATE ==============================
 private[syntax] trait AttributeSyntax {
 
-  implicit class KeyStringInterpolationOps(ctx: StringContext) {
+  implicit class KeyAndValueStringInterpolationOps(ctx: StringContext) {
     def k(args: Any*): Key = Key(ctx.s(args: _*))
+    def v(args: Any*): Value = Value(ctx.s(args: _*))
   }
 
   implicit class AttributeOps(key: Key) {
 
-    def :=[T](v: T)(implicit converter: ToString[Id, T]): AttributeData =
-      AttributeData(key, converter(v))
+    def :=[T](v: T)(implicit c: T As Value): AttributeData =
+      AttributeData(key, c(v))
 
     //********* KeyValuePredicate *********
     import cats.syntax.order._
 
-    def ->[T](valuePredicate: T => Boolean): KeyValuePredicate[T] =
+    def ->(valuePredicate: Value => Boolean): KeyValuePredicate =
       KeyValuePredicate(key, valuePredicate)
 
-    def ===[T: Eq](that: T)(implicit converter: StringTo[Id, T]): KeyValuePredicate[String] =
+    def ===[T: Eq](that: T)(implicit converter: Value As Try[T]): KeyValuePredicate =
       buildPredicate[T](_ === _, that, "===")
 
-    def =!=[T: Eq](that: T)(implicit converter: StringTo[Id, T]): KeyValuePredicate[String] =
+    def =!=[T: Eq](that: T)(implicit converter: Value As Try[T]): KeyValuePredicate =
       buildPredicate[T](_ =!= _, that, "=!=")
 
-    def <[T: PartialOrder](that: T)(implicit converter: StringTo[Id, T]): KeyValuePredicate[String] =
+    def <[T: PartialOrder](that: T)(implicit converter: Value As Try[T]): KeyValuePredicate =
       buildPredicate[T](_ < _, that, "<")
 
-    def <=[T: PartialOrder](that: T)(implicit converter: StringTo[Id, T]): KeyValuePredicate[String] =
+    def <=[T: PartialOrder](that: T)(implicit converter: Value As Try[T]): KeyValuePredicate =
       buildPredicate[T](_ <= _, that, "<=")
 
-    def >[T: PartialOrder](that: T)(implicit converter: StringTo[Id, T]): KeyValuePredicate[String] =
+    def >[T: PartialOrder](that: T)(implicit converter: Value As Try[T]): KeyValuePredicate =
       buildPredicate[T](_ > _, that, ">")
 
-    def >=[T: PartialOrder](that: T)(implicit converter: StringTo[Id, T]): KeyValuePredicate[String] =
+    def >=[T: PartialOrder](that: T)(implicit converter: Value As Try[T]): KeyValuePredicate =
       buildPredicate[T](_ >= _, that, ">=")
 
     private def buildPredicate[T](p: (T, T) => Boolean, that: T, symbol: String)(implicit
-      c: StringTo[Id, T]
-    ): KeyValuePredicate[String] =
+      c: Value As Try[T]
+    ): KeyValuePredicate =
       KeyValuePredicate(
         key,
-        new (String => Boolean) {
-          override def apply(v: String): Boolean = Try(p(c(v), that)).getOrElse(false)
+        new (Value => Boolean) {
+          override def apply(f: Value): Boolean = c(f).map(p(_, that)).getOrElse(false)
           override def toString(): String = s"$symbol [$that]"
         }
       )
   }
 }
 
-//************************************ PREDICATE ****************************************
+//============================== PREDICATE ==============================
 private[syntax] trait PredicateSyntax {
   implicit class PredicateOps[T](p: T => Boolean) {
 
@@ -131,7 +131,7 @@ private[syntax] trait PredicateSyntax {
   }
 }
 
-//************************************ NESTED MAP ***************************************
+//============================== NESTED MAP ==============================
 private[syntax] trait NestedMapSyntax {
 
   import cats.implicits._

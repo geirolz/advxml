@@ -24,12 +24,11 @@ package object instances extends AllCommonInstances {
 
   // format: off
   object all        extends AllInstances
-  //******************** FEATURES ********************
+  //==================== FEATURES ====================
   object transform  extends AllTransforInstances {
     object predicates extends XmlPredicateInstances
     object modifiers  extends XmlModifierInstances
   }
   object convert    extends ConverterInstances
-  object validated  extends ValidatedInstances
   // format: on
 }
