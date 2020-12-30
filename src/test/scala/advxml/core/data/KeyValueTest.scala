@@ -1,6 +1,7 @@
 package advxml.core.data
 
 import advxml.syntax._
+import cats.Eq
 import org.scalatest.funsuite.AnyFunSuite
 
 class KeyValueTest extends AnyFunSuite {
@@ -15,6 +16,12 @@ class KeyValueTest extends AnyFunSuite {
     val key: Key = k"KEY1"
     assert(key != "KEY2")
     assert(key == "KEY1")
+  }
+
+  test("Key.Eq for Cats") {
+    import advxml.core.data.Key._
+    assert(Eq[Key].eqv(k"KEY1", k"KEY1"))
+    assert(Eq[Key].neqv(k"KEY1", k"KEY2"))
   }
 
   test("AttributeData.toString") {

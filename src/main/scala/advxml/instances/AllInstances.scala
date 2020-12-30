@@ -10,6 +10,6 @@ private[instances] trait AllCommonInstances extends AggregatedExceptionInstances
 
 //============================== EXCEPTIONS ==============================
 private[instances] trait AggregatedExceptionInstances {
-  implicit lazy val semigroupInstanceForAggregatedException: Semigroup[Throwable] =
+  implicit val semigroupInstanceForAggregatedException: Semigroup[Throwable] =
     (x: Throwable, y: Throwable) => ThrowableNel.toThrowable(NonEmptyList.of(x, y))
 }

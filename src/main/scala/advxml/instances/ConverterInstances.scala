@@ -17,7 +17,8 @@ private[instances] trait ConverterInstances
 
   implicit def identityConverter[A]: Converter[A, A] = Converter.id[A]
 
-  implicit def identityConverterApplicative[F[_]: Applicative, A]: Converter[A, F[A]] = Converter.idF[F, A]
+  implicit def identityConverterApplicative[F[_]: Applicative, A: * =:!= F[A]]: Converter[A, F[A]] =
+    Converter.idF[F, A]
 }
 
 private sealed trait ConverterLowerPriorityImplicits1 {
@@ -38,28 +39,6 @@ private sealed trait ConverterLowerPriorityImplicits1 {
     c: T As ValidatedValue
   ): T As F[Text] =
     c.map(v => v.extract[F].map(Text(_)))
-}
-
-private sealed trait ConverterLowerPriorityImplicits2 {
-
-  import cats.syntax.flatMap._
-  import cats.syntax.functor._
-
-  implicit val nodeToElemConverter: Node As Elem =
-    Converter.of(XmlUtils.nodeToElem)
-
-  implicit val convertStringToValue: String As Value =
-    Converter.of(Value(_))
-
-  //avoid Value subclass
-  implicit def convertValueToString[T: * =:= Value]: T As String =
-    Converter.of(a => a.unboxed)
-
-  implicit val converterThrowableNelToThrowableEx: ThrowableNel As Throwable =
-    Converter.of(ThrowableNel.toThrowable)
-
-  implicit val converterThrowableToThrowableNel: Throwable As ThrowableNel =
-    Converter.of(ThrowableNel.fromThrowable)
 
   implicit def converterFlatMapAs[F[_]: FlatMap, A, B](implicit c: Converter[A, F[B]]): Converter[F[A], F[B]] =
     Converter.of(fa => fa.flatMap(a => c.run(a)))
@@ -68,6 +47,29 @@ private sealed trait ConverterLowerPriorityImplicits2 {
     c: Converter[A, Validated[E, B]]
   ): Converter[Validated[E, A], Validated[E, B]] =
     Converter.of(fa => fa.andThen(a => c.run(a)))
+}
+
+private sealed trait ConverterLowerPriorityImplicits2 {
+
+  import cats.syntax.functor._
+
+  //=============================== Node ===============================
+  implicit val nodeToElemConverter: Node As Elem =
+    Converter.of(XmlUtils.nodeToElem)
+
+  //=============================== Throwable ===============================
+  implicit val converterThrowableNelToThrowableEx: ThrowableNel As Throwable =
+    Converter.of(ThrowableNel.toThrowable)
+
+  implicit val converterThrowableToThrowableNel: Throwable As ThrowableNel =
+    Converter.of(ThrowableNel.fromThrowable)
+
+  //=============================== Value ===============================
+  implicit val convertStringToValue: String As Value =
+    Converter.of(Value(_))
+
+  implicit def convertValueToString[T: * =:= Value: * =:!= ValidatedValue]: T As String =
+    Converter.of(a => a.unboxed)
 
   implicit def converterXmlContentZoomRunnerForValidated[A](implicit
     c: Converter[ValidatedNelEx[String], ValidatedNelEx[A]]

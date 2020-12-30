@@ -1,6 +1,16 @@
 package advxml.syntax
 
-import advxml.core.data.{Converter, ValidatedConverter, ValidatedNelEx, XmlDecoder, XmlEncoder}
+import advxml.core.data.{
+  Converter,
+  EitherEx,
+  OptionConverter,
+  ValidatedConverter,
+  ValidatedEx,
+  ValidatedNelEx,
+  XmlDecoder,
+  XmlEncoder
+}
+import cats.data.Validated
 import cats.data.Validated.Valid
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -9,11 +19,33 @@ import scala.xml.{Elem, NodeSeq}
 
 class ConverterSyntaxTest extends AnyFunSuite {
 
+  import advxml.instances.convert._
   import advxml.syntax.convert._
   import cats.instances.option._
   import cats.instances.try_._
 
-  test("ConverterOps - mapAs | with Converter") {
+  test("ConverterOps.AnyFunctionK") {
+    val rvalue: EitherEx[Int] = Right(1)
+    val lvalue: EitherEx[Int] = Left(new RuntimeException(""))
+    val rresult: Try[Int] = rvalue.to[Try]
+    val lresult: Try[Int] = lvalue.to[Try]
+
+    assert(rresult == Success(1))
+    assert(lresult.isFailure)
+  }
+
+  test("ConverterOps.OptionFunctionK") {
+
+    val svalue: Option[Int] = Some(1)
+    val nvalue: Option[Int] = None
+    val sresult: Try[Int] = svalue.to[Try](new RuntimeException("ERROR"))
+    val nresult: Try[Int] = nvalue.to[Try](new RuntimeException("ERROR"))
+
+    assert(sresult == Success(1))
+    assert(nresult.isFailure)
+  }
+
+  test("ConverterOps.Applicative - mapAs | with Converter") {
 
     implicit val converter: Converter[String, Try[Int]] =
       Converter.of(str => Try(str.toInt))
@@ -24,7 +56,7 @@ class ConverterSyntaxTest extends AnyFunSuite {
     assert(result.get.get == 1)
   }
 
-  test("ConverterOps - mapAs | with Converter Id") {
+  test("ConverterOps.Applicative - mapAs | with Converter Id") {
     implicit val converter: Converter[String, Int] = Converter.of(_.toInt)
 
     val value: Option[String] = Some("1")
@@ -33,7 +65,7 @@ class ConverterSyntaxTest extends AnyFunSuite {
     assert(result.get == 1)
   }
 
-  test("ConverterOps - flatMapAs") {
+  test("ConverterOps.FlatMap - flatMapAs") {
 
     implicit val converter: Converter[String, Try[Int]] =
       Converter.of(str => Try(str.toInt))
@@ -44,7 +76,18 @@ class ConverterSyntaxTest extends AnyFunSuite {
     assert(result.get == 1)
   }
 
-  test("ConverterOps - as | with Converter") {
+  test("ConverterOps.Validated - andThenAs") {
+
+    implicit val converter: Converter[String, ValidatedEx[Int]] =
+      Converter.of(str => Validated.fromTry(Try(str.toInt)))
+
+    val value: ValidatedEx[String] = Valid("1")
+    val result: ValidatedEx[Int] = value.andThenAs[Int]
+
+    assert(result.getOrElse(-1) == 1)
+  }
+
+  test("ConverterOps.Any - as | with Converter") {
     implicit val converter: Converter[String, Try[Int]] =
       Converter.of(str => Try(str.toInt))
 
@@ -54,7 +97,7 @@ class ConverterSyntaxTest extends AnyFunSuite {
     assert(result.get == 1)
   }
 
-  test("ConverterOps - as | with Converter Id") {
+  test("ConverterOps.Any - as | with Converter Id") {
     implicit val converter: Converter[String, Int] = Converter.of(_.toInt)
 
     val value: String = "1"
@@ -63,7 +106,7 @@ class ConverterSyntaxTest extends AnyFunSuite {
     assert(result == 1)
   }
 
-  test("ConverterOps - as | with ValidatedConverter") {
+  test("ConverterOps.Any - asValidated") {
     implicit val converter: ValidatedConverter[String, Int] =
       ValidatedConverter.of(str => Valid(str.toInt))
 
@@ -73,7 +116,17 @@ class ConverterSyntaxTest extends AnyFunSuite {
     assert(result.toOption.get == 1)
   }
 
-  test("XmlDecoder - decode") {
+  test("ConverterOps.Any - asOption") {
+    implicit val converter: OptionConverter[String, Int] =
+      OptionConverter.of(str => Try(str.toInt).toOption)
+
+    val value: String = "1"
+    val result: Option[Int] = value.asOption[Int]
+
+    assert(result.get == 1)
+  }
+
+  test("ConverterOps.XmlDecoder - decode") {
     case class Person(name: String)
     implicit val decoder: XmlDecoder[Person] =
       XmlDecoder.of(xml => Valid(Person(xml \@ "name")))
@@ -84,7 +137,7 @@ class ConverterSyntaxTest extends AnyFunSuite {
     assert(result.toOption.get.name == "mimmo")
   }
 
-  test("XmlEncoder - decode") {
+  test("ConverterOps.XmlEncoder - decode") {
     case class Person(name: String)
     implicit val encoder: XmlEncoder[Person] =
       XmlEncoder.of(p => Valid(<Person name={p.name} />))

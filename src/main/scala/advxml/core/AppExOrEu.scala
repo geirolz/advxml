@@ -35,7 +35,7 @@ case class AppEuCase[F[_]](app: AppEu[F]) extends AppExOrEu[F] {
   def empty[A]: F[A] = app.raiseError(())
 }
 
-object AppExOrEu extends MonadExOrAltInstances {
+object AppExOrEu extends AppExOrEuInstances {
 
   def apply[F[_]](implicit F: AppExOrEu[F]): F.type = F
 
@@ -61,7 +61,7 @@ object AppExOrEu extends MonadExOrAltInstances {
     fromEitherNelEx[F, A](fa.toEither)
 }
 
-private[core] sealed trait MonadExOrAltInstances {
+private[core] sealed trait AppExOrEuInstances {
 
   implicit def appExAsAppExOrEu[F[_]](implicit M: AppEx[F]): AppExCase[F] = AppExCase(M)
 

@@ -10,7 +10,7 @@ import scala.xml.NodeSeq
 
 private[syntax] trait ConvertersSyntax {
 
-  implicit class FunctionKConverterSyntaxOps[F[_], A](fa: F[A]) {
+  implicit class AnyFunctionKConverterSyntaxOps[F[_], A](fa: F[A]) {
 
     /** Change context from F[_] to G[_] using natural transformation with an implicit FunctionK instance.
       * @param nt functionK instance
@@ -21,7 +21,7 @@ private[syntax] trait ConvertersSyntax {
       nt(fa)
   }
 
-  implicit class OptionConverterSyntaxOps[A](fa: Option[A]) {
+  implicit class OptionFunctionKConverterSyntaxOps[A](fa: Option[A]) {
 
     /** Change context from F[_] to G[_].
       * @param ifNone error used in case of none.

@@ -1,6 +1,6 @@
 package advxml.core.data
 
-import cats.{Eq, Show}
+import cats.Eq
 
 import scala.xml.Elem
 
@@ -9,10 +9,7 @@ case class Key(value: String) extends AnyVal with Serializable {
   def !=(that: String): Boolean = ! ==(that)
 }
 object Key {
-  implicit val advxmlKeyCatsInstances: Eq[Key] with Show[Key] = new Eq[Key] with Show[Key] {
-    override def eqv(x: Key, y: Key): Boolean = x == y.value
-    override def show(t: Key): String = t.toString
-  }
+  implicit val advxmlKeyCatsInstances: Eq[Key] = (x: Key, y: Key) => x == y.value
 }
 
 case class KeyValuePredicate(key: Key, private val valuePredicate: Value => Boolean) {
