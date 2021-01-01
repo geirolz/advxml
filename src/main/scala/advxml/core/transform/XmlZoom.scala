@@ -245,7 +245,7 @@ case class XmlContentZoomRunner(zoom: BindedXmlZoom, f: NodeSeq => Value) {
 
   import cats.syntax.flatMap._
 
-  def validated(nrule: ValidationRule, nrules: ValidationRule*): XmlContentZoomRunner =
+  def validate(nrule: ValidationRule, nrules: ValidationRule*): XmlContentZoomRunner =
     copy(f = f.andThen(v => v.validate(nrule, nrules: _*)))
 
   def extract[F[_]: AppExOrEu: FlatMap]: F[String] =

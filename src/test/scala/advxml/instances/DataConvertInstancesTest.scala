@@ -1,6 +1,6 @@
 package advxml.instances
 
-import advxml.core.data.{Converter, ThrowableNel, ValidatedNelEx, Value}
+import advxml.core.data.{As, Converter, ThrowableNel, ValidatedNelEx, ValidatedValue, Value}
 import advxml.core.data.error.AggregatedException
 import advxml.core.transform.{XmlContentZoom, XmlContentZoomRunner}
 import advxml.implicits.$
@@ -16,9 +16,17 @@ import scala.xml.{Elem, Node, Text}
 
 class Common_ConvertersInstancesTest extends AnyFunSuite with ConvertersAssertsUtils {
 
+  import cats.instances.option._
+
   //============== Id ==============
   implicitly[Converter[Int, Int]].test(1, 1)
   implicitly[Converter[Int, Try[Int]]].test(1, Success(1))
+
+  //============== FlatMapAs ==============
+  Converter[Option[Value], Option[Int]].test(Some(v"1"), Some(1))
+
+  //============== AndThenAs ==============
+  Converter[ValidatedNelEx[Value], ValidatedNelEx[Int]].test(Valid(v"1"), Valid(1))
 
   //============== Node ==============
   Converter[Node, Elem].test(
@@ -38,7 +46,6 @@ class Common_ConvertersInstancesTest extends AnyFunSuite with ConvertersAssertsU
 //    new RuntimeException(""),
 //    ThrowableNel.fromThrowable(new RuntimeException(""))
 //  )
-
 }
 
 class ConvertersInstancesTestForValue extends AnyFunSuite with ConvertersAssertsUtils {
@@ -82,6 +89,7 @@ class ConvertersInstancesTestForValue extends AnyFunSuite with ConvertersAsserts
   Converter[Double,     Value].test(1.0d              , v"1.0"   )
   // format: on
 }
+
 class ConvertersInstancesTestForText extends AnyFunSuite with ConvertersAssertsUtils {
 
   import advxml.instances.data.convert._
@@ -109,6 +117,12 @@ class ConvertersInstancesTestForText extends AnyFunSuite with ConvertersAssertsU
   Converter[Long       , Text].test(1L           , Text("1")  )
   Converter[Float      , Text].test(1.0f         , Text("1.0"))
   Converter[Double     , Text].test(1.0d         , Text("1.0"))
+
+  case class CustomType(v: Int)
+  implicit val customTypeAsValidatedValueConverter: CustomType As ValidatedValue = 
+    Converter.of(ct => Value(ct.v.toString).nonEmpty)
+    
+  Converter[CustomType, Try[Text]].test(CustomType(1), Success(Text("1")))
 }
 
 private[instances] sealed trait ConvertersAssertsUtils { $this: AnyFunSuite =>
