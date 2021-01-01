@@ -1,7 +1,8 @@
+val prjname = "advxml"
 inThisBuild(
   List(
     organization := "com.github.geirolz",
-    homepage     := Some(url("https://github.com/geirolz/advxml")),
+    homepage     := Some(url(s"https://github.com/geirolz/$prjname")),
     licenses     := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
     developers := List(
       Developer(
@@ -14,12 +15,46 @@ inThisBuild(
   )
 )
 
-lazy val global = project
+//=============================== MODULES ===============================
+//## global project to no publish ##
+lazy val advxml: Project = project
   .in(file("."))
-  .settings(settings ++ compilePlugins)
+  .settings(allSettings)
+  .settings(noPublishSettings)
+  .aggregate(core)
 
-lazy val settings = Seq(
-  name := "Advxml",
+lazy val core: Project =
+  buildModule("core", toPublish = true)
+
+//=============================== MODULES UTILS ===============================
+def buildModule(path: String, toPublish: Boolean = false): Project = {
+  val id = path.split("-").reduce(_ + _.capitalize)
+  Project(id, file(s"modules/$path"))
+    .configure(buildProject(path, toPublish))
+}
+
+def buildProject(path: String, toPublish: Boolean = false)(project: Project) = {
+  val docName = path.split("-").mkString(" ")
+  project.settings(
+    description     := s"$prjname $docName",
+    moduleName      := s"$prjname-$path",
+    name            := s"$prjname $docName",
+    skip in publish := !toPublish,
+    allSettings
+  )
+}
+
+//=============================== SETTINGS ===============================
+lazy val allSettings = baseSettings ++ compilePlugins
+
+lazy val noPublishSettings = Seq(
+  publish         := {},
+  publishLocal    := {},
+  publishArtifact := false,
+  skip in publish := true
+)
+
+lazy val baseSettings = Seq(
   //scala options
   crossScalaVersions := List("2.12.8", "2.13.4"),
   scalaVersion       := crossScalaVersions.value.head,
@@ -33,8 +68,9 @@ lazy val settings = Seq(
   coverageEnabled in (Compile, compile) := false,
   //dependencies
   resolvers ++= Resolvers.all,
-  libraryDependencies ++= Dependencies.all
+  libraryDependencies ++= Dependencies.common
 )
+
 lazy val compilePlugins = Seq(
   addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3")
 )

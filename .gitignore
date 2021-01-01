@@ -7,7 +7,6 @@
 # http://www.scala-sbt.org/release/docs/Getting-Started/Directories.html#configuring-version-control
 
 dist/*
-target/
 lib_managed/
 src_managed/
 project/boot/
@@ -24,3 +23,8 @@ atlassian-ide-plugin.xml
 
 
 private.sbt
+
+# MODULES TARGETS
+target/
+modules/core/target/
+modules/generic/target/

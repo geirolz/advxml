@@ -40,10 +40,10 @@ Supported Scala 2.12 and 2.13
 The idea behind this library is offer a fluent syntax to edit and read xml.
 
 *Features:*
-- [Attribute](docs/Attribute.md) Data types for keys and attributes.
-- [Transform](docs/Transform.md) Allows to edit the XML document.
-- [Convert](docs/Convert.md) Allows to convert Model to XML and vice versa(not automatically yet)
-- [Zoom](docs/Zoom.md) Allows to traverse an XML do get nodes, attributes and text.
-- [Normalize](docs/Normalize.md) Allows to remove white spaces and collapse empty nodes in a XML document
+- [Attribute](modules/core/docs/Attribute.md) Data types for keys and attributes.
+- [Transform](modules/core/docs/Transform.md) Allows to edit the XML document.
+- [Convert](modules/core/docs/Convert.md) Allows to convert Model to XML and vice versa(not automatically yet)
+- [Zoom](modules/core/docs/Zoom.md) Allows to traverse an XML do get nodes, attributes and text.
+- [Normalize](modules/core/docs/Normalize.md) Allows to remove white spaces and collapse empty nodes in a XML document
 
  
