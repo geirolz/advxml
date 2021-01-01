@@ -4,7 +4,7 @@ import advxml.core.data.XmlPredicate
 import cats.data.NonEmptyList
 import org.scalatest.funsuite.AnyFunSuite
 
-import scala.xml.{Document, Elem, Group, NodeSeq}
+import scala.xml.{Document, Elem, Group, Node, NodeSeq}
 
 class TransformXmlPredicateInstancesTest extends AnyFunSuite {
 
@@ -98,8 +98,13 @@ class TransformXmlPredicateInstancesTest extends AnyFunSuite {
   }
 
   test("Test 'strictEqualsTo' predicate - with NodeSeq-NodeSeq") {
-    val ns1: NodeSeq = <Node><SubNode>TEST</SubNode></Node>.asInstanceOf[NodeSeq]
-    val ns2: NodeSeq = <Node><SubNode>TEST</SubNode></Node>.asInstanceOf[NodeSeq]
+    val ns1: NodeSeq = new NodeSeq {
+      override def theSeq: Seq[Node] = Seq(<Node><SubNode>TEST</SubNode></Node>)
+    }
+    val ns2: NodeSeq = new NodeSeq {
+      override def theSeq: Seq[Node] = Seq(<Node><SubNode>TEST</SubNode></Node>)
+    }
+
     assert(strictEqualsTo(ns1)(ns2))
   }
 

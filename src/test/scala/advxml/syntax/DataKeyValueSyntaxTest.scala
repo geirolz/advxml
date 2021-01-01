@@ -106,5 +106,9 @@ object DataKeyValueSyntaxTest {
       assert(p(Value("1")))
       assert(!p(Value("0.5")))
     }
+
+    test("greaterEqThen.toString") {
+      assert(f.greaterEqThen(key, 1d).toString == "Key(key) has value >= [1.0]")
+    }
   }
 }
