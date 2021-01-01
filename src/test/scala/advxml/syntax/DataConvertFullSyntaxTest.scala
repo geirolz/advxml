@@ -1,7 +1,6 @@
 package advxml.syntax
 
-import advxml.core.data.{ToXml, ValidatedConverter, ValidatedNelEx, XmlTo}
-import cats.data.Validated.Valid
+import advxml.core.data._
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.xml.Elem
@@ -11,29 +10,29 @@ import scala.xml.Elem
   *
   * @author geirolad
   */
-class ConverterFullSyntaxTest extends AnyFunSuite {
+class DataConvertFullSyntaxTest extends AnyFunSuite {
 
   import advxml.implicits._
   import advxml.testUtils.ScalacticXmlEquality._
+  import cats.data.Validated._
   import cats.syntax.all._
 
   case class Car(brand: String, model: String)
   case class Person(name: String, surname: String, age: Option[Int], note: String, cars: Seq[Car])
 
   test("XML to Model - Convert simple case class") {
-
-    implicit val converter: Elem XmlTo Person = ValidatedConverter.of(person => {
+    implicit val converter: ValidatedConverter[Elem, Person] = ValidatedConverter.of(person => {
       (
-        person /@ "Name",
-        person /@ "Surname",
-        person./@[Option]("Age").flatMapAs[Int].valid,
-        $(person).Note.textM,
-        $(person).Cars.Car.run.flatMap { cars =>
+        person.attr("Name").asValidated[String],
+        person.attr("Surname").asValidated[String],
+        person.attr("Age").as[Option[Int]].valid,
+        $(person).Note.content.asValidated[String],
+        $(person).Cars.Car.run[ValidatedNelEx].andThen { cars =>
           cars
             .map(car => {
               (
-                car /@ "Brand",
-                car /@ "Model"
+                car.attr("Brand").asValidated[String],
+                car.attr("Model").asValidated[String]
               ).mapN(Car)
             })
             .sequence
@@ -61,7 +60,7 @@ class ConverterFullSyntaxTest extends AnyFunSuite {
 
   test("Model to XML - Convert simple case class") {
 
-    implicit val converter: Person ToXml Elem = ValidatedConverter.of(person =>
+    implicit val converter: ValidatedConverter[Person, Elem] = ValidatedConverter.of(person =>
       Valid(
         <Person Name={person.name} Surname={person.surname} Age={person.age.map(_.toString).getOrElse("")}>
         <Note>{person.note}</Note>

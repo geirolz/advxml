@@ -17,7 +17,7 @@ private[instances] trait AllTransforInstances
 
 private[instances] trait XmlModifierInstances {
 
-  //******************************************* TYPE CLASS INSTANCES ********************************************
+  //============================== TYPE CLASS INSTANCES ==============================
   implicit val composableXmlModifierMonoidInstance: Monoid[ComposableXmlModifier] = new Monoid[ComposableXmlModifier] {
 
     import cats.syntax.flatMap._
@@ -31,7 +31,7 @@ private[instances] trait XmlModifierInstances {
       }
   }
 
-  //******************************************* XML MODIFIER INSTANCES ********************************************
+  //============================== XML MODIFIER INSTANCES ==============================
   /** No-Action modifiers, equals to `Replace` passing an identity function.
     */
   lazy val NoAction: ComposableXmlModifier = Replace(identity[NodeSeq])
@@ -81,7 +81,7 @@ private[instances] trait XmlModifierInstances {
           F.pure[NodeSeq](
             e.copy(
               attributes = ds.toList.foldRight(e.attributes)((data, metadata) =>
-                new UnprefixedAttribute(data.key.value, data.value, metadata)
+                new UnprefixedAttribute(data.key.value, data.value.unboxed, metadata)
               )
             )
           )
@@ -189,7 +189,7 @@ private[instances] trait XmlPredicateInstances {
     * @return Predicate for nodes of type `Node`
     */
   def hasAttrs(keys: NonEmptyList[Key]): XmlPredicate =
-    attrs(keys.map(k => KeyValuePredicate[String](k, _.nonEmpty)))
+    attrs(keys.map(k => KeyValuePredicate(k, _.nonEmpty.extract[Option].isDefined)))
 
   /** Filter nodes by attributes.
     *
@@ -197,7 +197,7 @@ private[instances] trait XmlPredicateInstances {
     * @param values N [[KeyValuePredicate]] to filter attributes
     * @return Predicate for nodes of type `Node`
     */
-  def attrs(value: KeyValuePredicate[String], values: KeyValuePredicate[String]*): XmlPredicate =
+  def attrs(value: KeyValuePredicate, values: KeyValuePredicate*): XmlPredicate =
     this.attrs(NonEmptyList.of(value, values: _*))
 
   /** Filter nodes by attributes.
@@ -205,9 +205,9 @@ private[instances] trait XmlPredicateInstances {
     * @param values N [[KeyValuePredicate]] to filter attributes
     * @return Predicate for nodes of type `Node`
     */
-  def attrs(values: NonEmptyList[KeyValuePredicate[String]]): XmlPredicate =
+  def attrs(values: NonEmptyList[KeyValuePredicate]): XmlPredicate =
     values
-      .map(p => XmlPredicate(ns => p(ns \@ p.key.value)))
+      .map(p => XmlPredicate(ns => p(Value(ns \@ p.key.value))))
       .reduce(Predicate.and[NodeSeq])
 
   /** Create a [[XmlPredicate]] that can check if a NodeSeq contains a child with specified predicates
@@ -219,7 +219,7 @@ private[instances] trait XmlPredicateInstances {
   def hasImmediateChild(label: String, predicate: XmlPredicate = alwaysTrue): XmlPredicate =
     XmlZoom
       .root(_)
-      .immediateDown(label)
+      .down(label)
       .run[Try]
       .fold(_ => false, _.exists(predicate))
 

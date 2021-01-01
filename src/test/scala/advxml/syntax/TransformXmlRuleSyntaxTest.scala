@@ -9,9 +9,9 @@ import scala.xml.{Elem, NodeSeq}
 class TransformXmlRuleSyntaxTest extends AnyFunSuite {
 
   import advxml.instances.transform._
-  import advxml.instances.convert._
+  import advxml.instances.data._
   import advxml.syntax.transform._
-  import advxml.syntax.convert._
+  import advxml.syntax.data._
   import advxml.testUtils.ScalacticXmlEquality._
 
   import cats.instances.try_._

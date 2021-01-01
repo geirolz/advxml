@@ -24,11 +24,11 @@ package advxml
 package object syntax extends AllCommonSyntax {
   // format: off
   object all              extends AllSyntax
-  
-  //******************** FEATURES ********************
+  //==================== FEATURES ====================
   object transform        extends AllTransformSyntax
-  object convert          extends ConvertersSyntax
-  object validated        extends ValidatedSyntax
+  object data             extends AllDataSyntax{
+    object convert          extends ConverterSyntax
+  }
   object javaConverters   extends JavaScalaConvertersSyntax
   // format: on
 }

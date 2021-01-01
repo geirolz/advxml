@@ -56,8 +56,8 @@ val rule: XmlRule = root.Person.Cars ==> Append(<Car Brand="Lamborghini"/>)
 
 //  Desugared
 //  val rule: XmlRule = root
-//    .immediateDown("Person")
-//    .immediateDown("Cars")
+//    .down("Person")
+//    .down("Cars")
 //    .withModifier(Append(<Car Brand="Lamborghini"/>))
 
 val result: Try[NodeSeq] = doc.transform[Try](rule)
@@ -93,8 +93,8 @@ val rule = root.Person.Cars
 
 //  Desugared
 //  val rules: XmlRule = root
-//      .immediateDown("Person")
-//      .immediateDown("Cars")
+//      .down("Person")
+//      .down("Cars")
 //      .withModifier(Append(<Car Brand="Lamborghini"/>))
 //      .withModifier(Append(<Car Brand="Ferrari"/>))
 //      .withModifier(Append(<Car Brand="Bmw"/>))

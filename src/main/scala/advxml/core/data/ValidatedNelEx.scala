@@ -1,6 +1,5 @@
 package advxml.core.data
 
-import advxml.core.MonadExOrEu
 import cats.data.{NonEmptyList, Validated}
 import cats.data.Validated.{Invalid, Valid}
 
@@ -19,7 +18,4 @@ object ValidatedNelEx {
 
   def fromOption[A](o: Option[A], ifNone: => Throwable): ValidatedNelEx[A] =
     Validated.fromOption(o, NonEmptyList.one(ifNone))
-
-  def transform[F[_]: MonadExOrEu, A](validated: ValidatedNelEx[A]): F[A] =
-    MonadExOrEu.fromValidated[F, A](validated.leftMap(ThrowableNel.toThrowable))
 }

@@ -1,8 +1,12 @@
 package advxml
 
-import cats.MonadError
+import advxml.core.data.ThrowableNel
+import cats.{ApplicativeError, MonadError}
 
 package object core {
   type MonadEx[F[_]] = MonadError[F, Throwable]
-  type MonadEu[F[_]] = MonadError[F, Unit]
+
+  type AppEx[F[_]] = ApplicativeError[F, Throwable]
+  type AppNelEx[F[_]] = ApplicativeError[F, ThrowableNel]
+  type AppEu[F[_]] = ApplicativeError[F, Unit]
 }

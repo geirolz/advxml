@@ -4,7 +4,9 @@ import advxml.core.data.PredicateTests
 import advxml.testUtils.FunSuiteContract
 import org.scalatest.funsuite.AnyFunSuite
 
-class PredicateSyntaxTest extends AnyFunSuite with FunSuiteContract {
+class DataPredicateSyntaxTest extends AnyFunSuite with FunSuiteContract {
+
+  import advxml.syntax.data._
 
   PredicateTests
     .Contract(

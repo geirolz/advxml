@@ -18,7 +18,7 @@ class TransformXmlZoomSyntaxTest extends AnyFunSuite with FunSuiteContract {
       subDesc = "Syntax", {
         // format: off
         ContractFuncs(
-          immediateDown = (z, n) => z / n,
+          down   = (z, n) => z / n,
           filter = (z, p) => z | p,
           find = (z, p) => z.find(p),
           atIndex = (z, p) => z.atIndex(p),
@@ -42,7 +42,7 @@ class TransformXmlZoomSyntaxTest extends AnyFunSuite with FunSuiteContract {
         </bar>
       </foo>
 
-    val result: Try[NodeSeq] = root.bar.test.run(doc)
+    val result: Try[NodeSeq] = root.bar.test.run[Try](doc)
 
     assert(result.get.size == 2)
     assert(result.get.head === <test v="1" />)
@@ -61,7 +61,7 @@ class TransformXmlZoomSyntaxTest extends AnyFunSuite with FunSuiteContract {
         </bar>
       </foo>
 
-    val result: Try[NodeSeq] = root.bar.test(1).run(doc)
+    val result: Try[NodeSeq] = root.bar.test(1).run[Try](doc)
 
     assert(result.get.size == 1)
     assert(result.get.head === <test v="2" />)

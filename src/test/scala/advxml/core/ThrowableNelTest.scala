@@ -17,7 +17,7 @@ class ThrowableNelTest extends AnyFunSuite {
   }
 
   test("ThrowableNel.fromThrowable with AggregatedException") {
-    val ex: AggregatedException = new AggregatedException(
+    val ex: AggregatedException = AggregatedException(
       NonEmptyList.of(
         new RuntimeException("TEST1"),
         new RuntimeException("TEST2")

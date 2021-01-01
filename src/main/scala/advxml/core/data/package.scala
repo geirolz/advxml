@@ -14,64 +14,55 @@ package object data {
   type ThrowableNel = NonEmptyList[Throwable]
   type XmlPredicate = NodeSeq => Boolean
 
-  /** Represents a function `A => F[B]` to simplify method and class signatures.
-    * This alias represent an error-handled converter to transform `A` into `B` safely.
-    * Because the conversion can fail the output is wrapped into `F` in order to handle the errors.
-    *
-    * @tparam F Output context
-    * @tparam A Contravariant input object type
-    * @tparam B Output object type
-    */
-  @implicitNotFound("""Missing implicit PureConverter instance for ${F}, used to covert ${A} to ${B} in ${F}""")
-  type Converter[F[_], -A, B] = Kleisli[F, A, B]
-
   /** Represents a function `A => B` to simplify method and class signatures.
-    * This alias represent an unsafe converter to transform `A` into `B`.
-    *
-    * The invocation of this function can fail and/or throw an runtime exception.
+    * This alias represent a converter to transform `A` into `B`.
     *
     * @tparam A Contravariant input object type
     * @tparam B Output object type
     */
-  @implicitNotFound("""Missing implicit PureConverter instance, used to covert ${A} to ${B}""")
-  type PureConverter[-A, B] = Converter[Id, A, B]
+  @implicitNotFound("""Missing implicit Converter instance to covert ${A} into ${B}""")
+  type Converter[-A, B] = Kleisli[Id, A, B]
+
+  /** Syntactic sugar. To use ase `A As B` instead of classic method `Converter[A, B]`
+    */
+  @implicitNotFound("""Missing implicit Converter instance to covert ${A} into ${B}""")
+  type As[-A, B] = Converter[A, B]
 
   /** Represents a function `A => ValidatedEx[B]` to simplify method and class signatures.
-    * Converter to easily transform an object of type `A` to another object of type `B`.
     * Because the conversion can fail the output is wrapped into cats [[ValidatedNelEx]] in order to handle the errors.
     *
     * @tparam A Contravariant input object type
     * @tparam B Output object type
     */
   @implicitNotFound(
-    """Missing implicit ValidatedConverter instance for ValidatedNelEx, used to covert ${A} to ${B} in ValidatedNelEx"""
+    """Missing implicit ValidatedConverter instance to covert ${A} into ValidatedNelEx[${B}]"""
   )
-  type ValidatedConverter[-A, B] = Converter[ValidatedNelEx, A, B]
+  type ValidatedConverter[-A, B] = Converter[A, ValidatedNelEx[B]]
 
-  /** Represents a function `O => ValidatedEx[NodeSeq]` to simplify method and class signatures.
-    * This function transform a model of type `O` to standard scala-xml library `NodeSeq`, in this case `X`.
-    * Because the conversion can fail the output is wrapped into cats [[ValidatedNelEx]] in order to handle the errors
+  /** Represents a function `A => Option[B]` to simplify method and class signatures.
+    * Because the conversion can fail the output is wrapped into [[Option]] in order to handle the empty case.
     *
-    * @see [[ValidatedConverter]] for further information.
-    * @tparam I Contravariant input model type
-    * @tparam O Output xml type, type constraint ensures that `X` is a subtype of scala-xml `NodeSeq`
+    * @tparam A Contravariant input object type
+    * @tparam B Output object type
     */
-  @implicitNotFound("""Missing ToXml to transform ${I} into ValidatedEx[NodeSeq]""")
-  type ToXml[-I, O <: NodeSeq] = ValidatedConverter[I, O]
+  @implicitNotFound(
+    """Missing implicit OptionConverter instance to covert ${A} into Option[${B}]."""
+  )
+  type OptionConverter[-A, B] = Converter[A, Option[B]]
 
-  /** Represents a function `NodeSeq => ValidatedEx[O]` to simplify method and class signatures.
-    * This function transform xml model of type `X`, from standard scala-xml library, into a model of type `O`
-    * Because the conversion can fail the output is wrapped into cats [[ValidatedNelEx]] in order to handle the errors
-    *
-    * @see [[ValidatedConverter]] for further information.
-    * @tparam O Output model type
+  /** This is just an alias for [[ValidatedConverter]] parametrized with [[NodeSeq]] on left side.
+    * @tparam T Output object type
     */
-  @implicitNotFound("""Missing XmlTo to transform NodeSeq into ValidatedEx[${O}]""")
-  type XmlTo[-I <: NodeSeq, O] = ValidatedConverter[I, O]
+  @implicitNotFound(
+    """Missing implicit XmlDecoder instance to covert NodeSeq into ValidatedNelEx[${T}]."""
+  )
+  type XmlDecoder[T] = ValidatedConverter[NodeSeq, T]
 
-  @implicitNotFound("""Missing FromString to transform String into F[${T}]""")
-  type StringTo[F[_], T] = Converter[F, String, T]
-
-  @implicitNotFound("""Missing ToString to transform ${T} into F[String]""")
-  type ToString[F[_], -T] = Converter[F, T, String]
+  /** This is just an alias for [[ValidatedConverter]] parametrized with [[NodeSeq]] on right side.
+    * @tparam T Contravariant input object type
+    */
+  @implicitNotFound(
+    """Missing implicit XmlDecoder instance to covert ${T} into ValidatedNelEx[NodeSeq]."""
+  )
+  type XmlEncoder[T] = ValidatedConverter[T, NodeSeq]
 }

@@ -1,7 +1,7 @@
 package advxml.core.transform
 
 import advxml.core.data.XmlPredicate
-import advxml.core.transform.XmlZoom.ImmediateDown
+import advxml.core.transform.XmlZoom.Down
 import advxml.core.transform.XmlZoomTest.ContractFuncs
 import advxml.testUtils.{ContractTests, FunSuiteContract}
 import org.scalactic.TypeCheckedTripleEquals.convertToCheckingEqualizer
@@ -16,7 +16,7 @@ class XmlZoomTest extends AnyFunSuite with FunSuiteContract {
     .Contract(
       // format: off
       f = ContractFuncs(
-        immediateDown = (z, n) => z.immediateDown(n),
+        down          = (z, n) => z.down(n),
         filter        = (z, p) => z.filter(p),
         find          = (z, p) => z.find(p),
         atIndex       = (z, idx) => z.atIndex(idx),
@@ -28,23 +28,23 @@ class XmlZoomTest extends AnyFunSuite with FunSuiteContract {
     .runAll()
 
   test("Append + ZoomAction") {
-    val zoom: XmlZoom = ImmediateDown("N1") + ImmediateDown("N2")
-    assert(zoom.actions == List(ImmediateDown("N1"), ImmediateDown("N2")))
+    val zoom: XmlZoom = Down("N1") + Down("N2")
+    assert(zoom.actions == List(Down("N1"), Down("N2")))
   }
 
   test("Append + List[ZoomAction]") {
-    val zoom: XmlZoom = ImmediateDown("N1") ++ List(ImmediateDown("N2"), ImmediateDown("N3"))
-    assert(zoom.actions == List(ImmediateDown("N1"), ImmediateDown("N2"), ImmediateDown("N3")))
+    val zoom: XmlZoom = Down("N1") ++ List(Down("N2"), Down("N3"))
+    assert(zoom.actions == List(Down("N1"), Down("N2"), Down("N3")))
   }
 }
 
 object XmlZoomTest {
 
-  import advxml.instances.convert._
-  import advxml.syntax._
+  import advxml.instances.data.convert._
+  import advxml.syntax.data._
 
   case class ContractFuncs(
-    immediateDown: (XmlZoom, String) => XmlZoom,
+    down: (XmlZoom, String) => XmlZoom,
     filter: (XmlZoom, XmlPredicate) => XmlZoom,
     find: (XmlZoom, XmlPredicate) => XmlZoom,
     atIndex: (XmlZoom, Int) => XmlZoom,
@@ -80,43 +80,43 @@ object XmlZoomTest {
 
     test("UnbindedXmlZoom.detailed") {
       val doc: Elem = <Root><N1 T1="V1"/></Root>
-      val xmlZoom: XmlZoom = f.immediateDown(root, "N1")
-      val result: Try[XmlZoomResult] = xmlZoom.detailed(doc)
+      val xmlZoom: XmlZoom = f.down(root, "N1")
+      val result: Try[XmlZoomResult] = xmlZoom.detailed[Try](doc)
       assert(result.get.nodeSeq.head === <N1 T1="V1"/>)
     }
 
     test("UnbindedXmlZoom.run") {
       val doc: Elem = <Root><N1 T1="V1"/></Root>
-      val xmlZoom: XmlZoom = f.immediateDown(root, "N1")
-      val result: Try[NodeSeq] = xmlZoom.run(doc)
+      val xmlZoom: XmlZoom = f.down(root, "N1")
+      val result: Try[NodeSeq] = xmlZoom.run[Try](doc)
       assert(result.get.head === <N1 T1="V1"/>)
     }
 
     test("BindedXmlZoom.detailed") {
       val doc: Elem = <Root><N1 T1="V1"/></Root>
-      val xmlZoom: XmlZoom = f.immediateDown(root, "N1")
-      val result: Try[XmlZoomResult] = xmlZoom.bind(doc).detailed
+      val xmlZoom: XmlZoom = f.down(root, "N1")
+      val result: Try[XmlZoomResult] = xmlZoom.bind(doc).detailed[Try]
       assert(result.get.nodeSeq.head === <N1 T1="V1"/>)
     }
 
     test("BindedXmlZoom.run") {
       val doc: Elem = <Root><N1 T1="V1"/></Root>
-      val xmlZoom: XmlZoom = f.immediateDown(root, "N1")
-      val result: Try[NodeSeq] = xmlZoom.bind(doc).run
+      val xmlZoom: XmlZoom = f.down(root, "N1")
+      val result: Try[NodeSeq] = xmlZoom.bind(doc).run[Try]
       assert(result.get.head === <N1 T1="V1"/>)
     }
 
-    test("immediateDownTest") {
-      assert(f.immediateDown(root, "N1").actions == List(ImmediateDown("N1")))
+    test("downTest") {
+      assert(f.down(root, "N1").actions == List(Down("N1")))
     }
 
-    test("applyWithImmediateDownTest") {
+    test("applyWithDownTest") {
       val doc: Elem = <Root>
         <N1 T1="V1"/>
         <N1 T2="V2"/>
       </Root>
-      val xmlZoom: XmlZoom = f.immediateDown(root, "N1")
-      val result: Try[XmlZoomResult] = xmlZoom.detailed(doc)
+      val xmlZoom: XmlZoom = f.down(root, "N1")
+      val result: Try[XmlZoomResult] = xmlZoom.detailed[Try](doc)
       assert(result.get.nodeSeq(0) === <N1 T1="V1"/>)
       assert(result.get.nodeSeq(1) === <N1 T2="V2"/>)
     }
@@ -130,7 +130,7 @@ object XmlZoomTest {
         </foo>
 
       val xmlZoom: XmlZoom = f.filter(root / "bar", attrs(k"id" === "1"))
-      val value: XmlZoomResult = xmlZoom.detailed(xml).get
+      val value: XmlZoomResult = xmlZoom.detailed[Try](xml).get
 
       assert(value.nodeSeq === NodeSeq.fromSeq(Seq(<bar id="1"/>, <bar id="1"/>)))
       assert(value.parents.size == 1)
@@ -146,7 +146,7 @@ object XmlZoomTest {
         </foo>
 
       val xmlZoom: XmlZoom = f.find(root / "bar", attrs(k"id" === "1"))
-      val value: XmlZoomResult = xmlZoom.detailed(xml).get
+      val value: XmlZoomResult = xmlZoom.detailed[Try](xml).get
 
       assert(value.nodeSeq === <bar id="1"/>)
       assert(value.parents.size == 1)
@@ -162,7 +162,7 @@ object XmlZoomTest {
         </foo>
 
       val xmlZoom: XmlZoom = f.atIndex(root / "bar", 2)
-      val value: XmlZoomResult = xmlZoom.detailed(xml).get
+      val value: XmlZoomResult = xmlZoom.detailed[Try](xml).get
 
       assert(value.nodeSeq === <bar id="3"/>)
       assert(value.parents.size == 1)
@@ -178,7 +178,7 @@ object XmlZoomTest {
         </foo>
 
       val xmlZoom: XmlZoom = f.head(root / "bar")
-      val value: XmlZoomResult = xmlZoom.detailed(xml).get
+      val value: XmlZoomResult = xmlZoom.detailed[Try](xml).get
 
       assert(value.nodeSeq === <bar id="1"/>)
       assert(value.parents.size == 1)
@@ -194,7 +194,7 @@ object XmlZoomTest {
         </foo>
 
       val xmlZoom: XmlZoom = f.last(root / "bar")
-      val value: XmlZoomResult = xmlZoom.detailed(xml).get
+      val value: XmlZoomResult = xmlZoom.detailed[Try](xml).get
 
       assert(value.nodeSeq === <bar id="3"/>)
       assert(value.parents.size == 1)

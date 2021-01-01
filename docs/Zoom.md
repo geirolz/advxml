@@ -50,11 +50,11 @@ thanks to `selectDynamic`. We can even combine `immediateChild` and `atIndex` us
 import advxml.core.transform.XmlZoom
 import advxml.instances.transform._
 
-//this equals to root.immediateDown("foo").immediateDown("bar").immediateDown("text")
+//this equals to root.down("foo").down("bar").down("text")
 //this equals to root / "foo" / "bar" / "text"
 val selectDynamicZoom : XmlZoom = root.foo.bar.test
 
-//this equals to root.immediateDown("foo").immediateDown("bar").immediateDown("text").atIndex(1)
+//this equals to root.down("foo").down("bar").down("text").atIndex(1)
 //this equals to root / "foo" / "bar" / "text" atIndex(1)
 val applyDynamicZoom : XmlZoom = root.foo.bar.test(1)
 ```
@@ -91,7 +91,7 @@ val bindedsDetailed : Try[XmlZoomResult] = binded.detailed[Try]
 Advxml also provides an `XmlContetZoom` to read attributes and text from a NodeSeq instance.
 `XmlContetZoom` syntax is added to `NodeSeq`, `F[NodeSeq]`, `XmlZoom` and `BindedXmlZoom` using implicit class.
 
-We can use `/@` to get an attribute value or `textM` to get the node text.
+We can use `attr` to get an attribute value or `content` to get the node content.
 ```scala
 import advxml.core.transform.XmlZoom.root
 import advxml.core.transform.{BindedXmlZoom, XmlZoom}
@@ -105,34 +105,32 @@ val doc: Elem = <foo T1='1'>TEXT</foo>
 val zoom: XmlZoom = XmlZoom.root
 val bindedZoom: BindedXmlZoom = XmlZoom.root(<foo T1='1'>TEXT</foo>)
 
-val docAttr: Try[String] = doc./@[Try]("T1")//Success("1")
-val docMissingAttr: Try[String] = doc./@[Try]("MISSING")//Failure(MissingXmlAttribute)
-val docText: Try[String] = doc.textM[Try] //Success("TEXT")
+val docAttr: Try[String] = doc.attr("T1").extract[Try]//Success("1")
+val docMissingAttr: Try[String] = doc.attr("MISSING").extract[Try]//Failure(ValidationRule.Error)
+val docText: Try[String] = doc.content.extract[Try] //Success("TEXT")
 
-val zoomAttr: Try[String] = zoom./@[Try]("T1").apply(<foo T1='1'>TEXT</foo>)//Success("1")
-val zoomText: Try[String] = zoom.textM[Try].apply(<foo T1='1'>TEXT</foo>)//Success("TEXT")
+val zoomAttr: Try[String] = zoom.attr(<foo T1='1'>TEXT</foo>, "T1").extract[Try]//Success("1")
+val zoomText: Try[String] = zoom.content(<foo T1='1'>TEXT</foo>).extract[Try]//Success("TEXT")
 
-val bindedZoomAttr: Try[String] = bindedZoom./@[Try]("T1")//Success("1")
-val bindedZoomText: Try[String] = bindedZoom.textM[Try]//Success("TEXT")
+val bindedZoomAttr: Try[String] = bindedZoom.attr("T1").extract[Try]//Success("1")
+val bindedZoomText: Try[String] = bindedZoom.content.extract[Try]//Success("TEXT")
 ```
 
 This feature combined to converter feature allows we to convert attributes data from `String` to another type.
 
-Keep in mind to use `flatMapAs` for an exception-safe conversion.
-
 ```scala
 import advxml.core.transform.XmlZoom.root
 import advxml.core.transform.{BindedXmlZoom, XmlZoom}
-import advxml.syntax.convert._
+import advxml.syntax.data.convert._
 import advxml.syntax.transform._
-import advxml.instances.convert._
+import advxml.instances.data.convert._
 import cats.instances.try_._
 
 import scala.util.Try
 import scala.xml.Elem
 val doc: Elem = <foo T1='1'>100</foo>
-val docAttr: Try[Int] = doc./@[Try]("T1").flatMapAs[Int]//Success(1)
-val docText: Try[Int] = doc.textM.flatMapAs[Int] //Success(100)
+val docAttr: Try[Int] = doc.attr("T1").as[Try[Int]]//Success(1)
+val docText: Try[Int] = doc.content.as[Try[Int]] //Success(100)
 ```
 
 
@@ -165,10 +163,10 @@ val mandatoryNodeB: Try[NodeSeq] = root.Person.Cars.run[Try](doc)
 val optionalNodeB: Option[NodeSeq] = root.Person.Cars.run[Option](doc)
 
 //Attributes
-val mandatoryAttr: Try[String] = $(doc).Person.Cars./@[Try]("Brand")
-val optionalAttr: Option[String] = $(doc).Person.Cars./@[Option]("Brand")
+val mandatoryAttr: Try[String] = $(doc).Person.Cars.attr("Brand").as[Try[String]]
+val optionalAttr: Option[String] = $(doc).Person.Cars.attr("Brand").as[Option[String]]
 
-//Text
-val mandatoryText: Try[String] = $(doc).Person.Cars.textM[Try]
-val optionalText: Option[String] = $(doc).Person.Cars.textM[Option]
+//Content
+val mandatoryText: Try[String] = $(doc).Person.Cars.content.as[Try[String]]
+val optionalText: Option[String] = $(doc).Person.Cars.content.as[Option[String]]
 ```

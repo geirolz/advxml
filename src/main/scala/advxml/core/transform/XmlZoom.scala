@@ -1,13 +1,14 @@
 package advxml.core.transform
-import advxml.core.data.{error, XmlPredicate}
+import advxml.core.data._
 import advxml.core.transform.XmlZoom.{ZoomAction, _}
-import advxml.core.MonadExOrEu
-import cats.{Applicative, Functor}
+import advxml.core.AppExOrEu
+import cats.{FlatMap, Functor}
 
+import scala.annotation.tailrec
 import scala.language.dynamics
-import scala.xml.NodeSeq
+import scala.xml.{Node, NodeSeq}
 
-//###################### NODES ######################
+//============================== NODES ==============================
 private[advxml] sealed trait XmlZoomNodeBase extends Dynamic {
 
   type Type
@@ -23,9 +24,9 @@ private[advxml] sealed trait XmlZoomNodeBase extends Dynamic {
 
   def unbind(): XmlZoom
 
-  //######################## ACTIONS ################################
-  def immediateDown(nodeName: String): Type =
-    this.add(ImmediateDown(nodeName))
+  //============================== ACTIONS ==============================
+  def down(nodeName: String): Type =
+    this.add(Down(nodeName))
 
   def filter(p: XmlPredicate): Type =
     this.add(Filter(p))
@@ -42,22 +43,22 @@ private[advxml] sealed trait XmlZoomNodeBase extends Dynamic {
   def last(): Type =
     this.add(Last)
 
-  //######################## DYNAMIC ################################
+  //============================== DYNAMIC ==============================
   def applyDynamic(nodeName: String)(idx: Int): Type =
-    this.addAll(List(ImmediateDown(nodeName), AtIndex(idx)))
+    this.addAll(List(Down(nodeName), AtIndex(idx)))
 
   def selectDynamic(nodeName: String): Type =
-    this.add(ImmediateDown(nodeName))
+    this.add(Down(nodeName))
 }
 
 sealed trait XmlZoom extends XmlZoomNodeBase {
 
   override type Type = XmlZoom
 
-  final def run[F[_]: MonadExOrEu](document: NodeSeq): F[NodeSeq] =
+  final def run[F[_]: AppExOrEu](document: NodeSeq): F[NodeSeq] =
     bind(document).run
 
-  final def detailed[F[_]: MonadExOrEu](document: NodeSeq): F[XmlZoomResult] =
+  final def detailed[F[_]: AppExOrEu](document: NodeSeq): F[XmlZoomResult] =
     bind(document).detailed
 }
 
@@ -67,10 +68,10 @@ sealed trait BindedXmlZoom extends XmlZoomNodeBase {
 
   val document: NodeSeq
 
-  final def run[F[_]: MonadExOrEu]: F[NodeSeq] =
+  final def run[F[_]: AppExOrEu]: F[NodeSeq] =
     Functor[F].map(detailed)(_.nodeSeq)
 
-  def detailed[F[_]: MonadExOrEu]: F[XmlZoomResult]
+  def detailed[F[_]: AppExOrEu]: F[XmlZoomResult]
 }
 
 sealed trait XmlZoomResult {
@@ -129,7 +130,7 @@ object XmlZoom {
     */
   def apply(actions: List[ZoomAction]): XmlZoom = Impls.Unbinded(actions)
 
-  //########################### IMPLS ###############################
+  //============================== IMPLS ==============================
   private object Impls {
 
     case class Unbinded(actions: List[ZoomAction]) extends XmlZoom {
@@ -151,7 +152,7 @@ object XmlZoom {
 
       override def unbind(): XmlZoom = Unbinded(actions)
 
-      def detailed[F[_]](implicit F: MonadExOrEu[F]): F[XmlZoomResult] = {
+      def detailed[F[_]](implicit F: AppExOrEu[F]): F[XmlZoomResult] = {
 
         @scala.annotation.tailrec
         def rec(current: XmlZoomResult, zActions: List[ZoomAction], logPath: String): F[XmlZoomResult] = {
@@ -159,8 +160,8 @@ object XmlZoom {
             case None => F.pure(current)
             case Some(action) =>
               val newParents = action match {
-                case ImmediateDown(_) => current.parents :+ current.nodeSeq
-                case _                => current.parents
+                case Down(_) => current.parents :+ current.nodeSeq
+                case _       => current.parents
               }
 
               action(current.nodeSeq) match {
@@ -177,7 +178,7 @@ object XmlZoom {
     case class Result(nodeSeq: NodeSeq, parents: List[NodeSeq]) extends XmlZoomResult
   }
 
-  //########################### NODES ACTIONS ###############################
+  //============================== NODES ACTIONS ==============================
   sealed trait ZoomAction {
     def apply(ns: NodeSeq): Option[NodeSeq]
 
@@ -192,10 +193,24 @@ object XmlZoom {
       case x              => Some(x)
     }
   }
+  object ZoomAction {
+
+    def asStringPath(ls: List[ZoomAction]): String = {
+
+      @tailrec
+      def rec(tail: List[ZoomAction], acc: String = ""): String =
+        tail match {
+          case Nil          => acc
+          case ::(head, tl) => rec(tl, acc + head.symbol)
+        }
+
+      rec(ls)
+    }
+  }
 
   sealed trait FilterZoomAction extends ZoomAction
 
-  final case class ImmediateDown(value: String) extends ZoomAction {
+  final case class Down(value: String) extends ZoomAction {
     def apply(ns: NodeSeq): Option[NodeSeq] = checkEmpty(ns \ value)
     val symbol: String = s"/$value"
   }
@@ -217,39 +232,61 @@ object XmlZoom {
 
   final case object Head extends FilterZoomAction {
     def apply(ns: NodeSeq): Option[NodeSeq] = ns.headOption
-
     val symbol: String = s"head()"
   }
 
   final case object Last extends FilterZoomAction {
     def apply(ns: NodeSeq): Option[NodeSeq] = ns.lastOption
-
     val symbol: String = s"last()"
   }
 }
 
+case class XmlContentZoomRunner(zoom: BindedXmlZoom, f: NodeSeq => Value) {
+
+  import cats.syntax.flatMap._
+
+  def validate(nrule: ValidationRule, nrules: ValidationRule*): XmlContentZoomRunner =
+    copy(f = f.andThen(v => v.validate(nrule, nrules: _*)))
+
+  def extract[F[_]: AppExOrEu: FlatMap]: F[String] =
+    zoom.run[F].flatMap(ns => f(ns).extract[F])
+
+  def extractAsValidated: ValidatedNelEx[String] =
+    zoom.run[ValidatedNelEx].andThen(ns => f(ns).extract[ValidatedNelEx])
+}
+
 object XmlContentZoom {
 
-  import cats.implicits._
-
-  //************************************ ATTRIBUTE *************************************
-  def attr[F[_]: MonadExOrEu](ns: NodeSeq, key: String): F[String] =
-    attrM(Applicative[F].pure(ns), key)
-
-  def attrM[F[_]: MonadExOrEu](ns: F[NodeSeq], key: String): F[String] =
-    ns.map(_ \@ key).flatMap(check[F](_, s"Missing/Empty $key attribute."))
-
-  //*************************************** TEXT  **************************************
-  def text[F[_]: MonadExOrEu](ns: NodeSeq): F[String] =
-    textM(Applicative[F].pure(ns))
-
-  def textM[F[_]: MonadExOrEu](ns: F[NodeSeq]): F[String] =
-    ns.map(_.text).flatMap(check[F](_, s"Missing/Empty text."))
-
-  private def check[F[_]](value: String, errorMsg: => String)(implicit F: MonadExOrEu[F]): F[String] =
-    value match {
-      case "" => F.raiseErrorOrEmpty(new RuntimeException(errorMsg))
-      case x  => F.pure(x)
+  //=========================== FROM NODESEQ ===========================
+  def label(ns: NodeSeq): Value =
+    ns match {
+      case node: Node => Value(node.label)
+      case _          => Value("")
     }
 
+  def attr(ns: NodeSeq, key: String): ValidatedValue =
+    Value(ns \@ key, Some(s"${label(ns).unboxed} /@ $key")).nonEmpty
+
+  def content(ns: NodeSeq): ValidatedValue =
+    Value(ns.text, Some(s"${label(ns).unboxed}.content")).nonEmpty
+
+  //========================= FROM BINDED ZOOM =========================
+  def labelFromBindedZoom(zoom: BindedXmlZoom): XmlContentZoomRunner =
+    XmlContentZoomRunner(zoom, ns => label(ns))
+
+  def attrFromBindedZoom(zoom: BindedXmlZoom, key: String): XmlContentZoomRunner =
+    XmlContentZoomRunner(zoom, ns => attr(ns, key))
+
+  def contentFromBindedZoom(zoom: BindedXmlZoom): XmlContentZoomRunner =
+    XmlContentZoomRunner(zoom, ns => content(ns))
+
+  //========================= FROM UNBINDED ZOOM =========================
+  def labelFromZoom(zoom: XmlZoom, ns: NodeSeq): XmlContentZoomRunner =
+    labelFromBindedZoom(zoom.bind(ns))
+
+  def attrFromZoom(zoom: XmlZoom, ns: NodeSeq, key: String): XmlContentZoomRunner =
+    attrFromBindedZoom(zoom.bind(ns), key)
+
+  def contentFromZoom(zoom: XmlZoom, ns: NodeSeq): XmlContentZoomRunner =
+    contentFromBindedZoom(zoom.bind(ns))
 }

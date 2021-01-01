@@ -67,7 +67,7 @@ object XmlTransformationSpec extends Properties("XmlTransformationSpec") {
 
     (zoom match {
       case x if x == root => root
-      case x              => XmlZoom(x.actions.dropRight(1)).immediateDown(newElem.label)
+      case x              => XmlZoom(x.actions.dropRight(1)).down(newElem.label)
     }).run[Try](result.get).get === newElem
   }
 
@@ -87,7 +87,7 @@ object XmlTransformationSpec extends Properties("XmlTransformationSpec") {
   property("SetAttrs") = forAll { (base: Elem, attrsData: NonEmptyList[AttributeData]) =>
     val rule: ComposableXmlRule = root ==> SetAttrs(attrsData)
     val result: NodeSeq = base.transform[Try](rule).get
-    val predicates: NonEmptyList[KeyValuePredicate[String]] = attrsData.map(d => d.key === d.value)
+    val predicates: NonEmptyList[KeyValuePredicate] = attrsData.map(d => d.key === d.value)
 
     result.exists(attrs(predicates))
   }
