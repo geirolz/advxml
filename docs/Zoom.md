@@ -121,9 +121,9 @@ This feature combined to converter feature allows we to convert attributes data 
 ```scala
 import advxml.core.transform.XmlZoom.root
 import advxml.core.transform.{BindedXmlZoom, XmlZoom}
-import advxml.syntax.convert._
+import advxml.syntax.data.convert._
 import advxml.syntax.transform._
-import advxml.instances.convert._
+import advxml.instances.data.convert._
 import cats.instances.try_._
 
 import scala.util.Try

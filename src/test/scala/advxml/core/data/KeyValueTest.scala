@@ -1,6 +1,6 @@
 package advxml.core.data
 
-import advxml.syntax._
+import advxml.syntax.data._
 import cats.Eq
 import org.scalatest.funsuite.AnyFunSuite
 

@@ -29,6 +29,9 @@ package object instances extends AllCommonInstances {
     object predicates extends XmlPredicateInstances
     object modifiers  extends XmlModifierInstances
   }
-  object convert    extends ConverterInstances
+  object data extends AllDataInstances{
+    object convert    extends AllConverterInstances
+    object value      extends AllValueInstances
+  }
   // format: on
 }

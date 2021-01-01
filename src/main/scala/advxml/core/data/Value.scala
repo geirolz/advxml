@@ -1,7 +1,6 @@
 package advxml.core.data
 
 import advxml.core.AppExOrEu
-import advxml.core.data.ValidationRule.{MatchRegex, NonEmpty}
 import cats.{PartialOrder, Show}
 import cats.data.{NonEmptyList, Validated}
 import cats.data.Validated.{Invalid, Valid}
@@ -9,6 +8,8 @@ import cats.data.Validated.{Invalid, Valid}
 import scala.util.matching.Regex
 
 sealed trait Value extends Comparable[Value] with Serializable {
+
+  import advxml.instances.data.value._
 
   def unboxed: String
 
@@ -85,14 +86,10 @@ object Value {
   }
 }
 
-trait ValidationRule {
-
-  protected val errorReason: String
-
-  protected val predicate: String => Boolean
+class ValidationRule(val name: String, val validator: String => Boolean, val errorReason: String) {
 
   final def apply[T <: Value](v: T): Validated[ValidationRule.Error, T] = {
-    predicate(v.unboxed) match {
+    validator(v.unboxed) match {
       case true  => Valid(v)
       case false => Invalid(ValidationRule.Error(this, errorReason))
     }
@@ -100,6 +97,9 @@ trait ValidationRule {
 }
 
 object ValidationRule {
+
+  def apply(name: String, validator: String => Boolean, errorReason: => String): ValidationRule =
+    new ValidationRule(name, validator, errorReason)
 
   case class Error(rule: ValidationRule, reason: String)
 
@@ -123,7 +123,7 @@ object ValidationRule {
         if (list.nonEmpty) s"- $str(${list.size})\n${list.map(_._1).mkString("\n")}" else ""
 
       def ruleCheckStr(rule: ValidationRule, isSuccess: Boolean, reason: String = ""): String =
-        s"[${if (isSuccess) "✓" else " "}] ${rule.getClass.getSimpleName}${if (reason.nonEmpty) s": $reason." else ""}"
+        s"[${if (isSuccess) "✓" else " "}] ${rule.name}${if (reason.nonEmpty) s": $reason." else ""}"
 
       val (success, failed): (List[(String, Boolean)], List[(String, Boolean)]) = result
         .map {
@@ -142,16 +142,5 @@ object ValidationRule {
     }
 
     lazy val exception: RuntimeException = new RuntimeException(report)
-  }
-
-  //============================= INSTANCES =============================
-  case object NonEmpty extends ValidationRule {
-    protected override val predicate: String => Boolean = _.nonEmpty
-    protected override val errorReason: String = "Empty value"
-  }
-
-  case class MatchRegex(regex: Regex) extends ValidationRule {
-    protected override val predicate: String => Boolean = v => regex.findFirstMatchIn(v).isDefined
-    protected override val errorReason: String = s"No match with regex [$regex]"
   }
 }

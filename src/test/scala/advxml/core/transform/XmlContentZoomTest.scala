@@ -4,15 +4,21 @@ import advxml.core.data.{ValidatedValue, Value}
 import advxml.core.transform.XmlContentZoomTest.ContractFuncs
 import advxml.core.transform.XmlZoom.root
 import advxml.core.AppExOrEu
-import advxml.testUtils.{ContractTests, Fallible, FeatureSpecContract}
-import org.scalatest.featurespec.AnyFeatureSpec
+import advxml.testUtils.{ContractTests, Fallible, FunSuiteContract}
+import org.scalatest.funsuite.AnyFunSuite
 
-import scala.util.Try
+import scala.util.{Success, Try}
 import scala.xml.{Elem, NodeSeq}
 
-class XmlContentZoomTest extends AnyFeatureSpec with FeatureSpecContract {
+class XmlContentZoomTest extends AnyFunSuite with FunSuiteContract {
 
   import cats.instances.try_._
+
+  test("XmlContentZoomRunner.validated") {
+    import advxml.instances.data._
+    val value: ValidatedValue = XmlContentZoom.label(<foo/>).validate(NonEmpty)
+    assert(value.extract[Try] == Success("foo"))
+  }
 
   // format: off
   XmlContentZoomTest.Contract[Try](

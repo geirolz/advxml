@@ -4,13 +4,50 @@ import advxml.core.{=:!=, AppExOrEu}
 import advxml.core.data._
 import advxml.core.transform.XmlContentZoomRunner
 import advxml.core.utils.XmlUtils
-import cats.{~>, Applicative, FlatMap}
-import cats.data.Validated
+import cats.{~>, Applicative, FlatMap, Semigroup}
+import cats.data.{NonEmptyList, Validated}
+import advxml.core.data.ValidationRule
 
+import scala.util.matching.Regex
 import scala.util.Try
 import scala.xml.{Elem, Node, Text}
 
-private[instances] trait ConverterInstances
+private[instances] trait AllDataInstances
+    extends AllValueInstances
+    with AggregatedExceptionInstances
+    with AllConverterInstances
+
+//========================= VALUE =========================
+private[instances] trait AllValueInstances {
+
+  /** Check if value is empty.
+    */
+  case object NonEmpty
+      extends ValidationRule(
+        name = "NonEmpty",
+        validator = _.nonEmpty,
+        errorReason = "Empty value"
+      )
+
+  /** Check if value match specified regex.
+    * @param regex instance.
+    */
+  case class MatchRegex(regex: Regex)
+      extends ValidationRule(
+        name = "MatchRegex",
+        validator = v => regex.findFirstMatchIn(v).isDefined,
+        errorReason = s"No match with regex [$regex]"
+      )
+}
+
+//============================== EXCEPTIONS ==============================
+private trait AggregatedExceptionInstances {
+  implicit val semigroupInstanceForAggregatedException: Semigroup[Throwable] =
+    (x: Throwable, y: Throwable) => ThrowableNel.toThrowable(NonEmptyList.of(x, y))
+}
+
+//========================= CONVERTERS =========================
+private[instances] trait AllConverterInstances
     extends ConverterLowerPriorityImplicits1
     with ConverterLowerPriorityImplicits2
     with ConverterNaturalTransformationInstances {

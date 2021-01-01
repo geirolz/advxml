@@ -37,7 +37,7 @@ Once defined and imported in our scope let's see how to use it.
 ```scala
 import scala.util.Try
 import advxml.core.data.ValidatedNelEx
-import advxml.syntax.convert._
+import advxml.syntax.data.convert._
 import MyConverters._
 
 val str : String = "10"
@@ -58,8 +58,8 @@ is available in the scope.
 ```scala
 import scala.util.Try
 import cats.instances.try_._
-import advxml.syntax.convert._
-import advxml.instances.convert._
+import advxml.syntax.data.convert._
+import advxml.instances.data.convert._
 
 val optStr : Option[String] = Some("1")
 val optInt: Option[Int] = optStr.mapAs[Int]
@@ -72,8 +72,8 @@ We can even use `flatMapAs` if a `FlatMap` of `F[_]` is available
 ```scala
 import scala.util.{Success, Try}
 import cats.instances.try_._
-import advxml.syntax.convert._
-import advxml.instances.convert._
+import advxml.syntax.data.convert._
+import advxml.instances.data.convert._
 
 val tryStr : Try[String] = Success("1")
 val tryInt: Try[Int] = tryStr.flatMapAs[Int]
@@ -81,7 +81,7 @@ val tryInt: Try[Int] = tryStr.flatMapAs[Int]
 
 Multiple converters for standard types are already defined by advxml and you just need to import them with 
 ```scala
-import advxml.instances.convert._
+  import advxml.instances.data.convert._
 ```
 
 For simplify the code advxml also defines some other type alias derived from what we have just saw.

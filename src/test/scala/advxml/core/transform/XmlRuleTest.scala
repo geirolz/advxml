@@ -8,8 +8,8 @@ import scala.xml.NodeSeq
 class XmlRuleTest extends AnyFunSuite {
 
   import advxml.instances.transform._
-  import advxml.instances.convert._
-  import advxml.syntax._
+  import advxml.instances.data.convert._
+  import advxml.syntax.data._
 
   test("XmlRule.apply with varargs") {
     val rule: ComposableXmlRule = XmlRule(root, SetAttrs(k"T1" := 1), SetAttrs(k"T2" := 2))

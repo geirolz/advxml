@@ -1,4 +1,4 @@
-package advxml.core.exceptions
+package advxml.core.data
 
 import advxml.core.data.error.AggregatedException
 import cats.data.NonEmptyList

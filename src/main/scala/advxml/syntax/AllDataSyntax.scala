@@ -2,13 +2,17 @@ package advxml.syntax
 
 import advxml.core.data._
 import advxml.core.AppExOrEu
-import cats.{~>, Applicative, FlatMap}
+import cats.{~>, Applicative, Eq, FlatMap, PartialOrder}
 import cats.data.Validated
 import cats.implicits._
 
+import scala.util.Try
 import scala.xml.NodeSeq
 
-private[syntax] trait ConvertersSyntax {
+private[syntax] trait AllDataSyntax extends ConverterSyntax with AttributeSyntax with PredicateSyntax
+
+//============================== CONVERTER ==============================
+private[syntax] trait ConverterSyntax {
 
   implicit class AnyFunctionKConverterSyntaxOps[F[_], A](fa: F[A]) {
 
@@ -123,5 +127,97 @@ private[syntax] trait ConvertersSyntax {
     /** Syntactic sugar to run an implicit [[XmlDecoder]] with NodeSeq instance as input.
       */
     def decode[B](implicit c: XmlDecoder[B]): ValidatedNelEx[B] = c.run(ns)
+  }
+}
+
+//============================== ATTRIBUTE PREDICATE ==============================
+private[syntax] trait AttributeSyntax {
+
+  implicit class KeyAndValueStringInterpolationOps(ctx: StringContext) {
+    def k(args: Any*): Key = Key(ctx.s(args: _*))
+    def v(args: Any*): Value = Value(ctx.s(args: _*))
+  }
+
+  implicit class AttributeOps(key: Key) {
+
+    def :=[T](v: T)(implicit c: T As Value): AttributeData =
+      AttributeData(key, c(v))
+
+    //********* KeyValuePredicate *********
+    import cats.syntax.order._
+
+    def ->(valuePredicate: Value => Boolean): KeyValuePredicate =
+      KeyValuePredicate(key, valuePredicate)
+
+    def ===[T: Eq](that: T)(implicit converter: Value As Try[T]): KeyValuePredicate =
+      buildPredicate[T](_ === _, that, "===")
+
+    def =!=[T: Eq](that: T)(implicit converter: Value As Try[T]): KeyValuePredicate =
+      buildPredicate[T](_ =!= _, that, "=!=")
+
+    def <[T: PartialOrder](that: T)(implicit converter: Value As Try[T]): KeyValuePredicate =
+      buildPredicate[T](_ < _, that, "<")
+
+    def <=[T: PartialOrder](that: T)(implicit converter: Value As Try[T]): KeyValuePredicate =
+      buildPredicate[T](_ <= _, that, "<=")
+
+    def >[T: PartialOrder](that: T)(implicit converter: Value As Try[T]): KeyValuePredicate =
+      buildPredicate[T](_ > _, that, ">")
+
+    def >=[T: PartialOrder](that: T)(implicit converter: Value As Try[T]): KeyValuePredicate =
+      buildPredicate[T](_ >= _, that, ">=")
+
+    private def buildPredicate[T](p: (T, T) => Boolean, that: T, symbol: String)(implicit
+      c: Value As Try[T]
+    ): KeyValuePredicate =
+      KeyValuePredicate(
+        key,
+        new (Value => Boolean) {
+          override def apply(f: Value): Boolean = c(f).map(p(_, that)).getOrElse(false)
+          override def toString(): String = s"$symbol [$that]"
+        }
+      )
+  }
+}
+
+//============================== PREDICATE ==============================
+private[syntax] trait PredicateSyntax {
+  implicit class PredicateOps[T](p: T => Boolean) {
+
+    /** Combine with another predicate(`T => Boolean`) with `And` operator.
+      *
+      * @see [[Predicate]] object for further information.
+      * @param that Predicate to combine.
+      * @return Result of combination with this instance
+      *         with passed predicate instance using `And` operator.
+      */
+    def &&(that: T => Boolean): T => Boolean = p.and(that)
+
+    /** Combine with another predicate(`T => Boolean`) with `And` operator.
+      *
+      * @see [[Predicate]] object for further information.
+      * @param that Predicate to combine.
+      * @return Result of combination with this instance
+      *         with passed predicate instance using `And` operator.
+      */
+    def and(that: T => Boolean): T => Boolean = Predicate.and(p, that)
+
+    /** Combine with another predicate(`T => Boolean`) with `Or` operator.
+      *
+      * @see [[Predicate]] object for further information.
+      * @param that Predicate to combine.
+      * @return Result of combination with this instance
+      *         with passed predicate instance using `Or` operator.
+      */
+    def ||(that: T => Boolean): T => Boolean = p.or(that)
+
+    /** Combine with another predicate(`T => Boolean`) with `Or` operator.
+      *
+      * @see [[Predicate]] object for further information.
+      * @param that Predicate to combine.
+      * @return Result of combination with this instance
+      *         with passed predicate instance using `Or` operator.
+      */
+    def or(that: T => Boolean): T => Boolean = Predicate.or(p, that)
   }
 }

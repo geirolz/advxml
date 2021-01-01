@@ -17,10 +17,10 @@ import org.scalatest.funsuite.AnyFunSuite
 import scala.util.{Success, Try}
 import scala.xml.{Elem, NodeSeq}
 
-class ConverterSyntaxTest extends AnyFunSuite {
+class DataConvertSyntaxTest extends AnyFunSuite {
 
-  import advxml.instances.convert._
-  import advxml.syntax.convert._
+  import advxml.syntax.data._
+  import advxml.instances.data.convert._
   import cats.instances.option._
   import cats.instances.try_._
 

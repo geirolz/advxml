@@ -4,8 +4,8 @@ import advxml.core.data.{Converter, ThrowableNel, ValidatedNelEx, Value}
 import advxml.core.data.error.AggregatedException
 import advxml.core.transform.{XmlContentZoom, XmlContentZoomRunner}
 import advxml.implicits.$
-import advxml.instances.convert._
-import advxml.syntax._
+import advxml.instances.data.convert._
+import advxml.syntax.data._
 import cats.Id
 import cats.data.NonEmptyList
 import cats.data.Validated.Valid
@@ -84,7 +84,7 @@ class ConvertersInstancesTestForValue extends AnyFunSuite with ConvertersAsserts
 }
 class ConvertersInstancesTestForText extends AnyFunSuite with ConvertersAssertsUtils {
 
-  import advxml.instances.convert._
+  import advxml.instances.data.convert._
   import cats.instances.try_._
 
   // format: off

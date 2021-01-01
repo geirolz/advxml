@@ -7,10 +7,10 @@ import scala.xml.{NodeSeq, XML}
 
 class StressTest extends AnyFunSuite {
 
-  import advxml.instances.convert._
+  import advxml.instances.data.convert._
   import advxml.instances.transform._
   import advxml.syntax.transform._
-  import advxml.syntax._
+  import advxml.syntax.data._
   import cats.instances.try_._
   import cats.syntax.monoid._
 

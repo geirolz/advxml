@@ -13,8 +13,7 @@ class ValidatedSyntaxTest extends AnyFunSuite with FunSuiteContract {
   ValidateExTest.Contract(
     "Syntax",
     {
-      import advxml.instances._
-      import advxml.instances.convert._
+      import advxml.instances.data._
       import advxml.syntax.all._
       import cats.instances.either._
       import cats.instances.option._

@@ -10,7 +10,7 @@ import scala.xml.Elem
   *
   * @author geirolad
   */
-class ConverterFullSyntaxTest extends AnyFunSuite {
+class DataConvertFullSyntaxTest extends AnyFunSuite {
 
   import advxml.implicits._
   import advxml.testUtils.ScalacticXmlEquality._

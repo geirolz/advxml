@@ -1,15 +1,16 @@
 package advxml.syntax
 
 import advxml.core.data.{AttributeData, Key, KeyValuePredicate, Value}
-import advxml.syntax.KeyValueSyntaxTest.ContractFuncs
+import advxml.syntax.DataKeyValueSyntaxTest.ContractFuncs
 import advxml.testUtils.{ContractTests, FunSuiteContract}
 import org.scalatest.funsuite.AnyFunSuite
 
-class KeyValueSyntaxTest extends AnyFunSuite with FunSuiteContract {
+class DataKeyValueSyntaxTest extends AnyFunSuite with FunSuiteContract {
 
-  import advxml.instances.convert._
+  import advxml.syntax.data._
+  import advxml.instances.data.convert._
 
-  KeyValueSyntaxTest
+  DataKeyValueSyntaxTest
     .Contract(
       // format: off
       f = ContractFuncs(
@@ -27,7 +28,7 @@ class KeyValueSyntaxTest extends AnyFunSuite with FunSuiteContract {
     .runAll()
 }
 
-object KeyValueSyntaxTest {
+object DataKeyValueSyntaxTest {
 
   case class ContractFuncs(
     data: (Key, Value) => AttributeData,

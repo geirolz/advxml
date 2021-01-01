@@ -26,7 +26,9 @@ package object syntax extends AllCommonSyntax {
   object all              extends AllSyntax
   //==================== FEATURES ====================
   object transform        extends AllTransformSyntax
-  object convert          extends ConvertersSyntax
+  object data             extends AllDataSyntax{
+    object convert          extends ConverterSyntax
+  }
   object javaConverters   extends JavaScalaConvertersSyntax
   // format: on
 }

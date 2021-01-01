@@ -8,9 +8,9 @@ import scala.xml.{Document, Elem, Group, NodeSeq}
 
 class TransformXmlPredicateInstancesTest extends AnyFunSuite {
 
-  import advxml.instances.convert._
+  import advxml.instances.data.convert._
   import advxml.instances.transform.predicates._
-  import advxml.syntax._
+  import advxml.syntax.all._
   import advxml.testUtils.ScalacticXmlEquality._
 
   test("Test 'text' predicate") {
