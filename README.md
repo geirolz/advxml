@@ -11,6 +11,9 @@ A lightweight, simple and functional library DSL to work with XML in Scala using
  
 ## How to import
 
+
+**Project has been renamed from `advxml` to `advxml-core`**
+
 Supported Scala 2.12 and 2.13
 
 **Maven** for 2.12
