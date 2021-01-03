@@ -11,13 +11,16 @@ A lightweight, simple and functional library DSL to work with XML in Scala using
  
 ## How to import
 
+
+**Project has been renamed from `advxml` to `advxml-core`**
+
 Supported Scala 2.12 and 2.13
 
 **Maven** for 2.12
 ```xml
 <dependency>
     <groupId>com.github.geirolz</groupId>
-    <artifactId>advxml_2.12</artifactId>
+    <artifactId>advxml-core_2.12</artifactId>
     <version>version</version>
 </dependency>
 ```
@@ -26,24 +29,24 @@ Supported Scala 2.12 and 2.13
 ```xml
 <dependency>
     <groupId>com.github.geirolz</groupId>
-    <artifactId>advxml_2.13</artifactId>
+    <artifactId>advxml-core_2.13</artifactId>
     <version>version</version>
 </dependency>
 ```
 
 **Sbt**
 ```
-  libraryDependencies += "com.github.geirolz" %% "advxml" % <version>
+  libraryDependencies += "com.github.geirolz" %% "advxml-core" % <version>
 ```
 
 ## Structure
 The idea behind this library is offer a fluent syntax to edit and read xml.
 
 *Features:*
-- [Attribute](docs/Attribute.md) Data types for keys and attributes.
-- [Transform](docs/Transform.md) Allows to edit the XML document.
-- [Convert](docs/Convert.md) Allows to convert Model to XML and vice versa(not automatically yet)
-- [Zoom](docs/Zoom.md) Allows to traverse an XML do get nodes, attributes and text.
-- [Normalize](docs/Normalize.md) Allows to remove white spaces and collapse empty nodes in a XML document
+- [Attribute](modules/core/docs/Attribute.md) Data types for keys and attributes.
+- [Transform](modules/core/docs/Transform.md) Allows to edit the XML document.
+- [Convert](modules/core/docs/Convert.md) Allows to convert Model to XML and vice versa(not automatically yet)
+- [Zoom](modules/core/docs/Zoom.md) Allows to traverse an XML do get nodes, attributes and text.
+- [Normalize](modules/core/docs/Normalize.md) Allows to remove white spaces and collapse empty nodes in a XML document
 
  

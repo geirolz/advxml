@@ -7,7 +7,7 @@ import sbt.{CrossVersion, _}
   */
 object Dependencies {
 
-  lazy val all: Seq[ModuleID] = Seq(
+  lazy val common: Seq[ModuleID] = Seq(
     //SCALA
     "org.typelevel" %% "cats-core" % "2.3.1" cross CrossVersion.binary,
     //XML
