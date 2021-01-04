@@ -1,7 +1,7 @@
 package advxml.syntax
 
-import advxml.core.XmlNormalizerTest
-import advxml.core.XmlNormalizerTest.ContractFuncs
+import advxml.core.transform.XmlNormalizerTest.ContractFuncs
+import advxml.core.transform.XmlNormalizerTest
 import advxml.testUtils.FunSuiteContract
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.Assertion
@@ -13,7 +13,9 @@ import scala.xml.NodeSeq
   *
   * @author geirolad
   */
-class NormalizerSyntaxTest extends AnyFunSuite with FunSuiteContract {
+class TransformNormalizerSyntaxTest extends AnyFunSuite with FunSuiteContract {
+
+  import advxml.syntax.transform._
 
   XmlNormalizerTest
     .Contract(

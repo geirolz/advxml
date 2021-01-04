@@ -1,9 +1,6 @@
 package advxml.syntax
 
-import advxml.core.XmlNormalizer
 import cats.{Applicative, Monad}
-
-import scala.xml.NodeSeq
 
 private[advxml] trait AllSyntax
     extends AllCommonSyntax
@@ -12,26 +9,7 @@ private[advxml] trait AllSyntax
     with NormalizerSyntax
     with JavaScalaConvertersSyntax
 
-private[advxml] trait AllCommonSyntax extends NormalizerSyntax with NestedMapSyntax
-
-//============================== NORMALIZE ==============================
-private[syntax] trait NormalizerSyntax {
-
-  implicit class NodeSeqNormalizationAndEqualityOps(ns: NodeSeq) {
-
-    def normalize: NodeSeq =
-      XmlNormalizer.normalize(ns)
-
-    def normalizedEquals(ns2: NodeSeq): Boolean =
-      XmlNormalizer.normalizedEquals(ns, ns2)
-
-    def |==|(ns2: NodeSeq): Boolean =
-      XmlNormalizer.normalizedEquals(ns, ns2)
-
-    def |!=|(ns2: NodeSeq): Boolean =
-      !XmlNormalizer.normalizedEquals(ns, ns2)
-  }
-}
+private[advxml] trait AllCommonSyntax extends NestedMapSyntax
 
 //============================== NESTED MAP ==============================
 private[syntax] trait NestedMapSyntax {

@@ -81,7 +81,7 @@ private[instances] trait XmlModifierInstances {
           F.pure[NodeSeq](
             e.copy(
               attributes = ds.toList.foldRight(e.attributes)((data, metadata) =>
-                new UnprefixedAttribute(data.key.value, data.value.unboxed, metadata)
+                new UnprefixedAttribute(data.key.value, data.value.get, metadata)
               )
             )
           )
@@ -207,7 +207,7 @@ private[instances] trait XmlPredicateInstances {
     */
   def attrs(values: NonEmptyList[KeyValuePredicate]): XmlPredicate =
     values
-      .map(p => XmlPredicate(ns => p(Value(ns \@ p.key.value))))
+      .map(p => XmlPredicate(ns => p(SimpleValue(ns \@ p.key.value))))
       .reduce(Predicate.and[NodeSeq])
 
   /** Create a [[XmlPredicate]] that can check if a NodeSeq contains a child with specified predicates

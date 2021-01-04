@@ -135,45 +135,45 @@ private[syntax] trait AttributeSyntax {
 
   implicit class KeyAndValueStringInterpolationOps(ctx: StringContext) {
     def k(args: Any*): Key = Key(ctx.s(args: _*))
-    def v(args: Any*): Value = Value(ctx.s(args: _*))
+    def v(args: Any*): SimpleValue = SimpleValue(ctx.s(args: _*))
   }
 
   implicit class AttributeOps(key: Key) {
 
-    def :=[T](v: T)(implicit c: T As Value): AttributeData =
+    def :=[T](v: T)(implicit c: T As SimpleValue): AttributeData =
       AttributeData(key, c(v))
 
     //********* KeyValuePredicate *********
     import cats.syntax.order._
 
-    def ->(valuePredicate: Value => Boolean): KeyValuePredicate =
+    def ->(valuePredicate: SimpleValue => Boolean): KeyValuePredicate =
       KeyValuePredicate(key, valuePredicate)
 
-    def ===[T: Eq](that: T)(implicit converter: Value As Try[T]): KeyValuePredicate =
+    def ===[T: Eq](that: T)(implicit converter: SimpleValue As Try[T]): KeyValuePredicate =
       buildPredicate[T](_ === _, that, "===")
 
-    def =!=[T: Eq](that: T)(implicit converter: Value As Try[T]): KeyValuePredicate =
+    def =!=[T: Eq](that: T)(implicit converter: SimpleValue As Try[T]): KeyValuePredicate =
       buildPredicate[T](_ =!= _, that, "=!=")
 
-    def <[T: PartialOrder](that: T)(implicit converter: Value As Try[T]): KeyValuePredicate =
+    def <[T: PartialOrder](that: T)(implicit converter: SimpleValue As Try[T]): KeyValuePredicate =
       buildPredicate[T](_ < _, that, "<")
 
-    def <=[T: PartialOrder](that: T)(implicit converter: Value As Try[T]): KeyValuePredicate =
+    def <=[T: PartialOrder](that: T)(implicit converter: SimpleValue As Try[T]): KeyValuePredicate =
       buildPredicate[T](_ <= _, that, "<=")
 
-    def >[T: PartialOrder](that: T)(implicit converter: Value As Try[T]): KeyValuePredicate =
+    def >[T: PartialOrder](that: T)(implicit converter: SimpleValue As Try[T]): KeyValuePredicate =
       buildPredicate[T](_ > _, that, ">")
 
-    def >=[T: PartialOrder](that: T)(implicit converter: Value As Try[T]): KeyValuePredicate =
+    def >=[T: PartialOrder](that: T)(implicit converter: SimpleValue As Try[T]): KeyValuePredicate =
       buildPredicate[T](_ >= _, that, ">=")
 
     private def buildPredicate[T](p: (T, T) => Boolean, that: T, symbol: String)(implicit
-      c: Value As Try[T]
+      c: SimpleValue As Try[T]
     ): KeyValuePredicate =
       KeyValuePredicate(
         key,
-        new (Value => Boolean) {
-          override def apply(f: Value): Boolean = c(f).map(p(_, that)).getOrElse(false)
+        new (SimpleValue => Boolean) {
+          override def apply(f: SimpleValue): Boolean = c(f).map(p(_, that)).getOrElse(false)
           override def toString(): String = s"$symbol [$that]"
         }
       )

@@ -1,95 +1,119 @@
 package advxml.core.data
 
 import advxml.core.AppExOrEu
-import cats.{PartialOrder, Show}
+import cats.{Applicative, Id, PartialOrder, Show}
 import cats.data.{NonEmptyList, Validated}
 import cats.data.Validated.{Invalid, Valid}
 
 import scala.util.matching.Regex
 
-sealed trait Value extends Comparable[Value] with Serializable {
+//======================================= VALUES ==================================
+sealed trait Value extends AsValidable[ValidatedValue] {
+  val ref: Option[String]
+}
+object Value {
+
+  //instances
+  implicit def valueExtractorForValueF[F[_]: AppExOrEu]: ValueExtractor[F, Value] = {
+    case v @ SimpleValue(_, _)       => v.extract[F]
+    case v @ ValidatedValue(_, _, _) => v.extract[F]
+  }
+
+  //embedded syntax
+  implicit class ValueExtractorSyntaxOps[V <: Value](value: V) {
+
+    def get(implicit be: ValueExtractor[Id, V]): String =
+      be.extract(value)
+
+    def validated(implicit ve: ValueExtractor[ValidatedNelEx, V]): ValidatedNelEx[String] =
+      extract[ValidatedNelEx]
+
+    def extract[F[_]](implicit be: ValueExtractor[F, V]): F[String] =
+      be.extract(value)
+  }
+}
+
+case class SimpleValue(private val data: String, ref: Option[String] = None)
+    extends Value
+    with Comparable[SimpleValue] {
+
+  override def validate(nrule: ValidationRule, nrules: ValidationRule*): ValidatedValue =
+    ValidatedValue.fromSimpleValue(this, NonEmptyList.of(nrule, nrules: _*))
+
+  override def compareTo(that: SimpleValue): Int = this.data.compareTo(that.data)
+
+  override def toString: String = Show[SimpleValue].show(this)
+}
+object SimpleValue {
+
+  implicit def valueExtractorForSimpleValueF[F[_]: Applicative]: ValueExtractor[F, SimpleValue] =
+    (value: SimpleValue) => Applicative[F].pure(value.data)
+
+  implicit val advxmlValueCatsInstances: PartialOrder[SimpleValue] with Show[SimpleValue] =
+    new PartialOrder[SimpleValue] with Show[SimpleValue] {
+      override def partialCompare(x: SimpleValue, y: SimpleValue): Double = x.data.compareTo(y.data).toDouble
+      override def show(t: SimpleValue): String = s"""${t.ref.map(r => s"$r => ").getOrElse("")}"${t.data}""""
+    }
+}
+
+case class ValidatedValue(private val data: String, rules: NonEmptyList[ValidationRule], ref: Option[String] = None)
+    extends Value {
+
+  def toSimpleValue: SimpleValue = SimpleValue(data, ref)
+
+  override def validate(nrule: ValidationRule, nrules: ValidationRule*): ValidatedValue =
+    copy(rules = rules.concatNel(NonEmptyList.of(nrule, nrules: _*)))
+
+  override def toString: String = Show[SimpleValue].show(toSimpleValue)
+}
+object ValidatedValue {
+
+  def fromSimpleValue(simpleValue: SimpleValue, rules: NonEmptyList[ValidationRule]): ValidatedValue =
+    ValidatedValue(simpleValue.get, rules, simpleValue.ref)
+
+  implicit def valueExtractorForValidatedValueF[F[_]: AppExOrEu]: ValueExtractor[F, ValidatedValue] =
+    (vvalue: ValidatedValue) => {
+      import cats.implicits._
+
+      val result: Validated[ValidationRule.Errors, SimpleValue] = vvalue.rules
+        .map(validationRule => validationRule(vvalue.toSimpleValue).toValidatedNel)
+        .toList
+        .reduce((a, b) => a.productL[SimpleValue](b))
+        .swap
+        .map(errors => ValidationRule.Errors(vvalue, errors))
+        .swap
+
+      result match {
+        case Valid(a)   => AppExOrEu[F].pure(a.get)
+        case Invalid(e) => AppExOrEu[F].raiseErrorOrEmpty(e.exception)
+      }
+    }
+}
+
+//======================================= TYPE CLASS ==================================
+trait ValueExtractor[F[_], V <: Value] {
+  def extract(value: V): F[String]
+}
+object ValueExtractor {
+  def apply[F[_], V <: Value](implicit ve: ValueExtractor[F, V]): ValueExtractor[F, V] = ve
+}
+
+//=============================== VALIDATION RULE ===============================
+trait AsValidable[V] {
 
   import advxml.instances.data.value._
 
-  def unboxed: String
+  def validate(nrule: ValidationRule, nrules: ValidationRule*): V
 
-  def extract[F[_]: AppExOrEu]: F[String] =
-    this match {
-      case value: ValidatedValue => value.extract[F]
-      case value: Value          => AppExOrEu[F].pure(value.unboxed)
-    }
+  def nonEmpty: V = validate(NonEmpty)
 
-  def ref: Option[String]
-
-  def validate(nrule: ValidationRule, nrules: ValidationRule*): ValidatedValue
-
-  def nonEmpty: ValidatedValue = validate(NonEmpty)
-
-  def matchRegex(regex: Regex): ValidatedValue = validate(MatchRegex(regex))
-
-  override def compareTo(that: Value): Int = this.unboxed.compareTo(that.unboxed)
-}
-
-sealed trait ValidatedValue extends Value {
-
-  def toValue: Value = Value(unboxed)
-
-  def rules: NonEmptyList[ValidationRule]
-
-  override def extract[F[_]: AppExOrEu]: F[String] = {
-
-    import cats.implicits._
-
-    val result: Validated[ValidationRule.Errors, ValidatedValue] = rules
-      .map(r => r(this).toValidatedNel)
-      .toList
-      .reduce((a, b) => a.productL[ValidatedValue](b))
-      .swap
-      .map(errors => ValidationRule.Errors(this, errors))
-      .swap
-
-    result match {
-      case Valid(a)   => AppExOrEu[F].pure(a.unboxed)
-      case Invalid(e) => AppExOrEu[F].raiseErrorOrEmpty(e.exception)
-    }
-  }
-}
-
-object Value {
-
-  def apply(unboxed: String, ref: Option[String] = None): Value = Impls.ValueImpl(unboxed, ref)
-
-  private object Impls {
-
-    case class ValueImpl(unboxed: String, ref: Option[String]) extends Value {
-      override def validate(nrule: ValidationRule, nrules: ValidationRule*): ValidatedValue =
-        ValidatedValueImpls(unboxed, NonEmptyList.of(nrule, nrules: _*), ref)
-
-      override def toString: String = Show[Value].show(this)
-    }
-
-    case class ValidatedValueImpls(unboxed: String, rules: NonEmptyList[ValidationRule], ref: Option[String])
-        extends ValidatedValue {
-
-      override def validate(nrule: ValidationRule, nrules: ValidationRule*): ValidatedValue =
-        copy(rules = rules.concatNel(NonEmptyList.of(nrule, nrules: _*)))
-
-      override def toString: String = Show[Value].show(this)
-    }
-  }
-
-  //======================================= IMPLICITS ==================================
-  implicit val advxmlValueCatsInstances: PartialOrder[Value] with Show[Value] = new PartialOrder[Value]
-    with Show[Value] {
-    override def partialCompare(x: Value, y: Value): Double = x.unboxed.compareTo(y.unboxed).toDouble
-    override def show(t: Value): String = s"""${t.ref.map(r => s"$r => ").getOrElse("")}"${t.unboxed}""""
-  }
+  def matchRegex(regex: Regex): V = validate(MatchRegex(regex))
 }
 
 class ValidationRule(val name: String, val validator: String => Boolean, val errorReason: String) {
 
-  final def apply[T <: Value](v: T): Validated[ValidationRule.Error, T] = {
-    validator(v.unboxed) match {
+  final def apply(v: SimpleValue): Validated[ValidationRule.Error, SimpleValue] = {
+    validator(v.get) match {
       case true  => Valid(v)
       case false => Invalid(ValidationRule.Error(this, errorReason))
     }
@@ -98,7 +122,7 @@ class ValidationRule(val name: String, val validator: String => Boolean, val err
 
 object ValidationRule {
 
-  def apply(name: String, validator: String => Boolean, errorReason: => String): ValidationRule =
+  def apply(name: String)(validator: String => Boolean, errorReason: => String): ValidationRule =
     new ValidationRule(name, validator, errorReason)
 
   case class Error(rule: ValidationRule, reason: String)

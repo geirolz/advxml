@@ -1,12 +1,13 @@
-package advxml.core
+package advxml.core.transform
 
-import advxml.core.XmlNormalizerTest.ContractFuncs
+import advxml.core.transform.XmlNormalizerTest.ContractFuncs
 import advxml.testUtils.{ContractTests, FunSuiteContract}
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.xml.{Comment, Group, NodeSeq}
 
 class XmlNormalizerTest extends AnyFunSuite with FunSuiteContract {
+
   XmlNormalizerTest
     .Contract(
       // format: off

@@ -63,14 +63,14 @@ private sealed trait ConverterLowerPriorityImplicits1 {
   import cats.syntax.all._
 
   implicit def deriveTextToF_fromValueToF[F[_], T: * =:!= Text](implicit
-    c: Value As F[T]
+    c: SimpleValue As F[T]
   ): Text As F[T] =
-    c.local(t => Value(t.data))
+    c.local(t => SimpleValue(t.data))
 
   implicit def deriveTAsText_fromTAsValue[T: * =:!= Text](implicit
-    c: T As Value
+    c: T As SimpleValue
   ): T As Text =
-    c.map(v => Text(v.unboxed))
+    c.map(v => Text(v.get))
 
   implicit def deriveTAsText_fromTAsValidatedValue[F[_]: AppExOrEu, T: * =:!= Text](implicit
     c: T As ValidatedValue
@@ -88,8 +88,6 @@ private sealed trait ConverterLowerPriorityImplicits1 {
 
 private sealed trait ConverterLowerPriorityImplicits2 {
 
-  import cats.syntax.functor._
-
   //=============================== Node ===============================
   implicit val nodeToElemConverter: Node As Elem =
     Converter.of(XmlUtils.nodeToElem)
@@ -102,11 +100,11 @@ private sealed trait ConverterLowerPriorityImplicits2 {
     Converter.of(ThrowableNel.fromThrowable)
 
   //=============================== Value ===============================
-  implicit val convertStringToValue: String As Value =
-    Converter.of(Value(_))
+  implicit val convertStringToValue: String As SimpleValue =
+    Converter.of(SimpleValue(_))
 
-  implicit def convertValueToString[T: * =:= Value: * =:!= ValidatedValue]: T As String =
-    Converter.of(a => a.unboxed)
+  implicit val convertValueToString: SimpleValue As String =
+    Converter.of(a => a.get)
 
   implicit def converterXmlContentZoomRunnerForValidated[A](implicit
     c: Converter[ValidatedNelEx[String], ValidatedNelEx[A]]
@@ -119,35 +117,32 @@ private sealed trait ConverterLowerPriorityImplicits2 {
     Converter.of(r => c.run(r.extract[F]))
 
   // format: off
-  implicit val convertBigIntToValue     : BigInt     As Value = toValue
-  implicit val convertBigDecimalToValue : BigDecimal As Value = toValue
-  implicit val convertNyteToValue       : Byte       As Value = toValue
-  implicit val convertCharToValue       : Char       As Value = toValue
-  implicit val convertShortToValue      : Short      As Value = toValue
-  implicit val convertIntToValue        : Int        As Value = toValue
-  implicit val convertLongToValue       : Long       As Value = toValue
-  implicit val convertFloatToValue      : Float      As Value = toValue
-  implicit val convertDoubleToValue     : Double     As Value = toValue
+  implicit val convertBigIntToValue     : BigInt     As SimpleValue = toValue
+  implicit val convertBigDecimalToValue : BigDecimal As SimpleValue = toValue
+  implicit val convertNyteToValue       : Byte       As SimpleValue = toValue
+  implicit val convertCharToValue       : Char       As SimpleValue = toValue
+  implicit val convertShortToValue      : Short      As SimpleValue = toValue
+  implicit val convertIntToValue        : Int        As SimpleValue = toValue
+  implicit val convertLongToValue       : Long       As SimpleValue = toValue
+  implicit val convertFloatToValue      : Float      As SimpleValue = toValue
+  implicit val convertDoubleToValue     : Double     As SimpleValue = toValue
 
-  implicit def convertValueToFString    [F[_] : AppExOrEu] : Value As F[String    ] = fromValue(a => a)
-  implicit def convertValueToFBigInt    [F[_] : AppExOrEu] : Value As F[BigInt    ] = fromValue(BigInt(_))
-  implicit def convertValueToFBigDecimal[F[_] : AppExOrEu] : Value As F[BigDecimal] = fromValue(BigDecimal(_))
-  implicit def convertValueToFNyte      [F[_] : AppExOrEu] : Value As F[Byte      ] = fromValue(_.toByte)
-  implicit def convertValueToFChar      [F[_] : AppExOrEu] : Value As F[Char      ] = fromValue(_.toCharArray.apply(0))
-  implicit def convertValueToFShort     [F[_] : AppExOrEu] : Value As F[Short     ] = fromValue(_.toShort)
-  implicit def convertValueToFInt       [F[_] : AppExOrEu] : Value As F[Int       ] = fromValue(_.toInt)
-  implicit def convertValueToFLong      [F[_] : AppExOrEu] : Value As F[Long      ] = fromValue(_.toLong)
-  implicit def convertValueToFFloat     [F[_] : AppExOrEu] : Value As F[Float     ] = fromValue(_.toFloat)
-  implicit def convertValueToFDouble    [F[_] : AppExOrEu] : Value As F[Double    ] = fromValue(_.toDouble)
+  implicit def convertValueToFString    [F[_] : AppExOrEu] : Value As F[String    ] = fromBox(a => a)
+  implicit def convertValueToFBigInt    [F[_] : AppExOrEu] : Value As F[BigInt    ] = fromBox(BigInt(_))
+  implicit def convertValueToFBigDecimal[F[_] : AppExOrEu] : Value As F[BigDecimal] = fromBox(BigDecimal(_))
+  implicit def convertValueToFNyte      [F[_] : AppExOrEu] : Value As F[Byte      ] = fromBox(_.toByte)
+  implicit def convertValueToFChar      [F[_] : AppExOrEu] : Value As F[Char      ] = fromBox(_.toCharArray.apply(0))
+  implicit def convertValueToFShort     [F[_] : AppExOrEu] : Value As F[Short     ] = fromBox(_.toShort)
+  implicit def convertValueToFInt       [F[_] : AppExOrEu] : Value As F[Int       ] = fromBox(_.toInt)
+  implicit def convertValueToFLong      [F[_] : AppExOrEu] : Value As F[Long      ] = fromBox(_.toLong)
+  implicit def convertValueToFFloat     [F[_] : AppExOrEu] : Value As F[Float     ] = fromBox(_.toFloat)
+  implicit def convertValueToFDouble    [F[_] : AppExOrEu] : Value As F[Double    ] = fromBox(_.toDouble)
   // format: on
 
-  private def toValue[T]: Converter[T, Value] = Converter.of[T, Value](t => Value(t.toString))
+  private def toValue[T]: Converter[T, SimpleValue] = Converter.of[T, SimpleValue](t => SimpleValue(t.toString))
 
-  private def fromValue[F[_]: AppExOrEu, O](f: String => O): Converter[Value, F[O]] =
-    Converter.of {
-      case value: ValidatedValue => value.extract[F].map(f)
-      case value: Value          => AppExOrEu.fromTry(Try(f(value.unboxed)))
-    }
+  private def fromBox[F[_]: AppExOrEu, O](f: String => O): Converter[Value, F[O]] =
+    Converter.of { b => AppExOrEu.fromTry(b.extract[Try].flatMap(v => Try(f(v)))) }
 }
 
 private sealed trait ConverterNaturalTransformationInstances {

@@ -1,6 +1,6 @@
 package advxml.testUtils.generators
 
-import advxml.core.data.{AttributeData, Key, Value}
+import advxml.core.data.{AttributeData, Key, SimpleValue}
 import advxml.core.transform.XmlZoom
 import advxml.implicits.root
 import org.scalacheck.Gen
@@ -20,7 +20,7 @@ object XmlGenerator {
       val meta: MetaData = this.attrs.foldLeft(seed) { case (acc, data) =>
         new UnprefixedAttribute(
           key = data.key.value,
-          value = data.value.unboxed,
+          value = data.value.get,
           next = acc
         )
       }
@@ -50,7 +50,7 @@ object XmlGenerator {
       n <- Gen.choose(1, atLeastOne(maxSize))
       kvGen = for {
         key   <- genStr(nameMaxSize).map(Key(_))
-        value <- genStr(nameMaxSize).map(Value(_))
+        value <- genStr(nameMaxSize).map(SimpleValue(_))
       } yield AttributeData(key, value)
       map <- Gen.listOfN(n, kvGen)
     } yield map

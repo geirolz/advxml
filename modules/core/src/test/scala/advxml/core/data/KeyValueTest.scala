@@ -62,8 +62,8 @@ class KeyValueTest extends AnyFunSuite {
   test("KeyValuePredicate.toString") {
     val p = KeyValuePredicate(
       k"K",
-      new (Value => Boolean) {
-        override def apply(value: Value): Boolean = value.unboxed == "TEST"
+      new (SimpleValue => Boolean) {
+        override def apply(value: SimpleValue): Boolean = value.get == "TEST"
         override def toString(): String = "== [TEST]"
       }
     )

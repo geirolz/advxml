@@ -1,4 +1,4 @@
-package advxml.core
+package advxml.core.transform
 
 import scala.xml.{Elem, Node, NodeSeq, Text}
 

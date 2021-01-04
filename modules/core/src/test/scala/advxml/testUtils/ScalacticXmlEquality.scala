@@ -1,6 +1,6 @@
 package advxml.testUtils
 
-import advxml.core.XmlNormalizer
+import advxml.core.transform.XmlNormalizer
 import org.scalactic.{CanEqual, Equality}
 
 import scala.util.Try

@@ -1,6 +1,6 @@
 package advxml.instances
 
-import advxml.core.data.{As, Converter, ThrowableNel, ValidatedNelEx, ValidatedValue, Value}
+import advxml.core.data.{As, Converter, SimpleValue, ThrowableNel, ValidatedNelEx, ValidatedValue}
 import advxml.core.data.error.AggregatedException
 import advxml.core.transform.{XmlContentZoom, XmlContentZoomRunner}
 import advxml.implicits.$
@@ -23,10 +23,10 @@ class Common_ConvertersInstancesTest extends AnyFunSuite with ConvertersAssertsU
   implicitly[Converter[Int, Try[Int]]].test(1, Success(1))
 
   //============== FlatMapAs ==============
-  Converter[Option[Value], Option[Int]].test(Some(v"1"), Some(1))
+  Converter[Option[SimpleValue], Option[Int]].test(Some(v"1"), Some(1))
 
   //============== AndThenAs ==============
-  Converter[ValidatedNelEx[Value], ValidatedNelEx[Int]].test(Valid(v"1"), Valid(1))
+  Converter[ValidatedNelEx[SimpleValue], ValidatedNelEx[Int]].test(Valid(v"1"), Valid(1))
 
   //============== Node ==============
   Converter[Node, Elem].test(
@@ -48,14 +48,14 @@ class Common_ConvertersInstancesTest extends AnyFunSuite with ConvertersAssertsU
 //  )
 }
 
-class ConvertersInstancesTestForValue extends AnyFunSuite with ConvertersAssertsUtils {
+class ConvertersInstancesTestForSimpleValue extends AnyFunSuite with ConvertersAssertsUtils {
 
-  Converter[String, Value].test(
+  Converter[String, SimpleValue].test(
     "TEST",
-    Value("TEST")
+    SimpleValue("TEST")
   )
-  Converter[Value, String].test(
-    Value("TEST"),
+  Converter[SimpleValue, String].test(
+    SimpleValue("TEST"),
     "TEST"
   )
   Converter[XmlContentZoomRunner, ValidatedNelEx[String]].test(
@@ -68,25 +68,25 @@ class ConvertersInstancesTestForValue extends AnyFunSuite with ConvertersAsserts
   )
 
   // format: off
-  Converter[Value, Try[BigInt     ]].test(v"1"       , Success(BigInt(1)         ))
-  Converter[Value, Try[BigDecimal ]].test(v"1.1234"  , Success(BigDecimal(1.1234)))
-  Converter[Value, Try[Byte       ]].test(v"1"       , Success(1.toByte          ))
-  Converter[Value, Try[Short      ]].test(v"1"       , Success(1.toShort         ))
-  Converter[Value, Try[Char       ]].test(v"A"       , Success('A'               ))
-  Converter[Value, Try[Int        ]].test(v"1"       , Success(1                 ))
-  Converter[Value, Try[Long       ]].test(v"1"       , Success(1L                ))
-  Converter[Value, Try[Float      ]].test(v"1.0"     , Success(1.0f              ))
-  Converter[Value, Try[Double     ]].test(v"1.0"     , Success(1.0d              ))
+  Converter[SimpleValue, Try[BigInt     ]].test(v"1"       , Success(BigInt(1)         ))
+  Converter[SimpleValue, Try[BigDecimal ]].test(v"1.1234"  , Success(BigDecimal(1.1234)))
+  Converter[SimpleValue, Try[Byte       ]].test(v"1"       , Success(1.toByte          ))
+  Converter[SimpleValue, Try[Short      ]].test(v"1"       , Success(1.toShort         ))
+  Converter[SimpleValue, Try[Char       ]].test(v"A"       , Success('A'               ))
+  Converter[SimpleValue, Try[Int        ]].test(v"1"       , Success(1                 ))
+  Converter[SimpleValue, Try[Long       ]].test(v"1"       , Success(1L                ))
+  Converter[SimpleValue, Try[Float      ]].test(v"1.0"     , Success(1.0f              ))
+  Converter[SimpleValue, Try[Double     ]].test(v"1.0"     , Success(1.0d              ))
 
-  Converter[BigInt,     Value].test(BigInt(1)         , v"1"     )
-  Converter[BigDecimal, Value].test(BigDecimal(1.1234), v"1.1234")
-  Converter[Byte,       Value].test(1.toByte          , v"1"     )
-  Converter[Short,      Value].test(1.toShort         , v"1"     )
-  Converter[Char,       Value].test('A'               , v"A"     )
-  Converter[Int,        Value].test(1                 , v"1"     )
-  Converter[Long,       Value].test(1L                , v"1"     )
-  Converter[Float,      Value].test(1.0f              , v"1.0"   )
-  Converter[Double,     Value].test(1.0d              , v"1.0"   )
+  Converter[BigInt,     SimpleValue].test(BigInt(1)         , v"1"     )
+  Converter[BigDecimal, SimpleValue].test(BigDecimal(1.1234), v"1.1234")
+  Converter[Byte,       SimpleValue].test(1.toByte          , v"1"     )
+  Converter[Short,      SimpleValue].test(1.toShort         , v"1"     )
+  Converter[Char,       SimpleValue].test('A'               , v"A"     )
+  Converter[Int,        SimpleValue].test(1                 , v"1"     )
+  Converter[Long,       SimpleValue].test(1L                , v"1"     )
+  Converter[Float,      SimpleValue].test(1.0f              , v"1.0"   )
+  Converter[Double,     SimpleValue].test(1.0d              , v"1.0"   )
   // format: on
 }
 
@@ -120,7 +120,7 @@ class ConvertersInstancesTestForText extends AnyFunSuite with ConvertersAssertsU
 
   case class CustomType(v: Int)
   implicit val customTypeAsValidatedValueConverter: CustomType As ValidatedValue = 
-    Converter.of(ct => Value(ct.v.toString).nonEmpty)
+    Converter.of(ct => SimpleValue(ct.v.toString).nonEmpty)
     
   Converter[CustomType, Try[Text]].test(CustomType(1), Success(Text("1")))
 }

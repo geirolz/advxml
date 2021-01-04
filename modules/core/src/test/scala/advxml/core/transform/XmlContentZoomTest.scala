@@ -1,6 +1,6 @@
 package advxml.core.transform
 
-import advxml.core.data.{ValidatedValue, Value}
+import advxml.core.data.{SimpleValue, ValidatedValue}
 import advxml.core.transform.XmlContentZoomTest.ContractFuncs
 import advxml.core.transform.XmlZoom.root
 import advxml.core.AppExOrEu
@@ -52,7 +52,7 @@ object XmlContentZoomTest {
 
   case class ContractFuncs[F[_]](
     //attr
-    label: NodeSeq => Value,
+    label: NodeSeq => SimpleValue,
     labelFromBindedZoom: BindedXmlZoom => F[String],
     labelFromZoom: (XmlZoom, NodeSeq) => F[String],
     //attr
@@ -73,7 +73,7 @@ object XmlContentZoomTest {
     //============================= LABEL =============================
     test("label from NodeSeq") {
       val elem: Elem = <foo value="1"></foo>
-      assert(f.label(elem).unboxed == "foo")
+      assert(f.label(elem).get == "foo")
     }
 
     test("label from BindedXmlZoom") {

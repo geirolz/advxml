@@ -113,7 +113,6 @@ import scala.util._
 
 //import MonadError instance for Try
 import cats.instances.try_._
-
 import advxml.implicits._
 
 val doc: Elem = <Root/>

@@ -11,7 +11,7 @@ import scala.xml.NodeSeq
   *
   * @author geirolad
   */
-private[syntax] trait AllTransformSyntax extends RuleSyntax with ZoomSyntax
+private[syntax] trait AllTransformSyntax extends RuleSyntax with ZoomSyntax with NormalizerSyntax
 
 private[syntax] sealed trait RuleSyntax {
 
@@ -60,7 +60,7 @@ private[syntax] sealed trait ZoomSyntax {
 
   implicit class XmlContentZoomSyntaxForId(ns: NodeSeq) {
 
-    def label: Value =
+    def label: SimpleValue =
       XmlContentZoom.label(ns)
 
     def attr(key: String): ValidatedValue =
@@ -92,5 +92,23 @@ private[syntax] sealed trait ZoomSyntax {
 
     def content(ns: NodeSeq): XmlContentZoomRunner =
       XmlContentZoom.contentFromZoom(zoom, ns)
+  }
+}
+
+private[syntax] trait NormalizerSyntax {
+
+  implicit class NodeSeqNormalizationAndEqualityOps(ns: NodeSeq) {
+
+    def normalize: NodeSeq =
+      XmlNormalizer.normalize(ns)
+
+    def normalizedEquals(ns2: NodeSeq): Boolean =
+      XmlNormalizer.normalizedEquals(ns, ns2)
+
+    def |==|(ns2: NodeSeq): Boolean =
+      XmlNormalizer.normalizedEquals(ns, ns2)
+
+    def |!=|(ns2: NodeSeq): Boolean =
+      !XmlNormalizer.normalizedEquals(ns, ns2)
   }
 }

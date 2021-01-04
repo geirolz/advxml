@@ -2,7 +2,7 @@ package advxml.core.transform
 import advxml.core.data._
 import advxml.core.transform.XmlZoom.{ZoomAction, _}
 import advxml.core.AppExOrEu
-import cats.{FlatMap, Functor}
+import cats.{FlatMap, Functor, Id}
 
 import scala.annotation.tailrec
 import scala.language.dynamics
@@ -241,34 +241,34 @@ object XmlZoom {
   }
 }
 
-case class XmlContentZoomRunner(zoom: BindedXmlZoom, f: NodeSeq => Value) {
+case class XmlContentZoomRunner(zoom: BindedXmlZoom, f: NodeSeq => Value) extends AsValidable[XmlContentZoomRunner] {
 
   import cats.syntax.flatMap._
 
   def validate(nrule: ValidationRule, nrules: ValidationRule*): XmlContentZoomRunner =
-    copy(f = f.andThen(v => v.validate(nrule, nrules: _*)))
+    copy(f = f.andThen((v: Value) => v.validate(nrule, nrules: _*)))
+
+  def validated: ValidatedNelEx[String] =
+    zoom.run[ValidatedNelEx].andThen(ns => f(ns).extract[ValidatedNelEx])
 
   def extract[F[_]: AppExOrEu: FlatMap]: F[String] =
     zoom.run[F].flatMap(ns => f(ns).extract[F])
-
-  def extractAsValidated: ValidatedNelEx[String] =
-    zoom.run[ValidatedNelEx].andThen(ns => f(ns).extract[ValidatedNelEx])
 }
 
 object XmlContentZoom {
 
   //=========================== FROM NODESEQ ===========================
-  def label(ns: NodeSeq): Value =
+  def label(ns: NodeSeq): SimpleValue =
     ns match {
-      case node: Node => Value(node.label)
-      case _          => Value("")
+      case node: Node => SimpleValue(node.label)
+      case _          => SimpleValue("")
     }
 
   def attr(ns: NodeSeq, key: String): ValidatedValue =
-    Value(ns \@ key, Some(s"${label(ns).unboxed} /@ $key")).nonEmpty
+    SimpleValue(ns \@ key, Some(s"${label(ns).get} /@ $key")).nonEmpty
 
   def content(ns: NodeSeq): ValidatedValue =
-    Value(ns.text, Some(s"${label(ns).unboxed}.content")).nonEmpty
+    SimpleValue(ns.text, Some(s"${label(ns).get}.content")).nonEmpty
 
   //========================= FROM BINDED ZOOM =========================
   def labelFromBindedZoom(zoom: BindedXmlZoom): XmlContentZoomRunner =
