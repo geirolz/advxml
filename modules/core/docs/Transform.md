@@ -117,5 +117,5 @@ import cats.instances.try_._
 import advxml.implicits._
 
 val doc: Elem = <Root/>
-val result: Try[NodeSeq] = doc.transform[Try](root => SetAttrs("Attr1" := "TEST"))
+val result: Try[NodeSeq] = doc.transform[Try](root ==> SetAttrs("Attr1" := "TEST"))
 ```

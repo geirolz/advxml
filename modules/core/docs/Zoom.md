@@ -8,6 +8,8 @@ returns an output value wrapped in `F[_]`.
 - [How to build](#how-to-build)
 - [How to run](#how-to-run)
 - [Attributes and text](#attributes-and-text)
+
+
 ---
 ### How to build
 
@@ -154,7 +156,7 @@ val doc: Elem =
     </Person>
   </Persons>
 
-//Immediate Child with XmlZoom - Unbinded
+//Immediate Child with XmlZoom - Binded
 val mandatoryNode: Try[NodeSeq] = $(doc).Person.Cars.run[Try]
 val optionalNode: Option[NodeSeq] = $(doc).Person.Cars.run[Option]
 
