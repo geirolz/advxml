@@ -109,7 +109,7 @@ private sealed trait ConverterLowerPriorityImplicits2 {
   implicit def converterXmlContentZoomRunnerForValidated[A](implicit
     c: Converter[ValidatedNelEx[String], ValidatedNelEx[A]]
   ): Converter[XmlContentZoomRunner, ValidatedNelEx[A]] =
-    Converter.of(r => c.run(r.extractAsValidated))
+    Converter.of(r => c.run(r.validated))
 
   implicit def converterXmlContentZoomRunnerForAppExOrEu[F[_]: AppExOrEu: FlatMap, A](implicit
     c: Converter[F[String], F[A]]
