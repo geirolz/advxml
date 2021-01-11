@@ -1,0 +1,108 @@
+version: 2.1
+
+executors:
+  scala_jdk_executor:
+    docker:
+      - image: circleci/openjdk:8-jdk
+
+
+############################## JOBS #################################
+jobs:
+  build:
+    executor: scala_jdk_executor
+    parameters:
+      version:
+        description: "Scala version"
+        default: 2.12.8
+        type: string
+    steps:
+
+      - checkout
+
+      #restore cache
+      - restore_cache:
+          keys:
+            - sbt-advxml-v1-{{ checksum "build.sbt" }}
+            - sbt-advxml-v1-
+
+      #build and test
+      - run:
+          name: Compile, Format, Test and Coverage
+          command: sbt ++<< parameters.version >> clean scalafmtCheck coverage test
+
+      #create coverage report
+      - run:
+          name: Compile, Format, Test and Coverage
+          command: sbt ++<< parameters.version >> coverageReport
+
+      #save cache
+      - save_cache:
+          key: sbt-advxml-v1-{{ checksum "build.sbt" }}
+          paths:
+            - "~/.ivy2/cache"
+            - "~/.sbt"
+            - "~/.m2"
+
+      #push coverage reports
+      - run:
+          name: Update Codecov reports
+          command: bash <(curl -s https://codecov.io/bash)
+      - run:
+          name: Update Codacy reports
+          command: bash <(curl -Ls https://coverage.codacy.com/get.sh)
+
+  distcheck:
+    executor: scala_jdk_executor
+    steps:
+      - checkout
+
+
+  release:
+    executor: scala_jdk_executor
+    parameters:
+      version:
+        description: "Scala version"
+        default: 2.12.8
+        type: string
+    steps:
+      - checkout
+      - run: git fetch --tags
+      - run:
+          name: Release
+          command: sbt release
+
+############################## WORKFLOWS #################################
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      #--------------- BUILD ---------------#
+      - build:
+          name: build-and-test-2.12.8
+          version: 2.12.8
+
+      - build:
+          name: build-and-test-2.13.4
+          version: 2.13.4
+
+      #--------------- DEPLOY ---------------#
+      - distcheck:
+          context: github
+          filters:
+            tags:
+              only: /^\d+.\d+.\d+$/
+            branches:
+              only: master
+
+      - release:
+          name: release-2.12.8
+          version: 2.12.8
+          requires:
+            - build-and-test-2.12.8
+            - distcheck
+      - release:
+          name: release-2.13.4
+          version: 2.13.4
+          requires:
+            - build-and-test-2.13.4
+            - distcheck
