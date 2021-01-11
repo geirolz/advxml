@@ -1,0 +1,88 @@
+version: 2.1
+
+executors:
+  scala_jdk_executor:
+    docker:
+      - image: circleci/openjdk:10-jdk
+        environment:
+          SBT_OPTS: "-Xms512M -Xmx1024M -XX:MaxMetaspaceSize=1g"
+
+############################## JOBS #################################
+jobs:
+  build:
+    executor: scala_jdk_executor
+    parameters:
+      version:
+        description: "Scala version"
+        type: string
+    steps:
+
+      - checkout
+
+      #restore cache
+      - restore_cache:
+          keys:
+            - sbt-advxml-v1-{{ checksum "build.sbt" }}
+            - sbt-advxml-v1-
+
+      #build and test
+      - run:
+          name: Compile, Format, Test and Coverage for << parameters.version >>
+          command: sbt ++<< parameters.version >> clean scalafmtCheck coverage test coverageReport
+
+      #push coverage reports
+      - run:
+          name: Upload reports to Codecov
+          command: bash <(curl -s https://codecov.io/bash)
+      - run:
+          name: Upload reports to Codacy
+          command: bash <(curl -Ls https://coverage.codacy.com/get.sh)
+
+      #save cache
+      - save_cache:
+          key: sbt-advxml-v1-{{ checksum "build.sbt" }}
+          paths:
+            - "~/.ivy2/cache"
+            - "~/.sbt"
+            - "~/.m2"
+
+  release:
+    executor: scala_jdk_executor
+    steps:
+      - checkout
+      - run: git fetch --tags
+      - run:
+          name: Release
+          command: sbt clean compile ci-release
+
+############################## WORKFLOWS #################################
+workflows:
+  version: 2
+  build-and-release:
+    jobs:
+      #--------------- BUILD ---------------#
+      - build:
+          name: build 2.12.8
+          version: 2.12.8
+          filters:
+            tags:
+              only: /^v.*/
+
+      - build:
+          name: build 2.13.4
+          version: 2.13.4
+          filters:
+            tags:
+              only: /^v.*/
+
+      #--------------- DEPLOY ---------------#
+      - release:
+          name: release
+          requires:
+            - build 2.12.8
+            - build 2.13.4
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              only: master
