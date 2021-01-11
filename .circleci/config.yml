@@ -5,7 +5,6 @@ executors:
     docker:
       - image: circleci/openjdk:8-jdk
 
-
 ############################## JOBS #################################
 jobs:
   build:
@@ -27,13 +26,8 @@ jobs:
 
       #build and test
       - run:
-          name: Compile, Format, Test and Coverage
+          name: Compile, Format, Test and Coverage for << parameters.version >>
           command: sbt ++<< parameters.version >> clean scalafmtCheck coverage test
-
-      #create coverage report
-      - run:
-          name: Compile, Format, Test and Coverage
-          command: sbt ++<< parameters.version >> coverageReport
 
       #save cache
       - save_cache:
@@ -43,6 +37,20 @@ jobs:
             - "~/.sbt"
             - "~/.m2"
 
+  distcheck:
+    executor: scala_jdk_executor
+    steps:
+      - checkout
+
+  coverage:
+    executor: scala_jdk_executor
+    steps:
+      - checkout
+      #create coverage report
+      - run:
+          name: Create coverage report
+          command: sbt coverageReport
+
       #push coverage reports
       - run:
           name: Update Codecov reports
@@ -50,12 +58,6 @@ jobs:
       - run:
           name: Update Codacy reports
           command: bash <(curl -Ls https://coverage.codacy.com/get.sh)
-
-  distcheck:
-    executor: scala_jdk_executor
-    steps:
-      - checkout
-
 
   release:
     executor: scala_jdk_executor
@@ -74,9 +76,10 @@ jobs:
 ############################## WORKFLOWS #################################
 workflows:
   version: 2
-  build_and_deploy:
+
+  #--------------- BUILD ---------------#
+  build_flow:
     jobs:
-      #--------------- BUILD ---------------#
       - build:
           name: build-and-test-2.12.8
           version: 2.12.8
@@ -85,24 +88,27 @@ workflows:
           name: build-and-test-2.13.4
           version: 2.13.4
 
-      #--------------- DEPLOY ---------------#
+  #--------------- COVERAGE ---------------#
+  coverage_flow:
+    jobs:
+      - coverage
+
+  #--------------- DEPLOY ---------------#
+  release_flow:
+    jobs:
       - distcheck:
-          context: github
           filters:
             tags:
               only: /^\d+.\d+.\d+$/
             branches:
               only: master
-
       - release:
           name: release-2.12.8
           version: 2.12.8
           requires:
-            - build-and-test-2.12.8
             - distcheck
       - release:
           name: release-2.13.4
           version: 2.13.4
           requires:
-            - build-and-test-2.13.4
             - distcheck

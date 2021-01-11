@@ -2,7 +2,7 @@ package advxml.core.transform
 import advxml.core.data._
 import advxml.core.transform.XmlZoom.{ZoomAction, _}
 import advxml.core.AppExOrEu
-import cats.{FlatMap, Functor, Id}
+import cats.{FlatMap, Functor}
 
 import scala.annotation.tailrec
 import scala.language.dynamics
