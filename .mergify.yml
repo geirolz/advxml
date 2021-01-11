@@ -17,7 +17,7 @@ pull_request_rules:
       - author=scala-steward
       - status-success=codecov/patch
       - status-success=codecov/project
-      - status-success=Travis CI - Pull Request
+      - status-success=build-and-release
       - base=master
     actions:
       merge:

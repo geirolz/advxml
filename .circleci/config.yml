@@ -3,7 +3,9 @@ version: 2.1
 executors:
   scala_jdk_executor:
     docker:
-      - image: circleci/openjdk:8-jdk
+      - image: circleci/openjdk:10-jdk
+        environment:
+          SBT_OPTS: "-Xms512M -Xmx1024M -XX:MaxMetaspaceSize=1g"
 
 ############################## JOBS #################################
 jobs:
@@ -12,7 +14,6 @@ jobs:
     parameters:
       version:
         description: "Scala version"
-        default: 2.12.8
         type: string
     steps:
 
@@ -27,7 +28,15 @@ jobs:
       #build and test
       - run:
           name: Compile, Format, Test and Coverage for << parameters.version >>
-          command: sbt ++<< parameters.version >> clean scalafmtCheck coverage test
+          command: sbt ++<< parameters.version >> clean scalafmtCheck coverage test coverageReport
+
+      #push coverage reports
+      - run:
+          name: Upload reports to Codecov
+          command: bash <(curl -s https://codecov.io/bash)
+      - run:
+          name: Upload reports to Codacy
+          command: bash <(curl -Ls https://coverage.codacy.com/get.sh)
 
       #save cache
       - save_cache:
@@ -37,78 +46,37 @@ jobs:
             - "~/.sbt"
             - "~/.m2"
 
-  distcheck:
-    executor: scala_jdk_executor
-    steps:
-      - checkout
-
-  coverage:
-    executor: scala_jdk_executor
-    steps:
-      - checkout
-      #create coverage report
-      - run:
-          name: Create coverage report
-          command: sbt coverageReport
-
-      #push coverage reports
-      - run:
-          name: Update Codecov reports
-          command: bash <(curl -s https://codecov.io/bash)
-      - run:
-          name: Update Codacy reports
-          command: bash <(curl -Ls https://coverage.codacy.com/get.sh)
-
   release:
     executor: scala_jdk_executor
-    parameters:
-      version:
-        description: "Scala version"
-        default: 2.12.8
-        type: string
     steps:
       - checkout
       - run: git fetch --tags
       - run:
           name: Release
-          command: sbt release
+          command: sbt ci-release
 
 ############################## WORKFLOWS #################################
 workflows:
   version: 2
-
-  #--------------- BUILD ---------------#
-  build_flow:
+  build-and-release:
     jobs:
+      #--------------- BUILD ---------------#
       - build:
-          name: build-and-test-2.12.8
+          name: build 2.12.8
           version: 2.12.8
 
       - build:
-          name: build-and-test-2.13.4
+          name: build 2.13.4
           version: 2.13.4
 
-  #--------------- COVERAGE ---------------#
-  coverage_flow:
-    jobs:
-      - coverage
-
-  #--------------- DEPLOY ---------------#
-  release_flow:
-    jobs:
-      - distcheck:
+      #--------------- DEPLOY ---------------#
+      - release:
+          name: release $CIRCLE_TAG
+          requires:
+            - build 2.12.8
+            - build 2.13.4
           filters:
             tags:
-              only: /^\d+.\d+.\d+$/
+              only: ^v(\d+\.)?(\d+\.)?(\*|\d+)$
             branches:
               only: master
-      - release:
-          name: release-2.12.8
-          version: 2.12.8
-          requires:
-            - distcheck
-      - release:
-          name: release-2.13.4
-          version: 2.13.4
-          requires:
-            - distcheck

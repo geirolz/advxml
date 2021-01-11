@@ -89,7 +89,7 @@ def scalacSettings(scalaVersion: String): Seq[String] =
     "-language:implicitConversions", // Allow definition of implicit functions called views
     "-unchecked", // Enable additional warnings where generated code depends on assumptions.
     "-Xcheckinit", // Wrap field accessors to throw an exception on uninitialized access.
-//    "-Xfatal-warnings", // Fail the compilation if there are any warnings.
+    "-Xfatal-warnings", // Fail the compilation if there are any warnings.
     "-Xlint:adapted-args", // Warn if an argument list is modified to match the receiver.
     "-Xlint:constant", // Evaluation of a constant arithmetic expression results in an error.
     "-Xlint:delayedinit-select", // Selecting member of DelayedInit.
@@ -97,7 +97,6 @@ def scalacSettings(scalaVersion: String): Seq[String] =
     "-Xlint:inaccessible", // Warn about inaccessible types in method signatures.
     "-Xlint:infer-any", // Warn when a type argument is inferred to be `Any`.
     "-Xlint:missing-interpolator", // A string literal appears to be missing an interpolator id.
-    "-Xlint:nullary-override", // Warn when non-nullary `def f()' overrides nullary `def f'.
     "-Xlint:nullary-unit", // Warn when nullary methods return Unit.
     "-Xlint:option-implicit", // Option.apply used implicit view.
     "-Xlint:package-object-classes", // Class or object defined in package object.
@@ -111,7 +110,6 @@ def scalacSettings(scalaVersion: String): Seq[String] =
     "-Ywarn-numeric-widen", // Warn when numerics are widened.
     "-Ywarn-value-discard", // Warn when non-Unit expression results are unused.
     "-Xlint:inaccessible", // Warn about inaccessible types in method signatures.
-    "-Xlint:nullary-override", // Warn when non-nullary `def f()' overrides nullary `def f'.
     "-Xlint:infer-any", // Warn when a type argument is inferred to be `Any`.
     "-Ywarn-unused:implicits", // Warn if an implicit parameter is unused.
     "-Ywarn-unused:imports", // Warn if an import selector is not referenced.
@@ -125,9 +123,13 @@ def scalacSettings(scalaVersion: String): Seq[String] =
         Seq(
           "-Ypartial-unification", // Enable partial unification in type constructor inference
           "-Xlint:unsound-match", // Pattern match may not be typesafe.
+          "-Xlint:nullary-override", // Warn when non-nullary `def f()' overrides nullary `def f'.
           "-Xlint:by-name-right-associative", // By-name parameter of right associative operator.
           "-Yno-adapted-args" // Do not adapt an argument list (either by inserting () or creating a tuple) to match the receiver.
         )
       case _ => Nil
     }
   }
+
+//=============================== ALIASES ===============================
+addCommandAlias("check", ";clean;test")
