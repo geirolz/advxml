@@ -46,7 +46,7 @@ Supported Scala 2.12 and 2.13
 The idea behind this library is offer a fluent syntax to edit and read xml.
 
 *Features:*
-- [data/Value](modules/core/docs/Attribute.md) Data types for value, keys and attributes.
+- [data/Value](modules/core/docs/Value.md) Data types for value, keys and attributes.
 - [data/Convert](modules/core/docs/Convert.md) Allow instances conversion (not automatically yet)
 - [transform/Transform](modules/core/docs/Transform.md) Allows to edit the XML document.
 - [transform/Zoom](modules/core/docs/Zoom.md) Allows to traverse an XML do get nodes, attributes and text.
