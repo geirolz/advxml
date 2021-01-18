@@ -167,7 +167,7 @@ private[instances] trait XmlPredicateInstances {
   /** Filter nodes by label property.
     *
     * @param p Label predicate
-    * @return Predicate for nodes of type [[Node]]
+    * @return Predicate for nodes of type `Node`
     */
   def label(p: String => Boolean): XmlPredicate = {
     case n: Node => p(n.label)
@@ -176,8 +176,8 @@ private[instances] trait XmlPredicateInstances {
 
   /** Check if node has all attributes.
     *
-    * @param key  [[Key]] to check
-    * @param keys N [[Key]] list to check
+    * @param key  [[advxml.core.data.Key]] to check
+    * @param keys N [[advxml.core.data.Key]] list to check
     * @return Predicate for nodes of type `Node`
     */
   def hasAttrs(key: Key, keys: Key*): XmlPredicate =
@@ -185,7 +185,7 @@ private[instances] trait XmlPredicateInstances {
 
   /** Check if node has all attributes.
     *
-    * @param keys [[Key]] list to check
+    * @param keys [[advxml.core.data.Key]] list to check
     * @return Predicate for nodes of type `Node`
     */
   def hasAttrs(keys: NonEmptyList[Key]): XmlPredicate =
@@ -193,8 +193,8 @@ private[instances] trait XmlPredicateInstances {
 
   /** Filter nodes by attributes.
     *
-    * @param value  [[KeyValuePredicate]] to filter attributes
-    * @param values N [[KeyValuePredicate]] to filter attributes
+    * @param value  [[advxml.core.data.KeyValuePredicate]] to filter attributes
+    * @param values N [[advxml.core.data.KeyValuePredicate]] to filter attributes
     * @return Predicate for nodes of type `Node`
     */
   def attrs(value: KeyValuePredicate, values: KeyValuePredicate*): XmlPredicate =
@@ -202,7 +202,7 @@ private[instances] trait XmlPredicateInstances {
 
   /** Filter nodes by attributes.
     *
-    * @param values N [[KeyValuePredicate]] to filter attributes
+    * @param values N [[advxml.core.data.KeyValuePredicate]] to filter attributes
     * @return Predicate for nodes of type `Node`
     */
   def attrs(values: NonEmptyList[KeyValuePredicate]): XmlPredicate =
@@ -210,11 +210,11 @@ private[instances] trait XmlPredicateInstances {
       .map(p => XmlPredicate(ns => p(SimpleValue(ns \@ p.key.value))))
       .reduce(Predicate.and[NodeSeq])
 
-  /** Create a [[XmlPredicate]] that can check if a NodeSeq contains a child with specified predicates
+  /** Create a [[advxml.core.data.XmlPredicate]] that can check if a NodeSeq contains a child with specified predicates
     *
     * @param label     Name of the child to find
     * @param predicate Predicate to check child
-    * @return [[XmlPredicate]] that can check if a NodeSeq contains a child with specified predicates
+    * @return [[advxml.core.data.XmlPredicate]] that can check if a NodeSeq contains a child with specified predicates
     */
   def hasImmediateChild(label: String, predicate: XmlPredicate = alwaysTrue): XmlPredicate =
     XmlZoom
@@ -223,10 +223,10 @@ private[instances] trait XmlPredicateInstances {
       .run[Try]
       .fold(_ => false, _.exists(predicate))
 
-  /** Create an [[XmlPredicate]] that can check if two NodeSeq are strictly equals.
+  /** Create an [[advxml.core.data.XmlPredicate]] that can check if two NodeSeq are strictly equals.
     *
     * @param ns to compare
-    * @return [[XmlPredicate]] that can check if two NodeSeq are strictly equals.
+    * @return [[advxml.core.data.XmlPredicate]] that can check if two NodeSeq are strictly equals.
     */
   def strictEqualsTo(ns: NodeSeq): XmlPredicate =
     that =>

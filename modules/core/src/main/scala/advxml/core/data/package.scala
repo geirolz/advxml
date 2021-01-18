@@ -40,7 +40,7 @@ package object data {
   type ValidatedConverter[-A, B] = Converter[A, ValidatedNelEx[B]]
 
   /** Represents a function `A => Option[B]` to simplify method and class signatures.
-    * Because the conversion can fail the output is wrapped into [[Option]] in order to handle the empty case.
+    * Because the conversion can fail the output is wrapped into `Option` in order to handle the empty case.
     *
     * @tparam A Contravariant input object type
     * @tparam B Output object type
@@ -50,7 +50,7 @@ package object data {
   )
   type OptionConverter[-A, B] = Converter[A, Option[B]]
 
-  /** This is just an alias for [[ValidatedConverter]] parametrized with [[NodeSeq]] on left side.
+  /** This is just an alias for [[advxml.core.data.ValidatedConverter]] parametrized with `NodeSeq` on left side.
     * @tparam T Output object type
     */
   @implicitNotFound(
@@ -58,7 +58,7 @@ package object data {
   )
   type XmlDecoder[T] = ValidatedConverter[NodeSeq, T]
 
-  /** This is just an alias for [[ValidatedConverter]] parametrized with [[NodeSeq]] on right side.
+  /** This is just an alias for [[advxml.core.data.ValidatedConverter]] parametrized with `NodeSeq` on right side.
     * @tparam T Contravariant input object type
     */
   @implicitNotFound(

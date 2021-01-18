@@ -79,7 +79,7 @@ sealed trait XmlZoomResult {
   val parents: List[NodeSeq]
 }
 
-/** [[XmlZoom]] is a powerful system that allow to "zoom" inside a [[NodeSeq]] and select one or more elements keeping
+/** [[XmlZoom]] is a powerful system that allow to "zoom" inside a `NodeSeq` and select one or more elements keeping
   * all step list and return a monadic value to handle possible errors.
   *
   * <h4>HOW TO USE</h4>
@@ -89,13 +89,13 @@ sealed trait XmlZoomResult {
   * - [[XmlZoomResult]]
   *
   * <b>XmlZoom</b>
-  * Is the representation of unbind zoom instance. It contains only the list of the actions to run on a [[NodeSeq]].
+  * Is the representation of unbind zoom instance. It contains only the list of the actions to run on a `NodeSeq`.
   *
   * <b>BindedXmlZoom</b>
-  * Is the representation of binded zoom instance. Binded because it contains both [[ZoomAction]] and [[NodeSeq]] target.
+  * Is the representation of binded zoom instance. Binded because it contains both [[ZoomAction]] and `NodeSeq` target.
   *
   * <b>XmlZoomResult</b>
-  * Is the result of the [[XmlZoom]], that contains selected [[NodeSeq]] and his parents.
+  * Is the result of the [[XmlZoom]], that contains selected `NodeSeq` and his parents.
   */
 object XmlZoom {
 
@@ -105,7 +105,7 @@ object XmlZoom {
 
   /** Just an alias for Root, to use when you are building and XmlZoom that not starts from the root for the document.
     * It's exists just to clarify the code.
-    * If your [[XmlZoom]] starts for the root of the document please use [[root]]
+    * If your [[XmlZoom]] starts for the root of the document please use `root`
     */
   lazy val $ : XmlZoom = XmlZoom.empty
 
@@ -115,7 +115,7 @@ object XmlZoom {
 
   /** Just a binded alias for root, to use when you are building and XmlZoom that not starts from the root for the document.
     * It's exists just to clarify the code.
-    * If your [[XmlZoom]] starts for the root of the document please use [[root]]
+    * If your [[XmlZoom]] starts for the root of the document please use `root`
     */
   def $(document: NodeSeq): BindedXmlZoom = $.bind(document)
 
