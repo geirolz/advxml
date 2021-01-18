@@ -53,7 +53,7 @@ jobs:
       - run: git fetch --tags
       - run:
           name: Release
-          command: sbt clean build ci-release
+          command: sbt clean compile ci-release
 
 ############################## WORKFLOWS #################################
 workflows:
