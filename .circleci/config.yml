@@ -75,6 +75,3 @@ workflows:
           requires:
             - build 2.12.8
             - build 2.13.4
-          filters:
-            branches:
-              only: master
