@@ -77,6 +77,6 @@ workflows:
             - build 2.13.4
           filters:
             tags:
-              only: ^v(\d+\.)?(\d+\.)?(\*|\d+)$
+              only: /^v.*/
             branches:
               only: master
