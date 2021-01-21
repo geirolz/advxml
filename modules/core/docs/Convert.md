@@ -88,18 +88,18 @@ For simplify the code advxml also defines some other type alias derived from wha
 
 #### XmlConverter
 XmlConverter is based on the most generic converters "ecosystem" and allows us to
-transform a case class to xml and vice-versa just defining a `XmlTo` or `ToXml` instance.
-To define our `XmlTo` we can use advxml `XmlZoom` and `XmlContentZoom` syntax.
+transform a case class to xml and vice-versa just defining a `XmlDecoder` or `XmlEncoder` instance.
 
 ```scala
 type XmlDecoder[T] = ValidatedConverter[NodeSeq, T]
 type XmlEncoder[T] = ValidatedConverter[T, NodeSeq]
 ```
 
-Once defined our instances, we need to import it in out scope and use `asValidated` method to apply the
-converter on the selected instance.
+Once defined our instances, we need to import it in our scope and use `decode[T]` or `encode[T]` method to apply the
+converter on the selected instance. Due `XmlDecoder` or `XmlEncoder` are `ValidatedConverter` 
+we can also use `asValidated[T]` method.
 
-Conversion are not automatic and we need to manual map XML and Model.
+Conversion are not automatic yet, we need to manual map XML and Model.
 
 In the following example if some attribute or node is missing whole conversion will fail reporting ALL
 errors.
