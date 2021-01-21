@@ -4,8 +4,7 @@ pull_request_rules:
       - "#approved-reviews-by>=1"
       - status-success=codecov/patch
       - status-success=codecov/project
-      - status-success=Travis CI - Branch
-      - status-success=Travis CI - Pull Request
+      - status-success=build-and-release
       - base=master
       - label!=work-in-progress
     actions:
