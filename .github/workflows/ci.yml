@@ -3,10 +3,9 @@ name: CI
 # triggers
 on:
   push:
-    branches: [ master ]
-    tags: ["*"]
+    branches: ['*']
   pull_request:
-    branches: [ master ]
+    branches: ['*']
 
 # jobs
 jobs:
