@@ -4,7 +4,7 @@ name: CD
 on:
   workflow_run:
     workflows: ["CI"]
-    branches: [main]
+    branches: [master]
     tags: v[1-9]+.[0-9]+.[0-9]+
     types:
       - completed
@@ -12,15 +12,7 @@ on:
 # jobs
 jobs:
   deploy:
-
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        # supported scala versions
-        scala:
-          - 2.12.8
-          - 2.13.4
-
     steps:
       - uses: actions/checkout@v2
 
