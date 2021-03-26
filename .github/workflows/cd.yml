@@ -5,7 +5,6 @@ on:
   workflow_run:
     workflows: ["CI"]
     branches: [master]
-    tags: [v*]
     types:
       - completed
 
@@ -13,6 +12,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v'))
     steps:
       - uses: actions/checkout@v2
 
