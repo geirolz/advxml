@@ -5,14 +5,20 @@ on:
   workflow_run:
     workflows: ["CI"]
     branches: [master]
-    tags: [v*]
     types:
       - completed
+
+# env variables
+env:
+  SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+  SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+  PGP_SECRET: ${{ secrets.PGP_SECRET }}
 
 # jobs
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v'))
     steps:
       - uses: actions/checkout@v2
 
