@@ -1,0 +1,45 @@
+name: CD
+
+# triggers
+on:
+  workflow_run:
+    workflows: ["CI"]
+    branches: [master]
+    types:
+      - completed
+
+# env variables
+env:
+  SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+  SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+  PGP_SECRET: ${{ secrets.PGP_SECRET }}
+
+# jobs
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v'))
+    steps:
+      - uses: actions/checkout@v2
+
+      #----------- JDK -----------
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      #----------- CACHE -----------
+      - name: Cache SBT
+        uses: actions/cache@v2.1.4
+        with:
+          # A list of files, directories, and wildcard patterns to cache and restore
+          path: |
+            ~/.ivy2/cache
+            ~/.sbt
+          # An explicit key for restoring and saving the cache
+          key: ${{ runner.os }}-sbt-${{ matrix.scala }}-${{ hashFiles('**/build.sb') }}
+
+      #----------- RELEASE -----------
+      - name: Release
+        run: sbt clean compile ci-release
+
