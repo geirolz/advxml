@@ -8,6 +8,12 @@ on:
     types:
       - completed
 
+# env variables
+env:
+  SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+  SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+  PGP_SECRET: ${{ secrets.PGP_SECRET }}
+
 # jobs
 jobs:
   deploy:
