@@ -72,15 +72,15 @@ private[instances] trait XmlModifierInstances {
   /** Append attributes to current node.
     *
     * Supported only for `Node` elements, in other case will fail.
-    * @param ds Attributes data.
+    * @param f takes current attributes Map, returns Attributes data.
     */
-  case class SetAttrs(ds: NonEmptyList[AttributeData]) extends ComposableXmlModifier {
+  case class SetAttrs(f: Map[String, String] => NonEmptyList[AttributeData]) extends ComposableXmlModifier {
     override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
       collapse[F](ns.map {
         case e: Elem =>
           F.pure[NodeSeq](
             e.copy(
-              attributes = ds.toList.foldRight(e.attributes)((data, metadata) =>
+              attributes = f(e.attributes.asAttrMap).toList.foldRight(e.attributes)((data, metadata) =>
                 new UnprefixedAttribute(data.key.value, data.value.get, metadata)
               )
             )
@@ -96,7 +96,8 @@ private[instances] trait XmlModifierInstances {
       * @param d Attribute data.
       * @param ds Attributes data.
       */
-    def apply(d: AttributeData, ds: AttributeData*): SetAttrs = SetAttrs(NonEmptyList.of(d, ds: _*))
+    def apply(d: AttributeData, ds: AttributeData*): SetAttrs = SetAttrs(_ => NonEmptyList.of(d, ds: _*))
+
   }
 
   /** Remove attributes.

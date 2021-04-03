@@ -85,7 +85,7 @@ object XmlTransformationSpec extends Properties("XmlTransformationSpec") {
   }
 
   property("SetAttrs") = forAll { (base: Elem, attrsData: NonEmptyList[AttributeData]) =>
-    val rule: ComposableXmlRule = root ==> SetAttrs(attrsData)
+    val rule: ComposableXmlRule = root ==> SetAttrs(_ => attrsData)
     val result: NodeSeq = base.transform[Try](rule).get
     val predicates: NonEmptyList[KeyValuePredicate] = attrsData.map(d => d.key === d.value)
 
