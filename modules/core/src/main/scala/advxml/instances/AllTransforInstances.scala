@@ -1,9 +1,9 @@
 package advxml.instances
 
-import advxml.core.data.{Predicate, _}
-import advxml.core.transform.{BindedXmlZoom, ComposableXmlModifier, FinalXmlModifier, XmlModifier, XmlZoom}
 import advxml.core.MonadEx
 import advxml.core.data.Predicate.alwaysTrue
+import advxml.core.data.{Predicate, _}
+import advxml.core.transform._
 import cats.Monoid
 import cats.data.NonEmptyList
 
@@ -69,35 +69,48 @@ private[instances] trait XmlModifierInstances {
     override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] = F.pure(f(ns))
   }
 
-  /** Append attributes to current node.
+  /** Append or replace attributes to current node.
     *
     * Supported only for `Node` elements, in other case will fail.
-    * @param f takes current attributes Map, returns Attributes data.
+    * @param f takes Elem (attribute container), returns Attributes data.
     */
-  case class SetAttrs(f: Map[String, String] => NonEmptyList[AttributeData]) extends ComposableXmlModifier {
+  case class SetAttrs(f: Elem => NonEmptyList[AttributeData]) extends ComposableXmlModifier {
     override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
       collapse[F](ns.map {
         case e: Elem =>
           F.pure[NodeSeq](
             e.copy(
-              attributes = f(e.attributes.asAttrMap).toList.foldRight(e.attributes)((data, metadata) =>
+              attributes = f(e).toList.foldRight(e.attributes)((data, metadata) =>
                 new UnprefixedAttribute(data.key.value, data.value.get, metadata)
               )
             )
           )
         case o => ExceptionF.unsupported[F](this, o)
       })
+
   }
   object SetAttrs {
 
-    /** Create an Append attributes action with specified data.
+    /** Create a SetAttrs attributes action with specified data.
       *
       * Supported only for `Node` elements, in other case will fail.
       * @param d Attribute data.
       * @param ds Attributes data.
       */
-    def apply(d: AttributeData, ds: AttributeData*): SetAttrs = SetAttrs(_ => NonEmptyList.of(d, ds: _*))
+    def apply(d: AttributeData, ds: AttributeData*): SetAttrs =
+      SetAttrs(_ => NonEmptyList.of(d, ds: _*))
 
+  }
+
+  object SetAttr {
+
+    /** Create a SetAttrs attributes action with specified data.
+      *
+      * Supported only for `Node` elements, in other case will fail.
+      * @param f takes the Elem (attribute container), returns Attribute data.
+      */
+    def apply(f: Elem => AttributeData): SetAttrs =
+      SetAttrs.apply(el => NonEmptyList.one(f(el)))
   }
 
   /** Remove attributes.
