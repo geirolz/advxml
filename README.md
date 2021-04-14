@@ -53,3 +53,6 @@ The idea behind this library is offer a fluent syntax to edit and read xml.
 - [transform/Normalize](modules/core/docs/Normalize.md) Allows normalizing xml docs, removing white spaces and collapse empty nodes
 
  
+ ## Contributors
+ - [@pawelkaczor](https://github.com/pawelkaczor)
+ - [@dcsobral](https://github.com/dcsobral)
