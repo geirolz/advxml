@@ -1,12 +1,12 @@
 package advxml.core.transform
 
-import advxml.core.data.{AttributeData, KeyValuePredicate}
+import advxml.core.data.AttributeData
 import advxml.core.data.Predicate.alwaysTrue
 import advxml.testUtils.generators.XmlGenerator
 import advxml.testUtils.generators.XmlGenerator.XmlElemGeneratorConfig
 import cats.data.NonEmptyList
-import org.scalacheck.{Arbitrary, Properties}
 import org.scalacheck.Prop.forAll
+import org.scalacheck.{Arbitrary, Properties}
 import org.scalactic.TypeCheckedTripleEquals.convertToCheckingEqualizer
 
 import scala.util.Try
@@ -85,11 +85,12 @@ object XmlTransformationSpec extends Properties("XmlTransformationSpec") {
   }
 
   property("SetAttrs") = forAll { (base: Elem, attrsData: NonEmptyList[AttributeData]) =>
-    val rule: ComposableXmlRule = root ==> SetAttrs(attrsData)
+    val rule: ComposableXmlRule =
+      root ==> SetAttrs(owner => attrsData :+ (k"numberOfAttributes" := owner.attributes.size + attrsData.size))
     val result: NodeSeq = base.transform[Try](rule).get
-    val predicates: NonEmptyList[KeyValuePredicate] = attrsData.map(d => d.key === d.value)
 
-    result.exists(attrs(predicates))
+    result.exists(attrs(attrsData.map(d => d.key === d.value)))
+    result.exists(attrs(k"numberOfAttributes" === base.attributes.size + attrsData.size))
   }
 
   property("RemoveAttrs") = forAll { base: Elem =>

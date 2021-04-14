@@ -1,5 +1,6 @@
 package advxml.syntax
 
+import cats.data.NonEmptyList
 import org.scalatest.wordspec.AnyWordSpec
 
 import scala.util.{Success, Try}
@@ -90,11 +91,7 @@ class TransformModifiersTest extends AnyWordSpec {
 
         val xml = <Root/>
 
-        val modifier = SetAttrs(
-          k"T1" := "1",
-          k"T2" := "2",
-          k"T3" := "3"
-        )
+        val modifier = SetAttrs(_ => NonEmptyList.of(k"T1" := "1", k"T2" := "2", k"T3" := "3"))
         val result: Try[NodeSeq] = modifier(xml)
 
         assert(result.map(_.exists(_ \@ "T1" == "1")) == Success(true))
