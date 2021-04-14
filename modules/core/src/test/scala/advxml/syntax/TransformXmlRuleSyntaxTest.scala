@@ -1,6 +1,7 @@
 package advxml.syntax
 
 import advxml.core.data.error.ZoomFailedException
+import cats.data.NonEmptyList
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Try
@@ -365,6 +366,30 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
         </Order>
             .transform(
               root.OrderLines ==> SetAttrs(k"T1" := "EDITED")
+            )
+            .get
+    )
+  }
+
+  test("UpdateAttribute") {
+    assert(
+      <Order>
+        <OrderLines T1="1">
+          <OrderLine PrimeLineNo="2"></OrderLine>
+        </OrderLines>
+      </Order>
+        ===
+          <Order>
+          <OrderLines T1="1">
+            <OrderLine PrimeLineNo="1"></OrderLine>
+          </OrderLines>
+        </Order>
+            .transform(
+              root.OrderLines.OrderLine ==>
+              SetAttrs(ol => {
+                val newValue = (ol \@ "PrimeLineNo").toInt + 1
+                NonEmptyList.of(k"PrimeLineNo" := newValue)
+              })
             )
             .get
     )

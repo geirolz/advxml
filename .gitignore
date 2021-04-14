@@ -28,3 +28,4 @@ private.sbt
 target/
 modules/core/target/
 modules/generic/target/
+/.bsp/sbt.json
