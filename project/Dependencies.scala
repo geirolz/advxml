@@ -11,7 +11,7 @@ object Dependencies {
     //SCALA
     "org.typelevel" %% "cats-core" % "2.5.0" cross CrossVersion.binary,
     //XML
-    "org.scala-lang.modules" %% "scala-xml" % "2.0.0-M3" cross CrossVersion.binary,
+    "org.scala-lang.modules" %% "scala-xml" % "2.0.0-RC1" cross CrossVersion.binary,
     //TEST
     "org.scalactic" %% "scalactic" % "3.2.7" % Test cross CrossVersion.binary,
     "org.typelevel" %% "discipline-scalatest" % "2.1.3" % Test,
