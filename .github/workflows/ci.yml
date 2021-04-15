@@ -4,7 +4,8 @@ name: CI
 on:
   push:
     branches: ['*']
-    tags: [v*]
+  release:
+    types: [ created ]
   pull_request:
     branches:
       - master
