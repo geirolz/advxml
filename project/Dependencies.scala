@@ -17,6 +17,6 @@ object Dependencies {
     "org.typelevel" %% "discipline-scalatest" % "2.1.4" % Test,
     "org.typelevel" %% "cats-laws" % "2.6.0" % Test cross CrossVersion.binary,
     "org.scalatest" %% "scalatest" % "3.2.8" % Test cross CrossVersion.binary,
-    "org.scalacheck" %% "scalacheck" % "1.15.3" % Test cross CrossVersion.binary
+    "org.scalacheck" %% "scalacheck" % "1.15.4" % Test cross CrossVersion.binary
   )
 }
