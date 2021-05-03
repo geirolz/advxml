@@ -65,7 +65,7 @@ jobs:
 #          env_vars: SCALA
   deploy:
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main')
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master`
     steps:
       - uses: actions/checkout@v2
 
