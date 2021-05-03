@@ -36,10 +36,10 @@ def buildModule(path: String, toPublish: Boolean = false): Project = {
 def buildProject(path: String, toPublish: Boolean = false)(project: Project) = {
   val docName = path.split("-").mkString(" ")
   project.settings(
-    description     := s"$prjname $docName",
-    moduleName      := s"$prjname-$path",
-    name            := s"$prjname $docName",
-    skip in publish := !toPublish,
+    description    := s"$prjname $docName",
+    moduleName     := s"$prjname-$path",
+    name           := s"$prjname $docName",
+    publish / skip := !toPublish,
     allSettings
   )
 }
@@ -51,7 +51,7 @@ lazy val noPublishSettings = Seq(
   publish         := {},
   publishLocal    := {},
   publishArtifact := false,
-  skip in publish := true
+  publish / skip  := true
 )
 
 lazy val baseSettings = Seq(
@@ -59,7 +59,7 @@ lazy val baseSettings = Seq(
   crossScalaVersions := List("2.12.13", "2.13.5"),
   scalaVersion       := crossScalaVersions.value.head,
   scalacOptions ++= scalacSettings(scalaVersion.value),
-  scalacOptions in (Compile, console) --= Seq(
+  Compile / console / scalacOptions --= Seq(
     "-Ywarn-unused:imports",
     "-Xfatal-warnings"
   ),
@@ -111,9 +111,10 @@ def scalacSettings(scalaVersion: String): Seq[String] =
     "-Ywarn-unused:implicits", // Warn if an implicit parameter is unused.
     "-Ywarn-unused:imports", // Warn if an import selector is not referenced.
     "-Ywarn-unused:locals", // Warn if a local definition is unused.
-    "-Ywarn-unused:params", // Warn if a value parameter is unused.
+    "-Ywarn-unused:explicits", // Warn if a explicit value parameter is unused.
     "-Ywarn-unused:patvars", // Warn if a variable bound in a pattern is unused.
-    "-Ywarn-unused:privates" // Warn if a private member is unused.
+    "-Ywarn-unused:privates", // Warn if a private member is unused.
+    "-Ywarn-macros:after" //Tells the compiler to make the unused checks after macro expansion
   ) ++ {
     CrossVersion.partialVersion(scalaVersion) match {
       case Some((2, 12)) =>

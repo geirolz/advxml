@@ -200,5 +200,24 @@ object XmlZoomTest {
       assert(value.parents.size == 1)
       assert(value.parents.head === xml)
     }
+
+    test("transformWithZoom") {
+      val doc =
+        <Root>
+          <N1/>
+          <N1/>
+        </Root>
+
+      val zoom = root.N1 ==> SetAttrs(k"T" := 10)
+
+      assert(
+        doc.transform[Try](zoom).get ===
+          <Root>
+            <N1 T="10"/>
+            <N1 T="10"/>
+          </Root>
+      )
+    }
+
   }
 }
