@@ -58,7 +58,7 @@ class XmlRuleTest extends AnyFunSuite {
       SetAttrs(k"T2" := 2)
     )
 
-    val result: NodeSeq = XmlRule.transform[Try](<Root></Root>, rule1, rule2).get
+    val result: NodeSeq = AbstractRule.transform[Try](<Root></Root>, rule1, rule2).get
     assert(result === <Root T2="2" T1="1"></Root>)
   }
 
@@ -72,7 +72,7 @@ class XmlRuleTest extends AnyFunSuite {
       SetAttrs(k"T2" := 2)
     )
 
-    val result: NodeSeq = XmlRule.transform[Try](<Root></Root>, List(rule1, rule2)).get
+    val result: NodeSeq = AbstractRule.transform[Try](<Root></Root>, List(rule1, rule2)).get
     assert(result === <Root T2="2" T1="1"></Root>)
   }
 

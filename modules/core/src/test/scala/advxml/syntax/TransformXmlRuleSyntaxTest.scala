@@ -79,6 +79,69 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
     )
   }
 
+  test("conjunction of rules ") {
+
+    val ns: Elem = <Order></Order>
+    val rule = (root ==> Append(<OrderLine PrimeLineNo="1"/>)).and(root ==> Append(<OrderLine PrimeLineNo="2"/>))
+
+    val result: NodeSeq = rule.transform(ns).get
+
+    assert(
+      <Order>
+        <OrderLine PrimeLineNo="1"/>
+        <OrderLine PrimeLineNo="2"/>
+      </Order> === result
+    )
+  }
+
+  test("failing rule orElse other rule") {
+
+    val ns: Elem = <Order></Order>
+    val rule =
+      (root.Missing ==> Append(<OrderLine PrimeLineNo="1"/>)).orElse(root ==> Append(<OrderLine PrimeLineNo="2"/>))
+
+    val result: NodeSeq = rule.transform(ns).get
+
+    assert(
+      <Order>
+        <OrderLine PrimeLineNo="2"/>
+      </Order> === result
+    )
+  }
+
+  test("successful rule orElse other rule") {
+
+    val ns: Elem = <Order></Order>
+    val rule =
+      (root ==> Append(<OrderLine PrimeLineNo="1"/>)).orElse(root ==> Append(<OrderLine PrimeLineNo="2"/>))
+
+    val result: NodeSeq = rule.transform(ns).get
+
+    assert(
+      <Order>
+        <OrderLine PrimeLineNo="1"/>
+      </Order> === result
+    )
+  }
+
+  test("failing rule orElse conjunction of rules") {
+
+    val ns: Elem = <Order></Order>
+    val rule =
+      (root.Missing ==> Append(<OrderLine PrimeLineNo="1"/>)).orElse {
+        (root ==> Append(<OrderLine PrimeLineNo="1"/>)).and(root ==> Append(<OrderLine PrimeLineNo="2"/>))
+      }
+
+    val result: NodeSeq = rule.transform(ns).get
+
+    assert(
+      <Order>
+        <OrderLine PrimeLineNo="1"/>
+        <OrderLine PrimeLineNo="2"/>
+      </Order> === result
+    )
+  }
+
   test("Transform XML with empty target") {
 
     val elem =

@@ -17,21 +17,27 @@ private[syntax] sealed trait RuleSyntax {
 
   implicit class XmlNodeSeqTransformerOps(root: NodeSeq) {
 
-    def transform[F[_]: MonadEx](rule: XmlRule, rules: XmlRule*): F[NodeSeq] =
-      XmlRule.transform(root, rule, rules: _*)
+    def transform[F[_]: MonadEx](rule: AbstractRule, rules: AbstractRule*): F[NodeSeq] =
+      AbstractRule.transform(root, rule, rules: _*)
 
-    def transform[F[_]: MonadEx](rules: List[XmlRule]): F[NodeSeq] =
-      XmlRule.transform(root, rules)
+    def transform[F[_]: MonadEx](rules: List[AbstractRule]): F[NodeSeq] =
+      AbstractRule.transform(root, rules)
   }
 
-  implicit class XmlRuleOps(rule: XmlRule) {
+  implicit class AbstractRuleOps(rule: AbstractRule) {
     def transform[F[_]: MonadEx](root: NodeSeq): F[NodeSeq] =
-      XmlRule.transform(root, rule)
+      AbstractRule.transform(root, rule)
+
+    def and(other: AbstractRule): AbstractRule =
+      And(rule, other)
+
+    def orElse(other: AbstractRule): AbstractRule =
+      OrElse(rule, other)
   }
 
-  implicit class XmlSeqRuleOps(rules: List[XmlRule]) {
+  implicit class AbstractRuleListOps(rules: List[AbstractRule]) {
     def transform[F[_]: MonadEx](root: NodeSeq): F[NodeSeq] =
-      XmlRule.transform(root, rules)
+      AbstractRule.transform(root, rules)
   }
 
   implicit class XmlZoomToRuleOps(zoom: XmlZoom) {
