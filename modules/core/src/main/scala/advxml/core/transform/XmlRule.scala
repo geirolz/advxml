@@ -11,7 +11,7 @@ import scala.xml.{Elem, NodeSeq}
   *
   * @author geirolad
   */
-sealed trait XmlRule {
+sealed trait XmlRule extends AbstractRule {
   val zoom: XmlZoom
 }
 
@@ -28,53 +28,41 @@ object XmlRule {
   import advxml.instances.transform.composableXmlModifierMonoidInstance
   import cats.syntax.all._
 
-  def transform[F[_]](root: NodeSeq, rule: XmlRule, rules: XmlRule*)(implicit
-    F: MonadEx[F]
-  ): F[NodeSeq] =
-    transform(root, List(rule) ++ rules)
-
-  def transform[F[_]](root: NodeSeq, rules: List[XmlRule])(implicit
-    F: MonadEx[F]
-  ): F[NodeSeq] =
-    rules.foldLeft(F.pure(root))((actDoc, rule) => actDoc.flatMap(doc => transform(doc, rule)))
-
-  private def transform[F[_]](root: NodeSeq, rule: XmlRule)(implicit
-    F: MonadEx[F]
-  ): F[NodeSeq] = {
-
-    def buildRewriteRule(root: NodeSeq, zoom: XmlZoom, modifier: XmlModifier): F[NodeSeq] = {
-      for {
-        target <- zoom.detailed[F](root)
-        targetNodeSeq = target.nodeSeq
-        targetParents = target.parents
-        updatedTarget <- modifier[F](targetNodeSeq)
-        updatedWholeDocument = {
-          targetParents
-            .foldRight(XmlPatch.const(targetNodeSeq, updatedTarget))((parent, patch) =>
-              XmlPatch(
-                parent,
-                _.flatMap { case e: Elem =>
-                  XmlUtils.flatMapChildren(
-                    e,
-                    n =>
-                      patch.zipWithUpdated
-                        .getOrElse(Some(n), Some(n))
-                        .getOrElse(NodeSeq.Empty)
-                  )
-                }
-              )
-            )
-            .updated
-        }
-      } yield updatedWholeDocument
-    }
-
+  private[transform] def transform[F[_]](root: NodeSeq, rule: XmlRule)(implicit F: MonadEx[F]): F[NodeSeq] = {
     val modifier = rule match {
       case r: ComposableXmlRule => Monoid.combineAll(r.modifiers)
       case r: FinalXmlRule      => r.modifier
     }
-
     buildRewriteRule(root, rule.zoom, modifier)
+  }
+
+  private def buildRewriteRule[F[_]](root: NodeSeq, zoom: XmlZoom, modifier: XmlModifier)(implicit
+    F: MonadEx[F]
+  ): F[NodeSeq] = {
+    for {
+      target <- zoom.detailed[F](root)
+      targetNodeSeq = target.nodeSeq
+      targetParents = target.parents
+      updatedTarget <- modifier[F](targetNodeSeq)
+      updatedWholeDocument = {
+        targetParents
+          .foldRight(XmlPatch.const(targetNodeSeq, updatedTarget))((parent, patch) =>
+            XmlPatch(
+              parent,
+              _.flatMap { case e: Elem =>
+                XmlUtils.flatMapChildren(
+                  e,
+                  n =>
+                    patch.zipWithUpdated
+                      .getOrElse(Some(n), Some(n))
+                      .getOrElse(NodeSeq.Empty)
+                )
+              }
+            )
+          )
+          .updated
+      }
+    } yield updatedWholeDocument
   }
 
   //============================== BUILD ==============================
