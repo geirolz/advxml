@@ -1,10 +1,10 @@
 package advxml.instances
 
 import advxml.core.MonadEx
-import advxml.core.data.Predicate.alwaysTrue
 import advxml.core.data.{Predicate, _}
+import advxml.core.data.Predicate.alwaysTrue
 import advxml.core.transform._
-import cats.Monoid
+import cats.{Monoid, Semigroup}
 import cats.data.NonEmptyList
 
 import scala.util.Try
@@ -18,6 +18,9 @@ private[instances] trait AllTransforInstances
 private[instances] trait XmlModifierInstances {
 
   //============================== TYPE CLASS INSTANCES ==============================
+  implicit val composableAbstractRuleWithAndOpSemigroupInstance: Semigroup[AbstractRule] =
+    (x: AbstractRule, y: AbstractRule) => AbstractRule.And(x, y)
+
   implicit val composableXmlModifierMonoidInstance: Monoid[ComposableXmlModifier] = new Monoid[ComposableXmlModifier] {
 
     import cats.syntax.flatMap._

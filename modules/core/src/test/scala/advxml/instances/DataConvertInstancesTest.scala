@@ -40,12 +40,6 @@ class Common_ConvertersInstancesTest extends AnyFunSuite with ConvertersAssertsU
     ThrowableNel.fromThrowable(exception),
     AggregatedException(NonEmptyList.one(exception))
   )
-
-  //TODO
-//  Converter[Throwable, ThrowableNel].test(
-//    new RuntimeException(""),
-//    ThrowableNel.fromThrowable(new RuntimeException(""))
-//  )
 }
 
 class ConvertersInstancesTestForSimpleValue extends AnyFunSuite with ConvertersAssertsUtils {
