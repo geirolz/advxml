@@ -142,6 +142,30 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
     )
   }
 
+  test("success rule optional") {
+
+    val ns: Elem = <Order></Order>
+    val rule = (root ==> Append(<OrderLine PrimeLineNo="1"/>)).optional
+
+    val result: NodeSeq = rule.transform(ns).get
+
+    assert(
+      <Order>
+        <OrderLine PrimeLineNo="1"/>
+      </Order> === result
+    )
+  }
+
+  test("failing rule optional") {
+
+    val ns: Elem = <Order></Order>
+    val rule = (root.Missing ==> Append(<OrderLine PrimeLineNo="1"/>)).optional
+
+    val result: NodeSeq = rule.transform(ns).get
+
+    assert(<Order></Order> === result)
+  }
+
   test("Transform XML with empty target") {
 
     val elem =

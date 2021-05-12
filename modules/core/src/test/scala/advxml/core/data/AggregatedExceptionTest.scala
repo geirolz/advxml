@@ -3,6 +3,7 @@ package advxml.core.data
 import advxml.core.data.error.AggregatedException
 import cats.data.NonEmptyList
 import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 
 /** Advxml
   * Created by geirolad on 29/07/2019.
@@ -12,7 +13,7 @@ import org.scalatest.funsuite.AnyFunSuite
 class AggregatedExceptionTest extends AnyFunSuite {
 
   test("Test printStackTrace") {
-    val ex = new AggregatedException(
+    val ex = AggregatedException(
       NonEmptyList.of(
         new RuntimeException("EX1"),
         new RuntimeException("EX2"),
@@ -24,7 +25,7 @@ class AggregatedExceptionTest extends AnyFunSuite {
   }
 
   test("Test getStackTraces - Has size == 3") {
-    val ex = new AggregatedException(
+    val ex = AggregatedException(
       NonEmptyList.of(
         new RuntimeException("EX1"),
         new RuntimeException("EX2"),
@@ -33,11 +34,11 @@ class AggregatedExceptionTest extends AnyFunSuite {
     )
 
     val result = ex.getStackTraces
-    assert(result.size == 3)
+    result.size shouldBe 3
   }
 
   test("Test getStackTrace - non Empty") {
-    val ex = new AggregatedException(
+    val ex = AggregatedException(
       NonEmptyList.of(
         new RuntimeException("EX1"),
         new RuntimeException("EX2"),
@@ -49,7 +50,7 @@ class AggregatedExceptionTest extends AnyFunSuite {
   }
 
   test("Test setStackTrace - should throw UnsupportedOperationException") {
-    val ex = new AggregatedException(
+    val ex = AggregatedException(
       NonEmptyList.of(
         new RuntimeException("EX1"),
         new RuntimeException("EX2"),

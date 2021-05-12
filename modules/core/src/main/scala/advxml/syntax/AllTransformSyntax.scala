@@ -29,10 +29,13 @@ private[syntax] sealed trait RuleSyntax {
       AbstractRule.transform(root, rule)
 
     def and(other: AbstractRule): AbstractRule =
-      And(rule, other)
+      AbstractRule.And(rule, other)
 
     def orElse(other: AbstractRule): AbstractRule =
-      OrElse(rule, other)
+      AbstractRule.OrElse(rule, other)
+
+    def optional: AbstractRule =
+      AbstractRule.Optional(rule)
   }
 
   implicit class AbstractRuleListOps(rules: List[AbstractRule]) {
