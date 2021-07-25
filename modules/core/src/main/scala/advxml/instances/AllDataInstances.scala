@@ -8,6 +8,7 @@ import cats.{~>, Applicative, FlatMap, Semigroup}
 import cats.data.{NonEmptyList, Validated}
 import advxml.core.data.ValidationRule
 
+import scala.annotation.unused
 import scala.util.matching.Regex
 import scala.util.Try
 import scala.xml.{Elem, Node, Text}
@@ -54,7 +55,10 @@ private[instances] trait AllConverterInstances
 
   implicit def identityConverter[A]: Converter[A, A] = Converter.id[A]
 
-  implicit def identityConverterApplicative[F[_]: Applicative, A: * =:!= F[A]]: Converter[A, F[A]] =
+  implicit def identityConverterApplicative[F[_], A](implicit
+    a: Applicative[F],
+    @unused notFA: A =:!= F[A]
+  ): Converter[A, F[A]] =
     Converter.idF[F, A]
 }
 
@@ -62,18 +66,22 @@ private sealed trait ConverterLowerPriorityImplicits1 {
 
   import cats.syntax.all._
 
-  implicit def deriveTextToF_fromValueToF[F[_], T: * =:!= Text](implicit
-    c: SimpleValue As F[T]
+  implicit def deriveTextToF_fromValueToF[F[_], T](implicit
+    c: SimpleValue As F[T],
+    @unused notText: T =:!= Text
   ): Text As F[T] =
     c.local(t => SimpleValue(t.data))
 
-  implicit def deriveTAsText_fromTAsValue[T: * =:!= Text](implicit
-    c: T As SimpleValue
+  implicit def deriveTAsText_fromTAsValue[T](implicit
+    c: T As SimpleValue,
+    @unused notText: T =:!= Text
   ): T As Text =
     c.map(v => Text(v.get))
 
-  implicit def deriveTAsText_fromTAsValidatedValue[F[_]: AppExOrEu, T: * =:!= Text](implicit
-    c: T As ValidatedValue
+  implicit def deriveTAsText_fromTAsValidatedValue[F[_], T](implicit
+    c: T As ValidatedValue,
+    a: AppExOrEu[F],
+    @unused notText: T =:!= Text
   ): T As F[Text] =
     c.map(v => v.extract[F].map(Text(_)))
 
@@ -149,17 +157,17 @@ private sealed trait ConverterNaturalTransformationInstances {
 
   //APP EX
   implicit def appExOrEuTryNatTransformationInstance[G[_]: AppExOrEu]: Try ~> G =
-    λ[Try ~> G](AppExOrEu.fromTry(_))
+    new (Try ~> G) { def apply[A](a: Try[A]): G[A] = AppExOrEu.fromTry(a) }
 
   implicit def appExOrEuEitherExNatTransformationInstance[G[_]: AppExOrEu]: EitherEx ~> G =
-    λ[EitherEx ~> G](AppExOrEu.fromEitherEx(_))
+    new (EitherEx ~> G) { def apply[A](a: EitherEx[A]): G[A] = AppExOrEu.fromEitherEx(a) }
 
   implicit def appExOrEuEitherNelExNatTransformationInstance[G[_]: AppExOrEu]: EitherNelEx ~> G =
-    λ[EitherNelEx ~> G](AppExOrEu.fromEitherNelEx(_))
+    new (EitherNelEx ~> G) { def apply[A](a: EitherNelEx[A]): G[A] = AppExOrEu.fromEitherNelEx(a) }
 
   implicit def appExOrEuValidatedExNatTransformationInstance[G[_]: AppExOrEu]: ValidatedEx ~> G =
-    λ[ValidatedEx ~> G](AppExOrEu.fromValidatedEx(_))
+    new (ValidatedEx ~> G) { def apply[A](a: ValidatedEx[A]): G[A] = AppExOrEu.fromValidatedEx(a) }
 
   implicit def appExOrEuValidatedNelExNatTransformationInstance[G[_]: AppExOrEu]: ValidatedNelEx ~> G =
-    λ[ValidatedNelEx ~> G](AppExOrEu.fromValidatedNelEx(_))
+    new (ValidatedNelEx ~> G) { def apply[A](a: ValidatedNelEx[A]): G[A] = AppExOrEu.fromValidatedNelEx(a) }
 }

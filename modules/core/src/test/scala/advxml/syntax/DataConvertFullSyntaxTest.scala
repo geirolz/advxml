@@ -33,11 +33,11 @@ class DataConvertFullSyntaxTest extends AnyFunSuite {
               (
                 car.attr("Brand").asValidated[String],
                 car.attr("Model").asValidated[String]
-              ).mapN(Car)
+              ).mapN(Car.apply)
             })
             .sequence
         }
-      ).mapN(Person)
+      ).mapN(Person.apply)
     })
 
     val xml =

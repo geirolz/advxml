@@ -230,12 +230,12 @@ object XmlZoom {
     val symbol: String = s"($idx)"
   }
 
-  final case object Head extends FilterZoomAction {
+  case object Head extends FilterZoomAction {
     def apply(ns: NodeSeq): Option[NodeSeq] = ns.headOption
     val symbol: String = s"head()"
   }
 
-  final case object Last extends FilterZoomAction {
+  case object Last extends FilterZoomAction {
     def apply(ns: NodeSeq): Option[NodeSeq] = ns.lastOption
     val symbol: String = s"last()"
   }

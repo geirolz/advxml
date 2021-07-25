@@ -19,4 +19,18 @@ object Dependencies {
     "org.scalatest" %% "scalatest" % "3.2.9" % Test cross CrossVersion.binary,
     "org.scalacheck" %% "scalacheck" % "1.15.4" % Test cross CrossVersion.binary
   )
+
+  object Plugins {
+    lazy val compilerPluginsFor2: Seq[ModuleID] = Seq(
+      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3" cross CrossVersion.binary)
+    )
+    lazy val compilerPluginsFor3: Seq[ModuleID] = Nil
+  }
+
+  lazy val extraDependenciesForScala2_12: Seq[ModuleID] =
+    Seq("org.scala-lang.modules" %% "scala-collection-compat" % "2.5.0")
+
+  lazy val extraDependenciesForScala2_13: Seq[ModuleID] = Nil
+
+  lazy val extraDependenciesForScala3: Seq[ModuleID] = Nil
 }

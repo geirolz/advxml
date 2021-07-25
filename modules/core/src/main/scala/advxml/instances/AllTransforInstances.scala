@@ -225,7 +225,7 @@ private[instances] trait XmlPredicateInstances {
   def attrs(values: NonEmptyList[KeyValuePredicate]): XmlPredicate =
     values
       .map(p => XmlPredicate(ns => p(SimpleValue(ns \@ p.key.value))))
-      .reduce(Predicate.and[NodeSeq])
+      .reduce(Predicate.and[NodeSeq](_, _))
 
   /** Create a [[advxml.core.data.XmlPredicate]] that can check if a NodeSeq contains a child with specified predicates
     *

@@ -33,7 +33,7 @@ object Value {
   }
 }
 
-case class SimpleValue(private val data: String, ref: Option[String] = None)
+case class SimpleValue(private[data] val data: String, ref: Option[String] = None)
     extends Value
     with Comparable[SimpleValue] {
 
@@ -44,10 +44,14 @@ case class SimpleValue(private val data: String, ref: Option[String] = None)
 
   override def toString: String = Show[SimpleValue].show(this)
 }
-object SimpleValue {
-
+private[data] sealed trait SimpleValueLowPriorityInstances {
   implicit def valueExtractorForSimpleValueF[F[_]: Applicative]: ValueExtractor[F, SimpleValue] =
     (value: SimpleValue) => Applicative[F].pure(value.data)
+}
+object SimpleValue extends SimpleValueLowPriorityInstances {
+
+  implicit def valueExtractorForSimpleValueId: ValueExtractor[Id, SimpleValue] =
+    (value: SimpleValue) => value.data
 
   implicit val advxmlValueCatsInstances: PartialOrder[SimpleValue] with Show[SimpleValue] =
     new PartialOrder[SimpleValue] with Show[SimpleValue] {

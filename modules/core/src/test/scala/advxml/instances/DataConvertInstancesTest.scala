@@ -6,7 +6,6 @@ import advxml.core.transform.{XmlContentZoom, XmlContentZoomRunner}
 import advxml.implicits.$
 import advxml.instances.data.convert._
 import advxml.syntax.data._
-import cats.Id
 import cats.data.NonEmptyList
 import cats.data.Validated.Valid
 import org.scalatest.funsuite.AnyFunSuite
@@ -117,24 +116,4 @@ class ConvertersInstancesTestForText extends AnyFunSuite with ConvertersAssertsU
     Converter.of(ct => SimpleValue(ct.v.toString).nonEmpty)
     
   Converter[CustomType, Try[Text]].test(CustomType(1), Success(Text("1")))
-}
-
-private[instances] sealed trait ConvertersAssertsUtils { $this: AnyFunSuite =>
-
-  import scala.reflect.runtime.universe._
-
-  protected implicit class TestConverterIdForSeqOps[I: TypeTag, O: TypeTag](converter: Converter[I, O])
-    extends TestConverterForSeqOps[Id, I, O](converter)
-
-  protected implicit class TestConverterForSeqOps[F[_], I: TypeTag, O: TypeTag](converter: Converter[I, F[O]]) {
-    def test(in: I, expectedOut: F[O])(implicit foTag: TypeTag[F[O]]): Unit = {
-      $this.test(
-        s"Converter[${typeOf[I].finalResultType}, ${foTag.tpe.finalResultType}]" +
-          s".apply('$in') should be '$expectedOut'"
-      ) {
-        
-        assert(converter(in) == expectedOut)
-      }
-    }
-  }
 }
