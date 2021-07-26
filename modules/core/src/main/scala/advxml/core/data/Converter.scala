@@ -62,7 +62,6 @@ object Converter {
 
 //=================================== HELPERS ============================================
 private[core] sealed abstract class FixedBiConverterOps[F[_]: Applicative, C[-A, B] <: Converter[A, F[B]]] {
-  type Wrapper[_] = F[_]
   def of[A, B](f: A => F[B]): C[A, B] = Converter.of[A, F[B]](f).asInstanceOf[C[A, B]]
   def id[A]: C[A, A] = Converter.idF[F, A].asInstanceOf[C[A, A]]
   def const[A, B](b: B): C[A, B] = Converter.constF(b).asInstanceOf[C[A, B]]
@@ -70,7 +69,6 @@ private[core] sealed abstract class FixedBiConverterOps[F[_]: Applicative, C[-A,
 }
 
 private[core] sealed abstract class FixedLeftConverterOps[F[_]: Applicative, A, CR[B] <: Converter[A, F[B]]] {
-  type Wrapper[_] = F[_]
   def of[B](f: A => F[B]): CR[B] = Converter.of[A, F[B]](f).asInstanceOf[CR[B]]
   def id: CR[A] = Converter.idF[F, A].asInstanceOf[CR[A]]
   def const[B](b: B): CR[B] = Converter.constF[F, A, B](b).asInstanceOf[CR[B]]
@@ -78,7 +76,6 @@ private[core] sealed abstract class FixedLeftConverterOps[F[_]: Applicative, A, 
 }
 
 private[core] sealed abstract class FixedRightConverterOps[F[_]: Applicative, B, CL[A] <: Converter[A, F[B]]] {
-  type Wrapper[_] = F[_]
   def of[A](f: A => F[B]): CL[A] = Converter.of[A, F[B]](f).asInstanceOf[CL[A]]
   def id: CL[B] = Converter.idF[F, B].asInstanceOf[CL[B]]
   def const[A](b: B): CL[A] = Converter.constF[F, A, B](b).asInstanceOf[CL[A]]

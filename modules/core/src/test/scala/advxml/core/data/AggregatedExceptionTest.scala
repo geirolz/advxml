@@ -3,7 +3,7 @@ package advxml.core.data
 import advxml.core.data.error.AggregatedException
 import cats.data.NonEmptyList
 import org.scalatest.funsuite.AnyFunSuite
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers._
 
 /** Advxml
   * Created by geirolad on 29/07/2019.

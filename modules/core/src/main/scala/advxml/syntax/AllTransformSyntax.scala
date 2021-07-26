@@ -60,11 +60,11 @@ private[syntax] sealed trait RuleSyntax {
 
 private[syntax] sealed trait ZoomSyntax {
 
-  implicit class XmlZoomNodeBaseOps[Z <: XmlZoomNodeBase](zoom: Z) {
+  implicit class XmlZoomNodeBaseOps[Z <: XmlZoomNodeBase](val zoom: Z) {
 
-    def /(nodeName: String): Z#Type = zoom.down(nodeName)
+    def /(nodeName: String): zoom.Type = zoom.down(nodeName)
 
-    def |(p: XmlPredicate): Z#Type = zoom.filter(p)
+    def |(p: XmlPredicate): zoom.Type = zoom.filter(p)
   }
 
   implicit class XmlContentZoomSyntaxForId(ns: NodeSeq) {

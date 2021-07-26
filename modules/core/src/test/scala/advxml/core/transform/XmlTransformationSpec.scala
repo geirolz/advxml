@@ -71,7 +71,7 @@ object XmlTransformationSpec extends Properties("XmlTransformationSpec") {
     }).run[Try](result.get).get === newElem
   }
 
-  property("Remove") = forAll(elemArbitrary.arbitrary.filter(_.child.nonEmpty)) { base: Elem =>
+  property("Remove") = forAll(elemArbitrary.arbitrary.filter(_.child.nonEmpty)) { (base: Elem) =>
     val zoom: XmlZoom = XmlGenerator
       .genZoom(base)
       .filter(_ != root)
@@ -93,7 +93,7 @@ object XmlTransformationSpec extends Properties("XmlTransformationSpec") {
     result.exists(attrs(k"numberOfAttributes" === base.attributes.size + attrsData.size))
   }
 
-  property("RemoveAttrs") = forAll { base: Elem =>
+  property("RemoveAttrs") = forAll { (base: Elem) =>
     val rule: ComposableXmlRule = root ==> RemoveAttrs(alwaysTrue)
     val result: NodeSeq = base.transform[Try](rule).get
 

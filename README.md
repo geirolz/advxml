@@ -56,3 +56,4 @@ The idea behind this library is offer a fluent syntax to edit and read xml.
  ## Contributors
  - [@pawelkaczor](https://github.com/pawelkaczor)
  - [@dcsobral](https://github.com/dcsobral)
+ - [@liff](https://github.com/liff)

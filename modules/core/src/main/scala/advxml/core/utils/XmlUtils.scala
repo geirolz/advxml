@@ -14,10 +14,7 @@ object XmlUtils {
     Elem(null, n.label, n.attributes, n.scope, false, n.child: _*)
 
   def flatMapChildren(e: Elem, f: Node => NodeSeq): Elem = {
-    val updatedChildren: Seq[Node] = e.child.filterNot(emptyText).flatMap {
-      case n: Node => f(n)
-      case o       => o
-    }
+    val updatedChildren: Seq[Node] = e.child.filterNot(emptyText).flatMap(f)
 
     e.copy(child = updatedChildren)
   }
