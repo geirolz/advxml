@@ -29,3 +29,6 @@ target/
 modules/core/target/
 modules/generic/target/
 /.bsp/sbt.json
+
+# CHANGELOG
+changelog.md
