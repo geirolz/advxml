@@ -13,17 +13,9 @@ class ValidatedConverterTest extends AnyFunSuite {
     assert(converter.run(30) == Valid("30"))
   }
 
-  test("Test ValidatedConverter.id") {
+  test("Test ValidatedConverter.pure") {
     val testValue = "TEST"
-    val converter: ValidatedConverter[String, String] = ValidatedConverter.id
-    val value: ValidatedNelEx[String] = converter.run(testValue)
-
-    assert(value == Valid(testValue))
-  }
-
-  test("Test ValidatedConverter.const") {
-    val testValue = "TEST"
-    val converter: ValidatedConverter[Int, String] = ValidatedConverter.const(testValue)
+    val converter: ValidatedConverter[Int, String] = ValidatedConverter.pure(testValue)
 
     assert(converter.run(10) == Valid(testValue))
     assert(converter.run(20) == Valid(testValue))

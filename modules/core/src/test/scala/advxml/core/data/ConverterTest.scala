@@ -15,25 +15,11 @@ class ConverterTest extends AnyFunSuite {
     assert(result == testValue)
   }
 
-  test("Test Converter.idF") {
+  test("Test Converter.pure") {
     val testValue = "TEST"
-    val converter: String As Option[String] = Converter.idF[Option, String]
-    val result: Option[String] = converter.run(testValue)
-    assert(result == Some(testValue))
-  }
-
-  test("Test Converter.const") {
-    val testValue = "TEST"
-    val converter: Int As String = Converter.const(testValue)
+    val converter: Int As String = Converter.pure(testValue)
 
     assert(converter.run(100) == testValue)
-  }
-
-  test("Test Converter.constF") {
-    val testValue = "TEST"
-    val converter: Int As Option[String] = Converter.constF(testValue)
-
-    assert(converter.run(100) == Some(testValue))
   }
 
   test("Test Converter.apply - using implicit safe Converter") {
@@ -59,17 +45,10 @@ class ConverterTest extends AnyFunSuite {
     assert(result == Valid(foo))
   }
 
-  test("Test XmlDecoder.id") {
-    val foo = <foo></foo>
-    val encoder: XmlDecoder[NodeSeq] = XmlDecoder.id
-    val result: ValidatedNelEx[NodeSeq] = encoder.run(foo)
-    assert(result == Valid(foo))
-  }
-
   test("Test XmlDecoder.cost") {
     val foo = <foo></foo>
     val bar = <bar></bar>
-    val encoder: XmlDecoder[NodeSeq] = XmlDecoder.const(bar)
+    val encoder: XmlDecoder[NodeSeq] = XmlDecoder.pure(bar)
     val result: ValidatedNelEx[NodeSeq] = encoder.run(foo)
     assert(result == Valid(bar))
   }
@@ -81,17 +60,10 @@ class ConverterTest extends AnyFunSuite {
     assert(result == Valid(foo))
   }
 
-  test("Test XmlEncoder.id") {
-    val foo = <foo></foo>
-    val encoder: XmlEncoder[NodeSeq] = XmlEncoder.id
-    val result: ValidatedNelEx[NodeSeq] = encoder.run(foo)
-    assert(result == Valid(foo))
-  }
-
-  test("Test XmlEncoder.cost") {
+  test("Test XmlEncoder.pure") {
     val foo = <foo></foo>
     val bar = <bar></bar>
-    val encoder: XmlEncoder[NodeSeq] = XmlEncoder.const(bar)
+    val encoder: XmlEncoder[NodeSeq] = XmlEncoder.pure(bar)
     val result: ValidatedNelEx[NodeSeq] = encoder.run(foo)
     assert(result == Valid(bar))
   }

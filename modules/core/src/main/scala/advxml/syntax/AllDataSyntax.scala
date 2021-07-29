@@ -51,7 +51,7 @@ private[syntax] trait ConverterSyntax {
       * @tparam B result inner type
       * @return [[B]] instance in F[_]
       */
-    def mapAs[B](implicit c: Converter[A, B]): F[B] = fa.map(c.run(_))
+    def mapAs[B](implicit c: Converter[A, B]): F[B] = fa.map(c.run)
   }
 
   implicit class FlatMapConverterSyntaxOps[F[_]: FlatMap, A](fa: F[A]) {
@@ -69,7 +69,7 @@ private[syntax] trait ConverterSyntax {
       * @tparam B result inner type
       * @return [[B]] instance in F[_]
       */
-    def flatMapAs[B](implicit c: Converter[A, F[B]]): F[B] = fa.flatMap(c.run(_))
+    def flatMapAs[B](implicit c: Converter[A, F[B]]): F[B] = fa.flatMap(c.run)
   }
 
   implicit class ValidatedAndThenConverterSyntaxOps[E, A](fa: Validated[E, A]) {
@@ -141,7 +141,7 @@ private[syntax] trait AttributeSyntax {
   implicit class AttributeOps(key: Key) {
 
     def :=[T](v: T)(implicit c: T As SimpleValue): AttributeData =
-      AttributeData(key, c(v))
+      AttributeData(key, c.run(v))
 
     //********* KeyValuePredicate *********
     import cats.syntax.order._
@@ -173,7 +173,7 @@ private[syntax] trait AttributeSyntax {
       KeyValuePredicate(
         key,
         new (SimpleValue => Boolean) {
-          override def apply(f: SimpleValue): Boolean = c(f).map(p(_, that)).getOrElse(false)
+          override def apply(f: SimpleValue): Boolean = c.run(f).map(p(_, that)).getOrElse(false)
           override def toString(): String = s"$symbol [$that]"
         }
       )

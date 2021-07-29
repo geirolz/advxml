@@ -1,6 +1,5 @@
 package advxml.core
 
-import cats.Id
 import cats.data._
 
 import scala.annotation.implicitNotFound
@@ -13,15 +12,6 @@ package object data {
   type EitherNelEx[+T] = EitherNel[Throwable, T]
   type ThrowableNel = NonEmptyList[Throwable]
   type XmlPredicate = NodeSeq => Boolean
-
-  /** Represents a function `A => B` to simplify method and class signatures.
-    * This alias represent a converter to transform `A` into `B`.
-    *
-    * @tparam A Contravariant input object type
-    * @tparam B Output object type
-    */
-  @implicitNotFound("""Missing implicit Converter instance to covert ${A} into ${B}""")
-  type Converter[-A, B] = Kleisli[Id, A, B]
 
   /** Syntactic sugar. To use ase `A As B` instead of classic method `Converter[A, B]`
     */

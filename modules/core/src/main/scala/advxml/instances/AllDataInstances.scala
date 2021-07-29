@@ -56,10 +56,10 @@ private[instances] trait AllConverterInstances
   implicit def identityConverter[A]: Converter[A, A] = Converter.id[A]
 
   implicit def identityConverterApplicative[F[_], A](implicit
-    a: Applicative[F],
+    F: Applicative[F],
     @unused notFA: A =:!= F[A]
   ): Converter[A, F[A]] =
-    Converter.idF[F, A]
+    Converter.of[A, F[A]](F.pure)
 }
 
 private sealed trait ConverterLowerPriorityImplicits1 {
@@ -70,7 +70,7 @@ private sealed trait ConverterLowerPriorityImplicits1 {
     c: SimpleValue As F[T],
     @unused notText: T =:!= Text
   ): Text As F[T] =
-    c.local(t => SimpleValue(t.data))
+    c.contramap(t => SimpleValue(t.data))
 
   implicit def deriveTAsText_fromTAsValue[T](implicit
     c: T As SimpleValue,

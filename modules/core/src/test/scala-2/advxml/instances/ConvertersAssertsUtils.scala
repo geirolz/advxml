@@ -17,7 +17,7 @@ private[instances] trait ConvertersAssertsUtils { $this: AnyFunSuite =>
         s".apply('$in') should be '$expectedOut'"
       ) {
 
-        assert(converter(in) == expectedOut)
+        assert(converter.run(in) == expectedOut)
       }
     }
   }
