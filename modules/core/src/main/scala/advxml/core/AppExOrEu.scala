@@ -31,7 +31,7 @@ case class AppExCase[F[_]](app: AppEx[F]) extends AppExOrEu[F] {
 case class AppNelExCase[F[_]](app: ApplicativeNelThrow[F]) extends AppExOrEu[F] {
   def raiseError[A](e: => Throwable): F[A] = app.raiseError(ThrowableNel.fromThrowable(e))
 }
-case class AppEuCase[F[_]](app: AppEu[F]) extends AppExOrEu[F] {
+case class AppEuCase[F[_]](app: ApplicativeEu[F]) extends AppExOrEu[F] {
   def empty[A]: F[A] = app.raiseError(())
 }
 
@@ -67,5 +67,5 @@ private[core] sealed trait AppExOrEuInstances {
 
   implicit def appNelExAsAppExOrEu[F[_]](implicit M: ApplicativeNelThrow[F]): AppNelExCase[F] = AppNelExCase(M)
 
-  implicit def appEuAsAppExOrEu[F[_]](implicit M: AppEu[F]): AppEuCase[F] = AppEuCase(M)
+  implicit def appEuAsAppExOrEu[F[_]](implicit M: ApplicativeEu[F]): AppEuCase[F] = AppEuCase(M)
 }

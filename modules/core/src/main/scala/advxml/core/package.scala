@@ -9,5 +9,5 @@ package object core {
   type AppEx[F[_]] = ApplicativeError[F, Throwable]
 
   type ApplicativeNelThrow[F[_]] = ApplicativeError[F, ThrowableNel]
-  type AppEu[F[_]] = ApplicativeError[F, Unit]
+  type ApplicativeEu[F[_]] = ApplicativeError[F, Unit]
 }
