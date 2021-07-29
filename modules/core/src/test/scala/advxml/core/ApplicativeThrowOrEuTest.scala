@@ -16,41 +16,41 @@ class ApplicativeThrowOrEuTest extends AnyFunSuite with FunSuiteDiscipline with 
   private val exception = new RuntimeException("ERROR")
 
   checkAll(
-    "AppExOrEu[Try]",
+    "ApplicativeThrowOrEu[Try]",
     cats.laws.discipline
       .ApplicativeTests[Try](ApplicativeThrowOrEu[Try])
       .applicative[Int, Int, Int]
   )
 
   checkAll(
-    "AppExOrEu[Option]",
+    "ApplicativeThrowOrEu[Option]",
     cats.laws.discipline
       .ApplicativeTests[Option](ApplicativeThrowOrEu[Option])
       .applicative[Int, Int, Int]
   )
 
-  test("AppExOrEu[Try].raiseErrorOrEmpty") {
+  test("ApplicativeThrowOrEu[Try].raiseErrorOrEmpty") {
     val value: Try[Int] = ApplicativeThrowOrEu[Try].raiseErrorOrEmpty(exception)
     assert(value.isFailure)
   }
 
-  test("AppExOrEu[Option].raiseErrorOrEmpty") {
+  test("ApplicativeThrowOrEu[Option].raiseErrorOrEmpty") {
     val value: Option[Int] = ApplicativeThrowOrEu[Option].raiseErrorOrEmpty(exception)
     assert(value.isEmpty)
   }
 
-  test("AppExOrEu[Try].raiseError") {
+  test("ApplicativeThrowOrEu[Try].raiseError") {
     val value: Try[Int] = ApplicativeThrowOrEu[Try].raiseError(exception)
     assert(value.isFailure)
   }
 
-  test("AppExOrEu[Option].empty") {
+  test("ApplicativeThrowOrEu[Option].empty") {
     val value: Option[Int] = ApplicativeThrowOrEu[Option].empty
     assert(value.isEmpty)
   }
 
   //noinspection OptionEqualsSome
-  test("AppExOrEu.fromOption") {
+  test("ApplicativeThrowOrEu.fromOption") {
     val valueTrySuccess: Try[Int] = ApplicativeThrowOrEu.fromOption[Try, Int](exception)(Some(1))
     val valueTryFailure: Try[Int] = ApplicativeThrowOrEu.fromOption[Try, Int](exception)(None)
     val valueOptSome: Option[Int] = ApplicativeThrowOrEu.fromOption[Option, Int](exception)(Some(1))
@@ -63,7 +63,7 @@ class ApplicativeThrowOrEuTest extends AnyFunSuite with FunSuiteDiscipline with 
   }
 
   //noinspection OptionEqualsSome
-  test("AppExOrEu.fromTry") {
+  test("ApplicativeThrowOrEu.fromTry") {
     val valueTrySuccess: Try[Int] = ApplicativeThrowOrEu.fromTry[Try, Int](Success(1))
     val valueTryFailure: Try[Int] = ApplicativeThrowOrEu.fromTry[Try, Int](Failure(exception))
     val valueOptSome: Option[Int] = ApplicativeThrowOrEu.fromTry[Option, Int](Success(1))
@@ -76,7 +76,7 @@ class ApplicativeThrowOrEuTest extends AnyFunSuite with FunSuiteDiscipline with 
   }
 
   //noinspection OptionEqualsSome
-  test("AppExOrEu.fromEither") {
+  test("ApplicativeThrowOrEu.fromEither") {
     val valueTrySuccess: Try[Int] = ApplicativeThrowOrEu.fromEitherThrow[Try, Int](Right(1))
     val valueTryFailure: Try[Int] = ApplicativeThrowOrEu.fromEitherThrow[Try, Int](Left(exception))
     val valueOptSome: Option[Int] = ApplicativeThrowOrEu.fromEitherThrow[Option, Int](Right(1))
@@ -89,7 +89,7 @@ class ApplicativeThrowOrEuTest extends AnyFunSuite with FunSuiteDiscipline with 
   }
 
   //noinspection OptionEqualsSome
-  test("AppExOrEu.fromValidated") {
+  test("ApplicativeThrowOrEu.fromValidated") {
     val valueTrySuccess: Try[Int] = ApplicativeThrowOrEu.fromValidatedThrow[Try, Int](Valid(1))
     val valueTryFailure: Try[Int] = ApplicativeThrowOrEu.fromValidatedThrow[Try, Int](Invalid(exception))
     val valueOptSome: Option[Int] = ApplicativeThrowOrEu.fromValidatedThrow[Option, Int](Valid(1))

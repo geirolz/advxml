@@ -35,7 +35,7 @@ case class ApplicativeEuCase[F[_]](app: ApplicativeEu[F]) extends ApplicativeThr
   def empty[A]: F[A] = app.raiseError(())
 }
 
-object ApplicativeThrowOrEu extends AppExOrEuInstances {
+object ApplicativeThrowOrEu extends ApplicativeThrowOrEuInstances {
 
   def apply[F[_]](implicit F: ApplicativeThrowOrEu[F]): F.type = F
 
@@ -61,14 +61,16 @@ object ApplicativeThrowOrEu extends AppExOrEuInstances {
     fromEitherNelThrow[F, A](fa.toEither)
 }
 
-private[core] sealed trait AppExOrEuInstances {
+private[core] sealed trait ApplicativeThrowOrEuInstances {
 
-  implicit def appExAsAppExOrEu[F[_]](implicit M: ApplicativeThrow[F]): ApplicativeThrowCase[F] =
+  implicit def applicativeThrowAsApplicativeThrowOrEu[F[_]](implicit M: ApplicativeThrow[F]): ApplicativeThrowCase[F] =
     ApplicativeThrowCase(M)
 
-  implicit def appNelExAsAppExOrEu[F[_]](implicit M: ApplicativeNelThrow[F]): ApplicativeNelThrowCase[F] =
+  implicit def applicativeNelThrowAsApplicativeThrowOrEu[F[_]](implicit
+    M: ApplicativeNelThrow[F]
+  ): ApplicativeNelThrowCase[F] =
     ApplicativeNelThrowCase(M)
 
-  implicit def appEuAsAppExOrEu[F[_]](implicit M: ApplicativeEu[F]): ApplicativeEuCase[F] =
+  implicit def applicativeEuAsApplicativeThrowOrEu[F[_]](implicit M: ApplicativeEu[F]): ApplicativeEuCase[F] =
     ApplicativeEuCase(M)
 }

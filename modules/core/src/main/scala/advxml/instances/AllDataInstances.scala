@@ -119,7 +119,7 @@ private sealed trait ConverterLowerPriorityImplicits2 {
   ): Converter[XmlContentZoomRunner, ValidatedNelThrow[A]] =
     Converter.of(r => c.run(r.validated))
 
-  implicit def converterXmlContentZoomRunnerForAppExOrEu[F[_]: ApplicativeThrowOrEu: FlatMap, A](implicit
+  implicit def converterXmlContentZoomRunnerForApplicativeThrowOrEu[F[_]: ApplicativeThrowOrEu: FlatMap, A](implicit
     c: Converter[F[String], F[A]]
   ): Converter[XmlContentZoomRunner, F[A]] =
     Converter.of(r => c.run(r.extract[F]))
@@ -156,19 +156,22 @@ private sealed trait ConverterLowerPriorityImplicits2 {
 private sealed trait ConverterNaturalTransformationInstances {
 
   //APP EX
-  implicit def appExOrEuTryNatTransformationInstance[G[_]: ApplicativeThrowOrEu]: Try ~> G =
+  implicit def ApplicativeThrowOrEuTryNatTransformationInstance[G[_]: ApplicativeThrowOrEu]: Try ~> G =
     new (Try ~> G) { def apply[A](a: Try[A]): G[A] = ApplicativeThrowOrEu.fromTry(a) }
 
-  implicit def appExOrEuEitherThrowNatTransformationInstance[G[_]: ApplicativeThrowOrEu]: EitherThrow ~> G =
+  implicit def ApplicativeThrowOrEuEitherThrowNatTransformationInstance[G[_]: ApplicativeThrowOrEu]: EitherThrow ~> G =
     new (EitherThrow ~> G) { def apply[A](a: EitherThrow[A]): G[A] = ApplicativeThrowOrEu.fromEitherThrow(a) }
 
-  implicit def appExOrEuEitherNelThrowNatTransformationInstance[G[_]: ApplicativeThrowOrEu]: EitherNelThrow ~> G =
+  implicit def ApplicativeThrowOrEuEitherNelThrowNatTransformationInstance[G[_]: ApplicativeThrowOrEu]
+    : EitherNelThrow ~> G =
     new (EitherNelThrow ~> G) { def apply[A](a: EitherNelThrow[A]): G[A] = ApplicativeThrowOrEu.fromEitherNelThrow(a) }
 
-  implicit def appExOrEuValidatedThrowNatTransformationInstance[G[_]: ApplicativeThrowOrEu]: ValidatedThrow ~> G =
+  implicit def ApplicativeThrowOrEuValidatedThrowNatTransformationInstance[G[_]: ApplicativeThrowOrEu]
+    : ValidatedThrow ~> G =
     new (ValidatedThrow ~> G) { def apply[A](a: ValidatedThrow[A]): G[A] = ApplicativeThrowOrEu.fromValidatedThrow(a) }
 
-  implicit def appExOrEuValidatedNelThrowNatTransformationInstance[G[_]: ApplicativeThrowOrEu]: ValidatedNelThrow ~> G =
+  implicit def ApplicativeThrowOrEuValidatedNelThrowNatTransformationInstance[G[_]: ApplicativeThrowOrEu]
+    : ValidatedNelThrow ~> G =
     new (ValidatedNelThrow ~> G) {
       def apply[A](a: ValidatedNelThrow[A]): G[A] = ApplicativeThrowOrEu.fromValidatedNelThrow(a)
     }

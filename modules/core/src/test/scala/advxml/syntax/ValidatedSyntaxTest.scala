@@ -1,7 +1,7 @@
 package advxml.syntax
 
-import advxml.core.data.{EitherNelThrow, EitherThrow, ValidateExTest, ValidatedNelThrow, ValidatedThrow}
-import advxml.core.data.ValidateExTest.ContractFuncs
+import advxml.core.data.{EitherNelThrow, EitherThrow, ValidateThrowTest, ValidatedNelThrow, ValidatedThrow}
+import advxml.core.data.ValidateThrowTest.ContractFuncs
 import advxml.testUtils.FunSuiteContract
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -10,7 +10,7 @@ import scala.util.Try
 class ValidatedSyntaxTest extends AnyFunSuite with FunSuiteContract {
 
   // format: off
-  ValidateExTest.Contract(
+  ValidateThrowTest.Contract(
     "Syntax",
     {
       import advxml.instances.data._

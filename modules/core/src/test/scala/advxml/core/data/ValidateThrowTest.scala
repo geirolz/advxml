@@ -1,6 +1,6 @@
 package advxml.core.data
 
-import advxml.core.data.ValidateExTest.ContractFuncs
+import advxml.core.data.ValidateThrowTest.ContractFuncs
 import advxml.testUtils.{ContractTests, FunSuiteContract}
 import cats.data.{NonEmptyList, Validated}
 import cats.data.Validated.{Invalid, Valid}
@@ -8,7 +8,7 @@ import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.{Failure, Success, Try}
 
-class ValidateExTest extends AnyFunSuite with FunSuiteContract {
+class ValidateThrowTest extends AnyFunSuite with FunSuiteContract {
 
   import advxml.syntax.all._
   import advxml.instances.data._
@@ -17,7 +17,7 @@ class ValidateExTest extends AnyFunSuite with FunSuiteContract {
   import cats.instances.try_._
 
   // format: off
-  ValidateExTest.Contract(
+  ValidateThrowTest.Contract(
     f = ContractFuncs(
       toTry           = _.to[Try],
       fromTry         = ValidatedNelThrow.fromTry,
@@ -38,7 +38,7 @@ class ValidateExTest extends AnyFunSuite with FunSuiteContract {
   // format: on
 }
 
-object ValidateExTest {
+object ValidateThrowTest {
 
   case class ContractFuncs(
     toTry: ValidatedNelThrow[String] => Try[String],
