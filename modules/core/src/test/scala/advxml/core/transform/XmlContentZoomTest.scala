@@ -3,7 +3,7 @@ package advxml.core.transform
 import advxml.core.data.{SimpleValue, ValidatedValue}
 import advxml.core.transform.XmlContentZoomTest.ContractFuncs
 import advxml.core.transform.XmlZoom.root
-import advxml.core.AppExOrEu
+import advxml.core.ApplicativeThrowOrEu
 import advxml.implicits.$
 import advxml.testUtils.{ContractTests, Fallible, FunSuiteContract}
 import org.scalatest.funsuite.AnyFunSuite
@@ -65,7 +65,7 @@ object XmlContentZoomTest {
     contentFromZoom: (XmlZoom, NodeSeq) => F[String]
   )
 
-  case class Contract[F[_]: AppExOrEu: Fallible](subDesc: String, f: ContractFuncs[F])
+  case class Contract[F[_]: ApplicativeThrowOrEu: Fallible](subDesc: String, f: ContractFuncs[F])
       extends ContractTests("XmlContentZoom", subDesc) {
 
     import Fallible._

@@ -1,7 +1,7 @@
 package advxml.syntax
 
 import advxml.core.data._
-import advxml.core.AppExOrEu
+import advxml.core.ApplicativeThrowOrEu
 import cats.{~>, Applicative, Eq, FlatMap, PartialOrder}
 import cats.data.Validated
 import cats.implicits._
@@ -32,8 +32,8 @@ private[syntax] trait ConverterSyntax {
       * @tparam G new context
       * @return same value but in G[_] context
       */
-    def to[G[_]: AppExOrEu](ifNone: => Throwable): G[A] =
-      AppExOrEu.fromOption(ifNone)(fa)
+    def to[G[_]: ApplicativeThrowOrEu](ifNone: => Throwable): G[A] =
+      ApplicativeThrowOrEu.fromOption(ifNone)(fa)
   }
 
   implicit class ApplicativeConverterSyntaxOps[F[_]: Applicative, A](fa: F[A]) {

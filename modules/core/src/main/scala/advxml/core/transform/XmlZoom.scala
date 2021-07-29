@@ -1,7 +1,7 @@
 package advxml.core.transform
 import advxml.core.data._
 import advxml.core.transform.XmlZoom.{ZoomAction, _}
-import advxml.core.AppExOrEu
+import advxml.core.ApplicativeThrowOrEu
 import cats.{FlatMap, Functor}
 
 import scala.annotation.tailrec
@@ -55,10 +55,10 @@ sealed trait XmlZoom extends XmlZoomNodeBase {
 
   override type Type = XmlZoom
 
-  final def run[F[_]: AppExOrEu](document: NodeSeq): F[NodeSeq] =
+  final def run[F[_]: ApplicativeThrowOrEu](document: NodeSeq): F[NodeSeq] =
     bind(document).run
 
-  final def detailed[F[_]: AppExOrEu](document: NodeSeq): F[XmlZoomResult] =
+  final def detailed[F[_]: ApplicativeThrowOrEu](document: NodeSeq): F[XmlZoomResult] =
     bind(document).detailed
 }
 
@@ -68,10 +68,10 @@ sealed trait BindedXmlZoom extends XmlZoomNodeBase {
 
   val document: NodeSeq
 
-  final def run[F[_]: AppExOrEu]: F[NodeSeq] =
+  final def run[F[_]: ApplicativeThrowOrEu]: F[NodeSeq] =
     Functor[F].map(detailed)(_.nodeSeq)
 
-  def detailed[F[_]: AppExOrEu]: F[XmlZoomResult]
+  def detailed[F[_]: ApplicativeThrowOrEu]: F[XmlZoomResult]
 }
 
 sealed trait XmlZoomResult {
@@ -152,7 +152,7 @@ object XmlZoom {
 
       override def unbind(): XmlZoom = Unbinded(actions)
 
-      def detailed[F[_]](implicit F: AppExOrEu[F]): F[XmlZoomResult] = {
+      def detailed[F[_]](implicit F: ApplicativeThrowOrEu[F]): F[XmlZoomResult] = {
 
         @scala.annotation.tailrec
         def rec(current: XmlZoomResult, zActions: List[ZoomAction], logPath: String): F[XmlZoomResult] = {
@@ -251,7 +251,7 @@ case class XmlContentZoomRunner(zoom: BindedXmlZoom, f: NodeSeq => Value) extend
   def validated: ValidatedNelEx[String] =
     zoom.run[ValidatedNelEx].andThen(ns => f(ns).extract[ValidatedNelEx])
 
-  def extract[F[_]: AppExOrEu: FlatMap]: F[String] =
+  def extract[F[_]: ApplicativeThrowOrEu: FlatMap]: F[String] =
     zoom.run[F].flatMap(ns => f(ns).extract[F])
 }
 

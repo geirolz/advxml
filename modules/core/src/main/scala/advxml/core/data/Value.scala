@@ -1,6 +1,6 @@
 package advxml.core.data
 
-import advxml.core.AppExOrEu
+import advxml.core.ApplicativeThrowOrEu
 import cats.{Applicative, Id, PartialOrder, Show}
 import cats.data.{NonEmptyList, Validated}
 import cats.data.Validated.{Invalid, Valid}
@@ -14,7 +14,7 @@ sealed trait Value extends AsValidable[ValidatedValue] {
 object Value {
 
   //instances
-  implicit def valueExtractorForValueF[F[_]: AppExOrEu]: ValueExtractor[F, Value] = {
+  implicit def valueExtractorForValueF[F[_]: ApplicativeThrowOrEu]: ValueExtractor[F, Value] = {
     case v @ SimpleValue(_, _)       => v.extract[F]
     case v @ ValidatedValue(_, _, _) => v.extract[F]
   }
@@ -75,7 +75,7 @@ object ValidatedValue {
   def fromSimpleValue(simpleValue: SimpleValue, rules: NonEmptyList[ValidationRule]): ValidatedValue =
     ValidatedValue(simpleValue.get, rules, simpleValue.ref)
 
-  implicit def valueExtractorForValidatedValueF[F[_]: AppExOrEu]: ValueExtractor[F, ValidatedValue] =
+  implicit def valueExtractorForValidatedValueF[F[_]: ApplicativeThrowOrEu]: ValueExtractor[F, ValidatedValue] =
     (vvalue: ValidatedValue) => {
       import cats.implicits._
 
@@ -88,8 +88,8 @@ object ValidatedValue {
         .swap
 
       result match {
-        case Valid(a)   => AppExOrEu[F].pure(a.get)
-        case Invalid(e) => AppExOrEu[F].raiseErrorOrEmpty(e.exception)
+        case Valid(a)   => ApplicativeThrowOrEu[F].pure(a.get)
+        case Invalid(e) => ApplicativeThrowOrEu[F].raiseErrorOrEmpty(e.exception)
       }
     }
 }
