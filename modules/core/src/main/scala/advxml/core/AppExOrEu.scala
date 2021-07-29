@@ -1,7 +1,7 @@
 package advxml.core
 
 import advxml.core.data._
-import cats.Applicative
+import cats.{Applicative, ApplicativeThrow}
 
 import scala.annotation.{implicitAmbiguous, implicitNotFound}
 import scala.util.Try
@@ -25,7 +25,7 @@ sealed trait AppExOrEu[F[_]] extends Applicative[F] {
     case m @ AppEuCase(_)    => m.empty
   }
 }
-case class AppExCase[F[_]](app: AppEx[F]) extends AppExOrEu[F] {
+case class AppExCase[F[_]](app: ApplicativeThrow[F]) extends AppExOrEu[F] {
   def raiseError[A](e: => Throwable): F[A] = app.raiseError(e)
 }
 case class AppNelExCase[F[_]](app: ApplicativeNelThrow[F]) extends AppExOrEu[F] {
@@ -63,7 +63,7 @@ object AppExOrEu extends AppExOrEuInstances {
 
 private[core] sealed trait AppExOrEuInstances {
 
-  implicit def appExAsAppExOrEu[F[_]](implicit M: AppEx[F]): AppExCase[F] = AppExCase(M)
+  implicit def appExAsAppExOrEu[F[_]](implicit M: ApplicativeThrow[F]): AppExCase[F] = AppExCase(M)
 
   implicit def appNelExAsAppExOrEu[F[_]](implicit M: ApplicativeNelThrow[F]): AppNelExCase[F] = AppNelExCase(M)
 
