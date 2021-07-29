@@ -248,8 +248,8 @@ case class XmlContentZoomRunner(zoom: BindedXmlZoom, f: NodeSeq => Value) extend
   def validate(nrule: ValidationRule, nrules: ValidationRule*): XmlContentZoomRunner =
     copy(f = f.andThen((v: Value) => v.validate(nrule, nrules: _*)))
 
-  def validated: ValidatedNelEx[String] =
-    zoom.run[ValidatedNelEx].andThen(ns => f(ns).extract[ValidatedNelEx])
+  def validated: ValidatedNelThrow[String] =
+    zoom.run[ValidatedNelThrow].andThen(ns => f(ns).extract[ValidatedNelThrow])
 
   def extract[F[_]: ApplicativeThrowOrEu: FlatMap]: F[String] =
     zoom.run[F].flatMap(ns => f(ns).extract[F])

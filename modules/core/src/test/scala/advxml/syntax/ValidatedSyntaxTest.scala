@@ -1,6 +1,6 @@
 package advxml.syntax
 
-import advxml.core.data.{EitherNelThrow, EitherThrow, ValidateExTest, ValidatedEx, ValidatedNelEx}
+import advxml.core.data.{EitherNelThrow, EitherThrow, ValidateExTest, ValidatedNelThrow, ValidatedThrow}
 import advxml.core.data.ValidateExTest.ContractFuncs
 import advxml.testUtils.FunSuiteContract
 import org.scalatest.funsuite.AnyFunSuite
@@ -21,19 +21,19 @@ class ValidatedSyntaxTest extends AnyFunSuite with FunSuiteContract {
       
       ContractFuncs(
         toTry           = _.to[Try],
-        fromTry         = _.to[ValidatedNelEx],
+        fromTry         = _.to[ValidatedNelThrow],
         //=======
         toEitherThrow      = _.to[EitherThrow],
-        fromEitherThrow    = _.to[ValidatedNelEx],
+        fromEitherThrow    = _.to[ValidatedNelThrow],
         //=======
         toEitherNelThrow   = _.to[EitherNelThrow],
-        fromEitherNelThrow = _.to[ValidatedNelEx],
+        fromEitherNelThrow = _.to[ValidatedNelThrow],
         //=======
-        toValidatedEx   = _.to[ValidatedEx],
-        fromValidatedEx = _.to[ValidatedNelEx],
+        toValidatedThrow   = _.to[ValidatedThrow],
+        fromValidatedThrow = _.to[ValidatedNelThrow],
         //=======
         toOption        = _.to[Option],
-        fromOption      = (optionValue, ex) => optionValue.to[ValidatedNelEx](ex)
+        fromOption      = (optionValue, ex) => optionValue.to[ValidatedNelThrow](ex)
       )
     }
   ).runAll()

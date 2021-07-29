@@ -27,7 +27,7 @@ class DataConvertFullSyntaxTest extends AnyFunSuite {
         person.attr("Surname").asValidated[String],
         person.attr("Age").as[Option[Int]].valid,
         $(person).Note.content.asValidated[String],
-        $(person).Cars.Car.run[ValidatedNelEx].andThen { cars =>
+        $(person).Cars.Car.run[ValidatedNelThrow].andThen { cars =>
           cars
             .map(car => {
               (
@@ -49,7 +49,7 @@ class DataConvertFullSyntaxTest extends AnyFunSuite {
         </Cars>
       </Person>
 
-    val res: ValidatedNelEx[Person] = xml.asValidated[Person]
+    val res: ValidatedNelThrow[Person] = xml.asValidated[Person]
 
     assert(res.map(_.name) == Valid("Matteo"))
     assert(res.map(_.surname) == Valid("Bianchi"))

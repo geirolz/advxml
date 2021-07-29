@@ -25,8 +25,8 @@ object Value {
     def get(implicit be: ValueExtractor[Id, V]): String =
       be.extract(value)
 
-    def validated(implicit ve: ValueExtractor[ValidatedNelEx, V]): ValidatedNelEx[String] =
-      extract[ValidatedNelEx]
+    def validated(implicit ve: ValueExtractor[ValidatedNelThrow, V]): ValidatedNelThrow[String] =
+      extract[ValidatedNelThrow]
 
     def extract[F[_]](implicit be: ValueExtractor[F, V]): F[String] =
       be.extract(value)

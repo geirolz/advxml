@@ -21,31 +21,26 @@ Possible values are:
 
 `SimpleValue` represent a simple `String` wrapper, you can use `get` to access to the inner value. 
 `ValidatedValue` represent also a simple `String` wrapper but, you can access to his data only validating the 
-inner value through `extract[F[_]]` method or `validated`(just and alias for `extract[ValidatedNelEx]`).
+inner value through `extract[F[_]]` method or `validated`(just and alias for `extract[ValidatedNelThrow]`).
 
 All `Value` instances have a method named `validate` that allows to specify a list of `ValidationRule` to validate the wrapped `String` instance, 
 this method returns a `ValidatedValue`.
 
 ```scala
-import advxml.core.data.{SimpleValue, ValidatedNelEx, ValidatedValue, ValidationRule}
+import advxml.core.data.{SimpleValue, ValidatedNelThrow, ValidatedValue, ValidationRule}
 import advxml.syntax.data._
 
 import scala.util.Try
 
-val value : SimpleValue = v"TEST"// == Value("TEST")
-val valueUnboxed : String = value.get// == "TEST"
-val valueExtracted : Try[String] = value.extract[Try]// == always Success("TEST") = Applicative[Try].pure(get)
+val value: SimpleValue = v"TEST" // == Value("TEST") // == Value("TEST")
+val valueUnboxed: String = value.get // == "TEST"
+val valueExtracted: Try[String] = value.extract[Try] // == always Success("TEST") = Applicative[Try].pure(get)
+val valueExtracted: Try[String] = value.extract[Try]
+val validatedValue: ValidatedValue = value.nonEmpty
+  .validate(ValidationRule("MyCustomRule")(validator = _ == "TEST", errorReason = "Not equals to test")) // == always Success("TEST") = Applicative[Try].pure(get)
+val validatedValueTry: Try[String] = validatedValue.extract[Try] //Success("TEST")
 
-val validatedValue : ValidatedValue = value
-  .nonEmpty
-  .validate(ValidationRule("MyCustomRule")(
-    validator = _ == "TEST",
-    errorReason = "Not equals to test")
-  )
-
-val validatedValueTry : Try[String] = validatedValue.extract[Try]//Success("TEST")
-
-val validatedValueValidated : ValidatedNelEx[String] = validatedValue.validated//Valid("TEST")
+val validatedValueValidated: ValidatedNelThrow[String] = validatedValue.validated//Valid("TEST")
 ```
 
 ### AttributeData

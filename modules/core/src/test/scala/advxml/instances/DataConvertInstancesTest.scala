@@ -1,6 +1,6 @@
 package advxml.instances
 
-import advxml.core.data.{As, Converter, SimpleValue, ThrowableNel, ValidatedNelEx, ValidatedValue}
+import advxml.core.data.{As, Converter, SimpleValue, ThrowableNel, ValidatedNelThrow, ValidatedValue}
 import advxml.core.data.error.AggregatedException
 import advxml.core.transform.{XmlContentZoom, XmlContentZoomRunner}
 import advxml.implicits.$
@@ -25,7 +25,7 @@ class Common_ConvertersInstancesTest extends AnyFunSuite with ConvertersAssertsU
   Converter[Option[SimpleValue], Option[Int]].test(Some(v"1"), Some(1))
 
   //============== AndThenAs ==============
-  Converter[ValidatedNelEx[SimpleValue], ValidatedNelEx[Int]].test(Valid(v"1"), Valid(1))
+  Converter[ValidatedNelThrow[SimpleValue], ValidatedNelThrow[Int]].test(Valid(v"1"), Valid(1))
 
   //============== Node ==============
   Converter[Node, Elem].test(
@@ -51,7 +51,7 @@ class ConvertersInstancesTestForSimpleValue extends AnyFunSuite with ConvertersA
     SimpleValue("TEST"),
     "TEST"
   )
-  Converter[XmlContentZoomRunner, ValidatedNelEx[String]].test(
+  Converter[XmlContentZoomRunner, ValidatedNelThrow[String]].test(
     XmlContentZoom.attrFromBindedZoom($(<foo bar="1"/>), "bar"),
     Valid("1")
   )

@@ -105,7 +105,7 @@ private[syntax] trait ConverterSyntax {
       *
       * @see [[Converter]] for further information.
       */
-    def asValidated[B](implicit c: ValidatedConverter[A, B]): ValidatedNelEx[B] =
+    def asValidated[B](implicit c: ValidatedConverter[A, B]): ValidatedNelThrow[B] =
       c.run(a)
 
     /** Convert [[A]] into [[B]] using implicit [[Converter]] if available
@@ -118,7 +118,7 @@ private[syntax] trait ConverterSyntax {
 
     /** Syntactic sugar to run an implicit [[XmlEncoder]] with [[A]] instance as input.
       */
-    def encode(implicit c: XmlEncoder[A]): ValidatedNelEx[NodeSeq] =
+    def encode(implicit c: XmlEncoder[A]): ValidatedNelThrow[NodeSeq] =
       c.run(a)
   }
 
@@ -126,7 +126,7 @@ private[syntax] trait ConverterSyntax {
 
     /** Syntactic sugar to run an implicit [[XmlDecoder]] with NodeSeq instance as input.
       */
-    def decode[B](implicit c: XmlDecoder[B]): ValidatedNelEx[B] = c.run(ns)
+    def decode[B](implicit c: XmlDecoder[B]): ValidatedNelThrow[B] = c.run(ns)
   }
 }
 

@@ -41,7 +41,7 @@ class ConverterTest extends AnyFunSuite {
   test("Test XmlDecoder.of") {
     val foo = <foo></foo>
     val encoder: XmlDecoder[NodeSeq] = XmlDecoder.of(ns => Valid(ns))
-    val result: ValidatedNelEx[NodeSeq] = encoder.run(foo)
+    val result: ValidatedNelThrow[NodeSeq] = encoder.run(foo)
     assert(result == Valid(foo))
   }
 
@@ -49,14 +49,14 @@ class ConverterTest extends AnyFunSuite {
     val foo = <foo></foo>
     val bar = <bar></bar>
     val encoder: XmlDecoder[NodeSeq] = XmlDecoder.pure(bar)
-    val result: ValidatedNelEx[NodeSeq] = encoder.run(foo)
+    val result: ValidatedNelThrow[NodeSeq] = encoder.run(foo)
     assert(result == Valid(bar))
   }
 
   test("Test XmlEncoder.of") {
     val foo = <foo></foo>
     val encoder: XmlEncoder[NodeSeq] = XmlEncoder.of(ns => Valid(ns))
-    val result: ValidatedNelEx[NodeSeq] = encoder.run(foo)
+    val result: ValidatedNelThrow[NodeSeq] = encoder.run(foo)
     assert(result == Valid(foo))
   }
 
@@ -64,7 +64,7 @@ class ConverterTest extends AnyFunSuite {
     val foo = <foo></foo>
     val bar = <bar></bar>
     val encoder: XmlEncoder[NodeSeq] = XmlEncoder.pure(bar)
-    val result: ValidatedNelEx[NodeSeq] = encoder.run(foo)
+    val result: ValidatedNelThrow[NodeSeq] = encoder.run(foo)
     assert(result == Valid(bar))
   }
 }

@@ -84,10 +84,10 @@ private[core] sealed abstract class FixedRightConverterOps[F[_]: Applicative, B,
   def apply[A](implicit F: Converter[A, F[B]]): CL[A] = Converter[A, F[B]].asInstanceOf[CL[A]]
 }
 
-object ValidatedConverter extends FixedBiConverterOps[ValidatedNelEx, ValidatedConverter]
+object ValidatedConverter extends FixedBiConverterOps[ValidatedNelThrow, ValidatedConverter]
 
 object OptionConverter extends FixedBiConverterOps[Option, OptionConverter]
 
-object XmlDecoder extends FixedLeftConverterOps[ValidatedNelEx, NodeSeq, XmlDecoder]
+object XmlDecoder extends FixedLeftConverterOps[ValidatedNelThrow, NodeSeq, XmlDecoder]
 
-object XmlEncoder extends FixedRightConverterOps[ValidatedNelEx, NodeSeq, XmlEncoder]
+object XmlEncoder extends FixedRightConverterOps[ValidatedNelThrow, NodeSeq, XmlEncoder]

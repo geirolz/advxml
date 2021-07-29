@@ -5,8 +5,8 @@ import advxml.core.data.{
   EitherThrow,
   OptionConverter,
   ValidatedConverter,
-  ValidatedEx,
-  ValidatedNelEx,
+  ValidatedNelThrow,
+  ValidatedThrow,
   XmlDecoder,
   XmlEncoder
 }
@@ -78,11 +78,11 @@ class DataConvertSyntaxTest extends AnyFunSuite {
 
   test("ConverterOps.Validated - andThenAs") {
 
-    implicit val converter: Converter[String, ValidatedEx[Int]] =
+    implicit val converter: Converter[String, ValidatedThrow[Int]] =
       Converter.of(str => Validated.fromTry(Try(str.toInt)))
 
-    val value: ValidatedEx[String] = Valid("1")
-    val result: ValidatedEx[Int] = value.andThenAs[Int]
+    val value: ValidatedThrow[String] = Valid("1")
+    val result: ValidatedThrow[Int] = value.andThenAs[Int]
 
     assert(result.getOrElse(-1) == 1)
   }
@@ -111,7 +111,7 @@ class DataConvertSyntaxTest extends AnyFunSuite {
       ValidatedConverter.of(str => Valid(str.toInt))
 
     val value: String = "1"
-    val result: ValidatedNelEx[Int] = value.asValidated[Int]
+    val result: ValidatedNelThrow[Int] = value.asValidated[Int]
 
     assert(result.toOption.get == 1)
   }
@@ -132,7 +132,7 @@ class DataConvertSyntaxTest extends AnyFunSuite {
       XmlDecoder.of(xml => Valid(Person(xml \@ "name")))
 
     val xml: Elem = <Person name="mimmo" />
-    val result: ValidatedNelEx[Person] = xml.decode[Person]
+    val result: ValidatedNelThrow[Person] = xml.decode[Person]
 
     assert(result.toOption.get.name == "mimmo")
   }
@@ -143,7 +143,7 @@ class DataConvertSyntaxTest extends AnyFunSuite {
       XmlEncoder.of(p => Valid(<Person name={p.name} />))
 
     val person: Person = Person("mimmo")
-    val result: ValidatedNelEx[NodeSeq] = person.encode
+    val result: ValidatedNelThrow[NodeSeq] = person.encode
 
     assert(result.toOption.get === <Person name="mimmo" />)
   }

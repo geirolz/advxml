@@ -54,10 +54,10 @@ object ApplicativeThrowOrEu extends AppExOrEuInstances {
   def fromEitherNelThrow[F[_]: ApplicativeThrowOrEu, A](fa: EitherNelThrow[A]): F[A] =
     fromEitherThrow[F, A](fa.swap.map(ThrowableNel.toThrowable).swap)
 
-  def fromValidatedEx[F[_]: ApplicativeThrowOrEu, A](fa: ValidatedEx[A]): F[A] =
+  def fromValidatedThrow[F[_]: ApplicativeThrowOrEu, A](fa: ValidatedThrow[A]): F[A] =
     fromEitherThrow[F, A](fa.toEither)
 
-  def fromValidatedNelEx[F[_]: ApplicativeThrowOrEu, A](fa: ValidatedNelEx[A]): F[A] =
+  def fromValidatedNelThrow[F[_]: ApplicativeThrowOrEu, A](fa: ValidatedNelThrow[A]): F[A] =
     fromEitherNelThrow[F, A](fa.toEither)
 }
 

@@ -20,19 +20,19 @@ class ValidateExTest extends AnyFunSuite with FunSuiteContract {
   ValidateExTest.Contract(
     f = ContractFuncs(
       toTry           = _.to[Try],
-      fromTry         = ValidatedNelEx.fromTry,
+      fromTry         = ValidatedNelThrow.fromTry,
       //===========
       toEitherThrow      = _.to[EitherThrow],
-      fromEitherThrow    = ValidatedNelEx.fromEither,
+      fromEitherThrow    = ValidatedNelThrow.fromEither,
       //===========
       toEitherNelThrow   = _.to[EitherNelThrow],
-      fromEitherNelThrow = ValidatedNelEx.fromEitherNel,
+      fromEitherNelThrow = ValidatedNelThrow.fromEitherNel,
       //===========
-      toValidatedEx   = _.to[ValidatedEx],
-      fromValidatedEx = _.to[ValidatedNelEx],
+      toValidatedThrow   = _.to[ValidatedThrow],
+      fromValidatedThrow = _.to[ValidatedNelThrow],
       //===========
       toOption        = _.to[Option],
-      fromOption      = (optionValue, ex) => ValidatedNelEx.fromOption(optionValue, ex)
+      fromOption      = (optionValue, ex) => ValidatedNelThrow.fromOption(optionValue, ex)
     )
   ).runAll()
   // format: on
@@ -41,20 +41,20 @@ class ValidateExTest extends AnyFunSuite with FunSuiteContract {
 object ValidateExTest {
 
   case class ContractFuncs(
-    toTry: ValidatedNelEx[String] => Try[String],
-    fromTry: Try[String] => ValidatedNelEx[String],
+    toTry: ValidatedNelThrow[String] => Try[String],
+    fromTry: Try[String] => ValidatedNelThrow[String],
     //===========
-    toEitherThrow: ValidatedNelEx[String] => EitherThrow[String],
-    fromEitherThrow: EitherThrow[String] => ValidatedNelEx[String],
+    toEitherThrow: ValidatedNelThrow[String] => EitherThrow[String],
+    fromEitherThrow: EitherThrow[String] => ValidatedNelThrow[String],
     //===========
-    toEitherNelThrow: ValidatedNelEx[String] => EitherNelThrow[String],
-    fromEitherNelThrow: EitherNelThrow[String] => ValidatedNelEx[String],
+    toEitherNelThrow: ValidatedNelThrow[String] => EitherNelThrow[String],
+    fromEitherNelThrow: EitherNelThrow[String] => ValidatedNelThrow[String],
     //===========
-    toValidatedEx: ValidatedNelEx[String] => ValidatedEx[String],
-    fromValidatedEx: ValidatedEx[String] => ValidatedNelEx[String],
+    toValidatedThrow: ValidatedNelThrow[String] => ValidatedThrow[String],
+    fromValidatedThrow: ValidatedThrow[String] => ValidatedNelThrow[String],
     //===========
-    toOption: ValidatedNelEx[String] => Option[String],
-    fromOption: (Option[String], Throwable) => ValidatedNelEx[String]
+    toOption: ValidatedNelThrow[String] => Option[String],
+    fromOption: (Option[String], Throwable) => ValidatedNelThrow[String]
   )
 
   case class Contract(subDesc: String = "", f: ContractFuncs) extends ContractTests("ValidateEx", subDesc) {
@@ -66,162 +66,162 @@ object ValidateExTest {
       new RuntimeException("TEXT_EX_2")
     )
 
-    private def assertInvalid(v: ValidatedNelEx[_]): Unit =
+    private def assertInvalid(v: ValidatedNelThrow[_]): Unit =
       assert(v.isInvalid)
 
-    private def assertValid[T](v: ValidatedNelEx[T], expectedValue: => T): Unit =
+    private def assertValid[T](v: ValidatedNelThrow[T], expectedValue: => T): Unit =
       assert(v == Valid(expectedValue))
 
     //============================== TO ==============================
     test("Valid.toTry") {
       val value = "TEST"
-      val validatedExValue: ValidatedNelEx[String] = Validated.Valid(value)
-      val result: Try[String] = f.toTry(validatedExValue)
+      val validatedThrowValue: ValidatedNelThrow[String] = Validated.Valid(value)
+      val result: Try[String] = f.toTry(validatedThrowValue)
 
       assert(result == Success(value))
     }
 
     test("Invalid.toTry") {
-      val validatedExValue: ValidatedNelEx[String] = Validated.Invalid(TEST_EXCEPTION_NEL)
-      val result: Try[String] = f.toTry(validatedExValue)
+      val validatedThrowValue: ValidatedNelThrow[String] = Validated.Invalid(TEST_EXCEPTION_NEL)
+      val result: Try[String] = f.toTry(validatedThrowValue)
 
       assert(result.isFailure)
     }
 
     test("Valid.toEitherThrow") {
       val value = "TEST"
-      val validatedExValue: ValidatedNelEx[String] = Validated.Valid(value)
-      val result: EitherThrow[String] = f.toEitherThrow(validatedExValue)
+      val validatedThrowValue: ValidatedNelThrow[String] = Validated.Valid(value)
+      val result: EitherThrow[String] = f.toEitherThrow(validatedThrowValue)
 
       assert(result == Right(value))
     }
 
     test("Invalid.toEitherThrow") {
-      val validatedExValue: ValidatedNelEx[String] = Validated.Invalid(TEST_EXCEPTION_NEL)
-      val result: EitherThrow[String] = f.toEitherThrow(validatedExValue)
+      val validatedThrowValue: ValidatedNelThrow[String] = Validated.Invalid(TEST_EXCEPTION_NEL)
+      val result: EitherThrow[String] = f.toEitherThrow(validatedThrowValue)
 
       assert(result.isLeft)
     }
 
     test("Valid.toEitherNelThrow") {
       val value = "TEST"
-      val validatedExValue: ValidatedNelEx[String] = Validated.Valid(value)
-      val result: EitherNelThrow[String] = f.toEitherNelThrow(validatedExValue)
+      val validatedThrowValue: ValidatedNelThrow[String] = Validated.Valid(value)
+      val result: EitherNelThrow[String] = f.toEitherNelThrow(validatedThrowValue)
 
       assert(result == Right(value))
     }
 
     test("Invalid.toEitherNelThrow") {
-      val validatedExValue: ValidatedNelEx[String] = Validated.Invalid(TEST_EXCEPTION_NEL)
-      val result: EitherNelThrow[String] = f.toEitherNelThrow(validatedExValue)
+      val validatedThrowValue: ValidatedNelThrow[String] = Validated.Invalid(TEST_EXCEPTION_NEL)
+      val result: EitherNelThrow[String] = f.toEitherNelThrow(validatedThrowValue)
 
       assert(result.isLeft)
     }
 
-    test("Valid.toValidatedEx") {
+    test("Valid.toValidatedThrow") {
       val value = "TEST"
-      val validatedExValue: ValidatedNelEx[String] = Validated.Valid(value)
-      val result: ValidatedEx[String] = f.toValidatedEx(validatedExValue)
+      val validatedThrowValue: ValidatedNelThrow[String] = Validated.Valid(value)
+      val result: ValidatedThrow[String] = f.toValidatedThrow(validatedThrowValue)
 
       assert(result == Valid(value))
     }
 
-    test("Invalid.toValidatedEx") {
-      val validatedExValue: ValidatedNelEx[String] = Validated.Invalid(TEST_EXCEPTION_NEL)
-      val result: ValidatedEx[String] = f.toValidatedEx(validatedExValue)
+    test("Invalid.toValidatedThrow") {
+      val validatedThrowValue: ValidatedNelThrow[String] = Validated.Invalid(TEST_EXCEPTION_NEL)
+      val result: ValidatedThrow[String] = f.toValidatedThrow(validatedThrowValue)
 
       assert(result.isInvalid)
     }
 
     test("Valid.toOption") {
       val value = "TEST"
-      val validatedExValue: ValidatedNelEx[String] = Validated.Valid(value)
-      val result: Option[String] = f.toOption(validatedExValue)
+      val validatedThrowValue: ValidatedNelThrow[String] = Validated.Valid(value)
+      val result: Option[String] = f.toOption(validatedThrowValue)
 
       assert(result.contains(value))
     }
 
     test("Invalid.toOption") {
-      val validatedExValue: ValidatedNelEx[String] = Validated.Invalid(TEST_EXCEPTION_NEL)
-      val result: Option[String] = f.toOption(validatedExValue)
+      val validatedThrowValue: ValidatedNelThrow[String] = Validated.Invalid(TEST_EXCEPTION_NEL)
+      val result: Option[String] = f.toOption(validatedThrowValue)
 
       assert(result.isEmpty)
     }
 
     //============================== FROM ==============================
-    test("Try.Success.toValidatedEx") {
+    test("Try.Success.toValidatedThrow") {
       val value = "TEST"
       val tryValue: Try[String] = Success(value)
-      val validatedExValue: ValidatedNelEx[String] = f.fromTry(tryValue)
+      val validatedThrowValue: ValidatedNelThrow[String] = f.fromTry(tryValue)
 
-      assertValid(validatedExValue, value)
+      assertValid(validatedThrowValue, value)
     }
 
-    test("Try.Failure.toValidatedEx") {
+    test("Try.Failure.toValidatedThrow") {
       val tryValue: Try[String] = Failure(TEST_EXCEPTION)
-      val validatedExValue: ValidatedNelEx[String] = f.fromTry(tryValue)
+      val validatedThrowValue: ValidatedNelThrow[String] = f.fromTry(tryValue)
 
-      assertInvalid(validatedExValue)
+      assertInvalid(validatedThrowValue)
     }
 
-    test("EitherThrow.Right.toValidatedEx") {
+    test("EitherThrow.Right.toValidatedThrow") {
       val value = "TEST"
       val eitherValue: EitherThrow[String] = Right(value)
-      val validatedExValue: ValidatedNelEx[String] = f.fromEitherThrow(eitherValue)
+      val validatedThrowValue: ValidatedNelThrow[String] = f.fromEitherThrow(eitherValue)
 
-      assertValid(validatedExValue, value)
+      assertValid(validatedThrowValue, value)
     }
 
-    test("EitherThrow.Left.toValidatedEx") {
+    test("EitherThrow.Left.toValidatedThrow") {
       val eitherValue: EitherThrow[String] = Left(TEST_EXCEPTION)
-      val validatedExValue: ValidatedNelEx[String] = f.fromEitherThrow(eitherValue)
+      val validatedThrowValue: ValidatedNelThrow[String] = f.fromEitherThrow(eitherValue)
 
-      assertInvalid(validatedExValue)
+      assertInvalid(validatedThrowValue)
     }
 
-    test("EitherNelThrow.Right.toValidatedEx") {
+    test("EitherNelThrow.Right.toValidatedThrow") {
       val value = "TEST"
       val eitherValue: EitherNelThrow[String] = Right(value)
-      val validatedExValue: ValidatedNelEx[String] = f.fromEitherNelThrow(eitherValue)
+      val validatedThrowValue: ValidatedNelThrow[String] = f.fromEitherNelThrow(eitherValue)
 
-      assertValid(validatedExValue, value)
+      assertValid(validatedThrowValue, value)
     }
 
-    test("EitherNelThrow.Left.toValidatedEx") {
+    test("EitherNelThrow.Left.toValidatedThrow") {
       val eitherValue: EitherNelThrow[String] = Left(TEST_EXCEPTION_NEL)
-      val validatedExValue: ValidatedNelEx[String] = f.fromEitherNelThrow(eitherValue)
+      val validatedThrowValue: ValidatedNelThrow[String] = f.fromEitherNelThrow(eitherValue)
 
-      assertInvalid(validatedExValue)
+      assertInvalid(validatedThrowValue)
     }
 
-    test("ValidatedEx.Valid.toValidatedEx") {
+    test("ValidatedThrow.Valid.toValidatedThrow") {
       val value = "TEST"
-      val eitherValue: ValidatedEx[String] = Valid(value)
-      val validatedExValue: ValidatedNelEx[String] = f.fromValidatedEx(eitherValue)
+      val eitherValue: ValidatedThrow[String] = Valid(value)
+      val validatedThrowValue: ValidatedNelThrow[String] = f.fromValidatedThrow(eitherValue)
 
-      assertValid(validatedExValue, value)
+      assertValid(validatedThrowValue, value)
     }
 
-    test("ValidatedEx.Invalid.toValidatedEx") {
-      val eitherValue: ValidatedEx[String] = Invalid(TEST_EXCEPTION)
-      val validatedExValue: ValidatedNelEx[String] = f.fromValidatedEx(eitherValue)
+    test("ValidatedThrow.Invalid.toValidatedThrow") {
+      val eitherValue: ValidatedThrow[String] = Invalid(TEST_EXCEPTION)
+      val validatedThrowValue: ValidatedNelThrow[String] = f.fromValidatedThrow(eitherValue)
 
-      assertInvalid(validatedExValue)
+      assertInvalid(validatedThrowValue)
     }
 
-    test("Option.Some.toValidatedEx") {
+    test("Option.Some.toValidatedThrow") {
       val value = "TEST"
       val optionValue = Some(value)
-      val validatedExValue: ValidatedNelEx[String] = f.fromOption(optionValue, TEST_EXCEPTION)
+      val validatedThrowValue: ValidatedNelThrow[String] = f.fromOption(optionValue, TEST_EXCEPTION)
 
-      assertValid(validatedExValue, value)
+      assertValid(validatedThrowValue, value)
     }
 
-    test("Option.None.toValidatedEx") {
+    test("Option.None.toValidatedThrow") {
       val optionValue: Option[String] = None
-      val validatedExValue: ValidatedNelEx[String] = f.fromOption(optionValue, TEST_EXCEPTION)
+      val validatedThrowValue: ValidatedNelThrow[String] = f.fromOption(optionValue, TEST_EXCEPTION)
 
-      assertInvalid(validatedExValue)
+      assertInvalid(validatedThrowValue)
     }
   }
 }
