@@ -1,8 +1,8 @@
 package advxml.syntax
 
-import advxml.core.MonadEx
 import advxml.core.data._
 import advxml.core.transform._
+import cats.MonadThrow
 
 import scala.xml.NodeSeq
 
@@ -17,15 +17,15 @@ private[syntax] sealed trait RuleSyntax {
 
   implicit class XmlNodeSeqTransformerOps(root: NodeSeq) {
 
-    def transform[F[_]: MonadEx](rule: AbstractRule, rules: AbstractRule*): F[NodeSeq] =
+    def transform[F[_]: MonadThrow](rule: AbstractRule, rules: AbstractRule*): F[NodeSeq] =
       AbstractRule.transform(root, rule, rules: _*)
 
-    def transform[F[_]: MonadEx](rules: List[AbstractRule]): F[NodeSeq] =
+    def transform[F[_]: MonadThrow](rules: List[AbstractRule]): F[NodeSeq] =
       AbstractRule.transform(root, rules)
   }
 
   implicit class AbstractRuleOps(rule: AbstractRule) {
-    def transform[F[_]: MonadEx](root: NodeSeq): F[NodeSeq] =
+    def transform[F[_]: MonadThrow](root: NodeSeq): F[NodeSeq] =
       AbstractRule.transform(root, rule)
 
     def and(other: AbstractRule): AbstractRule =
@@ -39,7 +39,7 @@ private[syntax] sealed trait RuleSyntax {
   }
 
   implicit class AbstractRuleListOps(rules: List[AbstractRule]) {
-    def transform[F[_]: MonadEx](root: NodeSeq): F[NodeSeq] =
+    def transform[F[_]: MonadThrow](root: NodeSeq): F[NodeSeq] =
       AbstractRule.transform(root, rules)
   }
 
