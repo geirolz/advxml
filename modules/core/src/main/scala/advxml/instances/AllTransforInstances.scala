@@ -1,10 +1,9 @@
 package advxml.instances
 
-import advxml.core.MonadEx
 import advxml.core.data.{Predicate, _}
 import advxml.core.data.Predicate.alwaysTrue
 import advxml.core.transform._
-import cats.{Monoid, Semigroup}
+import cats.{MonadThrow, Monoid, Semigroup}
 import cats.data.NonEmptyList
 
 import scala.util.Try
@@ -29,7 +28,7 @@ private[instances] trait XmlModifierInstances {
 
     override def combine(x: ComposableXmlModifier, y: ComposableXmlModifier): ComposableXmlModifier =
       new ComposableXmlModifier {
-        override def apply[F[_]: MonadEx](ns: NodeSeq): F[NodeSeq] =
+        override def apply[F[_]: MonadThrow](ns: NodeSeq): F[NodeSeq] =
           x.apply[F](ns).flatMap(y.apply[F](_))
       }
   }
@@ -44,7 +43,7 @@ private[instances] trait XmlModifierInstances {
     * @param newNs Nodes to prepend.
     */
   case class Prepend(newNs: NodeSeq) extends ComposableXmlModifier {
-    override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
+    override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadThrow[F]): F[NodeSeq] =
       collapse[F](ns.map {
         case e: Elem  => F.pure[NodeSeq](e.copy(child = newNs ++ e.child))
         case g: Group => F.pure[NodeSeq](g.copy(nodes = newNs ++ g.nodes))
@@ -57,7 +56,7 @@ private[instances] trait XmlModifierInstances {
     * @param newNs Nodes to append.
     */
   case class Append(newNs: NodeSeq) extends ComposableXmlModifier {
-    override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
+    override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadThrow[F]): F[NodeSeq] =
       collapse[F](ns.map {
         case e: Elem  => F.pure[NodeSeq](e.copy(child = e.child ++ newNs))
         case g: Group => F.pure[NodeSeq](g.copy(nodes = g.nodes ++ newNs))
@@ -69,7 +68,7 @@ private[instances] trait XmlModifierInstances {
     * @param f Function to from current nodes to new nodes.
     */
   case class Replace(f: NodeSeq => NodeSeq) extends ComposableXmlModifier {
-    override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] = F.pure(f(ns))
+    override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadThrow[F]): F[NodeSeq] = F.pure(f(ns))
   }
 
   /** Append or replace attributes to current node.
@@ -78,7 +77,7 @@ private[instances] trait XmlModifierInstances {
     * @param f takes Elem (attribute container), returns Attributes data.
     */
   case class SetAttrs(f: Elem => NonEmptyList[AttributeData]) extends ComposableXmlModifier {
-    override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] =
+    override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadThrow[F]): F[NodeSeq] =
       collapse[F](ns.map {
         case e: Elem =>
           F.pure[NodeSeq](
@@ -122,7 +121,7 @@ private[instances] trait XmlModifierInstances {
     * @param ps Attribute predicates.
     */
   case class RemoveAttrs(ps: NonEmptyList[AttributeData => Boolean]) extends ComposableXmlModifier {
-    override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] = {
+    override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadThrow[F]): F[NodeSeq] = {
       val attrsToRemoveP = ps.reduce[AttributeData => Boolean]((p1, p2) => Predicate.or(p1, p2))
       collapse[F](ns.map {
         case e: Elem =>
@@ -151,20 +150,20 @@ private[instances] trait XmlModifierInstances {
   /** Remove selected nodes.
     */
   case object Remove extends FinalXmlModifier {
-    override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadEx[F]): F[NodeSeq] = F.pure(NodeSeq.Empty)
+    override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadThrow[F]): F[NodeSeq] = F.pure(NodeSeq.Empty)
   }
 
-  private def collapse[F[_]: MonadEx](seq: Seq[F[NodeSeq]]): F[NodeSeq] = {
+  private def collapse[F[_]: MonadThrow](seq: Seq[F[NodeSeq]]): F[NodeSeq] = {
     import cats.implicits._
     seq.toList.sequence.map(_.reduce(_ ++ _))
   }
 
   private object ExceptionF {
 
-    def apply[F[_]](msg: String)(implicit F: MonadEx[F]): F[NodeSeq] =
+    def apply[F[_]](msg: String)(implicit F: MonadThrow[F]): F[NodeSeq] =
       F.raiseError[NodeSeq](new RuntimeException(msg))
 
-    def unsupported[F[_]: MonadEx](modifier: XmlModifier, ns: NodeSeq): F[NodeSeq] =
+    def unsupported[F[_]: MonadThrow](modifier: XmlModifier, ns: NodeSeq): F[NodeSeq] =
       ExceptionF[F](s"Unsupported operation $modifier for type ${ns.getClass.getName}")
   }
 

@@ -1,6 +1,6 @@
 package advxml.instances
 
-import advxml.core.{=:!=, AppExOrEu}
+import advxml.core.{=:!=, ApplicativeThrowOrEu}
 import advxml.core.data._
 import advxml.core.transform.XmlContentZoomRunner
 import advxml.core.utils.XmlUtils
@@ -56,10 +56,10 @@ private[instances] trait AllConverterInstances
   implicit def identityConverter[A]: Converter[A, A] = Converter.id[A]
 
   implicit def identityConverterApplicative[F[_], A](implicit
-    a: Applicative[F],
+    F: Applicative[F],
     @unused notFA: A =:!= F[A]
   ): Converter[A, F[A]] =
-    Converter.idF[F, A]
+    Converter.of[A, F[A]](F.pure)
 }
 
 private sealed trait ConverterLowerPriorityImplicits1 {
@@ -70,7 +70,7 @@ private sealed trait ConverterLowerPriorityImplicits1 {
     c: SimpleValue As F[T],
     @unused notText: T =:!= Text
   ): Text As F[T] =
-    c.local(t => SimpleValue(t.data))
+    c.contramap(t => SimpleValue(t.data))
 
   implicit def deriveTAsText_fromTAsValue[T](implicit
     c: T As SimpleValue,
@@ -80,7 +80,7 @@ private sealed trait ConverterLowerPriorityImplicits1 {
 
   implicit def deriveTAsText_fromTAsValidatedValue[F[_], T](implicit
     c: T As ValidatedValue,
-    a: AppExOrEu[F],
+    a: ApplicativeThrowOrEu[F],
     @unused notText: T =:!= Text
   ): T As F[Text] =
     c.map(v => v.extract[F].map(Text(_)))
@@ -115,11 +115,11 @@ private sealed trait ConverterLowerPriorityImplicits2 {
     Converter.of(a => a.get)
 
   implicit def converterXmlContentZoomRunnerForValidated[A](implicit
-    c: Converter[ValidatedNelEx[String], ValidatedNelEx[A]]
-  ): Converter[XmlContentZoomRunner, ValidatedNelEx[A]] =
+    c: Converter[ValidatedNelThrow[String], ValidatedNelThrow[A]]
+  ): Converter[XmlContentZoomRunner, ValidatedNelThrow[A]] =
     Converter.of(r => c.run(r.validated))
 
-  implicit def converterXmlContentZoomRunnerForAppExOrEu[F[_]: AppExOrEu: FlatMap, A](implicit
+  implicit def converterXmlContentZoomRunnerForApplicativeThrowOrEu[F[_]: ApplicativeThrowOrEu: FlatMap, A](implicit
     c: Converter[F[String], F[A]]
   ): Converter[XmlContentZoomRunner, F[A]] =
     Converter.of(r => c.run(r.extract[F]))
@@ -135,39 +135,44 @@ private sealed trait ConverterLowerPriorityImplicits2 {
   implicit val convertFloatToValue      : Float      As SimpleValue = toValue
   implicit val convertDoubleToValue     : Double     As SimpleValue = toValue
 
-  implicit def convertValueToFString    [F[_] : AppExOrEu] : Value As F[String    ] = fromBox(a => a)
-  implicit def convertValueToFBigInt    [F[_] : AppExOrEu] : Value As F[BigInt    ] = fromBox(BigInt(_))
-  implicit def convertValueToFBigDecimal[F[_] : AppExOrEu] : Value As F[BigDecimal] = fromBox(BigDecimal(_))
-  implicit def convertValueToFNyte      [F[_] : AppExOrEu] : Value As F[Byte      ] = fromBox(_.toByte)
-  implicit def convertValueToFChar      [F[_] : AppExOrEu] : Value As F[Char      ] = fromBox(_.toCharArray.apply(0))
-  implicit def convertValueToFShort     [F[_] : AppExOrEu] : Value As F[Short     ] = fromBox(_.toShort)
-  implicit def convertValueToFInt       [F[_] : AppExOrEu] : Value As F[Int       ] = fromBox(_.toInt)
-  implicit def convertValueToFLong      [F[_] : AppExOrEu] : Value As F[Long      ] = fromBox(_.toLong)
-  implicit def convertValueToFFloat     [F[_] : AppExOrEu] : Value As F[Float     ] = fromBox(_.toFloat)
-  implicit def convertValueToFDouble    [F[_] : AppExOrEu] : Value As F[Double    ] = fromBox(_.toDouble)
+  implicit def convertValueToFString    [F[_] : ApplicativeThrowOrEu] : Value As F[String    ] = fromBox(a => a)
+  implicit def convertValueToFBigInt    [F[_] : ApplicativeThrowOrEu] : Value As F[BigInt    ] = fromBox(BigInt(_))
+  implicit def convertValueToFBigDecimal[F[_] : ApplicativeThrowOrEu] : Value As F[BigDecimal] = fromBox(BigDecimal(_))
+  implicit def convertValueToFNyte      [F[_] : ApplicativeThrowOrEu] : Value As F[Byte      ] = fromBox(_.toByte)
+  implicit def convertValueToFChar      [F[_] : ApplicativeThrowOrEu] : Value As F[Char      ] = fromBox(_.toCharArray.apply(0))
+  implicit def convertValueToFShort     [F[_] : ApplicativeThrowOrEu] : Value As F[Short     ] = fromBox(_.toShort)
+  implicit def convertValueToFInt       [F[_] : ApplicativeThrowOrEu] : Value As F[Int       ] = fromBox(_.toInt)
+  implicit def convertValueToFLong      [F[_] : ApplicativeThrowOrEu] : Value As F[Long      ] = fromBox(_.toLong)
+  implicit def convertValueToFFloat     [F[_] : ApplicativeThrowOrEu] : Value As F[Float     ] = fromBox(_.toFloat)
+  implicit def convertValueToFDouble    [F[_] : ApplicativeThrowOrEu] : Value As F[Double    ] = fromBox(_.toDouble)
   // format: on
 
   private def toValue[T]: Converter[T, SimpleValue] = Converter.of[T, SimpleValue](t => SimpleValue(t.toString))
 
-  private def fromBox[F[_]: AppExOrEu, O](f: String => O): Converter[Value, F[O]] =
-    Converter.of { b => AppExOrEu.fromTry(b.extract[Try].flatMap(v => Try(f(v)))) }
+  private def fromBox[F[_]: ApplicativeThrowOrEu, O](f: String => O): Converter[Value, F[O]] =
+    Converter.of { b => ApplicativeThrowOrEu.fromTry(b.extract[Try].flatMap(v => Try(f(v)))) }
 }
 
 private sealed trait ConverterNaturalTransformationInstances {
 
   //APP EX
-  implicit def appExOrEuTryNatTransformationInstance[G[_]: AppExOrEu]: Try ~> G =
-    new (Try ~> G) { def apply[A](a: Try[A]): G[A] = AppExOrEu.fromTry(a) }
+  implicit def ApplicativeThrowOrEuTryNatTransformationInstance[G[_]: ApplicativeThrowOrEu]: Try ~> G =
+    new (Try ~> G) { def apply[A](a: Try[A]): G[A] = ApplicativeThrowOrEu.fromTry(a) }
 
-  implicit def appExOrEuEitherExNatTransformationInstance[G[_]: AppExOrEu]: EitherEx ~> G =
-    new (EitherEx ~> G) { def apply[A](a: EitherEx[A]): G[A] = AppExOrEu.fromEitherEx(a) }
+  implicit def ApplicativeThrowOrEuEitherThrowNatTransformationInstance[G[_]: ApplicativeThrowOrEu]: EitherThrow ~> G =
+    new (EitherThrow ~> G) { def apply[A](a: EitherThrow[A]): G[A] = ApplicativeThrowOrEu.fromEitherThrow(a) }
 
-  implicit def appExOrEuEitherNelExNatTransformationInstance[G[_]: AppExOrEu]: EitherNelEx ~> G =
-    new (EitherNelEx ~> G) { def apply[A](a: EitherNelEx[A]): G[A] = AppExOrEu.fromEitherNelEx(a) }
+  implicit def ApplicativeThrowOrEuEitherNelThrowNatTransformationInstance[G[_]: ApplicativeThrowOrEu]
+    : EitherNelThrow ~> G =
+    new (EitherNelThrow ~> G) { def apply[A](a: EitherNelThrow[A]): G[A] = ApplicativeThrowOrEu.fromEitherNelThrow(a) }
 
-  implicit def appExOrEuValidatedExNatTransformationInstance[G[_]: AppExOrEu]: ValidatedEx ~> G =
-    new (ValidatedEx ~> G) { def apply[A](a: ValidatedEx[A]): G[A] = AppExOrEu.fromValidatedEx(a) }
+  implicit def ApplicativeThrowOrEuValidatedThrowNatTransformationInstance[G[_]: ApplicativeThrowOrEu]
+    : ValidatedThrow ~> G =
+    new (ValidatedThrow ~> G) { def apply[A](a: ValidatedThrow[A]): G[A] = ApplicativeThrowOrEu.fromValidatedThrow(a) }
 
-  implicit def appExOrEuValidatedNelExNatTransformationInstance[G[_]: AppExOrEu]: ValidatedNelEx ~> G =
-    new (ValidatedNelEx ~> G) { def apply[A](a: ValidatedNelEx[A]): G[A] = AppExOrEu.fromValidatedNelEx(a) }
+  implicit def ApplicativeThrowOrEuValidatedNelThrowNatTransformationInstance[G[_]: ApplicativeThrowOrEu]
+    : ValidatedNelThrow ~> G =
+    new (ValidatedNelThrow ~> G) {
+      def apply[A](a: ValidatedNelThrow[A]): G[A] = ApplicativeThrowOrEu.fromValidatedNelThrow(a)
+    }
 }

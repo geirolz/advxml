@@ -1,8 +1,7 @@
 package advxml.core.transform
 
 import advxml.core.utils.XmlUtils
-import advxml.core.MonadEx
-import cats.Monoid
+import cats.{MonadThrow, Monoid}
 import cats.syntax.all._
 
 import scala.xml.{Elem, NodeSeq}
@@ -13,13 +12,13 @@ object AbstractRule {
   case class OrElse(a: AbstractRule, b: AbstractRule) extends AbstractRule
   case class Optional(a: AbstractRule) extends AbstractRule
 
-  def transform[F[_]](root: NodeSeq, rule: AbstractRule, rules: AbstractRule*)(implicit F: MonadEx[F]): F[NodeSeq] =
+  def transform[F[_]](root: NodeSeq, rule: AbstractRule, rules: AbstractRule*)(implicit F: MonadThrow[F]): F[NodeSeq] =
     transform(root, List(rule) ++ rules)
 
-  def transform[F[_]](root: NodeSeq, rules: List[AbstractRule])(implicit F: MonadEx[F]): F[NodeSeq] =
+  def transform[F[_]](root: NodeSeq, rules: List[AbstractRule])(implicit F: MonadThrow[F]): F[NodeSeq] =
     rules.foldLeft(F.pure(root))((actDoc, rule) => actDoc.flatMap(doc => transform(doc, rule)))
 
-  def transform[F[_]](doc: NodeSeq, rule: AbstractRule)(implicit F: MonadEx[F]): F[NodeSeq] =
+  def transform[F[_]](doc: NodeSeq, rule: AbstractRule)(implicit F: MonadThrow[F]): F[NodeSeq] =
     rule match {
       case OrElse(a, b)  => transform[F](doc, a).handleErrorWith(_ => transform(doc, b))
       case And(a, b)     => transform[F](doc, a).flatMap(transform(_, b))
@@ -45,7 +44,7 @@ object XmlRule {
   import advxml.instances.transform.composableXmlModifierMonoidInstance
   import cats.syntax.all._
 
-  private[transform] def transform[F[_]](root: NodeSeq, rule: XmlRule)(implicit F: MonadEx[F]): F[NodeSeq] = {
+  private[transform] def transform[F[_]](root: NodeSeq, rule: XmlRule)(implicit F: MonadThrow[F]): F[NodeSeq] = {
     val modifier = rule match {
       case r: ComposableXmlRule => Monoid.combineAll(r.modifiers)
       case r: FinalXmlRule      => r.modifier
@@ -54,7 +53,7 @@ object XmlRule {
   }
 
   private def buildRewriteRule[F[_]](root: NodeSeq, zoom: XmlZoom, modifier: XmlModifier)(implicit
-    F: MonadEx[F]
+    F: MonadThrow[F]
   ): F[NodeSeq] = {
     for {
       target <- zoom.detailed[F](root)

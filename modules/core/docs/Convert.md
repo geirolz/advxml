@@ -6,7 +6,7 @@ In order to simplify the code advxml defines the following types aliases
 ```scala
 type Converter[-A, B] = Kleisli[Id, A, B]
 type As[-A, B] = Converter[A, B]
-type ValidatedConverter[-A, B] = Converter[A, ValidatedNelEx[B]]
+type ValidatedConverter[-A, B] = Converter[A, ValidatedNelThrow[B]]
 type OptionConverter[-A, B] = Converter[A, Option[B]]
 ```
 
@@ -26,7 +26,7 @@ object MyConverters {
     Converter.of(str => str.toInt)
 
   implicit val validatedConverter: ValidatedConverter[String, Int] =
-    ValidatedConverter.of(str => Try(str.toInt).toValidatedNelEx)
+    ValidatedConverter.of(str => Try(str.toInt).toValidatedNelThrow)
 }
 
 ```
@@ -34,22 +34,23 @@ object MyConverters {
 Once defined and imported in our scope let's see how to use it.
 
 ### How to use a converter
+
 ```scala
 import scala.util.Try
-import advxml.core.data.ValidatedNelEx
+import advxml.core.data.ValidatedNelThrow
 import advxml.syntax.data.convert._
 import MyConverters._
 
-val str : String = "10"
+val str: String = "10"
 
 //Using 'converter' of type Converter[String, Try[Int]]
-val resTry : Try[Int] = str.as[Try[Int]]
+val resTry: Try[Int] = str.as[Try[Int]]
 
-//Using 'converterId' of type Converter[String, Int] = Converter[String, Int] 
-val resId : Int = str.as[Int]
+//Using 'converterId' of type Converter[String, Int] = Converter[String, Int]
+val resId: Int = str.as[Int]
 
-//Using 'validatedConverter' of type ValidatedConverter[String, Int] = Converter[String, ValidatedNelEx[Int]] 
-val resValidated : ValidatedNelEx[Int] = str.asValidated[Int] 
+//Using 'validatedConverter' of type ValidatedConverter[String, Int] = Converter[String, ValidatedNelThrow[Int]]
+val resValidated: ValidatedNelThrow[Int] = str.asValidated[Int] 
 ```
 
 Moreover, we can convert wrapped value using `mapAs` as following if an `Applicative` of the effect `F[_]` 
@@ -118,7 +119,7 @@ case class Person(name: String,
 ```scala
 import scala.xml.Elem
 import advxml.implicits._
-import advxml.core.data.{ValidatedConverter, ValidatedNelEx, XmlDecoder}
+import advxml.core.data.{ValidatedConverter, ValidatedNelThrow, XmlDecoder}
 import cats.data.Validated.Valid
 import cats.syntax.all._
 
@@ -128,7 +129,7 @@ implicit val converter: XmlDecoder[Person] = XmlDecoder.of(person => {
     person.attr("Surname").asValidated[String],
     person.attr("Age").as[Option[Int]].valid,
     $(person).Note.content.asValidated[String],
-    $(person).Cars.Car.run[ValidatedNelEx].andThen { cars =>
+    $(person).Cars.Car.run[ValidatedNelThrow].andThen { cars =>
       cars
         .map(car => {
           (
@@ -150,25 +151,27 @@ val xml =
     </cars>
   </person>
 
-val res: ValidatedNelEx[Person] = xml.decode[Person]
+val res: ValidatedNelThrow[Person] = xml.decode[Person]
 ```
 
 #### Example(Model to XML)
 ```scala
 import scala.xml.Elem
 import advxml.implicits._
-import advxml.core.data.{ValidatedConverter, ValidatedNelEx, XmlEncoder}
+import advxml.core.data.{ValidatedConverter, ValidatedNelThrow, XmlEncoder}
 import cats.data.Validated.Valid
 import cats.syntax.all._
 
 implicit val converter: XmlEncoder[Person] = XmlEncoder.of(person =>
   Valid(
     <Person Name={person.name} Surname={person.surname} Age={person.age.map(_.toString).getOrElse("")}>
-      <Note>{person.note}</Note>
+      <Note>
+        {person.note}
+      </Note>
       <Cars>
         {person.cars.map(car => {
-            <Car Brand={car.brand} Model={car.model}/>
-        })}
+          <Car Brand={car.brand} Model={car.model}/>
+      })}
       </Cars>
     </Person>
   )

@@ -1,6 +1,6 @@
 package advxml.core.data
 
-import advxml.core.AppExOrEu
+import advxml.core.ApplicativeThrowOrEu
 import cats.{Applicative, Id, PartialOrder, Show}
 import cats.data.{NonEmptyList, Validated}
 import cats.data.Validated.{Invalid, Valid}
@@ -14,7 +14,7 @@ sealed trait Value extends AsValidable[ValidatedValue] {
 object Value {
 
   //instances
-  implicit def valueExtractorForValueF[F[_]: AppExOrEu]: ValueExtractor[F, Value] = {
+  implicit def valueExtractorForValueF[F[_]: ApplicativeThrowOrEu]: ValueExtractor[F, Value] = {
     case v @ SimpleValue(_, _)       => v.extract[F]
     case v @ ValidatedValue(_, _, _) => v.extract[F]
   }
@@ -25,8 +25,8 @@ object Value {
     def get(implicit be: ValueExtractor[Id, V]): String =
       be.extract(value)
 
-    def validated(implicit ve: ValueExtractor[ValidatedNelEx, V]): ValidatedNelEx[String] =
-      extract[ValidatedNelEx]
+    def validated(implicit ve: ValueExtractor[ValidatedNelThrow, V]): ValidatedNelThrow[String] =
+      extract[ValidatedNelThrow]
 
     def extract[F[_]](implicit be: ValueExtractor[F, V]): F[String] =
       be.extract(value)
@@ -75,7 +75,7 @@ object ValidatedValue {
   def fromSimpleValue(simpleValue: SimpleValue, rules: NonEmptyList[ValidationRule]): ValidatedValue =
     ValidatedValue(simpleValue.get, rules, simpleValue.ref)
 
-  implicit def valueExtractorForValidatedValueF[F[_]: AppExOrEu]: ValueExtractor[F, ValidatedValue] =
+  implicit def valueExtractorForValidatedValueF[F[_]: ApplicativeThrowOrEu]: ValueExtractor[F, ValidatedValue] =
     (vvalue: ValidatedValue) => {
       import cats.implicits._
 
@@ -88,18 +88,10 @@ object ValidatedValue {
         .swap
 
       result match {
-        case Valid(a)   => AppExOrEu[F].pure(a.get)
-        case Invalid(e) => AppExOrEu[F].raiseErrorOrEmpty(e.exception)
+        case Valid(a)   => ApplicativeThrowOrEu[F].pure(a.get)
+        case Invalid(e) => ApplicativeThrowOrEu[F].raiseErrorOrEmpty(e.exception)
       }
     }
-}
-
-//======================================= TYPE CLASS ==================================
-trait ValueExtractor[F[_], V <: Value] {
-  def extract(value: V): F[String]
-}
-object ValueExtractor {
-  def apply[F[_], V <: Value](implicit ve: ValueExtractor[F, V]): ValueExtractor[F, V] = ve
 }
 
 //=============================== VALIDATION RULE ===============================
@@ -112,63 +104,4 @@ trait AsValidable[V] {
   def nonEmpty: V = validate(NonEmpty)
 
   def matchRegex(regex: Regex): V = validate(MatchRegex(regex))
-}
-
-class ValidationRule(val name: String, val validator: String => Boolean, val errorReason: String) {
-
-  final def apply(v: SimpleValue): Validated[ValidationRule.Error, SimpleValue] = {
-    validator(v.get) match {
-      case true  => Valid(v)
-      case false => Invalid(ValidationRule.Error(this, errorReason))
-    }
-  }
-}
-
-object ValidationRule {
-
-  def apply(name: String)(validator: String => Boolean, errorReason: => String): ValidationRule =
-    new ValidationRule(name, validator, errorReason)
-
-  case class Error(rule: ValidationRule, reason: String)
-
-  case class Errors(value: ValidatedValue, errors: NonEmptyList[Error]) {
-
-    lazy val result: NonEmptyList[Either[Error, ValidationRule]] = {
-
-      val success = value.rules
-        .filterNot(r => errors.map(_.rule).toList.contains(r))
-        .map(a => Right[Error, ValidationRule](a))
-
-      val failure = errors
-        .map(e => Left[Error, ValidationRule](e))
-
-      failure.concat(success)
-    }
-
-    lazy val report: String = {
-
-      def ifNonEmpty(list: List[(String, Boolean)], str: String): String =
-        if (list.nonEmpty) s"- $str(${list.size})\n${list.map(_._1).mkString("\n")}" else ""
-
-      def ruleCheckStr(rule: ValidationRule, isSuccess: Boolean, reason: String = ""): String =
-        s"[${if (isSuccess) "✓" else " "}] ${rule.name}${if (reason.nonEmpty) s": $reason." else ""}"
-
-      val (success, failed): (List[(String, Boolean)], List[(String, Boolean)]) = result
-        .map {
-          case Left(error) => ruleCheckStr(error.rule, isSuccess = false, error.reason) -> false
-          case Right(rule) => ruleCheckStr(rule, isSuccess = true)                      -> true
-        }
-        .toList
-        .partition(t => t._2)
-
-      s"""
-         |# Value: $value
-         |${ifNonEmpty(failed, "FAILED RULES")}
-         |-------------------------------------
-         |${ifNonEmpty(success, "SUCCESS RULES")}
-         |""".stripMargin
-    }
-
-    lazy val exception: RuntimeException = new RuntimeException(report)
-  }
 }

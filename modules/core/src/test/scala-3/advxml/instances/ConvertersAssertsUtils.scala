@@ -17,7 +17,7 @@ private[instances] trait ConvertersAssertsUtils { $this: AnyFunSuite =>
   extension [I, O](converter: Converter[I, O]) {
     inline def test(in: I, expectedOut: O): Unit = {
       $this.test(s"Converter[${showType[I]}, ${showType[O]}].apply('$in') should be '$expectedOut'") {
-        assert(converter(in) == expectedOut)
+        assert(converter.run(in) == expectedOut)
       }
     }
   }
