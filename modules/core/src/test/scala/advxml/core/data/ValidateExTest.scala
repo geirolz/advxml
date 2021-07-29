@@ -22,11 +22,11 @@ class ValidateExTest extends AnyFunSuite with FunSuiteContract {
       toTry           = _.to[Try],
       fromTry         = ValidatedNelEx.fromTry,
       //===========
-      toEitherEx      = _.to[EitherEx],
-      fromEitherEx    = ValidatedNelEx.fromEither,
+      toEitherThrow      = _.to[EitherThrow],
+      fromEitherThrow    = ValidatedNelEx.fromEither,
       //===========
-      toEitherNelEx   = _.to[EitherNelEx],
-      fromEitherNelEx = ValidatedNelEx.fromEitherNel,
+      toEitherNelThrow   = _.to[EitherNelThrow],
+      fromEitherNelThrow = ValidatedNelEx.fromEitherNel,
       //===========
       toValidatedEx   = _.to[ValidatedEx],
       fromValidatedEx = _.to[ValidatedNelEx],
@@ -44,11 +44,11 @@ object ValidateExTest {
     toTry: ValidatedNelEx[String] => Try[String],
     fromTry: Try[String] => ValidatedNelEx[String],
     //===========
-    toEitherEx: ValidatedNelEx[String] => EitherEx[String],
-    fromEitherEx: EitherEx[String] => ValidatedNelEx[String],
+    toEitherThrow: ValidatedNelEx[String] => EitherThrow[String],
+    fromEitherThrow: EitherThrow[String] => ValidatedNelEx[String],
     //===========
-    toEitherNelEx: ValidatedNelEx[String] => EitherNelEx[String],
-    fromEitherNelEx: EitherNelEx[String] => ValidatedNelEx[String],
+    toEitherNelThrow: ValidatedNelEx[String] => EitherNelThrow[String],
+    fromEitherNelThrow: EitherNelThrow[String] => ValidatedNelEx[String],
     //===========
     toValidatedEx: ValidatedNelEx[String] => ValidatedEx[String],
     fromValidatedEx: ValidatedEx[String] => ValidatedNelEx[String],
@@ -88,32 +88,32 @@ object ValidateExTest {
       assert(result.isFailure)
     }
 
-    test("Valid.toEitherEx") {
+    test("Valid.toEitherThrow") {
       val value = "TEST"
       val validatedExValue: ValidatedNelEx[String] = Validated.Valid(value)
-      val result: EitherEx[String] = f.toEitherEx(validatedExValue)
+      val result: EitherThrow[String] = f.toEitherThrow(validatedExValue)
 
       assert(result == Right(value))
     }
 
-    test("Invalid.toEitherEx") {
+    test("Invalid.toEitherThrow") {
       val validatedExValue: ValidatedNelEx[String] = Validated.Invalid(TEST_EXCEPTION_NEL)
-      val result: EitherEx[String] = f.toEitherEx(validatedExValue)
+      val result: EitherThrow[String] = f.toEitherThrow(validatedExValue)
 
       assert(result.isLeft)
     }
 
-    test("Valid.toEitherNelEx") {
+    test("Valid.toEitherNelThrow") {
       val value = "TEST"
       val validatedExValue: ValidatedNelEx[String] = Validated.Valid(value)
-      val result: EitherNelEx[String] = f.toEitherNelEx(validatedExValue)
+      val result: EitherNelThrow[String] = f.toEitherNelThrow(validatedExValue)
 
       assert(result == Right(value))
     }
 
-    test("Invalid.toEitherNelEx") {
+    test("Invalid.toEitherNelThrow") {
       val validatedExValue: ValidatedNelEx[String] = Validated.Invalid(TEST_EXCEPTION_NEL)
-      val result: EitherNelEx[String] = f.toEitherNelEx(validatedExValue)
+      val result: EitherNelThrow[String] = f.toEitherNelThrow(validatedExValue)
 
       assert(result.isLeft)
     }
@@ -164,32 +164,32 @@ object ValidateExTest {
       assertInvalid(validatedExValue)
     }
 
-    test("EitherEx.Right.toValidatedEx") {
+    test("EitherThrow.Right.toValidatedEx") {
       val value = "TEST"
-      val eitherValue: EitherEx[String] = Right(value)
-      val validatedExValue: ValidatedNelEx[String] = f.fromEitherEx(eitherValue)
+      val eitherValue: EitherThrow[String] = Right(value)
+      val validatedExValue: ValidatedNelEx[String] = f.fromEitherThrow(eitherValue)
 
       assertValid(validatedExValue, value)
     }
 
-    test("EitherEx.Left.toValidatedEx") {
-      val eitherValue: EitherEx[String] = Left(TEST_EXCEPTION)
-      val validatedExValue: ValidatedNelEx[String] = f.fromEitherEx(eitherValue)
+    test("EitherThrow.Left.toValidatedEx") {
+      val eitherValue: EitherThrow[String] = Left(TEST_EXCEPTION)
+      val validatedExValue: ValidatedNelEx[String] = f.fromEitherThrow(eitherValue)
 
       assertInvalid(validatedExValue)
     }
 
-    test("EitherNelEx.Right.toValidatedEx") {
+    test("EitherNelThrow.Right.toValidatedEx") {
       val value = "TEST"
-      val eitherValue: EitherNelEx[String] = Right(value)
-      val validatedExValue: ValidatedNelEx[String] = f.fromEitherNelEx(eitherValue)
+      val eitherValue: EitherNelThrow[String] = Right(value)
+      val validatedExValue: ValidatedNelEx[String] = f.fromEitherNelThrow(eitherValue)
 
       assertValid(validatedExValue, value)
     }
 
-    test("EitherNelEx.Left.toValidatedEx") {
-      val eitherValue: EitherNelEx[String] = Left(TEST_EXCEPTION_NEL)
-      val validatedExValue: ValidatedNelEx[String] = f.fromEitherNelEx(eitherValue)
+    test("EitherNelThrow.Left.toValidatedEx") {
+      val eitherValue: EitherNelThrow[String] = Left(TEST_EXCEPTION_NEL)
+      val validatedExValue: ValidatedNelEx[String] = f.fromEitherNelThrow(eitherValue)
 
       assertInvalid(validatedExValue)
     }

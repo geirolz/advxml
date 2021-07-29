@@ -159,11 +159,11 @@ private sealed trait ConverterNaturalTransformationInstances {
   implicit def appExOrEuTryNatTransformationInstance[G[_]: ApplicativeThrowOrEu]: Try ~> G =
     new (Try ~> G) { def apply[A](a: Try[A]): G[A] = ApplicativeThrowOrEu.fromTry(a) }
 
-  implicit def appExOrEuEitherExNatTransformationInstance[G[_]: ApplicativeThrowOrEu]: EitherEx ~> G =
-    new (EitherEx ~> G) { def apply[A](a: EitherEx[A]): G[A] = ApplicativeThrowOrEu.fromEitherEx(a) }
+  implicit def appExOrEuEitherThrowNatTransformationInstance[G[_]: ApplicativeThrowOrEu]: EitherThrow ~> G =
+    new (EitherThrow ~> G) { def apply[A](a: EitherThrow[A]): G[A] = ApplicativeThrowOrEu.fromEitherThrow(a) }
 
-  implicit def appExOrEuEitherNelExNatTransformationInstance[G[_]: ApplicativeThrowOrEu]: EitherNelEx ~> G =
-    new (EitherNelEx ~> G) { def apply[A](a: EitherNelEx[A]): G[A] = ApplicativeThrowOrEu.fromEitherNelEx(a) }
+  implicit def appExOrEuEitherNelThrowNatTransformationInstance[G[_]: ApplicativeThrowOrEu]: EitherNelThrow ~> G =
+    new (EitherNelThrow ~> G) { def apply[A](a: EitherNelThrow[A]): G[A] = ApplicativeThrowOrEu.fromEitherNelThrow(a) }
 
   implicit def appExOrEuValidatedExNatTransformationInstance[G[_]: ApplicativeThrowOrEu]: ValidatedEx ~> G =
     new (ValidatedEx ~> G) { def apply[A](a: ValidatedEx[A]): G[A] = ApplicativeThrowOrEu.fromValidatedEx(a) }

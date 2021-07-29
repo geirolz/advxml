@@ -10,10 +10,10 @@ object ValidatedNelEx {
   def fromTry[A](t: Try[A]): ValidatedNelEx[A] =
     t.fold(e => Invalid(NonEmptyList.of(e)), Valid(_))
 
-  def fromEither[A](e: EitherEx[A]): ValidatedNelEx[A] =
+  def fromEither[A](e: EitherThrow[A]): ValidatedNelEx[A] =
     fromEitherNel(e.left.map(NonEmptyList.one))
 
-  def fromEitherNel[A](e: EitherNelEx[A]): ValidatedNelEx[A] =
+  def fromEitherNel[A](e: EitherNelThrow[A]): ValidatedNelEx[A] =
     Validated.fromEither(e)
 
   def fromOption[A](o: Option[A], ifNone: => Throwable): ValidatedNelEx[A] =

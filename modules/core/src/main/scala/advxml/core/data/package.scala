@@ -8,8 +8,8 @@ import scala.xml.NodeSeq
 package object data {
   type ValidatedNelEx[+T] = ValidatedNel[Throwable, T]
   type ValidatedEx[+T] = Validated[Throwable, T]
-  type EitherEx[+T] = Either[Throwable, T]
-  type EitherNelEx[+T] = EitherNel[Throwable, T]
+  type EitherThrow[+T] = Either[Throwable, T]
+  type EitherNelThrow[+T] = EitherNel[Throwable, T]
   type ThrowableNel = NonEmptyList[Throwable]
   type XmlPredicate = NodeSeq => Boolean
 

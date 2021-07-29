@@ -2,7 +2,7 @@ package advxml.syntax
 
 import advxml.core.data.{
   Converter,
-  EitherEx,
+  EitherThrow,
   OptionConverter,
   ValidatedConverter,
   ValidatedEx,
@@ -25,8 +25,8 @@ class DataConvertSyntaxTest extends AnyFunSuite {
   import cats.instances.try_._
 
   test("ConverterOps.AnyFunctionK") {
-    val rvalue: EitherEx[Int] = Right(1)
-    val lvalue: EitherEx[Int] = Left(new RuntimeException(""))
+    val rvalue: EitherThrow[Int] = Right(1)
+    val lvalue: EitherThrow[Int] = Left(new RuntimeException(""))
     val rresult: Try[Int] = rvalue.to[Try]
     val lresult: Try[Int] = lvalue.to[Try]
 

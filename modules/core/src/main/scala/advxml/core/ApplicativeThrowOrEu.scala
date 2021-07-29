@@ -48,17 +48,17 @@ object ApplicativeThrowOrEu extends AppExOrEuInstances {
   def fromTry[F[_]: ApplicativeThrowOrEu, A](fa: Try[A]): F[A] =
     fromOption[F, A](fa.failed.get)(fa.toOption)
 
-  def fromEitherEx[F[_]: ApplicativeThrowOrEu, A](fa: EitherEx[A]): F[A] =
+  def fromEitherThrow[F[_]: ApplicativeThrowOrEu, A](fa: EitherThrow[A]): F[A] =
     fromTry[F, A](fa.toTry)
 
-  def fromEitherNelEx[F[_]: ApplicativeThrowOrEu, A](fa: EitherNelEx[A]): F[A] =
-    fromEitherEx[F, A](fa.swap.map(ThrowableNel.toThrowable).swap)
+  def fromEitherNelThrow[F[_]: ApplicativeThrowOrEu, A](fa: EitherNelThrow[A]): F[A] =
+    fromEitherThrow[F, A](fa.swap.map(ThrowableNel.toThrowable).swap)
 
   def fromValidatedEx[F[_]: ApplicativeThrowOrEu, A](fa: ValidatedEx[A]): F[A] =
-    fromEitherEx[F, A](fa.toEither)
+    fromEitherThrow[F, A](fa.toEither)
 
   def fromValidatedNelEx[F[_]: ApplicativeThrowOrEu, A](fa: ValidatedNelEx[A]): F[A] =
-    fromEitherNelEx[F, A](fa.toEither)
+    fromEitherNelThrow[F, A](fa.toEither)
 }
 
 private[core] sealed trait AppExOrEuInstances {
