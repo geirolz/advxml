@@ -6,10 +6,10 @@ import cats.MonadThrow
 
 import scala.xml.NodeSeq
 
-/** Advxml
-  * Created by geirolad on 18/06/2019.
+/** Advxml Created by geirolad on 18/06/2019.
   *
-  * @author geirolad
+  * @author
+  *   geirolad
   */
 private[syntax] trait AllTransformSyntax extends RuleSyntax with ZoomSyntax with NormalizerSyntax
 
@@ -46,7 +46,8 @@ private[syntax] sealed trait RuleSyntax {
   implicit class XmlZoomToRuleOps(zoom: XmlZoom) {
     def withModifier(modifier: FinalXmlModifier): FinalXmlRule = XmlRule(zoom, modifier)
 
-    def withModifier(modifier: ComposableXmlModifier): ComposableXmlRule = XmlRule(zoom, List(modifier))
+    def withModifier(modifier: ComposableXmlModifier): ComposableXmlRule =
+      XmlRule(zoom, List(modifier))
 
     def ==>(modifier: FinalXmlModifier): FinalXmlRule = zoom.withModifier(modifier)
 

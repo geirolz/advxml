@@ -4,10 +4,10 @@ import java.io.{OutputStreamWriter, PrintStream, PrintWriter}
 
 import cats.data.NonEmptyList
 
-/** Advxml
-  * Created by geirolad on 11/07/2019.
+/** Advxml Created by geirolad on 11/07/2019.
   *
-  * @author geirolad
+  * @author
+  *   geirolad
   */
 case class AggregatedException(exceptions: NonEmptyList[Throwable])
     extends RuntimeException(

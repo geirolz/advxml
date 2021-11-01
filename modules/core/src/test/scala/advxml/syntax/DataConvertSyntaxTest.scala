@@ -27,8 +27,8 @@ class DataConvertSyntaxTest extends AnyFunSuite {
   test("ConverterOps.AnyFunctionK") {
     val rvalue: EitherThrow[Int] = Right(1)
     val lvalue: EitherThrow[Int] = Left(new RuntimeException(""))
-    val rresult: Try[Int] = rvalue.to[Try]
-    val lresult: Try[Int] = lvalue.to[Try]
+    val rresult: Try[Int]        = rvalue.to[Try]
+    val lresult: Try[Int]        = lvalue.to[Try]
 
     assert(rresult == Success(1))
     assert(lresult.isFailure)
@@ -38,8 +38,8 @@ class DataConvertSyntaxTest extends AnyFunSuite {
 
     val svalue: Option[Int] = Some(1)
     val nvalue: Option[Int] = None
-    val sresult: Try[Int] = svalue.to[Try](new RuntimeException("ERROR"))
-    val nresult: Try[Int] = nvalue.to[Try](new RuntimeException("ERROR"))
+    val sresult: Try[Int]   = svalue.to[Try](new RuntimeException("ERROR"))
+    val nresult: Try[Int]   = nvalue.to[Try](new RuntimeException("ERROR"))
 
     assert(sresult == Success(1))
     assert(nresult.isFailure)
@@ -50,7 +50,7 @@ class DataConvertSyntaxTest extends AnyFunSuite {
     implicit val converter: Converter[String, Try[Int]] =
       Converter.of(str => Try(str.toInt))
 
-    val value: Option[String] = Some("1")
+    val value: Option[String]    = Some("1")
     val result: Option[Try[Int]] = value.mapAs[Try[Int]]
 
     assert(result.get.get == 1)
@@ -60,7 +60,7 @@ class DataConvertSyntaxTest extends AnyFunSuite {
     implicit val converter: Converter[String, Int] = Converter.of(_.toInt)
 
     val value: Option[String] = Some("1")
-    val result: Option[Int] = value.mapAs[Int]
+    val result: Option[Int]   = value.mapAs[Int]
 
     assert(result.get == 1)
   }
@@ -71,7 +71,7 @@ class DataConvertSyntaxTest extends AnyFunSuite {
       Converter.of(str => Try(str.toInt))
 
     val value: Try[String] = Success("1")
-    val result: Try[Int] = value.flatMapAs[Int]
+    val result: Try[Int]   = value.flatMapAs[Int]
 
     assert(result.get == 1)
   }
@@ -82,7 +82,7 @@ class DataConvertSyntaxTest extends AnyFunSuite {
       Converter.of(str => Validated.fromTry(Try(str.toInt)))
 
     val value: ValidatedThrow[String] = Valid("1")
-    val result: ValidatedThrow[Int] = value.andThenAs[Int]
+    val result: ValidatedThrow[Int]   = value.andThenAs[Int]
 
     assert(result.getOrElse(-1) == 1)
   }
@@ -91,7 +91,7 @@ class DataConvertSyntaxTest extends AnyFunSuite {
     implicit val converter: Converter[String, Try[Int]] =
       Converter.of(str => Try(str.toInt))
 
-    val value: String = "1"
+    val value: String    = "1"
     val result: Try[Int] = value.as[Try[Int]]
 
     assert(result.get == 1)
@@ -101,7 +101,7 @@ class DataConvertSyntaxTest extends AnyFunSuite {
     implicit val converter: Converter[String, Int] = Converter.of(_.toInt)
 
     val value: String = "1"
-    val result: Int = value.as[Int]
+    val result: Int   = value.as[Int]
 
     assert(result == 1)
   }
@@ -110,7 +110,7 @@ class DataConvertSyntaxTest extends AnyFunSuite {
     implicit val converter: ValidatedConverter[String, Int] =
       ValidatedConverter.of(str => Valid(str.toInt))
 
-    val value: String = "1"
+    val value: String                  = "1"
     val result: ValidatedNelThrow[Int] = value.asValidated[Int]
 
     assert(result.toOption.get == 1)
@@ -120,7 +120,7 @@ class DataConvertSyntaxTest extends AnyFunSuite {
     implicit val converter: OptionConverter[String, Int] =
       OptionConverter.of(str => Try(str.toInt).toOption)
 
-    val value: String = "1"
+    val value: String       = "1"
     val result: Option[Int] = value.asOption[Int]
 
     assert(result.get == 1)
@@ -131,7 +131,7 @@ class DataConvertSyntaxTest extends AnyFunSuite {
     implicit val decoder: XmlDecoder[Person] =
       XmlDecoder.of(xml => Valid(Person(xml \@ "name")))
 
-    val xml: Elem = <Person name="mimmo" />
+    val xml: Elem                         = <Person name="mimmo" />
     val result: ValidatedNelThrow[Person] = xml.decode[Person]
 
     assert(result.toOption.get.name == "mimmo")
@@ -142,7 +142,7 @@ class DataConvertSyntaxTest extends AnyFunSuite {
     implicit val encoder: XmlEncoder[Person] =
       XmlEncoder.of(p => Valid(<Person name={p.name} />))
 
-    val person: Person = Person("mimmo")
+    val person: Person                     = Person("mimmo")
     val result: ValidatedNelThrow[NodeSeq] = person.encode
 
     assert(result.toOption.get === <Person name="mimmo" />)

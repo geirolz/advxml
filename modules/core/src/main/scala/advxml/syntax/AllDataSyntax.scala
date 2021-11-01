@@ -9,17 +9,24 @@ import cats.implicits._
 import scala.util.Try
 import scala.xml.NodeSeq
 
-private[syntax] trait AllDataSyntax extends ConverterSyntax with AttributeSyntax with PredicateSyntax
+private[syntax] trait AllDataSyntax
+    extends ConverterSyntax
+    with AttributeSyntax
+    with PredicateSyntax
 
 //============================== CONVERTER ==============================
 private[syntax] trait ConverterSyntax {
 
   implicit class AnyFunctionKConverterSyntaxOps[F[_], A](fa: F[A]) {
 
-    /** Change context from F[_] to G[_] using natural transformation with an implicit FunctionK instance.
-      * @param nt functionK instance
-      * @tparam G new context
-      * @return same value but in G[_] context
+    /** Change context from F[_] to G[_] using natural transformation with an implicit FunctionK
+      * instance.
+      * @param nt
+      *   functionK instance
+      * @tparam G
+      *   new context
+      * @return
+      *   same value but in G[_] context
       */
     def to[G[_]](implicit nt: F ~> G): G[A] =
       nt(fa)
@@ -28,9 +35,12 @@ private[syntax] trait ConverterSyntax {
   implicit class OptionFunctionKConverterSyntaxOps[A](fa: Option[A]) {
 
     /** Change context from F[_] to G[_].
-      * @param ifNone error used in case of none.
-      * @tparam G new context
-      * @return same value but in G[_] context
+      * @param ifNone
+      *   error used in case of none.
+      * @tparam G
+      *   new context
+      * @return
+      *   same value but in G[_] context
       */
     def to[G[_]: ApplicativeThrowOrEu](ifNone: => Throwable): G[A] =
       ApplicativeThrowOrEu.fromOption(ifNone)(fa)
@@ -38,8 +48,7 @@ private[syntax] trait ConverterSyntax {
 
   implicit class ApplicativeConverterSyntaxOps[F[_]: Applicative, A](fa: F[A]) {
 
-    /** Map running implicit converter.
-      * This method is just a syntactic sugar for:
+    /** Map running implicit converter. This method is just a syntactic sugar for:
       * {{{
       * implicit val converter : Converter[A, B] = ???
       * val fa : F[A] = ???
@@ -47,17 +56,19 @@ private[syntax] trait ConverterSyntax {
       * val result : F[B] = fa.map(a => converter.run(a))
       * }}}
       *
-      * @param c converter instance.
-      * @tparam B result inner type
-      * @return [[B]] instance in F[_]
+      * @param c
+      *   converter instance.
+      * @tparam B
+      *   result inner type
+      * @return
+      *   [[B]] instance in F[_]
       */
     def mapAs[B](implicit c: Converter[A, B]): F[B] = fa.map(c.run)
   }
 
   implicit class FlatMapConverterSyntaxOps[F[_]: FlatMap, A](fa: F[A]) {
 
-    /** FlatMap running implicit converter.
-      * This method is just a syntactic sugar for:
+    /** FlatMap running implicit converter. This method is just a syntactic sugar for:
       * {{{
       * implicit val converter : Converter[A, F[B]] = ???
       * val fa : F[A] = ???
@@ -65,17 +76,19 @@ private[syntax] trait ConverterSyntax {
       * val result : F[B] = fa.flatMap(a => converter.run(a))
       * }}}
       *
-      * @param c converter instance.
-      * @tparam B result inner type
-      * @return [[B]] instance in F[_]
+      * @param c
+      *   converter instance.
+      * @tparam B
+      *   result inner type
+      * @return
+      *   [[B]] instance in F[_]
       */
     def flatMapAs[B](implicit c: Converter[A, F[B]]): F[B] = fa.flatMap(c.run)
   }
 
   implicit class ValidatedAndThenConverterSyntaxOps[E, A](fa: Validated[E, A]) {
 
-    /** [[Validated]] andThen running implicit converter.
-      * This method is just a syntactic sugar for:
+    /** [[Validated]] andThen running implicit converter. This method is just a syntactic sugar for:
       * {{{
       * implicit val converter : Converter[A, Validated[E, B]] = ???
       * val fa : Validated[E, A] = ???
@@ -83,35 +96,42 @@ private[syntax] trait ConverterSyntax {
       * val result : Validated[E, B] = fa.andThen(a => converter.run(a))
       * }}}
       *
-      * @param c converter instance.
-      * @tparam B result inner type
-      * @return [[B]] instance in Validated[E, _]
+      * @param c
+      *   converter instance.
+      * @tparam B
+      *   result inner type
+      * @return
+      *   [[B]] instance in Validated[E, _]
       */
-    def andThenAs[B](implicit c: Converter[A, Validated[E, B]]): Validated[E, B] = fa.andThen(a => c.run(a))
+    def andThenAs[B](implicit c: Converter[A, Validated[E, B]]): Validated[E, B] =
+      fa.andThen(a => c.run(a))
   }
 
   implicit class AnyConverterSyntaxOps[A](a: A) {
 
-    /** Convert [[A]] into [[B]] using implicit [[Converter]] if available
-      * and if it conforms to required types [[A]] and [[B]].
+    /** Convert [[A]] into [[B]] using implicit [[Converter]] if available and if it conforms to
+      * required types [[A]] and [[B]].
       *
-      * @see [[Converter]] for further information.
+      * @see
+      *   [[Converter]] for further information.
       */
     def as[B](implicit c: Converter[A, B]): B =
       c.run(a)
 
-    /** Convert [[A]] into [[B]] using implicit [[ValidatedConverter]] if available
-      * and if it conforms to required types [[A]] and [[B]].
+    /** Convert [[A]] into [[B]] using implicit [[ValidatedConverter]] if available and if it
+      * conforms to required types [[A]] and [[B]].
       *
-      * @see [[Converter]] for further information.
+      * @see
+      *   [[Converter]] for further information.
       */
     def asValidated[B](implicit c: ValidatedConverter[A, B]): ValidatedNelThrow[B] =
       c.run(a)
 
-    /** Convert [[A]] into [[B]] using implicit [[Converter]] if available
-      * and if it conforms to required types [[A]] and [[B]].
+    /** Convert [[A]] into [[B]] using implicit [[Converter]] if available and if it conforms to
+      * required types [[A]] and [[B]].
       *
-      * @see [[Converter]] for further information.
+      * @see
+      *   [[Converter]] for further information.
       */
     def asOption[B](implicit c: OptionConverter[A, B]): Option[B] =
       c.run(a)
@@ -134,7 +154,7 @@ private[syntax] trait ConverterSyntax {
 private[syntax] trait AttributeSyntax {
 
   implicit class KeyAndValueStringInterpolationOps(ctx: StringContext) {
-    def k(args: Any*): Key = Key(ctx.s(args: _*))
+    def k(args: Any*): Key         = Key(ctx.s(args: _*))
     def v(args: Any*): SimpleValue = SimpleValue(ctx.s(args: _*))
   }
 
@@ -143,7 +163,7 @@ private[syntax] trait AttributeSyntax {
     def :=[T](v: T)(implicit c: T As SimpleValue): AttributeData =
       AttributeData(key, c.run(v))
 
-    //********* KeyValuePredicate *********
+    // ********* KeyValuePredicate *********
     import cats.syntax.order._
 
     def ->(valuePredicate: SimpleValue => Boolean): KeyValuePredicate =
@@ -174,7 +194,7 @@ private[syntax] trait AttributeSyntax {
         key,
         new (SimpleValue => Boolean) {
           override def apply(f: SimpleValue): Boolean = c.run(f).map(p(_, that)).getOrElse(false)
-          override def toString(): String = s"$symbol [$that]"
+          override def toString(): String             = s"$symbol [$that]"
         }
       )
   }
@@ -186,37 +206,49 @@ private[syntax] trait PredicateSyntax {
 
     /** Combine with another predicate(`T => Boolean`) with `And` operator.
       *
-      * @see [[Predicate]] object for further information.
-      * @param that Predicate to combine.
-      * @return Result of combination with this instance
-      *         with passed predicate instance using `And` operator.
+      * @see
+      *   [[Predicate]] object for further information.
+      * @param that
+      *   Predicate to combine.
+      * @return
+      *   Result of combination with this instance with passed predicate instance using `And`
+      *   operator.
       */
     def &&(that: T => Boolean): T => Boolean = p.and(that)
 
     /** Combine with another predicate(`T => Boolean`) with `And` operator.
       *
-      * @see [[Predicate]] object for further information.
-      * @param that Predicate to combine.
-      * @return Result of combination with this instance
-      *         with passed predicate instance using `And` operator.
+      * @see
+      *   [[Predicate]] object for further information.
+      * @param that
+      *   Predicate to combine.
+      * @return
+      *   Result of combination with this instance with passed predicate instance using `And`
+      *   operator.
       */
     def and(that: T => Boolean): T => Boolean = Predicate.and(p, that)
 
     /** Combine with another predicate(`T => Boolean`) with `Or` operator.
       *
-      * @see [[Predicate]] object for further information.
-      * @param that Predicate to combine.
-      * @return Result of combination with this instance
-      *         with passed predicate instance using `Or` operator.
+      * @see
+      *   [[Predicate]] object for further information.
+      * @param that
+      *   Predicate to combine.
+      * @return
+      *   Result of combination with this instance with passed predicate instance using `Or`
+      *   operator.
       */
     def ||(that: T => Boolean): T => Boolean = p.or(that)
 
     /** Combine with another predicate(`T => Boolean`) with `Or` operator.
       *
-      * @see [[Predicate]] object for further information.
-      * @param that Predicate to combine.
-      * @return Result of combination with this instance
-      *         with passed predicate instance using `Or` operator.
+      * @see
+      *   [[Predicate]] object for further information.
+      * @param that
+      *   Predicate to combine.
+      * @return
+      *   Result of combination with this instance with passed predicate instance using `Or`
+      *   operator.
       */
     def or(that: T => Boolean): T => Boolean = Predicate.or(p, that)
   }

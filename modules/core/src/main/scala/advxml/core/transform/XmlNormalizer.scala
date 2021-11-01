@@ -2,10 +2,10 @@ package advxml.core.transform
 
 import scala.xml.{Elem, Node, NodeSeq, Text}
 
-/** Advxml
-  * Created by geirolad on 22/07/2019.
+/** Advxml Created by geirolad on 22/07/2019.
   *
-  * @author geirolad
+  * @author
+  *   geirolad
   */
 object XmlNormalizer {
 
@@ -39,7 +39,7 @@ object XmlNormalizer {
       case el: Elem =>
         List(
           el.copy(
-            child = normalize(mergeTextNode(el.child).flatMap(trimTextZappingEmpty)),
+            child         = normalize(mergeTextNode(el.child).flatMap(trimTextZappingEmpty)),
             minimizeEmpty = true
           )
         )

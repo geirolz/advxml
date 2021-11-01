@@ -13,7 +13,7 @@ class ApplicativeThrowOrEuTest extends AnyFunSuite with FunSuiteDiscipline with 
   import cats.instances.option._
   import cats.instances.try_._
   implicit val eqThrowable: Eq[Throwable] = Eq.allEqual
-  private val exception = new RuntimeException("ERROR")
+  private val exception                   = new RuntimeException("ERROR")
 
   checkAll(
     "ApplicativeThrowOrEu[Try]",
@@ -49,7 +49,7 @@ class ApplicativeThrowOrEuTest extends AnyFunSuite with FunSuiteDiscipline with 
     assert(value.isEmpty)
   }
 
-  //noinspection OptionEqualsSome
+  // noinspection OptionEqualsSome
   test("ApplicativeThrowOrEu.fromOption") {
     val valueTrySuccess: Try[Int] = ApplicativeThrowOrEu.fromOption[Try, Int](exception)(Some(1))
     val valueTryFailure: Try[Int] = ApplicativeThrowOrEu.fromOption[Try, Int](exception)(None)
@@ -62,7 +62,7 @@ class ApplicativeThrowOrEuTest extends AnyFunSuite with FunSuiteDiscipline with 
     assert(valueOptNone.isEmpty)
   }
 
-  //noinspection OptionEqualsSome
+  // noinspection OptionEqualsSome
   test("ApplicativeThrowOrEu.fromTry") {
     val valueTrySuccess: Try[Int] = ApplicativeThrowOrEu.fromTry[Try, Int](Success(1))
     val valueTryFailure: Try[Int] = ApplicativeThrowOrEu.fromTry[Try, Int](Failure(exception))
@@ -75,12 +75,13 @@ class ApplicativeThrowOrEuTest extends AnyFunSuite with FunSuiteDiscipline with 
     assert(valueOptNone.isEmpty)
   }
 
-  //noinspection OptionEqualsSome
+  // noinspection OptionEqualsSome
   test("ApplicativeThrowOrEu.fromEither") {
     val valueTrySuccess: Try[Int] = ApplicativeThrowOrEu.fromEitherThrow[Try, Int](Right(1))
     val valueTryFailure: Try[Int] = ApplicativeThrowOrEu.fromEitherThrow[Try, Int](Left(exception))
     val valueOptSome: Option[Int] = ApplicativeThrowOrEu.fromEitherThrow[Option, Int](Right(1))
-    val valueOptNone: Option[Int] = ApplicativeThrowOrEu.fromEitherThrow[Option, Int](Left(exception))
+    val valueOptNone: Option[Int] =
+      ApplicativeThrowOrEu.fromEitherThrow[Option, Int](Left(exception))
 
     assert(valueTrySuccess == Success(1))
     assert(valueTryFailure.isFailure)
@@ -88,12 +89,14 @@ class ApplicativeThrowOrEuTest extends AnyFunSuite with FunSuiteDiscipline with 
     assert(valueOptNone.isEmpty)
   }
 
-  //noinspection OptionEqualsSome
+  // noinspection OptionEqualsSome
   test("ApplicativeThrowOrEu.fromValidated") {
     val valueTrySuccess: Try[Int] = ApplicativeThrowOrEu.fromValidatedThrow[Try, Int](Valid(1))
-    val valueTryFailure: Try[Int] = ApplicativeThrowOrEu.fromValidatedThrow[Try, Int](Invalid(exception))
+    val valueTryFailure: Try[Int] =
+      ApplicativeThrowOrEu.fromValidatedThrow[Try, Int](Invalid(exception))
     val valueOptSome: Option[Int] = ApplicativeThrowOrEu.fromValidatedThrow[Option, Int](Valid(1))
-    val valueOptNone: Option[Int] = ApplicativeThrowOrEu.fromValidatedThrow[Option, Int](Invalid(exception))
+    val valueOptNone: Option[Int] =
+      ApplicativeThrowOrEu.fromValidatedThrow[Option, Int](Invalid(exception))
 
     assert(valueTrySuccess == Success(1))
     assert(valueTryFailure.isFailure)

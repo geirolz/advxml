@@ -25,18 +25,19 @@ private[instances] trait AllValueInstances {
     */
   case object NonEmpty
       extends ValidationRule(
-        name = "NonEmpty",
-        validator = _.nonEmpty,
+        name        = "NonEmpty",
+        validator   = _.nonEmpty,
         errorReason = "Empty value"
       )
 
   /** Check if value match specified regex.
-    * @param regex instance.
+    * @param regex
+    *   instance.
     */
   case class MatchRegex(regex: Regex)
       extends ValidationRule(
-        name = "MatchRegex",
-        validator = v => regex.findFirstMatchIn(v).isDefined,
+        name        = "MatchRegex",
+        validator   = v => regex.findFirstMatchIn(v).isDefined,
         errorReason = s"No match with regex [$regex]"
       )
 }
@@ -85,7 +86,9 @@ private sealed trait ConverterLowerPriorityImplicits1 {
   ): T As F[Text] =
     c.map(v => v.extract[F].map(Text(_)))
 
-  implicit def converterFlatMapAs[F[_]: FlatMap, A, B](implicit c: Converter[A, F[B]]): Converter[F[A], F[B]] =
+  implicit def converterFlatMapAs[F[_]: FlatMap, A, B](implicit
+    c: Converter[A, F[B]]
+  ): Converter[F[A], F[B]] =
     Converter.of(fa => fa.flatMap(a => c.run(a)))
 
   implicit def converterAndThenAs[E, A, B](implicit
@@ -96,18 +99,18 @@ private sealed trait ConverterLowerPriorityImplicits1 {
 
 private sealed trait ConverterLowerPriorityImplicits2 {
 
-  //=============================== Node ===============================
+  // =============================== Node ===============================
   implicit val nodeToElemConverter: Node As Elem =
     Converter.of(XmlUtils.nodeToElem)
 
-  //=============================== Throwable ===============================
+  // =============================== Throwable ===============================
   implicit val converterThrowableNelToThrowableEx: ThrowableNel As Throwable =
     Converter.of(ThrowableNel.toThrowable)
 
   implicit val converterThrowableToThrowableNel: Throwable As ThrowableNel =
     Converter.of(ThrowableNel.fromThrowable)
 
-  //=============================== Value ===============================
+  // =============================== Value ===============================
   implicit val convertStringToValue: String As SimpleValue =
     Converter.of(SimpleValue(_))
 
@@ -119,7 +122,9 @@ private sealed trait ConverterLowerPriorityImplicits2 {
   ): Converter[XmlContentZoomRunner, ValidatedNelThrow[A]] =
     Converter.of(r => c.run(r.validated))
 
-  implicit def converterXmlContentZoomRunnerForApplicativeThrowOrEu[F[_]: ApplicativeThrowOrEu: FlatMap, A](implicit
+  implicit def converterXmlContentZoomRunnerForApplicativeThrowOrEu[F[
+    _
+  ]: ApplicativeThrowOrEu: FlatMap, A](implicit
     c: Converter[F[String], F[A]]
   ): Converter[XmlContentZoomRunner, F[A]] =
     Converter.of(r => c.run(r.extract[F]))
@@ -147,7 +152,8 @@ private sealed trait ConverterLowerPriorityImplicits2 {
   implicit def convertValueToFDouble    [F[_] : ApplicativeThrowOrEu] : Value As F[Double    ] = fromBox(_.toDouble)
   // format: on
 
-  private def toValue[T]: Converter[T, SimpleValue] = Converter.of[T, SimpleValue](t => SimpleValue(t.toString))
+  private def toValue[T]: Converter[T, SimpleValue] =
+    Converter.of[T, SimpleValue](t => SimpleValue(t.toString))
 
   private def fromBox[F[_]: ApplicativeThrowOrEu, O](f: String => O): Converter[Value, F[O]] =
     Converter.of { b => ApplicativeThrowOrEu.fromTry(b.extract[Try].flatMap(v => Try(f(v)))) }
@@ -155,23 +161,34 @@ private sealed trait ConverterLowerPriorityImplicits2 {
 
 private sealed trait ConverterNaturalTransformationInstances {
 
-  //APP EX
-  implicit def ApplicativeThrowOrEuTryNatTransformationInstance[G[_]: ApplicativeThrowOrEu]: Try ~> G =
+  // APP EX
+  implicit def ApplicativeThrowOrEuTryNatTransformationInstance[G[_]: ApplicativeThrowOrEu]
+    : Try ~> G =
     new (Try ~> G) { def apply[A](a: Try[A]): G[A] = ApplicativeThrowOrEu.fromTry(a) }
 
-  implicit def ApplicativeThrowOrEuEitherThrowNatTransformationInstance[G[_]: ApplicativeThrowOrEu]: EitherThrow ~> G =
-    new (EitherThrow ~> G) { def apply[A](a: EitherThrow[A]): G[A] = ApplicativeThrowOrEu.fromEitherThrow(a) }
+  implicit def ApplicativeThrowOrEuEitherThrowNatTransformationInstance[G[_]: ApplicativeThrowOrEu]
+    : EitherThrow ~> G =
+    new (EitherThrow ~> G) {
+      def apply[A](a: EitherThrow[A]): G[A] = ApplicativeThrowOrEu.fromEitherThrow(a)
+    }
 
-  implicit def ApplicativeThrowOrEuEitherNelThrowNatTransformationInstance[G[_]: ApplicativeThrowOrEu]
-    : EitherNelThrow ~> G =
-    new (EitherNelThrow ~> G) { def apply[A](a: EitherNelThrow[A]): G[A] = ApplicativeThrowOrEu.fromEitherNelThrow(a) }
+  implicit def ApplicativeThrowOrEuEitherNelThrowNatTransformationInstance[G[
+    _
+  ]: ApplicativeThrowOrEu]: EitherNelThrow ~> G =
+    new (EitherNelThrow ~> G) {
+      def apply[A](a: EitherNelThrow[A]): G[A] = ApplicativeThrowOrEu.fromEitherNelThrow(a)
+    }
 
-  implicit def ApplicativeThrowOrEuValidatedThrowNatTransformationInstance[G[_]: ApplicativeThrowOrEu]
-    : ValidatedThrow ~> G =
-    new (ValidatedThrow ~> G) { def apply[A](a: ValidatedThrow[A]): G[A] = ApplicativeThrowOrEu.fromValidatedThrow(a) }
+  implicit def ApplicativeThrowOrEuValidatedThrowNatTransformationInstance[G[
+    _
+  ]: ApplicativeThrowOrEu]: ValidatedThrow ~> G =
+    new (ValidatedThrow ~> G) {
+      def apply[A](a: ValidatedThrow[A]): G[A] = ApplicativeThrowOrEu.fromValidatedThrow(a)
+    }
 
-  implicit def ApplicativeThrowOrEuValidatedNelThrowNatTransformationInstance[G[_]: ApplicativeThrowOrEu]
-    : ValidatedNelThrow ~> G =
+  implicit def ApplicativeThrowOrEuValidatedNelThrowNatTransformationInstance[G[
+    _
+  ]: ApplicativeThrowOrEu]: ValidatedNelThrow ~> G =
     new (ValidatedNelThrow ~> G) {
       def apply[A](a: ValidatedNelThrow[A]): G[A] = ApplicativeThrowOrEu.fromValidatedNelThrow(a)
     }
