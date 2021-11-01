@@ -11,7 +11,7 @@ class SimpleValueTest extends AnyFunSuite {
   import advxml.instances.data.value._
 
   test("Value.get") {
-    val str = "TEST"
+    val str                = "TEST"
     val value: SimpleValue = SimpleValue(str)
     assert(value.get == str)
   }
@@ -37,13 +37,13 @@ class SimpleValueTest extends AnyFunSuite {
   }
 
   test("Value.matchRegex") {
-    val regex: Regex = "@\"^\\d$\"".r()
+    val regex: Regex          = "@\"^\\d$\"".r()
     val value: ValidatedValue = SimpleValue("TEST").matchRegex(regex)
     assert(value.rules == NonEmptyList.one(MatchRegex(regex)))
   }
 
   test("Value.toString") {
-    val value: SimpleValue = SimpleValue("TEST")
+    val value: SimpleValue        = SimpleValue("TEST")
     val valueWithRef: SimpleValue = SimpleValue("TEST", Some("REF"))
 
     assert(value.toString == """"TEST"""")
@@ -54,8 +54,8 @@ class SimpleValueTest extends AnyFunSuite {
 class ValidatedValueTest extends AnyFunSuite {
 
   test("ValidatedValue.extract") {
-    val str = "TEST"
-    val value: ValidatedValue = SimpleValue(str).nonEmpty
+    val str                        = "TEST"
+    val value: ValidatedValue      = SimpleValue(str).nonEmpty
     val emptyValue: ValidatedValue = SimpleValue("").nonEmpty
 
     assert(value.extract[Try] == Success(str))

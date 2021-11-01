@@ -12,10 +12,10 @@ import org.scalactic.TypeCheckedTripleEquals.convertToCheckingEqualizer
 import scala.util.Try
 import scala.xml.{Elem, NodeSeq}
 
-/** Advxml
-  * Created by geirolad on 12/07/2019.
+/** Advxml Created by geirolad on 12/07/2019.
   *
-  * @author geirolad
+  * @author
+  *   geirolad
   */
 object XmlTransformationSpec extends Properties("XmlTransformationSpec") {
 
@@ -27,8 +27,8 @@ object XmlTransformationSpec extends Properties("XmlTransformationSpec") {
     XmlGenerator
       .genElem(
         XmlElemGeneratorConfig(
-          childMaxSize = 1,
-          attrsMaxSize = 1,
+          childMaxSize     = 1,
+          attrsMaxSize     = 1,
           attrsMaxNameSize = 3
         )
       )
@@ -43,27 +43,27 @@ object XmlTransformationSpec extends Properties("XmlTransformationSpec") {
   )
 
   property("Prepend") = forAll { (base: Elem, newElem: Elem) =>
-    val zoom: XmlZoom = XmlGenerator.genZoom(base).sample.get
+    val zoom: XmlZoom           = XmlGenerator.genZoom(base).sample.get
     val rule: ComposableXmlRule = zoom ==> Prepend(newElem)
-    val result: NodeSeq = base.transform[Try](rule).get
-    val targetUpdated: NodeSeq = zoom.run[Try](result).get
+    val result: NodeSeq         = base.transform[Try](rule).get
+    val targetUpdated: NodeSeq  = zoom.run[Try](result).get
 
     (targetUpdated \ newElem.label).exists(_ === newElem)
   }
 
   property("Append") = forAll { (base: Elem, newElem: Elem) =>
-    val zoom: XmlZoom = XmlGenerator.genZoom(base).sample.get
+    val zoom: XmlZoom           = XmlGenerator.genZoom(base).sample.get
     val rule: ComposableXmlRule = zoom ==> Append(newElem)
-    val result: NodeSeq = base.transform[Try](rule).get
-    val targetUpdated: NodeSeq = zoom.run[Try](result).get
+    val result: NodeSeq         = base.transform[Try](rule).get
+    val targetUpdated: NodeSeq  = zoom.run[Try](result).get
 
     (targetUpdated \ newElem.label).exists(_ === newElem)
   }
 
   property("Replace") = forAll { (base: Elem, newElem: Elem) =>
-    val zoom: XmlZoom = XmlGenerator.genZoom(base).sample.get
+    val zoom: XmlZoom           = XmlGenerator.genZoom(base).sample.get
     val rule: ComposableXmlRule = zoom ==> Replace(_ => newElem)
-    val result: Try[NodeSeq] = base.transform[Try](rule)
+    val result: Try[NodeSeq]    = base.transform[Try](rule)
 
     (zoom match {
       case x if x == root => root
@@ -79,14 +79,16 @@ object XmlTransformationSpec extends Properties("XmlTransformationSpec") {
       .get
 
     val rule: FinalXmlRule = zoom ==> Remove
-    val result: NodeSeq = base.transform[Try](rule).get
+    val result: NodeSeq    = base.transform[Try](rule).get
 
     zoom.run[Option](result).isEmpty
   }
 
   property("SetAttrs") = forAll { (base: Elem, attrsData: NonEmptyList[AttributeData]) =>
     val rule: ComposableXmlRule =
-      root ==> SetAttrs(owner => attrsData :+ (k"numberOfAttributes" := owner.attributes.size + attrsData.size))
+      root ==> SetAttrs(owner =>
+        attrsData :+ (k"numberOfAttributes" := owner.attributes.size + attrsData.size)
+      )
     val result: NodeSeq = base.transform[Try](rule).get
 
     result.exists(attrs(attrsData.map(d => d.key === d.value)))
@@ -95,7 +97,7 @@ object XmlTransformationSpec extends Properties("XmlTransformationSpec") {
 
   property("RemoveAttrs") = forAll { (base: Elem) =>
     val rule: ComposableXmlRule = root ==> RemoveAttrs(alwaysTrue)
-    val result: NodeSeq = base.transform[Try](rule).get
+    val result: NodeSeq         = base.transform[Try](rule).get
 
     result.exists(_.attributes.isEmpty)
   }

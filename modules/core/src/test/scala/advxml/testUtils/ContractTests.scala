@@ -54,7 +54,8 @@ trait FunSuiteContract extends ContractTestsRunner with ContractTestsSyntax { th
   }
 }
 
-trait FeatureSpecContract extends ContractTestsRunner with ContractTestsSyntax { this: AnyFeatureSpec =>
+trait FeatureSpecContract extends ContractTestsRunner with ContractTestsSyntax {
+  this: AnyFeatureSpec =>
 
   def run(ct: ContractTest): Unit = {
     Scenario(ct.testName)(ct.testFun.apply())

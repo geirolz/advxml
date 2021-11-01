@@ -14,7 +14,7 @@ class TransformXmlModifierInstancesTest extends AnyFunSuite {
 
   test("Combine AbstractRule with Semigroup instance") {
 
-    val ns: NodeSeq = <Root></Root>
+    val ns: NodeSeq         = <Root></Root>
     val rule1: AbstractRule = root ==> Append(<Node1/>)
     val rule2: AbstractRule = root ==> Append(<Node2/>)
     val rule3: AbstractRule = rule1 |+| rule2

@@ -12,10 +12,14 @@ object AbstractRule {
   case class OrElse(a: AbstractRule, b: AbstractRule) extends AbstractRule
   case class Optional(a: AbstractRule) extends AbstractRule
 
-  def transform[F[_]](root: NodeSeq, rule: AbstractRule, rules: AbstractRule*)(implicit F: MonadThrow[F]): F[NodeSeq] =
+  def transform[F[_]](root: NodeSeq, rule: AbstractRule, rules: AbstractRule*)(implicit
+    F: MonadThrow[F]
+  ): F[NodeSeq] =
     transform(root, List(rule) ++ rules)
 
-  def transform[F[_]](root: NodeSeq, rules: List[AbstractRule])(implicit F: MonadThrow[F]): F[NodeSeq] =
+  def transform[F[_]](root: NodeSeq, rules: List[AbstractRule])(implicit
+    F: MonadThrow[F]
+  ): F[NodeSeq] =
     rules.foldLeft(F.pure(root))((actDoc, rule) => actDoc.flatMap(doc => transform(doc, rule)))
 
   def transform[F[_]](doc: NodeSeq, rule: AbstractRule)(implicit F: MonadThrow[F]): F[NodeSeq] =
@@ -44,7 +48,9 @@ object XmlRule {
   import advxml.instances.transform.composableXmlModifierMonoidInstance
   import cats.syntax.all._
 
-  private[transform] def transform[F[_]](root: NodeSeq, rule: XmlRule)(implicit F: MonadThrow[F]): F[NodeSeq] = {
+  private[transform] def transform[F[_]](root: NodeSeq, rule: XmlRule)(implicit
+    F: MonadThrow[F]
+  ): F[NodeSeq] = {
     val modifier = rule match {
       case r: ComposableXmlRule => Monoid.combineAll(r.modifiers)
       case r: FinalXmlRule      => r.modifier
@@ -81,7 +87,7 @@ object XmlRule {
     } yield updatedWholeDocument
   }
 
-  //============================== BUILD ==============================
+  // ============================== BUILD ==============================
   def apply(
     zoom: XmlZoom,
     modifier1: ComposableXmlModifier,
@@ -95,10 +101,11 @@ object XmlRule {
   def apply(zoom: XmlZoom, modifier: FinalXmlModifier): FinalXmlRule =
     Impls.Final(zoom, modifier)
 
-  //============================== IMPLS ==============================
+  // ============================== IMPLS ==============================
   private object Impls {
 
-    case class Composable(zoom: XmlZoom, modifiers: List[ComposableXmlModifier]) extends ComposableXmlRule {
+    case class Composable(zoom: XmlZoom, modifiers: List[ComposableXmlModifier])
+        extends ComposableXmlRule {
 
       override def withModifier(modifier: ComposableXmlModifier): ComposableXmlRule =
         copy(modifiers = modifiers :+ modifier)

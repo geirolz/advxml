@@ -22,9 +22,13 @@ class XmlNormalizerTest extends AnyFunSuite with FunSuiteContract {
 
 object XmlNormalizerTest {
 
-  case class ContractFuncs(normalize: NodeSeq => NodeSeq, normalizedEquals: (NodeSeq, NodeSeq) => Boolean)
+  case class ContractFuncs(
+    normalize: NodeSeq => NodeSeq,
+    normalizedEquals: (NodeSeq, NodeSeq) => Boolean
+  )
 
-  case class Contract(subDesc: String = "", f: ContractFuncs) extends ContractTests("XmlNormalizer", subDesc) {
+  case class Contract(subDesc: String = "", f: ContractFuncs)
+      extends ContractTests("XmlNormalizer", subDesc) {
 
     test("Normalize") {
       val v1 =

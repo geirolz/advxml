@@ -14,8 +14,8 @@ import scala.xml.parsing.NoBindingFactoryAdapter
 object JavaXmlConverters {
 
   type JDocument = org.w3c.dom.Document
-  type JNode = org.w3c.dom.Node
-  type JElement = org.w3c.dom.Element
+  type JNode     = org.w3c.dom.Node
+  type JElement  = org.w3c.dom.Element
 
   object FromScala {
 
@@ -58,9 +58,9 @@ object JavaXmlConverters {
     }
 
     def asScala(jNode: JNode): Node = {
-      val source = new DOMSource(jNode)
-      val adapter = new NoBindingFactoryAdapter
-      val saxResult = new SAXResult(adapter)
+      val source      = new DOMSource(jNode)
+      val adapter     = new NoBindingFactoryAdapter
+      val saxResult   = new SAXResult(adapter)
       val transformer = TransformerFactory.newInstance().newTransformer()
       transformer.transform(source, saxResult)
       adapter.rootElem
