@@ -5,10 +5,10 @@ import org.scalatest.funsuite.AnyFunSuite
 
 import scala.xml.Elem
 
-/** Advxml
-  * Created by geirolad on 28/06/2019.
+/** Advxml Created by geirolad on 28/06/2019.
   *
-  * @author geirolad
+  * @author
+  *   geirolad
   */
 class DataConvertFullSyntaxTest extends AnyFunSuite {
 
@@ -62,7 +62,9 @@ class DataConvertFullSyntaxTest extends AnyFunSuite {
 
     implicit val converter: ValidatedConverter[Person, Elem] = ValidatedConverter.of(person =>
       Valid(
-        <Person Name={person.name} Surname={person.surname} Age={person.age.map(_.toString).getOrElse("")}>
+        <Person Name={person.name} Surname={person.surname} Age={
+          person.age.map(_.toString).getOrElse("")
+        }>
         <Note>{person.note}</Note>
         <Cars>
           {
@@ -75,7 +77,7 @@ class DataConvertFullSyntaxTest extends AnyFunSuite {
       )
     )
 
-    val p = Person("Matteo", "Bianchi", Some(23), "Matteo note", Seq(Car("Fiat", "500")))
+    val p         = Person("Matteo", "Bianchi", Some(23), "Matteo note", Seq(Car("Fiat", "500")))
     val res: Elem = p.asValidated[Elem].toOption.get
 
     assert(

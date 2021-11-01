@@ -13,7 +13,7 @@ class DataPredicateSyntaxTest extends AnyFunSuite with FunSuiteContract {
       "Syntax", {
         PredicateTests.ContractFuncs(
           and = (p1, p2) => p1.and(p2),
-          or = (p1, p2) => p1.or(p2)
+          or  = (p1, p2) => p1.or(p2)
         )
       }
     )
@@ -24,7 +24,7 @@ class DataPredicateSyntaxTest extends AnyFunSuite with FunSuiteContract {
       "Syntax.Symbols", {
         PredicateTests.ContractFuncs(
           and = (p1, p2) => p1 && p2,
-          or = (p1, p2) => p1 || p2
+          or  = (p1, p2) => p1 || p2
         )
       }
     )

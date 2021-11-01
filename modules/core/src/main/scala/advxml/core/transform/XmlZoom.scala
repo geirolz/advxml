@@ -24,7 +24,7 @@ private[advxml] sealed trait XmlZoomNodeBase extends Dynamic {
 
   def unbind(): XmlZoom
 
-  //============================== ACTIONS ==============================
+  // ============================== ACTIONS ==============================
   def down(nodeName: String): Type =
     this.add(Down(nodeName))
 
@@ -43,7 +43,7 @@ private[advxml] sealed trait XmlZoomNodeBase extends Dynamic {
   def last(): Type =
     this.add(Last)
 
-  //============================== DYNAMIC ==============================
+  // ============================== DYNAMIC ==============================
   def applyDynamic(nodeName: String)(idx: Int): Type =
     this.addAll(List(Down(nodeName), AtIndex(idx)))
 
@@ -79,43 +79,44 @@ sealed trait XmlZoomResult {
   val parents: List[NodeSeq]
 }
 
-/** [[XmlZoom]] is a powerful system that allow to "zoom" inside a `NodeSeq` and select one or more elements keeping
-  * all step list and return a monadic value to handle possible errors.
+/** [[XmlZoom]] is a powerful system that allow to "zoom" inside a `NodeSeq` and select one or more
+  * elements keeping all step list and return a monadic value to handle possible errors.
   *
-  * <h4>HOW TO USE</h4>
-  * [[XmlZoom]] is based on three types:
-  * - [[XmlZoom]] a.k.a XmlZoomUnbinded
-  * - [[BindedXmlZoom]]
-  * - [[XmlZoomResult]]
+  * <h4>HOW TO USE</h4> [[XmlZoom]] is based on three types:
+  *   - [[XmlZoom]] a.k.a XmlZoomUnbinded
+  *   - [[BindedXmlZoom]]
+  *   - [[XmlZoomResult]]
   *
-  * <b>XmlZoom</b>
-  * Is the representation of unbind zoom instance. It contains only the list of the actions to run on a `NodeSeq`.
+  * <b>XmlZoom</b> Is the representation of unbind zoom instance. It contains only the list of the
+  * actions to run on a `NodeSeq`.
   *
-  * <b>BindedXmlZoom</b>
-  * Is the representation of binded zoom instance. Binded because it contains both [[ZoomAction]] and `NodeSeq` target.
+  * <b>BindedXmlZoom</b> Is the representation of binded zoom instance. Binded because it contains
+  * both [[ZoomAction]] and `NodeSeq` target.
   *
-  * <b>XmlZoomResult</b>
-  * Is the result of the [[XmlZoom]], that contains selected `NodeSeq` and his parents.
+  * <b>XmlZoomResult</b> Is the result of the [[XmlZoom]], that contains selected `NodeSeq` and his
+  * parents.
   */
 object XmlZoom {
 
-  /** Just an alias for [[XmlZoom]], to use when you are building and XmlZoom that starts from the root.
+  /** Just an alias for [[XmlZoom]], to use when you are building and XmlZoom that starts from the
+    * root.
     */
   lazy val root: XmlZoom = XmlZoom.empty
 
-  /** Just an alias for Root, to use when you are building and XmlZoom that not starts from the root for the document.
-    * It's exists just to clarify the code.
-    * If your [[XmlZoom]] starts for the root of the document please use `root`
+  /** Just an alias for Root, to use when you are building and XmlZoom that not starts from the root
+    * for the document. It's exists just to clarify the code. If your [[XmlZoom]] starts for the
+    * root of the document please use `root`
     */
   lazy val $ : XmlZoom = XmlZoom.empty
 
-  /** Just a binded alias for [[XmlZoom]], to use when you are building and XmlZoom that starts from the root.
+  /** Just a binded alias for [[XmlZoom]], to use when you are building and XmlZoom that starts from
+    * the root.
     */
   def root(document: NodeSeq): BindedXmlZoom = root.bind(document)
 
-  /** Just a binded alias for root, to use when you are building and XmlZoom that not starts from the root for the document.
-    * It's exists just to clarify the code.
-    * If your [[XmlZoom]] starts for the root of the document please use `root`
+  /** Just a binded alias for root, to use when you are building and XmlZoom that not starts from
+    * the root for the document. It's exists just to clarify the code. If your [[XmlZoom]] starts
+    * for the root of the document please use `root`
     */
   def $(document: NodeSeq): BindedXmlZoom = $.bind(document)
 
@@ -125,12 +126,14 @@ object XmlZoom {
 
   /** Create a new unbinded [[XmlZoom]] with specified actions.
     *
-    * @param actions actions list for the zooming action
-    * @return new instance of unbinded [[XmlZoom]]
+    * @param actions
+    *   actions list for the zooming action
+    * @return
+    *   new instance of unbinded [[XmlZoom]]
     */
   def apply(actions: List[ZoomAction]): XmlZoom = Impls.Unbinded(actions)
 
-  //============================== IMPLS ==============================
+  // ============================== IMPLS ==============================
   private object Impls {
 
     case class Unbinded(actions: List[ZoomAction]) extends XmlZoom {
@@ -155,7 +158,11 @@ object XmlZoom {
       def detailed[F[_]](implicit F: ApplicativeThrowOrEu[F]): F[XmlZoomResult] = {
 
         @scala.annotation.tailrec
-        def rec(current: XmlZoomResult, zActions: List[ZoomAction], logPath: String): F[XmlZoomResult] = {
+        def rec(
+          current: XmlZoomResult,
+          zActions: List[ZoomAction],
+          logPath: String
+        ): F[XmlZoomResult] = {
           zActions.headOption match {
             case None => F.pure(current)
             case Some(action) =>
@@ -165,8 +172,10 @@ object XmlZoom {
               }
 
               action(current.nodeSeq) match {
-                case Some(value) => rec(Impls.Result(value, newParents), zActions.tail, logPath + action.symbol)
-                case None        => F.raiseErrorOrEmpty(error.ZoomFailedException($thisZoom, action, logPath))
+                case Some(value) =>
+                  rec(Impls.Result(value, newParents), zActions.tail, logPath + action.symbol)
+                case None =>
+                  F.raiseErrorOrEmpty(error.ZoomFailedException($thisZoom, action, logPath))
               }
           }
         }
@@ -178,7 +187,7 @@ object XmlZoom {
     case class Result(nodeSeq: NodeSeq, parents: List[NodeSeq]) extends XmlZoomResult
   }
 
-  //============================== NODES ACTIONS ==============================
+  // ============================== NODES ACTIONS ==============================
   sealed trait ZoomAction {
     def apply(ns: NodeSeq): Option[NodeSeq]
 
@@ -212,36 +221,37 @@ object XmlZoom {
 
   final case class Down(value: String) extends ZoomAction {
     def apply(ns: NodeSeq): Option[NodeSeq] = checkEmpty(ns \ value)
-    val symbol: String = s"/$value"
+    val symbol: String                      = s"/$value"
   }
 
   final case class Filter(p: XmlPredicate) extends FilterZoomAction {
     def apply(ns: NodeSeq): Option[NodeSeq] = checkEmpty(ns.filter(p))
-    val symbol: String = s"| $p"
+    val symbol: String                      = s"| $p"
   }
 
   final case class Find(p: XmlPredicate) extends FilterZoomAction {
     def apply(ns: NodeSeq): Option[NodeSeq] = ns.find(p)
-    val symbol: String = s"find($p)"
+    val symbol: String                      = s"find($p)"
   }
 
   final case class AtIndex(idx: Int) extends FilterZoomAction {
     def apply(ns: NodeSeq): Option[NodeSeq] = ns.lift(idx)
-    val symbol: String = s"($idx)"
+    val symbol: String                      = s"($idx)"
   }
 
   case object Head extends FilterZoomAction {
     def apply(ns: NodeSeq): Option[NodeSeq] = ns.headOption
-    val symbol: String = s"head()"
+    val symbol: String                      = s"head()"
   }
 
   case object Last extends FilterZoomAction {
     def apply(ns: NodeSeq): Option[NodeSeq] = ns.lastOption
-    val symbol: String = s"last()"
+    val symbol: String                      = s"last()"
   }
 }
 
-case class XmlContentZoomRunner(zoom: BindedXmlZoom, f: NodeSeq => Value) extends AsValidable[XmlContentZoomRunner] {
+case class XmlContentZoomRunner(zoom: BindedXmlZoom, f: NodeSeq => Value)
+    extends AsValidable[XmlContentZoomRunner] {
 
   import cats.syntax.flatMap._
 
@@ -257,7 +267,7 @@ case class XmlContentZoomRunner(zoom: BindedXmlZoom, f: NodeSeq => Value) extend
 
 object XmlContentZoom {
 
-  //=========================== FROM NODESEQ ===========================
+  // =========================== FROM NODESEQ ===========================
   def label(ns: NodeSeq): SimpleValue =
     ns match {
       case node: Node => SimpleValue(node.label)
@@ -270,7 +280,7 @@ object XmlContentZoom {
   def content(ns: NodeSeq): ValidatedValue =
     SimpleValue(ns.text, Some(s"${label(ns).get}.content")).nonEmpty
 
-  //========================= FROM BINDED ZOOM =========================
+  // ========================= FROM BINDED ZOOM =========================
   def labelFromBindedZoom(zoom: BindedXmlZoom): XmlContentZoomRunner =
     XmlContentZoomRunner(zoom, ns => label(ns))
 
@@ -280,7 +290,7 @@ object XmlContentZoom {
   def contentFromBindedZoom(zoom: BindedXmlZoom): XmlContentZoomRunner =
     XmlContentZoomRunner(zoom, ns => content(ns))
 
-  //========================= FROM UNBINDED ZOOM =========================
+  // ========================= FROM UNBINDED ZOOM =========================
   def labelFromZoom(zoom: XmlZoom, ns: NodeSeq): XmlContentZoomRunner =
     labelFromBindedZoom(zoom.bind(ns))
 

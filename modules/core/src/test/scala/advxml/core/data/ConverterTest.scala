@@ -9,14 +9,14 @@ import scala.xml.NodeSeq
 class ConverterTest extends AnyFunSuite {
 
   test("Test Converter.id") {
-    val testValue = "TEST"
+    val testValue                   = "TEST"
     val converter: String As String = Converter.id
-    val result: String = converter.run(testValue)
+    val result: String              = converter.run(testValue)
     assert(result == testValue)
   }
 
   test("Test Converter.pure") {
-    val testValue = "TEST"
+    val testValue                = "TEST"
     val converter: Int As String = Converter.pure(testValue)
 
     assert(converter.run(100) == testValue)
@@ -39,31 +39,31 @@ class ConverterTest extends AnyFunSuite {
   }
 
   test("Test XmlDecoder.of") {
-    val foo = <foo></foo>
-    val encoder: XmlDecoder[NodeSeq] = XmlDecoder.of(ns => Valid(ns))
+    val foo                                = <foo></foo>
+    val encoder: XmlDecoder[NodeSeq]       = XmlDecoder.of(ns => Valid(ns))
     val result: ValidatedNelThrow[NodeSeq] = encoder.run(foo)
     assert(result == Valid(foo))
   }
 
   test("Test XmlDecoder.cost") {
-    val foo = <foo></foo>
-    val bar = <bar></bar>
-    val encoder: XmlDecoder[NodeSeq] = XmlDecoder.pure(bar)
+    val foo                                = <foo></foo>
+    val bar                                = <bar></bar>
+    val encoder: XmlDecoder[NodeSeq]       = XmlDecoder.pure(bar)
     val result: ValidatedNelThrow[NodeSeq] = encoder.run(foo)
     assert(result == Valid(bar))
   }
 
   test("Test XmlEncoder.of") {
-    val foo = <foo></foo>
-    val encoder: XmlEncoder[NodeSeq] = XmlEncoder.of(ns => Valid(ns))
+    val foo                                = <foo></foo>
+    val encoder: XmlEncoder[NodeSeq]       = XmlEncoder.of(ns => Valid(ns))
     val result: ValidatedNelThrow[NodeSeq] = encoder.run(foo)
     assert(result == Valid(foo))
   }
 
   test("Test XmlEncoder.pure") {
-    val foo = <foo></foo>
-    val bar = <bar></bar>
-    val encoder: XmlEncoder[NodeSeq] = XmlEncoder.pure(bar)
+    val foo                                = <foo></foo>
+    val bar                                = <bar></bar>
+    val encoder: XmlEncoder[NodeSeq]       = XmlEncoder.pure(bar)
     val result: ValidatedNelThrow[NodeSeq] = encoder.run(foo)
     assert(result == Valid(bar))
   }

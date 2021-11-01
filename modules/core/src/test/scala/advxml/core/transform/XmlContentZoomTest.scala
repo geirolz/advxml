@@ -51,15 +51,15 @@ class XmlContentZoomTest extends AnyFunSuite with FunSuiteContract {
 object XmlContentZoomTest {
 
   case class ContractFuncs[F[_]](
-    //attr
+    // attr
     label: NodeSeq => SimpleValue,
     labelFromBindedZoom: BindedXmlZoom => F[String],
     labelFromZoom: (XmlZoom, NodeSeq) => F[String],
-    //attr
+    // attr
     attr: (NodeSeq, String) => ValidatedValue,
     attrFromBindedZoom: (BindedXmlZoom, String) => F[String],
     attrFromZoom: (XmlZoom, NodeSeq, String) => F[String],
-    //text
+    // text
     content: NodeSeq => ValidatedValue,
     contentFromBindedZoom: BindedXmlZoom => F[String],
     contentFromZoom: (XmlZoom, NodeSeq) => F[String]
@@ -70,7 +70,7 @@ object XmlContentZoomTest {
 
     import Fallible._
 
-    //============================= LABEL =============================
+    // ============================= LABEL =============================
     test("label from NodeSeq") {
       val elem: Elem = <foo value="1"></foo>
       assert(f.label(elem).get == "foo")
@@ -86,7 +86,7 @@ object XmlContentZoomTest {
       assert(f.labelFromZoom(root, elem).extract == "foo")
     }
 
-    //============================= ATTR =============================
+    // ============================= ATTR =============================
     test("attribute from NodeSeq") {
       val elem: Elem = <foo value="1"></foo>
       assert(f.attr(elem, "value").extract[F].extract == "1")
@@ -106,17 +106,17 @@ object XmlContentZoomTest {
       assert(f.attrFromZoom(root, elem, "rar").isFailure)
     }
 
-    //============================ CONTENT ============================
+    // ============================ CONTENT ============================
     test("content from NodeSeq") {
       val elemWithContent: Elem = <foo>TEST</foo>
-      val elemWithoutContent = <foo></foo>
+      val elemWithoutContent    = <foo></foo>
 
       assert(f.content(elemWithContent).extract[F].extract == "TEST")
       assert(f.content(elemWithoutContent).extract[F].isFailure)
     }
 
     test("content from BindedXmlZoom") {
-      val elemWithContent: BindedXmlZoom = root(<foo>TEST</foo>)
+      val elemWithContent: BindedXmlZoom    = root(<foo>TEST</foo>)
       val elemWithoutContent: BindedXmlZoom = root(<foo></foo>)
 
       assert(f.contentFromBindedZoom(elemWithContent).extract == "TEST")
@@ -125,7 +125,7 @@ object XmlContentZoomTest {
 
     test("content from (Unbinded)XmlZoom") {
       val elemWithContent: Elem = <foo>TEST</foo>
-      val elemWithoutContent = <foo></foo>
+      val elemWithoutContent    = <foo></foo>
 
       assert(f.contentFromZoom(root, elemWithContent).extract == "TEST")
       assert(f.contentFromZoom(root, elemWithoutContent).isFailure)

@@ -7,10 +7,10 @@ import org.scalacheck.Gen
 
 import scala.xml._
 
-/** Advxml
-  * Created by geirolad on 12/07/2019.
+/** Advxml Created by geirolad on 12/07/2019.
   *
-  * @author geirolad
+  * @author
+  *   geirolad
   */
 object XmlGenerator {
 
@@ -19,28 +19,28 @@ object XmlGenerator {
       val seed: MetaData = Null
       val meta: MetaData = this.attrs.foldLeft(seed) { case (acc, data) =>
         new UnprefixedAttribute(
-          key = data.key.value,
+          key   = data.key.value,
           value = data.value.get,
-          next = acc
+          next  = acc
         )
       }
 
       Elem(
-        prefix = null,
-        label = this.name,
-        attributes = meta,
-        scope = TopScope,
+        prefix        = null,
+        label         = this.name,
+        attributes    = meta,
+        scope         = TopScope,
         minimizeEmpty = false,
-        child = this.children.map(_.toElem): _*
+        child         = this.children.map(_.toElem): _*
       )
     }
   }
 
   case class XmlElemGeneratorConfig(
-    nameMaxSize: Int = 10,
-    childMaxSize: Int = 5,
-    attrsMaxSize: Int = 50,
-    attrsMaxNameSize: Int = 5,
+    nameMaxSize: Int            = 10,
+    childMaxSize: Int           = 5,
+    attrsMaxSize: Int           = 50,
+    attrsMaxNameSize: Int       = 5,
     probabilityToHaveAttrs: Int = 80,
     probabilityToHaveChild: Int = 70
   )
@@ -84,7 +84,10 @@ object XmlGenerator {
         nodeName <- genStr(config.nameMaxSize)
 
         attrs <- for {
-          hasAttrs <- Gen.frequency((config.probabilityToHaveAttrs, true), (100 - config.probabilityToHaveAttrs, false))
+          hasAttrs <- Gen.frequency(
+            (config.probabilityToHaveAttrs, true),
+            (100 - config.probabilityToHaveAttrs, false)
+          )
           attrs <-
             if (hasAttrs)
               genAttrsData(maxSize = config.attrsMaxSize, nameMaxSize = config.attrsMaxNameSize)
@@ -110,7 +113,8 @@ object XmlGenerator {
     rec(0)
   }
 
-  private def genStr(size: Int): Gen[String] = Gen.listOfN(atLeastOne(size), Gen.alphaChar).map(_.mkString)
+  private def genStr(size: Int): Gen[String] =
+    Gen.listOfN(atLeastOne(size), Gen.alphaChar).map(_.mkString)
 
   private val atLeastOne: Int => Int = v => if (v < 1) 1 else v
 }
