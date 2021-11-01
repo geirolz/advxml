@@ -41,12 +41,13 @@ object DataKeyValueSyntaxTest {
     greaterEqThen: (Key, Double) => KeyValuePredicate
   )
 
-  case class Contract(subDesc: String = "", f: ContractFuncs) extends ContractTests("KeyValue", subDesc) {
+  case class Contract(subDesc: String = "", f: ContractFuncs)
+      extends ContractTests("KeyValue", subDesc) {
 
     private val key: Key = Key("key")
 
     test("data") {
-      val value: SimpleValue = SimpleValue("TEST")
+      val value: SimpleValue      = SimpleValue("TEST")
       val attrData: AttributeData = f.data(key, value)
 
       assert(attrData.key == key)

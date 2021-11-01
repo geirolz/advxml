@@ -12,7 +12,7 @@ class XmlEncoderDecoderTest extends AnyFunSuite {
     implicit val convert: XmlDecoder[Person] =
       XmlDecoder.of(xml => Valid(Person(xml \@ "Name", xml \@ "Surname")))
 
-    val xml = <Person Name="Mario" Surname="Bianchi"/>
+    val xml   = <Person Name="Mario" Surname="Bianchi"/>
     val model = XmlDecoder[Person].run(xml)
 
     assert(model.map(_.name) == Valid("Mario"))
@@ -27,7 +27,7 @@ class XmlEncoderDecoderTest extends AnyFunSuite {
       XmlEncoder.of(model => Valid(<Person Name={model.name} Surname={model.surname} />))
 
     val model: Person = Person("Mario", "Bianchi")
-    val xml = XmlEncoder[Person].run(model)
+    val xml           = XmlEncoder[Person].run(model)
 
     assert(xml.isValid)
     assert(xml.map(_ \@ "Name") == Valid("Mario"))

@@ -8,10 +8,10 @@ import org.scalatest.Assertion
 
 import scala.xml.NodeSeq
 
-/** Advxml
-  * Created by geirolad on 19/07/2019.
+/** Advxml Created by geirolad on 19/07/2019.
   *
-  * @author geirolad
+  * @author
+  *   geirolad
   */
 class TransformNormalizerSyntaxTest extends AnyFunSuite with FunSuiteContract {
 

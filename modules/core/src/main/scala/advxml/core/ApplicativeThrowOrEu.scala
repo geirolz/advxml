@@ -10,7 +10,9 @@ import scala.util.Try
   """Multiple instances of ApplicativeError[${F}, Throwable] or ApplicativeError[${F}, Unit] in the scope," +
   ", try to set {F} type explicitly."""
 )
-@implicitNotFound("""Missing ApplicativeError[${F}, Throwable] or ApplicativeError[${F}, Unit] in the scope.""")
+@implicitNotFound(
+  """Missing ApplicativeError[${F}, Throwable] or ApplicativeError[${F}, Unit] in the scope."""
+)
 sealed trait ApplicativeThrowOrEu[F[_]] extends Applicative[F] {
 
   val app: Applicative[F]
@@ -28,7 +30,8 @@ sealed trait ApplicativeThrowOrEu[F[_]] extends Applicative[F] {
 case class ApplicativeThrowCase[F[_]](app: ApplicativeThrow[F]) extends ApplicativeThrowOrEu[F] {
   def raiseError[A](e: => Throwable): F[A] = app.raiseError(e)
 }
-case class ApplicativeNelThrowCase[F[_]](app: ApplicativeNelThrow[F]) extends ApplicativeThrowOrEu[F] {
+case class ApplicativeNelThrowCase[F[_]](app: ApplicativeNelThrow[F])
+    extends ApplicativeThrowOrEu[F] {
   def raiseError[A](e: => Throwable): F[A] = app.raiseError(ThrowableNel.fromThrowable(e))
 }
 case class ApplicativeEuCase[F[_]](app: ApplicativeEu[F]) extends ApplicativeThrowOrEu[F] {
@@ -63,7 +66,9 @@ object ApplicativeThrowOrEu extends ApplicativeThrowOrEuInstances {
 
 private[core] sealed trait ApplicativeThrowOrEuInstances {
 
-  implicit def applicativeThrowAsApplicativeThrowOrEu[F[_]](implicit M: ApplicativeThrow[F]): ApplicativeThrowCase[F] =
+  implicit def applicativeThrowAsApplicativeThrowOrEu[F[_]](implicit
+    M: ApplicativeThrow[F]
+  ): ApplicativeThrowCase[F] =
     ApplicativeThrowCase(M)
 
   implicit def applicativeNelThrowAsApplicativeThrowOrEu[F[_]](implicit
@@ -71,6 +76,8 @@ private[core] sealed trait ApplicativeThrowOrEuInstances {
   ): ApplicativeNelThrowCase[F] =
     ApplicativeNelThrowCase(M)
 
-  implicit def applicativeEuAsApplicativeThrowOrEu[F[_]](implicit M: ApplicativeEu[F]): ApplicativeEuCase[F] =
+  implicit def applicativeEuAsApplicativeThrowOrEu[F[_]](implicit
+    M: ApplicativeEu[F]
+  ): ApplicativeEuCase[F] =
     ApplicativeEuCase(M)
 }

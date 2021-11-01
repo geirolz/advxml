@@ -22,7 +22,7 @@ class TransformModifiersTest extends AnyWordSpec {
             <Person Name="David" />
           </Persons>
 
-        val modifier = Append(<Person Name="Alessandro"/>)
+        val modifier             = Append(<Person Name="Alessandro"/>)
         val result: Try[NodeSeq] = modifier(xml)
 
         assert(
@@ -41,7 +41,7 @@ class TransformModifiersTest extends AnyWordSpec {
 
         val xml = Text("TEST")
 
-        val modifier = Append(<Person Name="Alessandro"/>)
+        val modifier             = Append(<Person Name="Alessandro"/>)
         val result: Try[NodeSeq] = modifier(xml)
 
         assert(result.isFailure)
@@ -58,7 +58,7 @@ class TransformModifiersTest extends AnyWordSpec {
             <Person Name="David"/>
           </Persons>
 
-        val modifier = Replace(_ => <Person Name="Alessandro"/>)
+        val modifier             = Replace(_ => <Person Name="Alessandro"/>)
         val result: Try[NodeSeq] = modifier(xml \ "Person")
 
         assert(result.map(_.length) == Success(1))
@@ -76,7 +76,7 @@ class TransformModifiersTest extends AnyWordSpec {
             <Person Name="David"/>
           </Persons>
 
-        val modifier = Remove
+        val modifier             = Remove
         val result: Try[NodeSeq] = modifier(xml \ "Person")
 
         assert(result.get.length == 0)
@@ -142,7 +142,7 @@ class TransformModifiersTest extends AnyWordSpec {
         val xml = <Root T1="1" T2="2" T3="3"/>
 
         val modifier = RemoveAttrs(_.key == k"T1", _.key == k"T2", _.key == k"T3")
-        val result = modifier(xml)
+        val result   = modifier(xml)
 
         assert(result.map(_.exists(_ \@ "T1" == "1")) == Success(false))
         assert(result.map(_.exists(_ \@ "T2" == "2")) == Success(false))
@@ -154,7 +154,7 @@ class TransformModifiersTest extends AnyWordSpec {
       "Return a failure" in {
         val xml = Text("TEST")
 
-        val modifier = RemoveAttrs(_.key == "T1", _.key == "T2", _.key == "T3")
+        val modifier             = RemoveAttrs(_.key == "T1", _.key == "T2", _.key == "T3")
         val result: Try[NodeSeq] = modifier(xml)
 
         assert(result.isFailure)

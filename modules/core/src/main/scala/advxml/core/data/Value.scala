@@ -13,13 +13,13 @@ sealed trait Value extends AsValidable[ValidatedValue] {
 }
 object Value {
 
-  //instances
+  // instances
   implicit def valueExtractorForValueF[F[_]: ApplicativeThrowOrEu]: ValueExtractor[F, Value] = {
     case v @ SimpleValue(_, _)       => v.extract[F]
     case v @ ValidatedValue(_, _, _) => v.extract[F]
   }
 
-  //embedded syntax
+  // embedded syntax
   implicit class ValueExtractorSyntaxOps[V <: Value](value: V) {
 
     def get(implicit be: ValueExtractor[Id, V]): String =
@@ -55,13 +55,18 @@ object SimpleValue extends SimpleValueLowPriorityInstances {
 
   implicit val advxmlValueCatsInstances: PartialOrder[SimpleValue] with Show[SimpleValue] =
     new PartialOrder[SimpleValue] with Show[SimpleValue] {
-      override def partialCompare(x: SimpleValue, y: SimpleValue): Double = x.data.compareTo(y.data).toDouble
-      override def show(t: SimpleValue): String = s"""${t.ref.map(r => s"$r => ").getOrElse("")}"${t.data}""""
+      override def partialCompare(x: SimpleValue, y: SimpleValue): Double =
+        x.data.compareTo(y.data).toDouble
+      override def show(t: SimpleValue): String =
+        s"""${t.ref.map(r => s"$r => ").getOrElse("")}"${t.data}""""
     }
 }
 
-case class ValidatedValue(private val data: String, rules: NonEmptyList[ValidationRule], ref: Option[String] = None)
-    extends Value {
+case class ValidatedValue(
+  private val data: String,
+  rules: NonEmptyList[ValidationRule],
+  ref: Option[String] = None
+) extends Value {
 
   def toSimpleValue: SimpleValue = SimpleValue(data, ref)
 
@@ -72,10 +77,14 @@ case class ValidatedValue(private val data: String, rules: NonEmptyList[Validati
 }
 object ValidatedValue {
 
-  def fromSimpleValue(simpleValue: SimpleValue, rules: NonEmptyList[ValidationRule]): ValidatedValue =
+  def fromSimpleValue(
+    simpleValue: SimpleValue,
+    rules: NonEmptyList[ValidationRule]
+  ): ValidatedValue =
     ValidatedValue(simpleValue.get, rules, simpleValue.ref)
 
-  implicit def valueExtractorForValidatedValueF[F[_]: ApplicativeThrowOrEu]: ValueExtractor[F, ValidatedValue] =
+  implicit def valueExtractorForValidatedValueF[F[_]: ApplicativeThrowOrEu]
+    : ValueExtractor[F, ValidatedValue] =
     (vvalue: ValidatedValue) => {
       import cats.implicits._
 

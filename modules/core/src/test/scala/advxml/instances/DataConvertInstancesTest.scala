@@ -1,6 +1,13 @@
 package advxml.instances
 
-import advxml.core.data.{As, Converter, SimpleValue, ThrowableNel, ValidatedNelThrow, ValidatedValue}
+import advxml.core.data.{
+  As,
+  Converter,
+  SimpleValue,
+  ThrowableNel,
+  ValidatedNelThrow,
+  ValidatedValue
+}
 import advxml.core.data.error.AggregatedException
 import advxml.core.transform.{XmlContentZoom, XmlContentZoomRunner}
 import advxml.implicits.$
@@ -17,23 +24,23 @@ class Common_ConvertersInstancesTest extends AnyFunSuite with ConvertersAssertsU
 
   import cats.instances.option._
 
-  //============== Id ==============
+  // ============== Id ==============
   implicitly[Converter[Int, Int]].test(1, 1)
   implicitly[Converter[Int, Try[Int]]].test(1, Success(1))
 
-  //============== FlatMapAs ==============
+  // ============== FlatMapAs ==============
   Converter[Option[SimpleValue], Option[Int]].test(Some(v"1"), Some(1))
 
-  //============== AndThenAs ==============
+  // ============== AndThenAs ==============
   Converter[ValidatedNelThrow[SimpleValue], ValidatedNelThrow[Int]].test(Valid(v"1"), Valid(1))
 
-  //============== Node ==============
+  // ============== Node ==============
   Converter[Node, Elem].test(
     <foo/>.asInstanceOf[Node],
     <foo/>
   )
 
-  //============== Throwable ==============
+  // ============== Throwable ==============
   private val exception = new RuntimeException("")
   Converter[ThrowableNel, Throwable].test(
     ThrowableNel.fromThrowable(exception),

@@ -11,7 +11,7 @@ class XmlUtilsTest extends AnyFunSuite {
   test("XmlUtils.nodeToElem") {
 
     val node: Node = <Node n="1"><Child n="2" />TEST</Node>
-    val elem = XmlUtils.nodeToElem(node)
+    val elem       = XmlUtils.nodeToElem(node)
 
     assert(elem === <Node n="1"><Child n="2" />TEST</Node>)
   }
@@ -38,9 +38,9 @@ class XmlUtilsTest extends AnyFunSuite {
 
   test("XmlUtils.emptyText") {
 
-    val textEmpty: Text = Text("")
+    val textEmpty: Text          = Text("")
     val textEmptyWithSpace: Text = Text(" ")
-    val textNonEmpty: Text = Text("test")
+    val textNonEmpty: Text       = Text("test")
 
     assert(XmlUtils.emptyText(textEmpty))
     assert(XmlUtils.emptyText(textEmptyWithSpace))
