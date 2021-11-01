@@ -19,9 +19,9 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
 
   test("Transform method on NodeSeq with varargs") {
 
-    val ns: Elem = <Order></Order>
-    val rule1 = root ==> Append(<OrderLine PrimeLineNo="1"/>)
-    val rule2 = root ==> Append(<OrderLine PrimeLineNo="2"/>)
+    val ns: Elem        = <Order></Order>
+    val rule1           = root ==> Append(<OrderLine PrimeLineNo="1"/>)
+    val rule2           = root ==> Append(<OrderLine PrimeLineNo="2"/>)
     val result: NodeSeq = ns.transform(rule1, rule2).get
 
     assert(
@@ -51,8 +51,8 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
 
   test("Transform method on XmlRule") {
 
-    val ns: Elem = <Order></Order>
-    val rule = root ==> Append(<OrderLine PrimeLineNo="1"/>)
+    val ns: Elem        = <Order></Order>
+    val rule            = root ==> Append(<OrderLine PrimeLineNo="1"/>)
     val result: NodeSeq = rule.transform(ns).get
 
     assert(
@@ -82,7 +82,8 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
   test("conjunction of rules ") {
 
     val ns: Elem = <Order></Order>
-    val rule = (root ==> Append(<OrderLine PrimeLineNo="1"/>)).and(root ==> Append(<OrderLine PrimeLineNo="2"/>))
+    val rule = (root ==> Append(<OrderLine PrimeLineNo="1"/>))
+      .and(root ==> Append(<OrderLine PrimeLineNo="2"/>))
 
     val result: NodeSeq = rule.transform(ns).get
 
@@ -98,7 +99,8 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
 
     val ns: Elem = <Order></Order>
     val rule =
-      (root.Missing ==> Append(<OrderLine PrimeLineNo="1"/>)).orElse(root ==> Append(<OrderLine PrimeLineNo="2"/>))
+      (root.Missing ==> Append(<OrderLine PrimeLineNo="1"/>))
+        .orElse(root ==> Append(<OrderLine PrimeLineNo="2"/>))
 
     val result: NodeSeq = rule.transform(ns).get
 
@@ -113,7 +115,8 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
 
     val ns: Elem = <Order></Order>
     val rule =
-      (root ==> Append(<OrderLine PrimeLineNo="1"/>)).orElse(root ==> Append(<OrderLine PrimeLineNo="2"/>))
+      (root ==> Append(<OrderLine PrimeLineNo="1"/>))
+        .orElse(root ==> Append(<OrderLine PrimeLineNo="2"/>))
 
     val result: NodeSeq = rule.transform(ns).get
 
@@ -129,7 +132,8 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
     val ns: Elem = <Order></Order>
     val rule =
       (root.Missing ==> Append(<OrderLine PrimeLineNo="1"/>)).orElse {
-        (root ==> Append(<OrderLine PrimeLineNo="1"/>)).and(root ==> Append(<OrderLine PrimeLineNo="2"/>))
+        (root       ==> Append(<OrderLine PrimeLineNo="1"/>))
+          .and(root ==> Append(<OrderLine PrimeLineNo="2"/>))
       }
 
     val result: NodeSeq = rule.transform(ns).get
@@ -145,7 +149,7 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
   test("success rule optional") {
 
     val ns: Elem = <Order></Order>
-    val rule = (root ==> Append(<OrderLine PrimeLineNo="1"/>)).optional
+    val rule     = (root ==> Append(<OrderLine PrimeLineNo="1"/>)).optional
 
     val result: NodeSeq = rule.transform(ns).get
 
@@ -159,7 +163,7 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
   test("failing rule optional") {
 
     val ns: Elem = <Order></Order>
-    val rule = (root.Missing ==> Append(<OrderLine PrimeLineNo="1"/>)).optional
+    val rule     = (root.Missing ==> Append(<OrderLine PrimeLineNo="1"/>)).optional
 
     val result: NodeSeq = rule.transform(ns).get
 
@@ -175,7 +179,7 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
         </foo>
       </data>
 
-    val xmlZoom = root.foo.test.node
+    val xmlZoom              = root.foo.test.node
     val result: Try[NodeSeq] = elem.transform(xmlZoom ==> Remove)
 
     assert(result.isFailure)

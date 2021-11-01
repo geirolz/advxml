@@ -64,7 +64,7 @@ class KeyValueTest extends AnyFunSuite {
       k"K",
       new (SimpleValue => Boolean) {
         override def apply(value: SimpleValue): Boolean = value.get == "TEST"
-        override def toString(): String = "== [TEST]"
+        override def toString(): String                 = "== [TEST]"
       }
     )
 

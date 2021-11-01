@@ -10,10 +10,10 @@ import org.scalatest.funsuite.AnyFunSuite
 
 import scala.xml.{Elem, InputSource, Node}
 
-/** Advxml
-  * Created by geirolad on 10/07/2019.
+/** Advxml Created by geirolad on 10/07/2019.
   *
-  * @author geirolad
+  * @author
+  *   geirolad
   */
 class JavaXmlConvertersTest extends AnyFunSuite with FunSuiteContract {
 
@@ -42,11 +42,12 @@ object JavaXmlConvertersTest {
     toPrettyString: JNode => String
   )
 
-  case class Contract(subDesc: String = "", f: ContractFuncs) extends ContractTests("JavaXmlConverters", subDesc) {
+  case class Contract(subDesc: String = "", f: ContractFuncs)
+      extends ContractTests("JavaXmlConverters", subDesc) {
 
     import JavaXmlConverters._
     lazy val xmlStr: String = "<Test T1=\"TEST\"><NestedTest T2=\"NestedTest\"/>TEXT</Test>"
-    lazy val xml: Elem = <Test T1="TEST"><NestedTest T2="NestedTest"/>TEXT</Test>
+    lazy val xml: Elem      = <Test T1="TEST"><NestedTest T2="NestedTest"/>TEXT</Test>
 
     lazy val javaDocBuilder: DocumentBuilder = DocumentBuilderFactory
       .newInstance()
@@ -57,27 +58,27 @@ object JavaXmlConvertersTest {
 
     test("Convert Java w3c Node to Scala xml Node") {
       val jDocument: JNode = buildJavaDoc(xmlStr)
-      val scalaNode = f.jNodeAsScala(jDocument)
+      val scalaNode        = f.jNodeAsScala(jDocument)
 
       assert(scalaNode == xml)
     }
 
     test("Convert Java w3c Document to Scala xml Node") {
       val jDocument: JDocument = buildJavaDoc(xmlStr)
-      val scalaNode = f.jDocAsScala(jDocument)
+      val scalaNode            = f.jDocAsScala(jDocument)
 
       assert(scalaNode == xml)
     }
 
     test("Convert Scala xml Node to Java w3c Node") {
-      val jDoc: JNode = f.asJavaWithNode(xml.asInstanceOf[Node], javaDocBuilder.newDocument())
+      val jDoc: JNode       = f.asJavaWithNode(xml.asInstanceOf[Node], javaDocBuilder.newDocument())
       val jDocAsStr: String = f.toPrettyString(jDoc)
 
       assert(jDocAsStr == xmlStr)
     }
 
     test("Convert Scala xml Elem to Java w3c Document") {
-      val jDoc: JDocument = f.asJava(xml)
+      val jDoc: JDocument   = f.asJava(xml)
       val jDocAsStr: String = f.toPrettyString(jDoc)
 
       assert(jDocAsStr == xmlStr)

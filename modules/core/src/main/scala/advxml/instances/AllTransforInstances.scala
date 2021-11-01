@@ -16,31 +16,36 @@ private[instances] trait AllTransforInstances
 
 private[instances] trait XmlModifierInstances {
 
-  //============================== TYPE CLASS INSTANCES ==============================
+  // ============================== TYPE CLASS INSTANCES ==============================
   implicit val composableAbstractRuleWithAndOpSemigroupInstance: Semigroup[AbstractRule] =
     (x: AbstractRule, y: AbstractRule) => AbstractRule.And(x, y)
 
-  implicit val composableXmlModifierMonoidInstance: Monoid[ComposableXmlModifier] = new Monoid[ComposableXmlModifier] {
+  implicit val composableXmlModifierMonoidInstance: Monoid[ComposableXmlModifier] =
+    new Monoid[ComposableXmlModifier] {
 
-    import cats.syntax.flatMap._
+      import cats.syntax.flatMap._
 
-    override def empty: ComposableXmlModifier = advxml.instances.transform.NoAction
+      override def empty: ComposableXmlModifier = advxml.instances.transform.NoAction
 
-    override def combine(x: ComposableXmlModifier, y: ComposableXmlModifier): ComposableXmlModifier =
-      new ComposableXmlModifier {
-        override def apply[F[_]: MonadThrow](ns: NodeSeq): F[NodeSeq] =
-          x.apply[F](ns).flatMap(y.apply[F](_))
-      }
-  }
+      override def combine(
+        x: ComposableXmlModifier,
+        y: ComposableXmlModifier
+      ): ComposableXmlModifier =
+        new ComposableXmlModifier {
+          override def apply[F[_]: MonadThrow](ns: NodeSeq): F[NodeSeq] =
+            x.apply[F](ns).flatMap(y.apply[F](_))
+        }
+    }
 
-  //============================== XML MODIFIER INSTANCES ==============================
+  // ============================== XML MODIFIER INSTANCES ==============================
   /** No-Action modifiers, equals to `Replace` passing an identity function.
     */
   lazy val NoAction: ComposableXmlModifier = Replace(identity[NodeSeq])
 
-  /** Prepend nodes to current nodes.
-    * Supported only for `Node` and `Group` elements, in other case will fail.
-    * @param newNs Nodes to prepend.
+  /** Prepend nodes to current nodes. Supported only for `Node` and `Group` elements, in other case
+    * will fail.
+    * @param newNs
+    *   Nodes to prepend.
     */
   case class Prepend(newNs: NodeSeq) extends ComposableXmlModifier {
     override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadThrow[F]): F[NodeSeq] =
@@ -51,9 +56,10 @@ private[instances] trait XmlModifierInstances {
       })
   }
 
-  /** Append nodes to current nodes.
-    * Supported only for `Node` and `Group` elements, in other case will fail.
-    * @param newNs Nodes to append.
+  /** Append nodes to current nodes. Supported only for `Node` and `Group` elements, in other case
+    * will fail.
+    * @param newNs
+    *   Nodes to append.
     */
   case class Append(newNs: NodeSeq) extends ComposableXmlModifier {
     override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadThrow[F]): F[NodeSeq] =
@@ -65,16 +71,19 @@ private[instances] trait XmlModifierInstances {
   }
 
   /** Replace current nodes.
-    * @param f Function to from current nodes to new nodes.
+    * @param f
+    *   Function to from current nodes to new nodes.
     */
   case class Replace(f: NodeSeq => NodeSeq) extends ComposableXmlModifier {
-    override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadThrow[F]): F[NodeSeq] = F.pure(f(ns))
+    override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadThrow[F]): F[NodeSeq] =
+      F.pure(f(ns))
   }
 
   /** Append or replace attributes to current node.
     *
     * Supported only for `Node` elements, in other case will fail.
-    * @param f takes Elem (attribute container), returns Attributes data.
+    * @param f
+    *   takes Elem (attribute container), returns Attributes data.
     */
   case class SetAttrs(f: Elem => NonEmptyList[AttributeData]) extends ComposableXmlModifier {
     override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadThrow[F]): F[NodeSeq] =
@@ -96,8 +105,10 @@ private[instances] trait XmlModifierInstances {
     /** Create a SetAttrs attributes action with specified data.
       *
       * Supported only for `Node` elements, in other case will fail.
-      * @param d Attribute data.
-      * @param ds Attributes data.
+      * @param d
+      *   Attribute data.
+      * @param ds
+      *   Attributes data.
       */
     def apply(d: AttributeData, ds: AttributeData*): SetAttrs =
       SetAttrs(_ => NonEmptyList.of(d, ds: _*))
@@ -109,7 +120,8 @@ private[instances] trait XmlModifierInstances {
     /** Create a SetAttrs attributes action with specified data.
       *
       * Supported only for `Node` elements, in other case will fail.
-      * @param f takes the Elem (attribute container), returns Attribute data.
+      * @param f
+      *   takes the Elem (attribute container), returns Attribute data.
       */
     def apply(f: Elem => AttributeData): SetAttrs =
       SetAttrs.apply(el => NonEmptyList.one(f(el)))
@@ -118,7 +130,8 @@ private[instances] trait XmlModifierInstances {
   /** Remove attributes.
     *
     * Supported only for `Node` elements, in other case will fail.
-    * @param ps Attribute predicates.
+    * @param ps
+    *   Attribute predicates.
     */
   case class RemoveAttrs(ps: NonEmptyList[AttributeData => Boolean]) extends ComposableXmlModifier {
     override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadThrow[F]): F[NodeSeq] = {
@@ -139,18 +152,22 @@ private[instances] trait XmlModifierInstances {
   object RemoveAttrs {
 
     /** Create a Remove attributes action with specified filters.
-      * @param p Attribute predicate.
-      * @param ps Attribute predicates.
+      * @param p
+      *   Attribute predicate.
+      * @param ps
+      *   Attribute predicates.
       */
-    def apply(p: AttributeData => Boolean, ps: (AttributeData => Boolean)*): RemoveAttrs = RemoveAttrs(
-      NonEmptyList.of(p, ps: _*)
-    )
+    def apply(p: AttributeData => Boolean, ps: (AttributeData => Boolean)*): RemoveAttrs =
+      RemoveAttrs(
+        NonEmptyList.of(p, ps: _*)
+      )
   }
 
   /** Remove selected nodes.
     */
   case object Remove extends FinalXmlModifier {
-    override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadThrow[F]): F[NodeSeq] = F.pure(NodeSeq.Empty)
+    override private[advxml] def apply[F[_]](ns: NodeSeq)(implicit F: MonadThrow[F]): F[NodeSeq] =
+      F.pure(NodeSeq.Empty)
   }
 
   private def collapse[F[_]: MonadThrow](seq: Seq[F[NodeSeq]]): F[NodeSeq] = {
@@ -175,15 +192,18 @@ private[instances] trait XmlPredicateInstances {
 
   /** Filter nodes by text property.
     *
-    * @param p Text predicate
+    * @param p
+    *   Text predicate
     * @return
     */
   def text(p: String => Boolean): XmlPredicate = e => p(e.text)
 
   /** Filter nodes by label property.
     *
-    * @param p Label predicate
-    * @return Predicate for nodes of type `Node`
+    * @param p
+    *   Label predicate
+    * @return
+    *   Predicate for nodes of type `Node`
     */
   def label(p: String => Boolean): XmlPredicate = {
     case n: Node => p(n.label)
@@ -192,45 +212,60 @@ private[instances] trait XmlPredicateInstances {
 
   /** Check if node has all attributes.
     *
-    * @param key  [[advxml.core.data.Key]] to check
-    * @param keys N [[advxml.core.data.Key]] list to check
-    * @return Predicate for nodes of type `Node`
+    * @param key
+    *   [[advxml.core.data.Key]] to check
+    * @param keys
+    *   N [[advxml.core.data.Key]] list to check
+    * @return
+    *   Predicate for nodes of type `Node`
     */
   def hasAttrs(key: Key, keys: Key*): XmlPredicate =
     hasAttrs(NonEmptyList.of(key, keys: _*))
 
   /** Check if node has all attributes.
     *
-    * @param keys [[advxml.core.data.Key]] list to check
-    * @return Predicate for nodes of type `Node`
+    * @param keys
+    *   [[advxml.core.data.Key]] list to check
+    * @return
+    *   Predicate for nodes of type `Node`
     */
   def hasAttrs(keys: NonEmptyList[Key]): XmlPredicate =
     attrs(keys.map(k => KeyValuePredicate(k, _.nonEmpty.extract[Option].isDefined)))
 
   /** Filter nodes by attributes.
     *
-    * @param value  [[advxml.core.data.KeyValuePredicate]] to filter attributes
-    * @param values N [[advxml.core.data.KeyValuePredicate]] to filter attributes
-    * @return Predicate for nodes of type `Node`
+    * @param value
+    *   [[advxml.core.data.KeyValuePredicate]] to filter attributes
+    * @param values
+    *   N [[advxml.core.data.KeyValuePredicate]] to filter attributes
+    * @return
+    *   Predicate for nodes of type `Node`
     */
   def attrs(value: KeyValuePredicate, values: KeyValuePredicate*): XmlPredicate =
     this.attrs(NonEmptyList.of(value, values: _*))
 
   /** Filter nodes by attributes.
     *
-    * @param values N [[advxml.core.data.KeyValuePredicate]] to filter attributes
-    * @return Predicate for nodes of type `Node`
+    * @param values
+    *   N [[advxml.core.data.KeyValuePredicate]] to filter attributes
+    * @return
+    *   Predicate for nodes of type `Node`
     */
   def attrs(values: NonEmptyList[KeyValuePredicate]): XmlPredicate =
     values
       .map(p => XmlPredicate(ns => p(SimpleValue(ns \@ p.key.value))))
       .reduce(Predicate.and[NodeSeq](_, _))
 
-  /** Create a [[advxml.core.data.XmlPredicate]] that can check if a NodeSeq contains a child with specified predicates
+  /** Create a [[advxml.core.data.XmlPredicate]] that can check if a NodeSeq contains a child with
+    * specified predicates
     *
-    * @param label     Name of the child to find
-    * @param predicate Predicate to check child
-    * @return [[advxml.core.data.XmlPredicate]] that can check if a NodeSeq contains a child with specified predicates
+    * @param label
+    *   Name of the child to find
+    * @param predicate
+    *   Predicate to check child
+    * @return
+    *   [[advxml.core.data.XmlPredicate]] that can check if a NodeSeq contains a child with
+    *   specified predicates
     */
   def hasImmediateChild(label: String, predicate: XmlPredicate = alwaysTrue): XmlPredicate =
     XmlZoom
@@ -241,8 +276,10 @@ private[instances] trait XmlPredicateInstances {
 
   /** Create an [[advxml.core.data.XmlPredicate]] that can check if two NodeSeq are strictly equals.
     *
-    * @param ns to compare
-    * @return [[advxml.core.data.XmlPredicate]] that can check if two NodeSeq are strictly equals.
+    * @param ns
+    *   to compare
+    * @return
+    *   [[advxml.core.data.XmlPredicate]] that can check if two NodeSeq are strictly equals.
     */
   def strictEqualsTo(ns: NodeSeq): XmlPredicate =
     that =>
@@ -263,7 +300,7 @@ private[instances] trait XmlZoomInstances {
   def $(document: NodeSeq): BindedXmlZoom = XmlZoom.$(document)
 
   implicit val xmlZoomMonoid: Monoid[XmlZoom] = new Monoid[XmlZoom] {
-    override def empty: XmlZoom = XmlZoom.empty
+    override def empty: XmlZoom                           = XmlZoom.empty
     override def combine(x: XmlZoom, y: XmlZoom): XmlZoom = x.addAll(y.actions)
   }
 }

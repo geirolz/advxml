@@ -9,7 +9,7 @@ import scala.xml.{Elem, Node}
 
 private[syntax] trait JavaScalaConvertersSyntax {
 
-  //============================== SCALA => JAVA ==============================
+  // ============================== SCALA => JAVA ==============================
   implicit class JavaToScalaJNodeOps(jNode: JNode) {
 
     def asScala: Node = JavaXmlConverters.FromJava.asScala(jNode)
@@ -22,7 +22,7 @@ private[syntax] trait JavaScalaConvertersSyntax {
     override def asScala: Elem = JavaXmlConverters.FromJava.asScala(jDoc).asInstanceOf[Elem]
   }
 
-  //============================== SCALA => JAVA ==============================
+  // ============================== SCALA => JAVA ==============================
   implicit class ScalaToJavaNodeOps(node: Node) {
     def asJava(doc: JDocument): JNode = JavaXmlConverters.FromScala.asJava(node, doc)
   }

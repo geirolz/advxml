@@ -1,6 +1,12 @@
 package advxml.syntax
 
-import advxml.core.data.{EitherNelThrow, EitherThrow, ValidateThrowTest, ValidatedNelThrow, ValidatedThrow}
+import advxml.core.data.{
+  EitherNelThrow,
+  EitherThrow,
+  ValidateThrowTest,
+  ValidatedNelThrow,
+  ValidatedThrow
+}
 import advxml.core.data.ValidateThrowTest.ContractFuncs
 import advxml.testUtils.FunSuiteContract
 import org.scalatest.funsuite.AnyFunSuite

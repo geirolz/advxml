@@ -5,10 +5,10 @@ import cats.data.NonEmptyList
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers._
 
-/** Advxml
-  * Created by geirolad on 29/07/2019.
+/** Advxml Created by geirolad on 29/07/2019.
   *
-  * @author geirolad
+  * @author
+  *   geirolad
   */
 class AggregatedExceptionTest extends AnyFunSuite {
 
