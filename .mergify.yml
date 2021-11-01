@@ -4,9 +4,9 @@ pull_request_rules:
       - "#approved-reviews-by>=1"
       - check-success=codecov/patch
       - check-success=codecov/project
-      - check-success=build (2.12.14)
-      - check-success=build (2.13.6)
-      - check-success=build (3.0.1)
+      - check-success=build (Scala2-12)
+      - check-success=build (Scala2-13)
+      - check-success=build (Scala3)
       - base=master
       - label!=work-in-progress
     actions:
@@ -18,9 +18,9 @@ pull_request_rules:
       - author=scala-steward
       - check-success=codecov/patch
       - check-success=codecov/project
-      - check-success=build (2.12.14)
-      - check-success=build (2.13.6)
-      - check-success=build (3.0.1)
+      - check-success=build (Scala2-12)
+      - check-success=build (Scala2-13)
+      - check-success=build (Scala3)
       - base=master
     actions:
       merge:
