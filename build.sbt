@@ -55,15 +55,15 @@ lazy val noPublishSettings = Seq(
 )
 
 lazy val baseSettings = Seq(
-  //scala options
-  crossScalaVersions := List("2.12.15", "2.13.6", "3.0.2"),
+  // scala options
+  crossScalaVersions := List("2.12.15", "2.13.7", "3.0.2"),
   scalaVersion       := crossScalaVersions.value.head,
   scalacOptions ++= scalacSettings(scalaVersion.value),
   Compile / console / scalacOptions --= Seq(
     "-Ywarn-unused:imports",
     "-Xfatal-warnings"
   ),
-  //dependencies
+  // dependencies
   resolvers ++= Resolvers.all,
   libraryDependencies ++= Dependencies.common,
   libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
@@ -126,7 +126,7 @@ def scalacSettings(scalaVersion: String): Seq[String] = {
         "-Ywarn-unused:explicits", // Warn if a explicit value parameter is unused.
         "-Ywarn-unused:patvars", // Warn if a variable bound in a pattern is unused.
         "-Ywarn-unused:privates", // Warn if a private member is unused.
-        "-Ywarn-macros:after" //Tells the compiler to make the unused checks after macro expansion
+        "-Ywarn-macros:after" // Tells the compiler to make the unused checks after macro expansion
       )
     case _ =>
       Seq(

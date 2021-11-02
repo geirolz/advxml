@@ -31,7 +31,7 @@ jobs:
           - scala: 2.12.15
             name: Scala2-12
             test-tasks: coverage test coverageReport
-          - scala: 2.13.6
+          - scala: 2.13.7
             name: Scala2-13
             test-tasks: coverage test coverageReport
           - scala: 3.0.2
