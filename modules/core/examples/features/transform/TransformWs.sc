@@ -19,7 +19,8 @@ val document =
     </Order>
   </Orders>
 
-val res1: NodeSeq = root.Order.filter(attrs(k"Id" === 1) || attrs(k"Id" === 2)).run[Try](document).get
+val res1: NodeSeq =
+  root.Order.filter(attrs(k"Id" === 1) || attrs(k"Id" === 2)).run[Try](document).get
 
 val result: Try[NodeSeq] = document.transform(
   root.Order

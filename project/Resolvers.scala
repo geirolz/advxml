@@ -1,11 +1,10 @@
 import sbt.{Resolver, _}
 import sbt.librarymanagement.MavenRepository
 
-/**
-  * Advxml
-  * Created by geirolad on 26/07/2019.
+/** Advxml Created by geirolad on 26/07/2019.
   *
-  * @author geirolad
+  * @author
+  *   geirolad
   */
 object Resolvers {
 
