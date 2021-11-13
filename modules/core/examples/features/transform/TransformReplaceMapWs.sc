@@ -19,8 +19,7 @@ val pets =
 val result = pets
   .transform[Try](
     $.Cat ==> Replace(oldCatNode => {
-      oldCatNode.head.as[Elem].copy(child = oldCatNode \ "Kitty" map (
-        k => <c>{k.text}</c>)
-      )
+      oldCatNode.head.as[Elem].copy(child = oldCatNode \ "Kitty" map (k => <c>{k.text}</c>))
     })
-  ).get
+  )
+  .get
