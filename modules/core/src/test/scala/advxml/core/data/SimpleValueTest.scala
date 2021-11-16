@@ -37,7 +37,7 @@ class SimpleValueTest extends AnyFunSuite {
   }
 
   test("Value.matchRegex") {
-    val regex: Regex          = "@\"^\\d$\"".r()
+    val regex: Regex          = new Regex("@\"^\\d$\"")
     val value: ValidatedValue = SimpleValue("TEST").matchRegex(regex)
     assert(value.rules == NonEmptyList.one(MatchRegex(regex)))
   }
