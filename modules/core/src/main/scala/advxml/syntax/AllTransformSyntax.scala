@@ -1,7 +1,7 @@
 package advxml.syntax
 
-import advxml.core.data._
-import advxml.core.transform._
+import advxml.data.*
+import advxml.transform.*
 import cats.MonadThrow
 
 import scala.xml.NodeSeq
@@ -18,7 +18,7 @@ private[syntax] sealed trait RuleSyntax {
   implicit class XmlNodeSeqTransformerOps(root: NodeSeq) {
 
     def transform[F[_]: MonadThrow](rule: AbstractRule, rules: AbstractRule*): F[NodeSeq] =
-      AbstractRule.transform(root, rule, rules: _*)
+      AbstractRule.transform(root, rule, rules*)
 
     def transform[F[_]: MonadThrow](rules: List[AbstractRule]): F[NodeSeq] =
       AbstractRule.transform(root, rules)

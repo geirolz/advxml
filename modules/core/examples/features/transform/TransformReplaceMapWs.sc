@@ -1,5 +1,7 @@
-import advxml.implicits._
-import cats.instances.try_._
+import advxml.transform.XmlModifier.*
+import advxml.transform.XmlZoom.$
+import advxml.implicits.*
+import cats.instances.try_.*
 
 import scala.util.Try
 import scala.xml.Elem

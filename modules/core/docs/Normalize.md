@@ -1,29 +1,29 @@
 # Normalize
 Normalization feature allows to collapse empty nodes and trim texts.
 
-We can use directly `XmlNormalizer` or importing `advxml.syntax.normalize._` you can have normalization 
+We can use directly `XmlNormalizer` or importing `advxml.syntax.*` you can have normalization 
 methods onto `NodeSeq` instance.
  
 #### Example
 ```scala   
-    import scala.xml.{Elem, NodeSeq}
-    import advxml.core.XmlNormalizer
+import advxml.transform.XmlNormalizer
+import scala.xml.{Elem, NodeSeq}
 
-    val elem: Elem = <bar><foo></foo></bar>
-    val result: NodeSeq = XmlNormalizer.normalize(elem)
-    //result will be 
-    //<bar><foo/></bar>
+val elem: Elem = <bar><foo></foo></bar>
+val result: NodeSeq = XmlNormalizer.normalize(elem)
+//result will be 
+//<bar><foo/></bar>
 ```
 
 #### Example with syntax
 ```scala
-    import scala.xml.{Elem, NodeSeq}
-    import advxml.syntax._
+import scala.xml.{Elem, NodeSeq}
+import advxml.syntax.*
 
-    val elem: Elem = <bar><foo></foo></bar>
-    val result:NodeSeq = elem.normalize
-    //result will be 
-    //<bar><foo/></bar>
+val elem: Elem = <bar><foo></foo></bar>
+val result:NodeSeq = elem.normalize
+//result will be 
+//<bar><foo/></bar>
 ```
 
 

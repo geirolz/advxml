@@ -1,6 +1,7 @@
 package advxml.syntax
 
-import advxml.core.data.error.ZoomFailedException
+import advxml.data.error.ZoomFailedException
+import advxml.transform.XmlZoom.{$, root}
 import cats.data.NonEmptyList
 import org.scalatest.funsuite.AnyFunSuite
 
@@ -9,13 +10,12 @@ import scala.xml.{Elem, NodeSeq}
 
 class TransformXmlRuleSyntaxTest extends AnyFunSuite {
 
-  import advxml.instances.transform._
-  import advxml.instances.data._
-  import advxml.syntax.transform._
-  import advxml.syntax.data._
-  import advxml.testUtils.ScalacticXmlEquality._
+  import advxml.data.XmlPredicate.*
+  import advxml.transform.XmlModifier.*
+  import advxml.testing.ScalacticXmlEquality.*
+  import advxml.implicits.*
 
-  import cats.instances.try_._
+  import cats.instances.try_.*
 
   test("Transform method on NodeSeq with varargs") {
 

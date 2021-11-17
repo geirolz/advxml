@@ -11,9 +11,8 @@ import scala.xml.Text
   */
 class DataConvertTextConverterSyntaxTest extends AnyFunSuite {
 
-  import advxml.syntax.data._
-  import advxml.instances.data.convert._
-  import cats.instances.option._
+  import advxml.implicits.*
+  import cats.instances.option.*
 
   test("String to Text") {
 

@@ -1,16 +1,16 @@
 package advxml.syntax
 
-import advxml.core.transform.XmlContentZoomTest
-import advxml.core.transform.XmlContentZoomTest.ContractFuncs
-import advxml.testUtils.FunSuiteContract
+import advxml.transform.XmlContentZoomTest
+import advxml.transform.XmlContentZoomTest.ContractFuncs
+import advxml.testing.FunSuiteContract
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Try
 
 class TransformXmlContentZoomSyntaxTest extends AnyFunSuite with FunSuiteContract {
 
-  import advxml.syntax.transform._
-  import cats.instances.try_._
+  import cats.instances.try_.*
+  import advxml.implicits.*
 
   // format: off
   XmlContentZoomTest.Contract[Try](

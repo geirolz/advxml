@@ -1,6 +1,6 @@
 package advxml.syntax
 
-import advxml.core.data.{
+import advxml.data.{
   Converter,
   EitherThrow,
   OptionConverter,
@@ -19,10 +19,10 @@ import scala.xml.{Elem, NodeSeq}
 
 class DataConvertSyntaxTest extends AnyFunSuite {
 
-  import advxml.syntax.data._
-  import advxml.instances.data.convert._
-  import cats.instances.option._
-  import cats.instances.try_._
+  import advxml.implicits.*
+//  import advxml.data.Converter.*
+  import cats.instances.option.*
+  import cats.instances.try_.*
 
   test("ConverterOps.AnyFunctionK") {
     val rvalue: EitherThrow[Int] = Right(1)
@@ -140,11 +140,11 @@ class DataConvertSyntaxTest extends AnyFunSuite {
   test("ConverterOps.XmlEncoder - decode") {
     case class Person(name: String)
     implicit val encoder: XmlEncoder[Person] =
-      XmlEncoder.of(p => Valid(<Person name={p.name} />))
+      XmlEncoder.of(p => <Person name={p.name} />)
 
-    val person: Person                     = Person("mimmo")
-    val result: ValidatedNelThrow[NodeSeq] = person.encode
+    val person: Person  = Person("mimmo")
+    val result: NodeSeq = person.encode
 
-    assert(result.toOption.get === <Person name="mimmo" />)
+    assert(result === <Person name="mimmo" />)
   }
 }

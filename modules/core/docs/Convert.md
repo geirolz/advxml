@@ -14,8 +14,9 @@ type OptionConverter[-A, B] = Converter[A, Option[B]]
 
 ```scala
 import scala.util.Try
-import advxml.core.data.{Converter, ValidatedConverter}
-import advxml.implicits._
+import advxml.data.{Converter, ValidatedConverter, ValidatedNelThrow}
+import advxml.syntax.*
+import advxml.data.Converter.*
 
 object MyConverters {
 
@@ -26,9 +27,8 @@ object MyConverters {
     Converter.of(str => str.toInt)
 
   implicit val validatedConverter: ValidatedConverter[String, Int] =
-    ValidatedConverter.of(str => Try(str.toInt).toValidatedNelThrow)
+    ValidatedConverter.of(str => Try(str.toInt).to[ValidatedNelThrow])
 }
-
 ```
 
 Once defined and imported in our scope let's see how to use it.
@@ -37,9 +37,9 @@ Once defined and imported in our scope let's see how to use it.
 
 ```scala
 import scala.util.Try
-import advxml.core.data.ValidatedNelThrow
-import advxml.syntax.data.convert._
-import MyConverters._
+import advxml.data.ValidatedNelThrow
+import advxml.syntax.*
+import MyConverters.*
 
 val str: String = "10"
 
@@ -54,16 +54,17 @@ val resValidated: ValidatedNelThrow[Int] = str.asValidated[Int]
 ```
 
 Moreover, we can convert wrapped value using `mapAs` as following if an `Applicative` of the effect `F[_]` 
-is available in the scope. 
+is available in the scope.
 
 ```scala
+import advxml.data.Converter.*
+import advxml.syntax.*
+import cats.instances.option.*
+import cats.instances.try_.*
 import scala.util.Try
-import cats.instances.try_._
-import advxml.syntax.data.convert._
-import advxml.instances.data.convert._
 
-val optStr : Option[String] = Some("1")
-val optInt: Option[Int] = optStr.mapAs[Int]
+val optStr: Option[String] = Some("1")
+val optInt: Option[Int] = optStr.flatMapAs[Int]
 val optTryInt: Option[Try[Int]] = optStr.mapAs[Try[Int]]
 ```
 
@@ -72,17 +73,18 @@ We can even use `flatMapAs` if a `FlatMap` of `F[_]` is available
 
 ```scala
 import scala.util.{Success, Try}
-import cats.instances.try_._
-import advxml.syntax.data.convert._
-import advxml.instances.data.convert._
+import cats.instances.try_.*
+import advxml.syntax.*
+import advxml.data.Converter.*
 
-val tryStr : Try[String] = Success("1")
+val tryStr: Try[String] = Success("1")
 val tryInt: Try[Int] = tryStr.flatMapAs[Int]
 ```
 
-Multiple converters for standard types are already defined by advxml and you just need to import them with 
+Multiple converters for standard types are already defined by advxml and you just need to import them with
+
 ```scala
-  import advxml.instances.data.convert._
+import advxml.data.Converter.*
 ```
 
 For simplify the code advxml also defines some other type alias derived from what we have just saw.
@@ -116,12 +118,13 @@ case class Person(name: String,
 ```    
 
 #### Example(XML to Model)
+
 ```scala
-import scala.xml.Elem
-import advxml.implicits._
-import advxml.core.data.{ValidatedConverter, ValidatedNelThrow, XmlDecoder}
-import cats.data.Validated.Valid
-import cats.syntax.all._
+import advxml.data.{ValidatedNelThrow, XmlDecoder}
+import advxml.data.Converter.*
+import advxml.transform.XmlZoom.$
+import advxml.syntax.*
+import cats.syntax.all.*
 
 implicit val converter: XmlDecoder[Person] = XmlDecoder.of(person => {
   (
@@ -155,28 +158,27 @@ val res: ValidatedNelThrow[Person] = xml.decode[Person]
 ```
 
 #### Example(Model to XML)
+
 ```scala
-import scala.xml.Elem
-import advxml.implicits._
-import advxml.core.data.{ValidatedConverter, ValidatedNelThrow, XmlEncoder}
+import advxml.data.{ValidatedNelThrow, XmlEncoder}
+import advxml.syntax.*
 import cats.data.Validated.Valid
-import cats.syntax.all._
+
+import scala.xml.NodeSeq
 
 implicit val converter: XmlEncoder[Person] = XmlEncoder.of(person =>
-  Valid(
-    <Person Name={person.name} Surname={person.surname} Age={person.age.map(_.toString).getOrElse("")}>
-      <Note>
-        {person.note}
-      </Note>
-      <Cars>
-        {person.cars.map(car => {
-          <Car Brand={car.brand} Model={car.model}/>
-      })}
-      </Cars>
-    </Person>
-  )
+  <Person Name={person.name} Surname={person.surname} Age={person.age.map(_.toString).getOrElse("")}>
+    <Note>
+      {person.note}
+    </Note>
+    <Cars>
+      {person.cars.map(car => {
+        <Car Brand={car.brand}/>
+    })}
+    </Cars>
+  </Person>
 )
 
-val p = Person("Matteo", "Bianchi", Some(23), "Matteo note", Seq(Car("Fiat", "500")))
-val res: Elem = p.encode[Elem]
+val p = Person("Matteo", "Bianchi", Some(23), "Matteo note", Seq(Car("Fiat")))
+val res: NodeSeq = p.encode
 ```

@@ -6,8 +6,9 @@ import scala.util.{Success, Try}
 
 class NestedMapSyntaxTest extends AnyFunSuite {
 
-  import cats.instances.option._
-  import cats.instances.try_._
+  import cats.instances.option.*
+  import cats.instances.try_.*
+  import advxml.implicits.*
 
   test("Test nestedMap | Try[Option[String]]") {
     val strValue: Try[Option[String]] = Success(Some("1"))

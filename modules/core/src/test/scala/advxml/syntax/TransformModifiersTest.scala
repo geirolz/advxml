@@ -8,10 +8,9 @@ import scala.xml.{NodeSeq, Text}
 
 class TransformModifiersTest extends AnyWordSpec {
 
-  import advxml.syntax.data._
-  import advxml.instances.data.convert._
-  import advxml.instances.transform.modifiers._
-  import cats.instances.try_._
+  import advxml.transform.XmlModifier.*
+  import advxml.implicits.*
+  import cats.instances.try_.*
 
   "Append node modifier" when {
     "Applied with right data" should {

@@ -1,12 +1,12 @@
 package advxml.syntax
 
-import advxml.core.data.PredicateTests
-import advxml.testUtils.FunSuiteContract
+import advxml.data.PredicateTests
+import advxml.testing.FunSuiteContract
 import org.scalatest.funsuite.AnyFunSuite
 
 class DataPredicateSyntaxTest extends AnyFunSuite with FunSuiteContract {
 
-  import advxml.syntax.data._
+  import advxml.implicits.*
 
   PredicateTests
     .Contract(
