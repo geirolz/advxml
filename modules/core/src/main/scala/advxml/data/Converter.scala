@@ -5,6 +5,7 @@ import advxml.transform.XmlContentZoomRunner
 import advxml.utils.XmlUtils
 import cats.{~>, Applicative, FlatMap, Id}
 import cats.data.{Kleisli, Validated}
+import cats.catsInstancesForId
 
 import scala.annotation.unused
 import scala.util.Try
