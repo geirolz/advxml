@@ -27,9 +27,6 @@ object Dependencies {
     lazy val compilerPluginsFor3: Seq[ModuleID] = Nil
   }
 
-  lazy val extraDependenciesForScala2_12: Seq[ModuleID] =
-    Seq("org.scala-lang.modules" %% "scala-collection-compat" % "2.6.0")
-
   lazy val extraDependenciesForScala2_13: Seq[ModuleID] = Nil
 
   lazy val extraDependenciesForScala3: Seq[ModuleID] = Nil
