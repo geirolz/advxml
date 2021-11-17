@@ -1,7 +1,11 @@
+import advxml.data.XmlPredicate.attrs
+import advxml.transform.XmlZoom.root
+
 import scala.util.Try
 import scala.xml.NodeSeq
-import cats.instances.try_._
-import advxml.implicits._
+import cats.instances.try_.*
+import advxml.implicits.*
+import advxml.transform.XmlModifier.*
 
 val document =
   <Orders>

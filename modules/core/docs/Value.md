@@ -5,12 +5,13 @@ Key is a case class that wrap a String instance and is used to describe the key 
 It exists to avoid unnamed string.
 
 We can create it directly or using StringContext syntax ops.
-```scala
-import advxml.core.data.Key
-import advxml.syntax.data._
 
-val key : Key = Key("key")
-val keySyntax : Key = k"key"
+```scala
+import advxml.data.Key
+import advxml.syntax.*
+
+val key: Key = Key("key")
+val keySyntax: Key = k"key"
 ```
 
 ### Value
@@ -27,8 +28,8 @@ All `Value` instances have a method named `validate` that allows to specify a li
 this method returns a `ValidatedValue`.
 
 ```scala
-import advxml.core.data.{SimpleValue, ValidatedNelThrow, ValidatedValue, ValidationRule}
-import advxml.syntax.data._
+import advxml.data.{SimpleValue, ValidatedNelThrow, ValidatedValue, ValidationRule}
+import advxml.syntax.*
 
 import scala.util.Try
 
@@ -40,7 +41,7 @@ val validatedValue: ValidatedValue = value.nonEmpty
   .validate(ValidationRule("MyCustomRule")(validator = _ == "TEST", errorReason = "Not equals to test")) // == always Success("TEST") = Applicative[Try].pure(get)
 val validatedValueTry: Try[String] = validatedValue.extract[Try] //Success("TEST")
 
-val validatedValueValidated: ValidatedNelThrow[String] = validatedValue.validated//Valid("TEST")
+val validatedValueValidated: ValidatedNelThrow[String] = validatedValue.validated //Valid("TEST")
 ```
 
 ### AttributeData
@@ -49,11 +50,11 @@ for attributes.
 Advxml provides a fluent syntax to define an `AttributeData` instance.
 
 ```scala
-import advxml.core.data.{Key, SimpleValue, AttributeData}
-import advxml.syntax.data._
+import advxml.data.{Key, SimpleValue, AttributeData}
+import advxml.syntax.*
 
-val data : AttributeData = AttributeData(Key("key"), SimpleValue("value"))
-val dataWithSyntax : AttributeData = k"key" := "value"
+val data: AttributeData = AttributeData(Key("key"), SimpleValue("value"))
+val dataWithSyntax: AttributeData = k"key" := "value"
 ```
 
 ### Key-Value predicate
@@ -61,11 +62,11 @@ val dataWithSyntax : AttributeData = k"key" := "value"
 We can create it directly or using fluent syntax.
 
 ```scala
-import advxml.core.data._
-import advxml.syntax.data._
+import advxml.data.*
+import advxml.syntax.*
 
-val p : KeyValuePredicate = KeyValuePredicate(Key("key"), _.get == "value")
-val pWithSyntax : KeyValuePredicate = k"key" -> (_.get == "value")
+val p: KeyValuePredicate = KeyValuePredicate(Key("key"), _.get == "value")
+val pWithSyntax: KeyValuePredicate = k"key" -> (_.get == "value")
 ```
 
 Moreover, advxml provides multiple syntax method to easily create a `KeyValuePredicate` for the most common predicates.
@@ -74,14 +75,14 @@ and `PartialOrder` from cats for comparisons (except for `===` and `=!=` that us
 Please, keep in mind that if conversion fails predicate will result `false`.
 
 ```scala
-import advxml.core.data._
-import advxml.syntax.data._
+import advxml.data.*
+import advxml.syntax.*
 
-val eq : KeyValuePredicate = k"key" === 1
-val neq : KeyValuePredicate = k"key" =!= 1
+val eq: KeyValuePredicate = k"key" === 1
+val neq: KeyValuePredicate = k"key" =!= 1
 
-val le : KeyValuePredicate = k"key" < 1
-val leEq : KeyValuePredicate = k"key" <= 1
-val gt : KeyValuePredicate = k"key" > 1
-val gtEq : KeyValuePredicate = k"key" >= 1
+val le: KeyValuePredicate = k"key" < 1
+val leEq: KeyValuePredicate = k"key" <= 1
+val gt: KeyValuePredicate = k"key" > 1
+val gtEq: KeyValuePredicate = k"key" >= 1
 ```

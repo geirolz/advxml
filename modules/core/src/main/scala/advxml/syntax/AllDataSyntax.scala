@@ -1,10 +1,10 @@
 package advxml.syntax
 
-import advxml.core.data._
-import advxml.core.ApplicativeThrowOrEu
+import advxml.data.*
+import advxml.ApplicativeThrowOrEu
 import cats.{~>, Applicative, Eq, FlatMap, PartialOrder}
 import cats.data.Validated
-import cats.implicits._
+import cats.implicits.*
 
 import scala.util.Try
 import scala.xml.NodeSeq
@@ -138,7 +138,7 @@ private[syntax] trait ConverterSyntax {
 
     /** Syntactic sugar to run an implicit [[XmlEncoder]] with [[A]] instance as input.
       */
-    def encode(implicit c: XmlEncoder[A]): ValidatedNelThrow[NodeSeq] =
+    def encode(implicit c: XmlEncoder[A]): NodeSeq =
       c.run(a)
   }
 
@@ -154,8 +154,8 @@ private[syntax] trait ConverterSyntax {
 private[syntax] trait AttributeSyntax {
 
   implicit class KeyAndValueStringInterpolationOps(ctx: StringContext) {
-    def k(args: Any*): Key         = Key(ctx.s(args: _*))
-    def v(args: Any*): SimpleValue = SimpleValue(ctx.s(args: _*))
+    def k(args: Any*): Key         = Key(ctx.s(args*))
+    def v(args: Any*): SimpleValue = SimpleValue(ctx.s(args*))
   }
 
   implicit class AttributeOps(key: Key) {
@@ -164,7 +164,7 @@ private[syntax] trait AttributeSyntax {
       AttributeData(key, c.run(v))
 
     // ********* KeyValuePredicate *********
-    import cats.syntax.order._
+    import cats.syntax.order.*
 
     def ->(valuePredicate: SimpleValue => Boolean): KeyValuePredicate =
       KeyValuePredicate(key, valuePredicate)

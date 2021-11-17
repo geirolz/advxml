@@ -26,22 +26,24 @@ Each example is written with fluent syntax using implicits but commented you can
 - **==>** is an alias to `withModifier` method.
 
 #### Example
+
 ```scala
 
 //Scala imports
+
 import scala.xml.Elem
 import scala.xml.NodeSeq
 import scala.util.Try
 
 //import MonadError instance for Try
-import cats.instances.try_._
+import cats.instances.try_.*
 
 //Advxml imports
-import advxml.core.transform.XmlRule
+import advxml.transform.XmlRule
 //Supply $ and ==> syntax
-import advxml.syntax.transform._
+import advxml.syntax.*
 //Supply Append class
-import advxml.instances.transform._
+import advxml.instances.transform.*
 
 val doc: Elem =
   <Persons>
@@ -78,14 +80,13 @@ Given _R1_ and _R2_ where are both two simple rule when combine them we have the
 #### Example
 
 ```scala
-import advxml.core.transform.{AbstractRule, ComposableXmlRule}
-import advxml.implicits._
+import advxml.transform.{AbstractRule, ComposableXmlRule}
 
-import scala.xml._
-import scala.util._
+import scala.xml.*
+import scala.util.*
 
 //import MonadError instance for Try
-import cats.instances.try_._
+import cats.instances.try_.*
 
 val doc: NodeSeq = <Root></Root>
 val r1: ComposableXmlRule = root ==> Append(<Node1/>)
@@ -113,12 +114,11 @@ the deletion of a node before other actions, if you use `Delete` you can not do 
 
 #### Example
 ```scala
-import advxml.implicits._
-import scala.xml._
-import scala.util._
+import scala.xml.*
+import scala.util.*
 
 //import MonadError instance for Try
-import cats.instances.try_._
+import cats.instances.try_.*
 
 val doc: Elem =
   <Persons>
@@ -150,12 +150,11 @@ You can also use the `Monoid` implementation provided in the instances to combin
 
 ```scala
 
-import advxml.implicits._
 import cats.kernel.Monoid
 
-import scala.xml._
-import scala.util._
-import cats.syntax.monoid._
+import scala.xml.*
+import scala.util.*
+import cats.syntax.monoid.*
 
 val m1: ComposableXmlModifier = Append(<Car Brand="Lamborghini"/>)
 val m2: ComposableXmlModifier = Append(<Car Brand="Ferrari"/>)
@@ -167,16 +166,15 @@ val m4Sugar: ComposableXmlModifier = m1 |+| m2 |+| m3
 
 ## Root transformation
 If we need to edit the document root we can use `root` as zoom action.
-`root` value is provided by `advxml.instances.transform._`
+`root` value is provided by `advxml.instances.transform.*`
 
 *Example*
 ```scala
-import scala.xml._
-import scala.util._
+import scala.xml.*
+import scala.util.*
 
 //import MonadError instance for Try
-import cats.instances.try_._
-import advxml.implicits._
+import cats.instances.try_.*
 
 val doc: Elem = <Root/>
 val result: Try[NodeSeq] = doc.transform[Try](root ==> SetAttrs(k"Attr1" := v"TEST"))

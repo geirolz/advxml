@@ -1,6 +1,7 @@
 package advxml.syntax
 
-import advxml.core.data._
+import advxml.data.*
+import advxml.transform.XmlZoom.$
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.xml.Elem
@@ -12,10 +13,10 @@ import scala.xml.Elem
   */
 class DataConvertFullSyntaxTest extends AnyFunSuite {
 
-  import advxml.implicits._
-  import advxml.testUtils.ScalacticXmlEquality._
-  import cats.data.Validated._
-  import cats.syntax.all._
+  import advxml.implicits.*
+  import advxml.testing.ScalacticXmlEquality.*
+  import cats.data.Validated.*
+  import cats.syntax.all.*
 
   case class Car(brand: String, model: String)
   case class Person(name: String, surname: String, age: Option[Int], note: String, cars: Seq[Car])

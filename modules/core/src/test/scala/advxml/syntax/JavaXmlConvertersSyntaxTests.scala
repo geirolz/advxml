@@ -1,13 +1,13 @@
 package advxml.syntax
 
-import advxml.core.utils.JavaXmlConvertersTest
-import advxml.core.utils.JavaXmlConvertersTest.ContractFuncs
-import advxml.testUtils.FunSuiteContract
+import advxml.utils.JavaXmlConvertersTest
+import advxml.utils.JavaXmlConvertersTest.ContractFuncs
+import advxml.testing.FunSuiteContract
 import org.scalatest.funsuite.AnyFunSuite
 
 class JavaXmlConvertersSyntaxTests extends AnyFunSuite with FunSuiteContract {
 
-  import advxml.syntax.javaConverters._
+  import advxml.implicits.*
 
   // format: off
   JavaXmlConvertersTest

@@ -1,9 +1,9 @@
 package advxml.syntax
 
-import advxml.core.transform.XmlZoom.root
-import advxml.core.transform.XmlZoomTest
-import advxml.core.transform.XmlZoomTest.ContractFuncs
-import advxml.testUtils.FunSuiteContract
+import advxml.transform.XmlZoom.root
+import advxml.transform.XmlZoomTest
+import advxml.transform.XmlZoomTest.ContractFuncs
+import advxml.testing.FunSuiteContract
 import org.scalatest.funsuite.AnyFunSuite
 
 import scala.util.Try
@@ -11,7 +11,7 @@ import scala.xml.{Elem, NodeSeq}
 
 class TransformXmlZoomSyntaxTest extends AnyFunSuite with FunSuiteContract {
 
-  import advxml.syntax.transform._
+  import advxml.implicits.*
 
   XmlZoomTest
     .Contract(
@@ -32,7 +32,7 @@ class TransformXmlZoomSyntaxTest extends AnyFunSuite with FunSuiteContract {
 
   test("[XmlZoom.Syntax] - selectDynamic") {
 
-    import cats.instances.try_._
+    import cats.instances.try_.*
 
     val doc: Elem =
       <foo>
@@ -51,7 +51,7 @@ class TransformXmlZoomSyntaxTest extends AnyFunSuite with FunSuiteContract {
 
   test("[XmlZoom.Syntax] - applyDynamic") {
 
-    import cats.instances.try_._
+    import cats.instances.try_.*
 
     val doc: Elem =
       <foo>

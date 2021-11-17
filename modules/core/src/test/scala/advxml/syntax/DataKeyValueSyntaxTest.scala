@@ -1,14 +1,13 @@
 package advxml.syntax
 
-import advxml.core.data.{AttributeData, Key, KeyValuePredicate, SimpleValue}
+import advxml.data.{AttributeData, Key, KeyValuePredicate, SimpleValue}
 import advxml.syntax.DataKeyValueSyntaxTest.ContractFuncs
-import advxml.testUtils.{ContractTests, FunSuiteContract}
+import advxml.testing.{ContractTests, FunSuiteContract}
 import org.scalatest.funsuite.AnyFunSuite
 
 class DataKeyValueSyntaxTest extends AnyFunSuite with FunSuiteContract {
 
-  import advxml.syntax.data._
-  import advxml.instances.data.convert._
+  import advxml.implicits.*
 
   DataKeyValueSyntaxTest
     .Contract(
