@@ -16,7 +16,9 @@ private inline def showType[T]: String = ${ showTypeImpl[T] }
 private[advxml] trait ConvertersAssertsUtils { $this: AnyFunSuite =>
   extension [I, O](converter: Converter[I, O]) {
     inline def test(in: I, expectedOut: O): Unit = {
-      $this.test(s"Converter[${showType[I]}, ${showType[O]}].apply('$in') should be '$expectedOut'") {
+      $this.test(
+        s"Converter[${showType[I]}, ${showType[O]}].apply('$in') should be '$expectedOut'"
+      ) {
         assert(converter.run(in) == expectedOut)
       }
     }
