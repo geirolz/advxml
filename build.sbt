@@ -1,8 +1,12 @@
-val prjname = "advxml"
+import ModuleMdocPlugin.autoImport.mdocScalacOptions
+
+val prjName = "advxml"
+val org     = "com.github.geirolz"
+
 inThisBuild(
   List(
     organization := "com.github.geirolz",
-    homepage     := Some(url(s"https://github.com/geirolz/$prjname")),
+    homepage     := Some(url(s"https://github.com/geirolz/$prjName")),
     licenses     := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
     developers := List(
       Developer(
@@ -21,27 +25,48 @@ lazy val advxml: Project = project
   .in(file("."))
   .settings(allSettings)
   .settings(noPublishSettings)
+  .settings(
+    name := prjName,
+    description := "A lightweight, simple and functional library DSL to work with XML in Scala with Cats",
+    organization := org
+  )
   .aggregate(core)
 
 lazy val core: Project =
-  buildModule("core", toPublish = true)
+  buildModule(
+    path      = "core",
+    toPublish = true,
+    folder    = "."
+  )
 
 //=============================== MODULES UTILS ===============================
-def buildModule(path: String, toPublish: Boolean = false): Project = {
-  val id = path.split("-").reduce(_ + _.capitalize)
-  Project(id, file(s"modules/$path"))
-    .configure(buildProject(path, toPublish))
-}
+def buildModule(path: String, toPublish: Boolean, folder: String = "modules"): Project = {
+  val keys       = path.split("-")
+  val id         = keys.reduce(_ + _.capitalize)
+  val docName    = keys.mkString(" ")
+  val prjFile    = file(s"$folder/$path")
+  val docNameStr = s"$prjName $docName"
 
-def buildProject(path: String, toPublish: Boolean = false)(project: Project) = {
-  val docName = path.split("-").mkString(" ")
-  project.settings(
-    description    := s"$prjname $docName",
-    moduleName     := s"$prjname-$path",
-    name           := s"$prjname $docName",
-    publish / skip := !toPublish,
-    allSettings
-  )
+  Project(id, prjFile)
+    .settings(
+      description       := moduleName.value,
+      moduleName        := s"$prjName-$path",
+      name              := s"$prjName $docName",
+      publish / skip    := !toPublish,
+      mdocIn            := file(s"$folder/docs"),
+      mdocOut           := file(folder),
+      mdocScalacOptions := Seq("-Xsource:3"),
+      mdocVariables := Map(
+        "ORG"         -> org,
+        "PRJ_NAME"    -> prjName,
+        "DOCS_TITLE"  -> docNameStr.split(" ").map(_.capitalize).mkString(" "),
+        "MODULE_NAME" -> moduleName.value,
+        "VERSION"     -> previousStableVersion.value.getOrElse("<version>")
+      ),
+      allSettings
+    )
+    .enablePlugins(ModuleMdocPlugin)
+
 }
 
 //=============================== SETTINGS ===============================
