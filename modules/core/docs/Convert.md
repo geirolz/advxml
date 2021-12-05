@@ -120,11 +120,18 @@ case class Person(name: String,
 #### Example(XML to Model)
 
 ```scala
-import advxml.data.{ValidatedNelThrow, XmlDecoder}
-import advxml.data.Converter.*
-import advxml.transform.XmlZoom.$
-import advxml.syntax.*
+import scala.xml.Elem
+import advxml.core.data.{ValidatedConverter, ValidatedNelThrow, XmlDecoder}
+import advxml.implicits.*
+import cats.data.Validated.Valid
 import cats.syntax.all.*
+
+case class Car(brand: String, model: String)
+case class Person(name: String,
+                  surname: String,
+                  age: Option[Int],
+                  note: String,
+                  cars: Seq[Car])
 
 implicit val converter: XmlDecoder[Person] = XmlDecoder.of(person => {
   (
@@ -138,21 +145,21 @@ implicit val converter: XmlDecoder[Person] = XmlDecoder.of(person => {
           (
             car.attr("Brand").asValidated[String],
             car.attr("Model").asValidated[String]
-            ).mapN(Car)
+            ).mapN(Car.apply)
         })
         .sequence
     }
-    ).mapN(Person)
+    ).mapN(Person.apply)
 })
 
 val xml =
-  <person Name="Matteo" Surname="Bianchi" Age="24">
-    <note>NOTE</note>
-    <cars>
-      <car brand="Ferrari" model="LaFerrari"/>
-      <car brand="Fiat" model="500"/>
-    </cars>
-  </person>
+  <Person Name="Matteo" Surname="Bianchi" Age="24">
+    <Note>NOTE</Note>
+    <Cars>
+      <Car Brand="Ferrari" Model="LaFerrari"/>
+      <Car Brand="Fiat" Model="500"/>
+    </Cars>
+  </Person>
 
 val res: ValidatedNelThrow[Person] = xml.decode[Person]
 ```
