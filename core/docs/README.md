@@ -15,18 +15,18 @@ Advxml supports 2.13 and 3
 
 **Sbt**
 ```sbt mdoc
-  libraryDependencies += "com.github.geirolz" %% "advxml-core" % 2.4.2
+  libraryDependencies += "com.github.geirolz" %% "advxml-core" % @VERSION@
 ```
 
 ## Structure
 The idea behind this library is offer a fluent syntax to edit and read xml.
 
 *Features:*
-- [data/Value](docs/Value.md) Data types for value, keys and attributes.
-- [data/Convert](docs/Convert.md) Allow instances conversion (not automatically yet)
-- [transform/Transform](docs/Transform.md) Allows to edit the XML document.
-- [transform/Zoom](docs/Zoom.md) Allows to traverse an XML do get nodes, attributes and text.
-- [transform/Normalize](docs/Normalize.md) Allows normalizing xml docs, removing white spaces and collapse empty nodes
+- [data/Value](@DOCS_FOLDER@/Value.md) Data types for value, keys and attributes.
+- [data/Convert](@DOCS_FOLDER@/Convert.md) Allow instances conversion (not automatically yet)
+- [transform/Transform](@DOCS_FOLDER@/Transform.md) Allows to edit the XML document.
+- [transform/Zoom](@DOCS_FOLDER@/Zoom.md) Allows to traverse an XML do get nodes, attributes and text.
+- [transform/Normalize](@DOCS_FOLDER@/Normalize.md) Allows normalizing xml docs, removing white spaces and collapse empty nodes
 
  
  ## Contributors

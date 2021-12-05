@@ -107,7 +107,7 @@ private[syntax] sealed trait ZoomSyntax {
 
 private[syntax] trait NormalizerSyntax {
 
-  implicit class NodeSeqNormalizationAndEqualityOps(ns: NodeSeq) {
+  implicit class NodeSeqNormalizationAndEqualityOps[N <: NodeSeq](ns: N) {
 
     def normalize: NodeSeq =
       XmlNormalizer.normalize(ns)

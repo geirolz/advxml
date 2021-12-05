@@ -53,13 +53,14 @@ def buildModule(path: String, toPublish: Boolean, folder: String = "modules"): P
       moduleName        := s"$prjName-$path",
       name              := s"$prjName $docName",
       publish / skip    := !toPublish,
-      mdocIn            := file(s"$folder/docs"),
-      mdocOut           := file(folder),
+      mdocIn            := file(s"$folder/$path/docs"),
+      mdocOut           := file(s"$folder/docs"),
       mdocScalacOptions := Seq("-Xsource:3"),
       mdocVariables := Map(
         "ORG"         -> org,
         "PRJ_NAME"    -> prjName,
         "DOCS_TITLE"  -> docNameStr.split(" ").map(_.capitalize).mkString(" "),
+        "DOCS_FOLDER" -> "docs",
         "MODULE_NAME" -> moduleName.value,
         "VERSION"     -> previousStableVersion.value.getOrElse("<version>")
       ),

@@ -3,7 +3,7 @@ Convert "ecosystem" is based on `Convert` type-class implicitly in the scope
 and applied on an instance using the syntax that advxml provides.
 
 In order to simplify the code advxml defines the following types aliases
-```scala mdoc:reset
+```scala
 import advxml.data.Converter
 import advxml.data.ValidatedNelThrow
 
@@ -14,7 +14,7 @@ type OptionConverter[-A, B] = Converter[A, Option[B]]
 
 ### How to create a converter
 
-```scala mdoc
+```scala
 import scala.util.Try
 import advxml.data.{Converter, ValidatedConverter, ValidatedNelThrow}
 import advxml.implicits.*
@@ -38,35 +38,42 @@ Once defined and imported in our scope let's see how to use it.
 
 ### How to use a converter
 
-```scala mdoc
+```scala
 import scala.util.Try
 import advxml.syntax.*
 import MyConverters.*
 
 val str: String = "10"
+// str: String = "10"
 
 //Using 'converter' of type Converter[String, Try[Int]]
 val resTry: Try[Int] = str.as[Try[Int]]
+// resTry: Try[Int] = Success(value = 10)
 
 //Using 'converterId' of type Converter[String, Int] = Converter[String, Int]
 val resId: Int = str.as[Int]
+// resId: Int = 10
 
 //Using 'validatedConverter' of type ValidatedConverter[String, Int] = Converter[String, ValidatedNelThrow[Int]]
 val resValidated: ValidatedNelThrow[Int] = str.asValidated[Int] 
+// resValidated: ValidatedNelThrow[Int] = Valid(a = 10)
 ```
 
 Moreover, we can convert wrapped value using `mapAs` as following if an `Applicative` of the effect `F[_]` 
 is available in the scope.
 
-```scala mdoc
+```scala
 import advxml.syntax.*
 import cats.instances.option.*
 import cats.instances.try_.*
 import scala.util.Try
 
 val optStr: Option[String] = Some("1")
+// optStr: Option[String] = Some(value = "1")
 val optInt: Option[Int] = optStr.flatMapAs[Int]
+// optInt: Option[Int] = Some(value = 1)
 val optTryInt: Option[Try[Int]] = optStr.mapAs[Try[Int]]
+// optTryInt: Option[Try[Int]] = Some(value = Success(value = 1))
 ```
 
 We can even use `flatMapAs` if a `FlatMap` of `F[_]` is available
@@ -115,7 +122,7 @@ case class Person(name: String,
 
 #### Example(XML to Model)
 
-```scala mdoc:nest:to-string
+```scala
 import scala.xml.Elem
 import advxml.data.*
 import advxml.transform.XmlZoom.*
@@ -148,6 +155,7 @@ implicit val converter: XmlDecoder[Person] = XmlDecoder.of(person => {
     }
     ).mapN(Person.apply)
 })
+// converter: XmlDecoder[Person] = advxml.data.Converter$$anonfun$of$2@3d4f0757
 
 val xml =
   <Person Name="Matteo" Surname="Bianchi" Age="24">
@@ -157,13 +165,21 @@ val xml =
       <Car Brand="Fiat" Model="500"/>
     </Cars>
   </Person>
+// xml: Elem = <Person Name="Matteo" Surname="Bianchi" Age="24">
+//     <Note>NOTE</Note>
+//     <Cars>
+//       <Car Brand="Ferrari" Model="LaFerrari"/>
+//       <Car Brand="Fiat" Model="500"/>
+//     </Cars>
+//   </Person>
 
 val res: ValidatedNelThrow[Person] = xml.decode[Person]
+// res: ValidatedNelThrow[Person] = Valid(Person(Matteo,Bianchi,Some(24),NOTE,Vector(Car(Ferrari,LaFerrari), Car(Fiat,500))))
 ```
 
 #### Example(Model to XML)
 
-```scala mdoc:nest:to-string
+```scala
 import advxml.data.{ValidatedNelThrow, XmlEncoder}
 import advxml.syntax.*
 import cats.data.Validated.Valid
@@ -182,7 +198,17 @@ implicit val converter: XmlEncoder[Person] = XmlEncoder.of(person =>
     </Cars>
   </Person>
 )
+// converter: XmlEncoder[Person] = advxml.data.Converter$$anonfun$of$2@c4097ac
 
 val p = Person("Matteo", "Bianchi", Some(23), "Matteo note", Seq(Car("Fiat", "500")))
+// p: Person = Person(Matteo,Bianchi,Some(23),Matteo note,List(Car(Fiat,500)))
 val res: NodeSeq = p.encode
+// res: NodeSeq = <Person Name="Matteo" Surname="Bianchi" Age="23">
+//     <Note>
+//       Matteo note
+//     </Note>
+//     <Cars>
+//       <Car Brand="Fiat"/>
+//     </Cars>
+//   </Person>
 ```

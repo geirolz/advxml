@@ -1,6 +1,6 @@
 package advxml.transform
 import advxml.data.*
-import advxml.transform.XmlZoom.{ZoomAction, _}
+import advxml.transform.XmlZoom.*
 import advxml.ApplicativeThrowOrEu
 import cats.{Functor, Monoid}
 

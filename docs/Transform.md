@@ -27,8 +27,7 @@ Each example is written with fluent syntax using implicits but commented you can
 
 #### Example
 
-```scala mdoc:to-string
-
+```scala
 //Scala imports
 import scala.xml.Elem
 import scala.xml.NodeSeq
@@ -49,8 +48,16 @@ val doc: Elem =
       </Cars>
     </Person>
   </Persons>
+// doc: Elem = <Persons>
+//     <Person Name="Mimmo">
+//       <Cars>
+//         <Car Brand="Fiat"/>
+//       </Cars>
+//     </Person>
+//   </Persons>
 
 val rule: XmlRule = root.Person.Cars ==> Append(<Car Brand="Lamborghini"/>)
+// rule: XmlRule = Composable(Unbinded(List(Down(Person), Down(Cars))),List(Append(<Car Brand="Lamborghini"/>)))
 
 //  Desugared
 //  val rule: XmlRule = root
@@ -59,6 +66,9 @@ val rule: XmlRule = root.Person.Cars ==> Append(<Car Brand="Lamborghini"/>)
 //    .withModifier(Append(<Car Brand="Lamborghini"/>))
 
 val result: Try[NodeSeq] = doc.transform[Try](rule)
+// result: Try[NodeSeq] = Success(<Persons><Person Name="Mimmo"><Cars>
+//         <Car Brand="Fiat"/>
+//       <Car Brand="Lamborghini"/></Cars></Person></Persons>)
 ```
 
 ## Combine rules
@@ -75,7 +85,7 @@ Given _R1_ and _R2_ where are both two simple rule when combine them we have the
 
 #### Example
 
-```scala mdoc:nest:to-string
+```scala
 import advxml.transform.{AbstractRule, ComposableXmlRule}
 
 import scala.xml.*
@@ -83,16 +93,21 @@ import scala.util.*
 
 //val doc: NodeSeq = <Root></Root>
 val r1: ComposableXmlRule = root ==> Append(<Node1/>)
+// r1: ComposableXmlRule = Composable(Unbinded(List()),List(Append(<Node1/>)))
 val r2: ComposableXmlRule = root ==> Append(<Node1/>)
+// r2: ComposableXmlRule = Composable(Unbinded(List()),List(Append(<Node1/>)))
 
 //Will try to apply both R1 and R2
 val r1AndR2: AbstractRule = r1.and(r2)
+// r1AndR2: AbstractRule = And(Composable(Unbinded(List()),List(Append(<Node1/>))),Composable(Unbinded(List()),List(Append(<Node1/>))))
 
 //Will try to apply R1, if it fails will apply R2, if R2 fails r1OrR2 fails
 val r1OrR2: AbstractRule = r1.orElse(r2)
+// r1OrR2: AbstractRule = OrElse(Composable(Unbinded(List()),List(Append(<Node1/>))),Composable(Unbinded(List()),List(Append(<Node1/>))))
 
 //Will try to apply R1, even if it fails r1Optional will success but in case R1 fails the out is the input document without changes
 val r1Optional: AbstractRule = r1.optional
+// r1Optional: AbstractRule = Optional(Composable(Unbinded(List()),List(Append(<Node1/>))))
 ```
 
 ## Combine modifiers
@@ -106,7 +121,7 @@ Actually the only implementation of `FinalXmlModifier` is just the `Delete` acti
 the deletion of a node before other actions, if you use `Delete` you can not do anything else on that node.
 
 #### Example
-```scala mdoc:nest:to-string
+```scala
 import scala.xml.*
 import scala.util.*
 import advxml.implicits.*
@@ -119,12 +134,20 @@ val myDoc: Elem =
       </Cars>
     </Person>
   </Persons>
+// myDoc: Elem = <Persons>
+//     <Person Name="Mimmo">
+//       <Cars>
+//         <Car Brand="Fiat"/>
+//       </Cars>
+//     </Person>
+//   </Persons>
 
 //you can use postfixOps and remove dots and useless brackets 
 val rule = root.Person.Cars 
             .withModifier(Append(<Car Brand="Lamborghini"/>))
             .withModifier(Append(<Car Brand="Ferrari"/>))
             .withModifier(Append(<Car Brand="Bmw"/>))
+// rule: ComposableXmlRule = Composable(Unbinded(List(Down(Person), Down(Cars))),List(Append(<Car Brand="Lamborghini"/>), Append(<Car Brand="Ferrari"/>), Append(<Car Brand="Bmw"/>)))
 
 //  Desugared
 //  val rules: XmlRule = root
@@ -135,12 +158,14 @@ val rule = root.Person.Cars
 //      .withModifier(Append(<Car Brand="Bmw"/>))
 
 val result: Try[NodeSeq] = myDoc.transform[Try](rule)  
+// result: Try[NodeSeq] = Success(<Persons><Person Name="Mimmo"><Cars>
+//         <Car Brand="Fiat"/>
+//       <Car Brand="Lamborghini"/><Car Brand="Ferrari"/><Car Brand="Bmw"/></Cars></Person></Persons>)
 ```
 
 You can also use the `Monoid` implementation provided in the instances to combine multiple `ComposableXmlModifier`
 
-```scala mdoc:nest:to-string
-
+```scala
 import cats.kernel.Monoid
 
 import scala.xml.*
@@ -149,11 +174,16 @@ import cats.syntax.monoid.*
 import advxml.transform.*
 
 val m1: ComposableXmlModifier = Append(<Car Brand="Lamborghini"/>)
+// m1: ComposableXmlModifier = Append(<Car Brand="Lamborghini"/>)
 val m2: ComposableXmlModifier = Append(<Car Brand="Ferrari"/>)
+// m2: ComposableXmlModifier = Append(<Car Brand="Ferrari"/>)
 val m3: ComposableXmlModifier = Append(<Car Brand="Tesla"/>)
+// m3: ComposableXmlModifier = Append(<Car Brand="Tesla"/>)
 
 val m4: ComposableXmlModifier = Monoid.combineAll(Seq(m1, m2, m3))
+// m4: ComposableXmlModifier = advxml.transform.ComposableXmlModifierInstances$$anon$1$$anon$2@72527b7a
 val m4Sugar: ComposableXmlModifier = m1 |+| m2 |+| m3
+// m4Sugar: ComposableXmlModifier = advxml.transform.ComposableXmlModifierInstances$$anon$1$$anon$2@140d1026
 ```
 
 ## Root transformation
@@ -161,7 +191,7 @@ If we need to edit the document root we can use `root` as zoom action.
 `root` value is provided by `advxml.instances.transform.*`
 
 *Example*
-```scala mdoc:nest:to-string
+```scala
 import scala.xml.*
 import scala.util.*
 
@@ -169,5 +199,7 @@ import scala.util.*
 import cats.instances.try_.*
 
 val doc: Elem = <Root/>
+// doc: Elem = <Root/>
 val result: Try[NodeSeq] = doc.transform[Try](root ==> SetAttrs(k"Attr1" := v"TEST"))
+// result: Try[NodeSeq] = Success(<Root Attr1="TEST"/>)
 ```
