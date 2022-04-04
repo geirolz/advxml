@@ -18,15 +18,13 @@ class ValidatedSyntaxTest extends AnyFunSuite with FunSuiteContract {
   import advxml.implicits.*
 
   // format: off
-  ValidateThrowTest.Contract(
-    "Syntax",
-    {
+  ValidateThrowTest.Contract("Syntax", {
       import advxml.data.Converter.*
       import advxml.data.error.AggregatedException.*
       import cats.instances.either.*
       import cats.instances.option.*
       import cats.instances.try_.*
-      
+
       ContractFuncs(
         toTry           = _.to[Try],
         fromTry         = _.to[ValidatedNelThrow],

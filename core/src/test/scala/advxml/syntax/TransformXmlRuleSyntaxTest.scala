@@ -132,7 +132,7 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
     val ns: Elem = <Order></Order>
     val rule =
       (root.Missing ==> Append(<OrderLine PrimeLineNo="1"/>)).orElse {
-        (root       ==> Append(<OrderLine PrimeLineNo="1"/>))
+        (root ==> Append(<OrderLine PrimeLineNo="1"/>))
           .and(root ==> Append(<OrderLine PrimeLineNo="2"/>))
       }
 
@@ -247,7 +247,7 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
         </data>
             .transform(
               (root.bar.test | attrs(k"Id" === "1"))
-              ==> Append(<newNode value="x"/>)
+                ==> Append(<newNode value="x"/>)
             )
             .get
     )
@@ -277,7 +277,7 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
             .transform(
               root.OrderLines.OrderLine
                 .filter(attrs(k"PrimeLineNo" === "1"))
-              ==> Append(<foo value="new"/>)
+                ==> Append(<foo value="new"/>)
             )
             .get
     )
@@ -301,9 +301,9 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
         </Order>
             .transform(
               root.OrderLines
-              ==> Append(<OrderLine PrimeLineNo="2"/>)
-              ==> Append(<OrderLine PrimeLineNo="3"/>)
-              ==> Append(<OrderLine PrimeLineNo="4"/>)
+                ==> Append(<OrderLine PrimeLineNo="2"/>)
+                ==> Append(<OrderLine PrimeLineNo="3"/>)
+                ==> Append(<OrderLine PrimeLineNo="4"/>)
             )
             .get
     )
@@ -327,9 +327,9 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
         </Order>
             .transform(
               root.OrderLines
-              ==> Prepend(<OrderLine PrimeLineNo="3"/>)
-              ==> Prepend(<OrderLine PrimeLineNo="2"/>)
-              ==> Prepend(<OrderLine PrimeLineNo="1"/>)
+                ==> Prepend(<OrderLine PrimeLineNo="3"/>)
+                ==> Prepend(<OrderLine PrimeLineNo="2"/>)
+                ==> Prepend(<OrderLine PrimeLineNo="1"/>)
             )
             .get
     )
@@ -354,7 +354,7 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
         </Order>
             .transform(
               (root.OrderLines.OrderLine | attrs(k"PrimeLineNo" === "1"))
-              ==> Replace(_ => <OrderLine PrimeLineNo="3"/>)
+                ==> Replace(_ => <OrderLine PrimeLineNo="3"/>)
             )
             .get
     )
@@ -385,7 +385,7 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
         </Order>
             .transform(
               (root.OrderLines.OrderLine | attrs(k"PrimeLineNo" === "2"))
-              ==> Remove
+                ==> Remove
             )
             .get
     )
@@ -477,10 +477,10 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
         </Order>
             .transform(
               root.OrderLines.OrderLine ==>
-              SetAttrs(ol => {
-                val newValue = (ol \@ "PrimeLineNo").toInt + 1
-                NonEmptyList.of(k"PrimeLineNo" := newValue)
-              })
+                SetAttrs(ol => {
+                  val newValue = (ol \@ "PrimeLineNo").toInt + 1
+                  NonEmptyList.of(k"PrimeLineNo" := newValue)
+                })
             )
             .get
     )

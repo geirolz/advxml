@@ -17,7 +17,7 @@ private[advxml] trait ConvertersAssertsUtils { $this: AnyFunSuite =>
     def test(in: I, expectedOut: F[O])(implicit foTag: TypeTag[F[O]]): Unit = {
       $this.test(
         s"Converter[${typeOf[I].finalResultType}, ${foTag.tpe.finalResultType}]" +
-        s".apply('$in') should be '$expectedOut'"
+          s".apply('$in') should be '$expectedOut'"
       ) {
 
         assert(converter.run(in) == expectedOut)

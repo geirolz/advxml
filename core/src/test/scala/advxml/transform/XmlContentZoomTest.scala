@@ -24,9 +24,7 @@ class XmlContentZoomTest extends AnyFunSuite with FunSuiteContract {
   }
 
   // format: off
-  XmlContentZoomTest.Contract[Try](
-    "Core",
-    {
+  XmlContentZoomTest.Contract[Try]("Core", {
       ContractFuncs[Try](
         //label
         label                  = ns => XmlContentZoom.label(ns),
