@@ -13,9 +13,7 @@ class TransformXmlContentZoomSyntaxTest extends AnyFunSuite with FunSuiteContrac
   import advxml.implicits.*
 
   // format: off
-  XmlContentZoomTest.Contract[Try](
-    "Syntax.WithString",
-    {
+  XmlContentZoomTest.Contract[Try]("Syntax.WithString", {
       ContractFuncs[Try](
         //label
         label                 = ns => ns.label,
