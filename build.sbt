@@ -93,17 +93,17 @@ lazy val baseSettings = Seq(
   resolvers ++= Resolvers.all,
   libraryDependencies ++= Dependencies.common,
   libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-    case Some((2, 13)) => Dependencies.extraDependenciesForScala2_13
-    case Some((3, _))  => Dependencies.extraDependenciesForScala3
-    case _             => Nil
+    case Some(2, 13) => Dependencies.extraDependenciesForScala2_13
+    case Some(3, _)  => Dependencies.extraDependenciesForScala3
+    case _           => Nil
   })
 )
 
 lazy val compilePlugins = Seq(
   libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-    case Some((2, _)) => Dependencies.Plugins.compilerPluginsFor2
-    case Some((3, _)) => Dependencies.Plugins.compilerPluginsFor3
-    case _            => Nil
+    case Some(2, _) => Dependencies.Plugins.compilerPluginsFor2
+    case Some(3, _) => Dependencies.Plugins.compilerPluginsFor3
+    case _          => Nil
   })
 )
 
@@ -120,13 +120,13 @@ def scalacSettings(scalaVersion: String): Seq[String] =
     "-language:implicitConversions" // Allow definition of implicit functions called views
   ) ++ {
     CrossVersion.partialVersion(scalaVersion) match {
-      case Some((3, _)) =>
+      case Some(3, _) =>
         Seq(
           "-Ykind-projector",
           "-explain-types", // Explain type errors in more detail.
           "-Xfatal-warnings" // Fail the compilation if there are any warnings.
         )
-      case Some((2, 13)) =>
+      case Some(2, 13) =>
         Seq(
           //        "-Xlog-implicits",
           "-deprecation", // Emit warning and location for usages of deprecated APIs.

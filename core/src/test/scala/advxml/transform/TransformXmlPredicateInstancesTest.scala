@@ -28,7 +28,7 @@ class TransformXmlPredicateInstancesTest extends AnyFunSuite {
 
   test("Test 'label' predicate - with Document") {
     val p: XmlPredicate  = label(_ == "Node")
-    val target: Document = new Document()
+    val target: Document = new Document
     val result: Boolean  = p(target)
     assert(!result)
   }

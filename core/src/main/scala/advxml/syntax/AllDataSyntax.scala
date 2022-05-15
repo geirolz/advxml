@@ -192,7 +192,7 @@ private[syntax] trait AttributeSyntax {
     ): KeyValuePredicate =
       KeyValuePredicate(
         key,
-        new (SimpleValue => Boolean) {
+        new SimpleValue => Boolean {
           override def apply(f: SimpleValue): Boolean = c.run(f).map(p(_, that)).getOrElse(false)
           override def toString(): String             = s"$symbol [$that]"
         }

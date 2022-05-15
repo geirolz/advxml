@@ -363,7 +363,7 @@ class TransformXmlRuleSyntaxTest extends AnyFunSuite {
   test("Replace With same node") {
     val xml = <A><B>1</B></A>
     val result: Try[NodeSeq] = xml.transform(
-      (root / "B") ==> Replace(_ => <B>1</B>)
+      root / "B" ==> Replace(_ => <B>1</B>)
     )
 
     assert(result.get === <A><B>1</B></A>)
