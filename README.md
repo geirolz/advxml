@@ -15,7 +15,7 @@ Advxml supports 2.13 and 3
 
 **Sbt**
 ```sbt mdoc
-  libraryDependencies += "com.github.geirolz" %% "advxml-core" % 2.4.2
+  libraryDependencies += "com.github.geirolz" %% "advxml-core" % 2.5.0
 ```
 
 ## Structure
