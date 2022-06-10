@@ -30,7 +30,7 @@ lazy val advxml: Project = project
     description := "A lightweight, simple and functional library DSL to work with XML in Scala with Cats",
     organization := org
   )
-  .aggregate(core)
+  .aggregate(core, xpath)
 
 lazy val core: Project =
   buildModule(
@@ -38,6 +38,13 @@ lazy val core: Project =
     toPublish = true,
     folder    = "."
   )
+
+lazy val xpath: Project =
+  buildModule(
+    path      = "xpath",
+    toPublish = true,
+    folder    = "."
+  ).dependsOn(core)
 
 //=============================== MODULES UTILS ===============================
 def buildModule(path: String, toPublish: Boolean, folder: String = "modules"): Project = {
