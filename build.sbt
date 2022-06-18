@@ -44,7 +44,10 @@ lazy val xpath: Project =
     path      = "xpath",
     toPublish = true,
     folder    = "."
-  ).dependsOn(core)
+  ).dependsOn(core % "test->test;compile->compile")
+    .settings(
+      libraryDependencies ++= Dependencies.parser
+    )
 
 //=============================== MODULES UTILS ===============================
 def buildModule(path: String, toPublish: Boolean, folder: String = "modules"): Project = {

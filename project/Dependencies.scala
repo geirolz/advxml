@@ -20,6 +20,10 @@ object Dependencies {
     "org.scalacheck" %% "scalacheck"           % "1.15.4" % Test cross CrossVersion.binary
   )
 
+  lazy val parser: Seq[ModuleID] = Seq(
+    "eu.cdevreeze.xpathparser" %% "xpathparser" % "0.8.0"
+  )
+
   object Plugins {
     lazy val compilerPluginsFor2: Seq[ModuleID] = Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3" cross CrossVersion.binary)
