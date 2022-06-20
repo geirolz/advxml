@@ -46,7 +46,7 @@ lazy val xpath: Project =
     folder    = "."
   ).dependsOn(core % "test->test;compile->compile")
     .settings(
-      libraryDependencies ++= Dependencies.parser
+      libraryDependencies ++= Dependencies.XPath.dedicated
     )
 
 //=============================== MODULES UTILS ===============================

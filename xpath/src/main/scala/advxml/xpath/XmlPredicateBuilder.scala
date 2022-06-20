@@ -4,7 +4,7 @@ import advxml.data.Key
 import advxml.data.SimpleValue
 import advxml.data.XmlPredicate
 import advxml.implicits.*
-import advxml.xpath.error.NotSupportedConstruction
+import advxml.xpath.error.XPathError
 import cats.Endo
 import cats.data.ValidatedNel
 import cats.syntax.apply.*
@@ -14,7 +14,7 @@ import cats.syntax.validated.*
 import eu.cdevreeze.xpathparser.ast.*
 
 object XmlPredicateBuilder {
-  def build(expr: Expr): ValidatedNel[NotSupportedConstruction, XmlPredicate] =
+  def build(expr: Expr): ValidatedNel[XPathError.NotSupportedConstruction, XmlPredicate] =
     expr match {
       case expr: CompoundComparisonExpr => buildCCE(expr)
       case expr: RelativePathExpr       => buildRPE(expr).map(_(_ => true))
@@ -27,7 +27,7 @@ object XmlPredicateBuilder {
       case e => notSupported(e)
     }
 
-  def buildCCE(expr: CompoundComparisonExpr): ValidatedNel[NotSupportedConstruction, XmlPredicate] =
+  def buildCCE(expr: CompoundComparisonExpr): ValidatedNel[XPathError.NotSupportedConstruction, XmlPredicate] =
     expr match {
       case CompoundComparisonExpr(
             cpe @ CompoundOrExact(
@@ -71,7 +71,7 @@ object XmlPredicateBuilder {
 
   def buildRPE(
     expr: RelativePathExpr
-  ): ValidatedNel[NotSupportedConstruction, Endo[XmlPredicate]] =
+  ): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlPredicate]] =
     expr match {
       case ForwardAxisStep(SimpleAbbrevForwardStep(SimpleNameTest(EQNameEx(name))), EmptySeq()) =>
         xpred(XmlPredicate.hasImmediateChild(name, _)).validNel
@@ -150,8 +150,8 @@ object XmlPredicateBuilder {
       case e => notSupported(e)
     }
 
-  private def notSupported(feature: XPathElem): ValidatedNel[NotSupportedConstruction, Nothing] =
-    NotSupportedConstruction(feature).invalidNel
+  private def notSupported(feature: XPathElem): ValidatedNel[XPathError.NotSupportedConstruction, Nothing] =
+    XPathError.NotSupportedConstruction(feature).invalidNel
 
   @inline
   private def xpred(f: Endo[XmlPredicate]): Endo[XmlPredicate] = f
