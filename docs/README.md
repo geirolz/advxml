@@ -15,7 +15,10 @@ Advxml supports 2.13 and 3
 
 **Sbt**
 ```sbt mdoc
-  libraryDependencies += "com.github.geirolz" %% "advxml-core" % 2.4.2
+  libraryDependencies ++= Seq(
+    "com.github.geirolz" %% "advxml-core" % "2.5.0",
+    "com.github.geirolz" %% "advxml-xpath" % "2.5.0" //optional, for xpath support
+  )
 ```
 
 ## Structure
@@ -34,3 +37,4 @@ The idea behind this library is offer a fluent syntax to edit and read xml.
  - [@dcsobral](https://github.com/dcsobral)
  - [@liff](https://github.com/liff)
  - [@argast](https://github.com/argast)
+ - [@danslapman](https://github.com/danslapman)
