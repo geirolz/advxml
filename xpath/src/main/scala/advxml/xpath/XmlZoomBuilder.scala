@@ -11,10 +11,14 @@ import eu.cdevreeze.xpathparser.common.UnprefixedName
 
 object XmlZoomBuilder {
 
-  private def notSupported(feature: XPathElem): ValidatedNel[XPathError.NotSupportedConstruction, Nothing] =
+  private def notSupported(
+    feature: XPathElem
+  ): ValidatedNel[XPathError.NotSupportedConstruction, Nothing] =
     XPathError.NotSupportedConstruction(feature).invalidNel
 
-  def modifyZoom(xPathExpr: XPathExpr): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
+  def modifyZoom(
+    xPathExpr: XPathExpr
+  ): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
     xPathExpr match {
       case expr: Expr => modifyZoom(expr)
     }
@@ -44,7 +48,9 @@ object XmlZoomBuilder {
         }
     }
 
-  def modifyZoom(step: ForwardStep): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
+  def modifyZoom(
+    step: ForwardStep
+  ): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
     step match {
       case nafs @ NonAbbrevForwardStep(_, _) => notSupported(nafs)
       case step: AbbrevForwardStep =>
@@ -69,7 +75,9 @@ object XmlZoomBuilder {
       case ce @ CompoundExpr(_, _) => notSupported(ce)
     }
 
-  def modifyZoom(simpleExpr: SimpleExpr): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
+  def modifyZoom(
+    simpleExpr: SimpleExpr
+  ): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
     simpleExpr match {
       case single: ExprSingle =>
         single match {
@@ -90,7 +98,9 @@ object XmlZoomBuilder {
       case coe @ CompoundOrExpr(_, _) => notSupported(coe)
     }
 
-  def modifyZoom(andExpr: AndExpr): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
+  def modifyZoom(
+    andExpr: AndExpr
+  ): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
     andExpr match {
       case simpleAndExpr: SimpleAndExpr =>
         simpleAndExpr match {
@@ -123,7 +133,9 @@ object XmlZoomBuilder {
       case csce @ CompoundStringConcatExpr(_, _) => notSupported(csce)
     }
 
-  def modifyZoom(rangeExpr: RangeExpr): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
+  def modifyZoom(
+    rangeExpr: RangeExpr
+  ): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
     rangeExpr match {
       case simpleRangeExpr: SimpleRangeExpr =>
         simpleRangeExpr match {
@@ -156,7 +168,9 @@ object XmlZoomBuilder {
         notSupported(cme)
     }
 
-  def modifyZoom(unionExpr: UnionExpr): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
+  def modifyZoom(
+    unionExpr: UnionExpr
+  ): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
     unionExpr match {
       case simpleUnionExpr: SimpleUnionExpr =>
         simpleUnionExpr match {
@@ -188,7 +202,9 @@ object XmlZoomBuilder {
       case cioe @ CompoundInstanceOfExpr(_, _) => notSupported(cioe)
     }
 
-  def modifyZoom(treatExpr: TreatExpr): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
+  def modifyZoom(
+    treatExpr: TreatExpr
+  ): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
     treatExpr match {
       case simpleTreatExpr: SimpleTreatExpr =>
         simpleTreatExpr match {
@@ -208,7 +224,9 @@ object XmlZoomBuilder {
       case cce @ CompoundCastableExpr(_, _) => notSupported(cce)
     }
 
-  def modifyZoom(castExpr: CastExpr): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
+  def modifyZoom(
+    castExpr: CastExpr
+  ): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
     castExpr match {
       case simpleCastExpr: SimpleCastExpr =>
         simpleCastExpr match {
@@ -217,7 +235,9 @@ object XmlZoomBuilder {
       case cce @ CompoundCastExpr(_, _) => notSupported(cce)
     }
 
-  def modifyZoom(arrowExpr: ArrowExpr): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
+  def modifyZoom(
+    arrowExpr: ArrowExpr
+  ): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
     arrowExpr match {
       case simpleArrowExpr: SimpleArrowExpr =>
         simpleArrowExpr match {
@@ -226,7 +246,9 @@ object XmlZoomBuilder {
       case cae @ CompoundArrowExpr(_, _) => notSupported(cae)
     }
 
-  def modifyZoom(unaryExpr: UnaryExpr): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
+  def modifyZoom(
+    unaryExpr: UnaryExpr
+  ): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
     unaryExpr match {
       case simpleUnaryExpr: SimpleUnaryExpr =>
         simpleUnaryExpr match {
@@ -235,7 +257,9 @@ object XmlZoomBuilder {
       case cue @ CompoundUnaryExpr(_, _) => notSupported(cue)
     }
 
-  def modifyZoom(valueExpr: ValueExpr): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
+  def modifyZoom(
+    valueExpr: ValueExpr
+  ): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
     valueExpr match {
       case simpleMapExpr: SimpleMapExpr =>
         simpleMapExpr match {
@@ -247,7 +271,9 @@ object XmlZoomBuilder {
         }
     }
 
-  def modifyZoom(pathExpr: PathExpr): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
+  def modifyZoom(
+    pathExpr: PathExpr
+  ): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
     pathExpr match {
       case SlashOnlyPathExpr                                 => identity[XmlZoom].validNel
       case PathExprStartingWithSingleSlash(relativePathExpr) => modifyZoom(relativePathExpr)
@@ -271,13 +297,17 @@ object XmlZoomBuilder {
         modifyZoom(init).andThen(i => modifyZoom(lastStepExpr).map(i.andThen))
     }
 
-  def modifyZoom(stepExpr: StepExpr): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
+  def modifyZoom(
+    stepExpr: StepExpr
+  ): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
     stepExpr match {
       case postfixExpr: PostfixExpr => notSupported(postfixExpr)
       case axisStep: AxisStep       => modifyZoom(axisStep)
     }
 
-  def modifyZoom(postfix: Postfix): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
+  def modifyZoom(
+    postfix: Postfix
+  ): ValidatedNel[XPathError.NotSupportedConstruction, Endo[XmlZoom]] =
     postfix match {
       case Predicate(IntegerLiteral(v)) => zoom(_.atIndex(v.toInt)).validNel
       case Predicate(FunctionCall(EQNameEx("last"), ArgumentList(EmptySeq()))) =>

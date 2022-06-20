@@ -10,7 +10,9 @@ package object xpath {
   implicit class XmlZoomCompanionExt(comp: XmlZoom.type) {
     def fromXPath(xPath: String): ValidatedNel[XPathError, XmlZoom] = {
       Validated
-        .fromEither(XPathParser.xpathExpr.parseAll(xPath).left.map(XPathError.ParsingError(_): XPathError))
+        .fromEither(
+          XPathParser.xpathExpr.parseAll(xPath).left.map(XPathError.ParsingError(_): XPathError)
+        )
         .toValidatedNel
         .andThen(fromXPathExpr)
     }

@@ -27,7 +27,9 @@ object XmlPredicateBuilder {
       case e => notSupported(e)
     }
 
-  def buildCCE(expr: CompoundComparisonExpr): ValidatedNel[XPathError.NotSupportedConstruction, XmlPredicate] =
+  def buildCCE(
+    expr: CompoundComparisonExpr
+  ): ValidatedNel[XPathError.NotSupportedConstruction, XmlPredicate] =
     expr match {
       case CompoundComparisonExpr(
             cpe @ CompoundOrExact(
@@ -150,7 +152,9 @@ object XmlPredicateBuilder {
       case e => notSupported(e)
     }
 
-  private def notSupported(feature: XPathElem): ValidatedNel[XPathError.NotSupportedConstruction, Nothing] =
+  private def notSupported(
+    feature: XPathElem
+  ): ValidatedNel[XPathError.NotSupportedConstruction, Nothing] =
     XPathError.NotSupportedConstruction(feature).invalidNel
 
   @inline
