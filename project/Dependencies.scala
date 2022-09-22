@@ -17,7 +17,7 @@ object Dependencies {
     "org.typelevel"  %% "discipline-scalatest" % "2.2.0"  % Test,
     "org.typelevel"  %% "cats-laws"            % "2.8.0"  % Test cross CrossVersion.binary,
     "org.scalatest"  %% "scalatest"            % "3.2.13" % Test cross CrossVersion.binary,
-    "org.scalacheck" %% "scalacheck"           % "1.15.4" % Test cross CrossVersion.binary
+    "org.scalacheck" %% "scalacheck"           % "1.17.0" % Test cross CrossVersion.binary
   )
 
   object XPath {
