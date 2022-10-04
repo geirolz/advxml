@@ -16,8 +16,6 @@ pull_request_rules:
   - name: automatic merge for master when CI passes and author is steward
     conditions:
       - author=scala-steward
-      - check-success=codecov/patch
-      - check-success=codecov/project
       - check-success=build (Scala2-12)
       - check-success=build (Scala2-13)
       - check-success=build (Scala3)
@@ -29,8 +27,6 @@ pull_request_rules:
   - name: automatic merge for master when CI passes and author is dependabot
     conditions:
       - author=dependabot[bot]
-      - check-success=codecov/patch
-      - check-success=codecov/project
       - check-success=build (Scala2-12)
       - check-success=build (Scala2-13)
       - check-success=build (Scala3)
