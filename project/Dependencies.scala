@@ -13,7 +13,7 @@ object Dependencies {
     // XML
     "org.scala-lang.modules" %% "scala-xml" % "2.1.0" cross CrossVersion.binary,
     // TEST
-    "org.scalactic"  %% "scalactic"            % "3.2.13" % Test cross CrossVersion.binary,
+    "org.scalactic"  %% "scalactic"            % "3.2.14" % Test cross CrossVersion.binary,
     "org.typelevel"  %% "discipline-scalatest" % "2.2.0"  % Test,
     "org.typelevel"  %% "cats-laws"            % "2.8.0"  % Test cross CrossVersion.binary,
     "org.scalatest"  %% "scalatest"            % "3.2.13" % Test cross CrossVersion.binary,
