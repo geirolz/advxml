@@ -5,7 +5,7 @@ import sbt.{CrossVersion, _}
   * @author
   *   geirolad
   */
-object Dependencies {
+object ProjectDependencies {
 
   lazy val common: Seq[ModuleID] = Seq(
     // SCALA

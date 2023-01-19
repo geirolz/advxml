@@ -46,7 +46,7 @@ lazy val xpath: Project =
     folder    = "."
   ).dependsOn(core % "test->test;compile->compile")
     .settings(
-      libraryDependencies ++= Dependencies.XPath.dedicated
+      libraryDependencies ++= ProjectDependencies.XPath.dedicated
     )
 
 //=============================== MODULES UTILS ===============================
@@ -100,19 +100,19 @@ lazy val baseSettings = Seq(
     "-Xfatal-warnings"
   ),
   // dependencies
-  resolvers ++= Resolvers.all,
-  libraryDependencies ++= Dependencies.common,
+  resolvers ++= ProjectResolvers.all,
+  libraryDependencies ++= ProjectDependencies.common,
   libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-    case Some((2, 13)) => Dependencies.extraDependenciesForScala2_13
-    case Some((3, _))  => Dependencies.extraDependenciesForScala3
+    case Some((2, 13)) => ProjectDependencies.extraDependenciesForScala2_13
+    case Some((3, _))  => ProjectDependencies.extraDependenciesForScala3
     case _             => Nil
   })
 )
 
 lazy val compilePlugins = Seq(
   libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-    case Some((2, _)) => Dependencies.Plugins.compilerPluginsFor2
-    case Some((3, _)) => Dependencies.Plugins.compilerPluginsFor3
+    case Some((2, _)) => ProjectDependencies.Plugins.compilerPluginsFor2
+    case Some((3, _)) => ProjectDependencies.Plugins.compilerPluginsFor3
     case _            => Nil
   })
 )
