@@ -28,17 +28,17 @@ jobs:
           # fill this input.
           github-app-key: ${{ secrets.STEWARD_APP_PRIVATE_KEY }}
 
-          # Artifact migrations for newer versions of artifacts with
-          # different group Ids, artifact ids, or both different.
-          #
-          # Expects the path to HOCON file with migration/s.
-          #
-          # See https://github.com/scala-steward-org/scala-steward/blob/main/docs/artifact-migrations.md
-          artifact-migrations: ''
-
-          # Author email address to use in commits. If set it will
-          # override any email retrieved from GitHub.
-          author-email: ''
+#          # Artifact migrations for newer versions of artifacts with
+#          # different group Ids, artifact ids, or both different.
+#          #
+#          # Expects the path to HOCON file with migration/s.
+#          #
+#          # See https://github.com/scala-steward-org/scala-steward/blob/main/docs/artifact-migrations.md
+#          artifact-migrations: ''
+#
+#          # Author email address to use in commits. If set it will
+#          # override any email retrieved from GitHub.
+#          author-email: ''
 
           # Author name to use in commits. If set it will override
           # any name retrieved from GitHub.
