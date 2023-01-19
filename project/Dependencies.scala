@@ -16,7 +16,7 @@ object Dependencies {
     "org.scalactic"  %% "scalactic"            % "3.2.15" % Test cross CrossVersion.binary,
     "org.typelevel"  %% "discipline-scalatest" % "2.2.0"  % Test,
     "org.typelevel"  %% "cats-laws"            % "2.9.0"  % Test cross CrossVersion.binary,
-    "org.scalatest"  %% "scalatest"            % "3.2.14" % Test cross CrossVersion.binary,
+    "org.scalatest"  %% "scalatest"            % "3.2.15" % Test cross CrossVersion.binary,
     "org.scalacheck" %% "scalacheck"           % "1.17.0" % Test cross CrossVersion.binary
   )
 
