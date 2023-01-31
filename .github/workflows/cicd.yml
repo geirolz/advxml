@@ -28,7 +28,7 @@ jobs:
       matrix:
         # supported scala versions
         include:
-          - scala: 2.13.6
+          - scala: 2.13.10
             name: Scala2_13
             test-tasks: coverage test coverageReport
           - scala: 3.2.1
@@ -47,7 +47,7 @@ jobs:
 
       #----------- CACHE -----------
       - name: Cache SBT
-        uses: actions/cache@v3.2.3
+        uses: actions/cache@v3.2.4
         with:
           # A list of files, directories, and wildcard patterns to cache and restore
           path: |
@@ -86,7 +86,7 @@ jobs:
 
       #----------- CACHE -----------
       - name: Cache SBT
-        uses: actions/cache@v3.2.3
+        uses: actions/cache@v3.2.4
         with:
           # A list of files, directories, and wildcard patterns to cache and restore
           path: |
