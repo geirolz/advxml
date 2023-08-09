@@ -1,7 +1,6 @@
 on:
-  workflow_dispatch:
-    schedule:
-      - cron: '0 0 * * 0'
+  schedule:
+    - cron: '0 0 * * 0'
 
 name: Scala Steward
 
@@ -13,32 +12,21 @@ jobs:
       - name: Launch Scala Steward
         uses: scala-steward-org/scala-steward-action@v2
         with:
-          # GitHub App ID. See the "Installation" section of the
-          # README to learn how to set up the app and how to fill this input.
           github-app-id: ${{ secrets.STEWARD_APP_ID }}
-
-          # GitHub App Installation ID. See the "Installation"
-          # section of the README to learn how to set up the app
-          # and how to fill this input.
-
           github-app-installation-id: ${{ secrets.STEWARD_APP_INSTALLATION_ID }}
-
-          # GitHub App Private Key. See the "Installation" section
-          # of the README to learn how to set up the app and how to
-          # fill this input.
           github-app-key: ${{ secrets.STEWARD_APP_PRIVATE_KEY }}
 
-#          # Artifact migrations for newer versions of artifacts with
-#          # different group Ids, artifact ids, or both different.
-#          #
-#          # Expects the path to HOCON file with migration/s.
-#          #
-#          # See https://github.com/scala-steward-org/scala-steward/blob/main/docs/artifact-migrations.md
-#          artifact-migrations: ''
-#
-#          # Author email address to use in commits. If set it will
-#          # override any email retrieved from GitHub.
-#          author-email: ''
+          #          # Artifact migrations for newer versions of artifacts with
+          #          # different group Ids, artifact ids, or both different.
+          #          #
+          #          # Expects the path to HOCON file with migration/s.
+          #          #
+          #          # See https://github.com/scala-steward-org/scala-steward/blob/main/docs/artifact-migrations.md
+          #          artifact-migrations: ''
+          #
+          #          # Author email address to use in commits. If set it will
+          #          # override any email retrieved from GitHub.
+          #          author-email: ''
 
           # Author name to use in commits. If set it will override
           # any name retrieved from GitHub.
