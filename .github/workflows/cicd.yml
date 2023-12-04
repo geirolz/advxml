@@ -40,7 +40,7 @@ jobs:
 
       #----------- JDK -----------
       - name: Setup JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: "liberica"
           java-version: 17
@@ -79,7 +79,7 @@ jobs:
 
       #----------- JDK -----------
       - name: Setup JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: "liberica"
           java-version: 17
