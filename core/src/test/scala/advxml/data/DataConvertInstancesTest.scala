@@ -113,7 +113,7 @@ class ConvertersInstancesTestForText extends AnyFunSuite with ConvertersAssertsU
   Converter[Double     , Text].test(1.0d         , Text("1.0"))
 
   case class CustomType(v: Int)
-  implicit val customTypeAsValidatedValueConverter: CustomType As ValidatedValue = 
+  implicit val customTypeAsValidatedValueConverter: CustomType As ValidatedValue =
     Converter.of(ct => SimpleValue(ct.v.toString).nonEmpty)
     
   Converter[CustomType, Try[Text]].test(CustomType(1), Success(Text("1")))
